@@ -1,0 +1,21 @@
+{
+  "name": "@egolia-uit/api",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./openapi": "./bundled/openapi.json"
+  },
+  "scripts": {
+    "openapi-generator-cli": "openapi-generator-cli",
+    "openapi-ts": "openapi-ts",
+    "redocly": "redocly",
+    "redocly:join": "redocly join ./openapi.yaml -o ./bundled/openapi.json",
+    "scalar": "scalar"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.94.0",
+    "@openapitools/openapi-generator-cli": "2.30.1",
+    "@redocly/cli": "2.20.4",
+    "@scalar/cli": "1.7.3"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@egolia-uit/api-web",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@egolia-uit/api": "workspace:",
+    "@scalar/api-reference-react": "0.9.1"
+  }
+}

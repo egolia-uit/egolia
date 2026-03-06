@@ -1,0 +1,81 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "api",
+  "projectType": "library",
+  "tags": ["scope:api", "type:openapi"],
+  "targets": {
+    "bundle:json": {
+      "dependsOn": ["^bundle:json"]
+    },
+    "join": {
+      "inputs": [
+      ],
+      "outputs": ["{projectRoot}/bundled/openapi.json"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm run redocly:join",
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["^bundle:json"],
+      "cache": true
+    },
+    "watch-join": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm nx watch --projects=api --includeDependentProjects -- pnpm nx run-many --target bundle:json --target join -p \\$NX_PROJECT_NAME",
+        "forwardAllArgs": false,
+        "cwd": "{projectRoot}"
+      },
+      "continuous": true
+    },
+    "bundle": {
+      "dependsOn": ["join"]
+    },
+    "watch-bundle:json": {
+      "dependsOn": ["^watch-bundle:json"]
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "scalar document serve -w ./bundled/openapi.json --port 9080",
+        "forwardAllArgs": false,
+        "cwd": "{projectRoot}"
+      },
+      "continuous": true,
+      "dependsOn": ["join", "watch-join"]
+    },
+    "lint": {
+      "executor": "nx:noop",
+      "dependsOn": ["^lint"]
+    },
+    "mock": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "scalar document mock -w ./bundled/openapi.json --port 8080",
+        "cwd": "{projectRoot}"
+      },
+      "continuous": true,
+      "dependsOn": ["join"]
+    },
+    "gen:go": {
+      "dependsOn": ["^gen:go"]
+    },
+    "gen:hey-api": {
+      "outputs": ["{workspaceRoot}/packages/api/src/"],
+      "inputs": [
+        "{projectRoot}/bundled/openapi.json",
+        "{projectRoot}/openapi-ts.config.ts"
+      ],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec openapi-ts",
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["join"]
+    },
+    "gen": {
+      "dependsOn": ["gen:go", "gen:hey-api"]
+    }
+  },
+  "implicitDependencies": []
+}

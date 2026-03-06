@@ -1,0 +1,10 @@
+# vim: ft=yaml.openapi
+description: Unauthorized Error response
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Error.yaml
+    example:
+      code: UNAUTHORIZED
+      message: Authentication is required to access this resource
+      more_info: https://api.egolia.com/docs/errors/UNAUTHORIZED

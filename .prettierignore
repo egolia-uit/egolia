@@ -1,0 +1,15 @@
+**/.next/**
+**/.vitepress/cache/**
+**/build/**
+**/coverage/**
+**/dist/**
+**/node_modules/**
+**/out/**
+/.nx/cache
+/.nx/workspace-data
+pnpm-lock.yaml
+packages/notopia-api/src/**
+packages/notopia-pb/**/*.d.ts
+packages/notopia-pb/**/*.js
+**/next-env.d.ts
+docs/godoc/**

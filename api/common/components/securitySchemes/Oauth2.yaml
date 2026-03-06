@@ -1,0 +1,15 @@
+# vim: ft=yaml.openapi
+type: oauth2
+description: OAuth2 Security Scheme
+flows:
+  authorizationCode:
+    authorizationUrl: http://authentik.egolia.localhost/application/o/authorize
+    tokenUrl: http://authentik.egolia.localhost/application/o/token
+    scopes:
+      openid: Required for OIDC
+      profile: Access to user profile
+
+    x-defaultClientId: api-web
+    x-scalar-client-id: api-web
+    x-usePkce: SHA-256
+    x-scalar-credentials-location: header

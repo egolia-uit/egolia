@@ -1,0 +1,56 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "docs",
+  "projectType": "application",
+  "tags": ["scope:docs"],
+  "namedInputs": {
+    "vitepressFiles": [
+      "{projectRoot}/.vitepress/config.{mts,ts}",
+      "{projectRoot}/.vitepress/theme/**/*.{vue,ts,mts}",
+      "{projectRoot}/src/**/*.md",
+      "{projectRoot}/public/**"
+    ]
+  },
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitepress dev",
+        "cwd": "{projectRoot}",
+        "tty": true
+      },
+      "continuous": true
+    },
+    "build:1": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitepress build",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/.vitepress/dist"],
+      "inputs": ["vitepressFiles"]
+    },
+    "build:2": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitepress build",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/.vitepress/dist"],
+      "inputs": ["vitepressFiles"],
+      "dependsOn": ["build:1"]
+    },
+    "build": {
+      "dependsOn": ["build:1", "build:2"]
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "vitepress preview",
+        "cwd": "{projectRoot}"
+      },
+      "continuous": true
+    }
+  }
+}

@@ -1,0 +1,23 @@
+node_modules
+.env.local
+
+.nx/cache
+.nx/workspace-data
+dist
+vite.config.*.timestamp*
+
+# Next.js
+.next
+out
+
+coverage.out
+
+# go bin, usually run with nx won't generate this, but if you accidentally run go build
+/note
+/note.exe
+
+# from dlv
+__debug_bin*
+
+# tmp, curently having .docker-version from nx
+tmp

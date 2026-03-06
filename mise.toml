@@ -1,0 +1,15 @@
+#:schema https://raw.githubusercontent.com/jdx/mise/refs/heads/main/schema/mise.json
+
+[env]
+REDOCLY_TELEMETRY = "off"
+REDOCLY_SUPPRESS_UPDATE_NOTICE = "true"
+
+[tools]
+"github:pressly/goose" = "3.27.0"
+"go:github.com/goforj/wire/cmd/wire" = "v1.1.0"
+"go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen" = "2.6.0"
+"npm:nx" = "22.5.4"
+buf = "1.65.0"
+pnpm = "10.28.2"
+sqlc = "1.30.0"
+java = "latest"

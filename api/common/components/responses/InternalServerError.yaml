@@ -1,0 +1,10 @@
+# vim: ft=yaml.openapi
+description: Internal Server Error response
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Error.yaml
+    example:
+      code: INTERNAL_SERVER_ERROR
+      message: An internal server error occurred. Please try again later
+      more_info: https://api.egolia.com/docs/errors/INTERNAL_SERVER_ERROR

@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://www.schemastore.org/openapi-3.X.json
+openapi: 3.0.4
+
+info:
+  description: Egolia API
+  version: 0.0.0
+  title: Egolia API
+  license:
+    name: MIT
+    url: https://github.com/egolia-uit/egolia/blob/main/LICENSE
+  contact:
+    name: Egolia Support
+    email: kevinnitro@duck.com
+
+servers:
+  - url: http://api.egolia.localhost
+
+paths: {}

@@ -1,0 +1,6 @@
+# vim:ft=sh:
+
+CI=true pnpm nx run-many \
+  --target lint \
+  --target format:check \
+  --tui false

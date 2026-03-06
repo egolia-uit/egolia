@@ -1,0 +1,9 @@
+# vim: ft=yaml.openapi
+name: order
+in: query
+description: Sort order
+schema:
+  type: string
+  enum: [asc, desc]
+  default: desc
+  example: desc

@@ -1,0 +1,202 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "openapiFiles": [
+      "{projectRoot}/**/*.md",
+      "{projectRoot}/**/*.yaml",
+      "!{projectRoot}/**/README.md"
+    ],
+    "openapiFilesWithCommon": [
+      "openapiFiles",
+      "{workspaceRoot}/api/common/**/*.md",
+      "{workspaceRoot}/api/common/**/*.yaml"
+    ],
+    "goPkgFiles": [
+      "{workspaceRoot}/go.mod",
+      "{workspaceRoot}/go.sum",
+      "{workspaceRoot}/pkg/**/*.{go}",
+      "!{workspaceRoot}/pkg/**/*_test.{go}"
+    ],
+    "goFiles": [
+      "{workspaceRoot}/go.mod",
+      "{workspaceRoot}/go.sum",
+      "{projectRoot}/**/*.go"
+    ],
+    "protoFiles": [
+      "{projectRoot}/**/*.proto",
+      "{workspaceRoot}/buf.gen.yaml",
+      "{workspaceRoot}/buf.mock.yaml",
+      "{workspaceRoot}/buf.yaml"
+    ]
+  },
+  "targetDefaults": {
+    "gen*": {
+      "cache": true
+    },
+    "bundle*": {
+      "cache": true
+    },
+    "build*": {
+      "dependsOn": ["^build*", "^bundle*", "^gen"],
+      "cache": true
+    },
+    "lint*": {
+      "cache": true
+    }
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    },
+    {
+      "plugin": "@nx/js/typescript",
+      "options": {
+        "typecheck": {
+          "targetName": "typecheck"
+        },
+        "build": {
+          "targetName": "build",
+          "configName": "tsconfig.lib.json",
+          "buildDepsName": "build-deps",
+          "watchDepsName": "watch-deps"
+        }
+      }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "testTargetName": "test",
+        "serveTargetName": "serve",
+        "devTargetName": "dev",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "typecheckTargetName": "typecheck",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
+      }
+    },
+    {
+      "plugin": "@nx/next/plugin",
+      "options": {
+        "startTargetName": "start",
+        "buildTargetName": "build",
+        "devTargetName": "dev",
+        "serveStaticTargetName": "serve-static",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
+      }
+    },
+    {
+      "plugin": "@nx/docker",
+      "options": {
+        "buildTarget": {
+          "name": "docker:build",
+          "cwd": "{workspaceRoot}",
+          "args": [
+            "-f",
+            "{projectRoot}/Dockerfile",
+            "--label",
+            "org.opencontainers.image.title={projectName}",
+            "--label",
+            "org.opencontainers.image.source=https://github.com/egolia-uit/egolia",
+            "--label",
+            "org.opencontainers.image.revision={commitSha}",
+            "--label",
+            "org.opencontainers.image.created={currentDate}",
+            "--tag",
+            "{projectName}"
+          ]
+        },
+        "runTarget": {
+          "name": "docker:run",
+          "cwd": "{workspaceRoot}",
+          "args": ["-f", "{projectRoot}/Dockerfile"]
+        }
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps",
+        "serveStaticTargetName": "serve-static"
+      }
+    }
+  ],
+  "release": {
+    "changelog": {
+      "automaticFromRef": true
+    },
+    "groups": {
+      "npm": {
+        "releaseTag": {
+          "pattern": "egolia-packages@{version}"
+        },
+        "projects": ["packages/*"],
+        "projectsRelationship": "fixed",
+        "version": {
+          "conventionalCommits": true,
+          "fallbackCurrentVersionResolver": "disk"
+        },
+        "releaseTagPatternRequireSemver": true,
+        "changelog": {
+          "createRelease": "github",
+          "file": false
+        }
+      },
+      "docker": {
+        "projects": ["note", "document", "web"],
+        "releaseTag": {
+          "pattern": "{projectName}@{version}"
+        },
+        "changelog": {
+          "createRelease": "github",
+          "file": false
+        },
+        "docker": {
+          "registryUrl": "ghcr.io",
+          "skipVersionActions": true,
+          "versionSchemes": {
+            "production": "{currentDate|YYMM.DD.HHmm}",
+            "development": "{currentDate|YYMM.DD.HHmm}.{shortCommitSha}"
+          }
+        },
+        "projectsRelationship": "independent",
+        "version": {
+          "conventionalCommits": false
+        },
+        "releaseTagPatternRequireSemver": false
+      }
+    }
+  },
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "babel": true,
+        "style": "css",
+        "linter": "eslint",
+        "bundler": "vite"
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    },
+    "@nx/next": {
+      "application": {
+        "style": "tailwind",
+        "linter": "eslint"
+      }
+    }
+  }
+}
