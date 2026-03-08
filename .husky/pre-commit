@@ -1,5 +1,16 @@
 # vim:ft=sh:
 
+declare -A ALLOWED_USERS
+ALLOWED_USERS["trannguyenthaibinh46@gmail.com"]="Kevin Nitro"
+ALLOWED_USERS["minhlephan1901@gmail.com"]="Leminionn"
+
+current_user=$(git config user.email)
+
+if [[ -z "${ALLOWED_USERS[$current_user]}" ]]; then
+  echo "Error: User '$current_user' is not allowed to commit."
+  exit 1
+fi
+
 CI=true pnpm nx run-many \
   --target lint \
   --target format:check \

@@ -1,6 +1,8 @@
 # yaml-language-server: $schema=https://www.schemastore.org/buf.json
 version: v2
-modules: []
+modules:
+  - name: egolia/egolia/course
+    path: ./proto/course/
 lint:
   use:
     - STANDARD
