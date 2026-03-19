@@ -2,9 +2,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@nestjs/common": "catalog:",
-    "@nestjs/core": "catalog:",
-    "@nestjs/platform-express": "catalog:",
     "axios": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
@@ -13,20 +10,16 @@
     "rxjs": "catalog:"
   },
   "devDependencies": {
-    "@nestjs/schematics": "catalog:",
-    "@nestjs/testing": "catalog:",
     "@next/eslint-plugin-next": "catalog:",
-    "@nx/docker": "22.5.4",
-    "@nx/eslint": "22.5.4",
-    "@nx/eslint-plugin": "22.5.4",
-    "@nx/js": "22.5.4",
-    "@nx/nest": "22.5.4",
-    "@nx/next": "22.5.4",
-    "@nx/node": "22.5.4",
-    "@nx/react": "22.5.4",
-    "@nx/vite": "22.5.4",
-    "@nx/web": "22.5.4",
-    "@nx/webpack": "22.5.4",
+    "@nx/docker": "22.6.0",
+    "@nx/eslint": "22.6.0",
+    "@nx/eslint-plugin": "22.6.0",
+    "@nx/js": "22.6.0",
+    "@nx/next": "22.6.0",
+    "@nx/node": "22.6.0",
+    "@nx/react": "22.6.0",
+    "@nx/vite": "22.6.0",
+    "@nx/web": "22.6.0",
     "@swc-node/register": "1.11.1",
     "@swc/cli": "0.8.0",
     "@swc/core": "1.15.18",
@@ -46,11 +39,11 @@
     "eslint-plugin-jsx-a11y": "catalog:",
     "eslint-plugin-react": "catalog:",
     "eslint-plugin-react-hooks": "catalog:",
-    "eslint-plugin-simple-import-sort": "12.1.1",
+    "eslint-plugin-simple-import-sort": "catalog:",
     "husky": "9.1.7",
     "jiti": "2.6.1",
     "jsdom": "~28.1.0",
-    "nx": "22.5.4",
+    "nx": "22.6.0",
     "nx-github-pages": "1.2.0",
     "prettier": "catalog:",
     "prettier-plugin-package": "2.0.0",
@@ -60,8 +53,14 @@
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
-    "vitest": "catalog:",
-    "webpack-cli": "6.0.1"
+    "vitest": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "10.28.2",
+      "onFail": "warn"
+    }
   },
   "packageManager": "pnpm@10.28.2"
 }

@@ -40,6 +40,10 @@
       "dependsOn": ["^build*", "^bundle*", "^gen"],
       "cache": true
     },
+    "test": {
+      "dependsOn": ["^test*"],
+      "cache": true
+    },
     "lint*": {
       "cache": true
     }
@@ -109,24 +113,35 @@
             "org.opencontainers.image.created={currentDate}",
             "--tag",
             "{projectName}"
-          ]
+          ],
+          "configurations": {
+            "production": {
+              "cwd": "{workspaceRoot}",
+              "args": [
+                "-f",
+                "{projectRoot}/Dockerfile",
+                "--label",
+                "org.opencontainers.image.title={projectName}",
+                "--label",
+                "org.opencontainers.image.source=https://github.com/egolia-uit/egolia",
+                "--label",
+                "org.opencontainers.image.revision={commitSha}",
+                "--label",
+                "org.opencontainers.image.created={currentDate}",
+                "--tag",
+                "{projectName}",
+                "--cache-from=type=registry,ref=ghcr.io/egolia-uit/{projectName}:buildcache",
+                "--cache-to=type=registry,ref=ghcr.io/egolia-uit/{projectName}:buildcache,mode=max,image-manifest=true",
+                "--load"
+              ]
+            }
+          }
         },
         "runTarget": {
           "name": "docker:run",
           "cwd": "{workspaceRoot}",
           "args": ["-f", "{projectRoot}/Dockerfile"]
         }
-      }
-    },
-    {
-      "plugin": "@nx/webpack/plugin",
-      "options": {
-        "buildTargetName": "build",
-        "serveTargetName": "serve",
-        "previewTargetName": "preview",
-        "buildDepsTargetName": "build-deps",
-        "watchDepsTargetName": "watch-deps",
-        "serveStaticTargetName": "serve-static"
       }
     }
   ],
@@ -152,7 +167,7 @@
         }
       },
       "docker": {
-        "projects": ["note", "document", "web"],
+        "projects": [""],
         "releaseTag": {
           "pattern": "{projectName}@{version}"
         },
@@ -165,7 +180,7 @@
           "skipVersionActions": true,
           "versionSchemes": {
             "production": "{currentDate|YYMM.DD.HHmm}",
-            "development": "{currentDate|YYMM.DD.HHmm}.{shortCommitSha}"
+            "development": "dev-{currentDate|YYMM.DD.HHmm}"
           }
         },
         "projectsRelationship": "independent",
@@ -174,6 +189,9 @@
         },
         "releaseTagPatternRequireSemver": false
       }
+    },
+    "version": {
+      "preVersionCommand": "pnpm dlx nx run-many -t build"
     }
   },
   "generators": {
@@ -189,7 +207,8 @@
       },
       "library": {
         "style": "css",
-        "linter": "eslint"
+        "linter": "eslint",
+        "unitTestRunner": "none"
       }
     },
     "@nx/next": {
@@ -198,5 +217,6 @@
         "linter": "eslint"
       }
     }
-  }
+  },
+  "analytics": false
 }
