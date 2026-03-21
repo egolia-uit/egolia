@@ -6,10 +6,10 @@ import { VitePressSidebarOptions } from 'vitepress-sidebar/types';
 
 // https://vitepress.dev/reference/site-config
 const vitePressOptions = {
-  title: 'Notopia',
+  title: 'egolia',
   description: 'Utopia of Notes',
   lang: 'en-GB',
-  base: '/notopia/',
+  base: '/egolia/',
   srcDir: 'src',
   markdown: {
     theme: {
@@ -19,7 +19,7 @@ const vitePressOptions = {
     config: (md) => {
       configureDiagramsPlugin(md, {
         diagramsDir: 'src/public/diagrams',
-        publicPath: '/notopia/diagrams',
+        publicPath: '/egolia/diagrams',
         krokiServerUrl: process.env.CI
           ? undefined
           : process.env.KROKI_SERVER_URL,
@@ -47,14 +47,14 @@ const vitePressOptions = {
     socialLinks: [
       {
         icon: 'github',
-        link: 'https://github.com/notopia-uit/notopia',
+        link: 'https://github.com/egolia-uit/egolia',
       },
     ],
   },
   vite: {
     plugins: [pagefindPlugin()],
   },
-  ignoreDeadLinks: ['/notopia/api/index.html'],
+  ignoreDeadLinks: ['/egolia/api/index.html'],
 } satisfies UserConfig<NoInfer<DefaultTheme.Config>>;
 
 const vitePressSidebarOptions = {

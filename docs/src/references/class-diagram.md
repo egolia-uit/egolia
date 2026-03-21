@@ -41,45 +41,108 @@ classDiagram
     }
 
     class Lesson {
-        <<AggregateRoot>>
+        <<AbstractStruct>>
         ID uuid.UUID
         CourseID uuid.UUID
         SectionID uuid.UUID
+        NextLessonID *uuid.UUID
+    }
+
+    class TestLesson {
+        <<AggregateRoot>>
+        Lesson
+        Title string
+        Type TestLessonType
+        Questions []TestQuestion
+    }
+
+    class TestQuestion {
+        <<Entity>>
+        ID uuid.UUID
+        Question string
+        Anwsers []TestAnswer
+    }
+
+    class TestAnswer {
+        <<Entity>>
+        ID uuid.UUID
+        Content string
+        IsCorrect bool
+    }
+
+    class TestLessonType {
+        <<Enum>>
+        MULTIPLE_CHOICE
+        SINGLE_CHOICE
+    }
+
+    class VideoLesson {
+        <<AggregateRoot>>
+        Lesson
         Title string
         VideoURL string
-        Type string
+        Duration time.Duration
     }
 
     class Enrollment {
         <<AggregateRoot>>
         ID uuid.UUID
-        UserID uuid.UUID
+        UserID string
         CourseID uuid.UUID
         EnrollmentDate time.Time
         CompletedAt *time.Time
     }
 
     class LessonProgress {
-        <<AggregateRoot>>
+        <<AbstractStruct>>
         ID uuid.UUID
-        UserID uuid.UUID
+        UserID string
         LessonID uuid.UUID
-        WatchedSeconds float64
         IsCompleted bool
+    }
+
+    class LessonProgressTest {
+        <<AggregateRoot>>
+        LessonProgress
+    }
+
+    class LessonProgressVideo {
+        <<AggregateRoot>>
+        LessonProgress
+        WatchedSeconds *float64
         LastViewedAt time.Time
     }
+
+    Course "1" *-- "0..*" Section : has
+    Section "1" *-- "0..*" Lesson : has
+    TestLesson --|> Lesson
+    VideoLesson --|> Lesson
+    TestLessonType --* TestLesson
+    TestQuestion "1..*" --* "1" TestLesson
+    TestAnswer "1..*" --* "1" TestQuestion
+    Enrollment "0..*" -- "1" Course : enrolls
+    LessonProgressVideo --|> LessonProgress
+    LessonProgressTest --|> LessonProgress
+    LessonProgress "0..*" --* "1" Lesson : tracks
 ```
 
 ## Billing
 
 ```mermaid
 classDiagram
+    class TransactionStatus {
+        <<Enum>>
+        PENDING
+        COMPLETED
+        FAILED
+    }
+
     class Transaction {
         <<AggregateRoot>>
         ID uuid.UUID
-        UserID uuid.UUID
+        UserID string
         Amount float64
-        Status string
+        Status TransactionStatus
         CreatedAt time.Time
     }
 

@@ -1,7 +1,7 @@
 ---
 aside: false
 outline: false
-title: Notopia OpenAPI
+title: Egolia OpenAPI
 order: 1
 ---
 
