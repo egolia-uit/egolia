@@ -3,6 +3,7 @@
 declare -A ALLOWED_USERS
 ALLOWED_USERS["trannguyenthaibinh46@gmail.com"]="Kevin Nitro"
 ALLOWED_USERS["minhlephan1901@gmail.com"]="Leminionn"
+ALLOWED_USERS["23520320@gm.uit.edu.vn"]="Ductran-05"
 
 current_user=$(git config user.email)
 
