@@ -46,6 +46,7 @@ classDiagram
         CourseID uuid.UUID
         SectionID uuid.UUID
         NextLessonID *uuid.UUID
+        DeletedAt *time.Time
     }
 
     class TestLesson {
@@ -113,17 +114,47 @@ classDiagram
         LastViewedAt time.Time
     }
 
+    class LessonComment {
+        <<AggregateRoot>>
+        ID uuid.UUID
+        UserID string
+        LessonID uuid.UUID
+        Content string
+        CreatedAt time.Time
+        ParentCommentID *uuid.UUID
+    }
+
+    class Review {
+        <<AggregateRoot>>
+        ID uuid.UUID
+        CourseID uuid.UUID
+        UserID string
+        Rating int
+        Comment string
+    }
+
+    class Certificate {
+        <<AggregateRoot>>
+        ID uuid.UUID
+        CourseID uuid.UUID
+        UserID string
+        IssuedAt time.Time
+    }
+
     Course "1" *-- "0..*" Section : has
     Section "1" *-- "0..*" Lesson : has
     TestLesson --|> Lesson
     VideoLesson --|> Lesson
-    TestLessonType --* TestLesson
+    TestLessonType -- TestLesson
     TestQuestion "1..*" --* "1" TestLesson
     TestAnswer "1..*" --* "1" TestQuestion
     Enrollment "0..*" -- "1" Course : enrolls
     LessonProgressVideo --|> LessonProgress
     LessonProgressTest --|> LessonProgress
     LessonProgress "0..*" --* "1" Lesson : tracks
+    Review "0..*" --* "1" Course : reviews
+    LessonComment "0..*" --* "1" Lesson : comments
+    Certificate "0..*" --* "1" Course : issues
 ```
 
 ## Billing
@@ -146,36 +177,48 @@ classDiagram
         CreatedAt time.Time
     }
 
-    class App {
-        <<ApplicationHandlers>>
-        CheckoutCourse(ctx context.Context, req CheckoutReq)
-        GetLearnerBillingHistory(ctx context.Context) []TransactionDTO
-        GetTransactionReceiptDetail(ctx ontext.Context
-        GetPlatformHeadlineKpis(ctx context.Context) *PlatformKPIDTO
-        GetPlatformRevenueAnalytics(ctx context.Context) *RevenueAnalyticsDTO
-        GetPlatformTransactionHistory(ctx context.Context) []TransactionDTO
-    }
+    Transaction  -- TransactionStatus
+
+    %% class App {
+    %%     <<ApplicationHandlers>>
+    %%     CheckoutCourse(ctx context.Context, req CheckoutReq)
+    %%     GetLearnerBillingHistory(ctx context.Context) []TransactionDTO
+    %%     GetTransactionReceiptDetail(ctx ontext.Context
+    %%     GetPlatformHeadlineKpis(ctx context.Context) *PlatformKPIDTO
+    %%     GetPlatformRevenueAnalytics(ctx context.Context) *RevenueAnalyticsDTO
+    %%     GetPlatformTransactionHistory(ctx context.Context) []TransactionDTO
+    %% }
 ```
 
 ## Blog
 
 ```mermaid
 classDiagram
-    class PostEntity {
+    class Post {
         <<AggregateRoot>>
         ID uuid.UUID
-        AuthorID uuid.UUID
+        AuthorID string
         Content string
         Hashtags []string
     }
 
-    class App {
-        <<ApplicationHandlers>>
-        SearchPosts(ctx context.Context, query string) []PostDTO
-        CreatePost(ctx context.Context, req CreatePostReq) string
-        CommentOnPost(ctx context.Context, postId string, content string)
-        ReplyPostComment(ctx context.Context, commentId string, content string)
+    class Comment {
+        <<AggregateRoot>>
+        ID uuid.UUID
+        PostID uuid.UUID
+        AuthorID string
+        Content string
     }
+
+    Comment "0..*" --* "1" Post : comments
+
+    %% class App {
+    %%     <<ApplicationHandlers>>
+    %%     SearchPosts(ctx context.Context, query string) []PostDTO
+    %%     CreatePost(ctx context.Context, req CreatePostReq) string
+    %%     CommentOnPost(ctx context.Context, postId string, content string)
+    %%     ReplyPostComment(ctx context.Context, commentId string, content string)
+    %% }
 ```
 
 <!-- vim:set tabstop=4 shiftwidth=4: -->
