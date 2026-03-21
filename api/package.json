@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./openapi": "./bundled/openapi.json"
+    "./openapi": "./bundled/openapi.json",
+    "./course": "./bundled/course.json",
+    "./billing": "./bundled/billing.json",
+    "./blog": "./bundled/blog.json"
   },
   "scripts": {
     "openapi-ts": "openapi-ts",

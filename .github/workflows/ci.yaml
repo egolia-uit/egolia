@@ -1,0 +1,287 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+    paths-ignore: &pushPathsIgnore
+      - .dockerignore
+      - .editorconfig
+      - .gitattributes
+      - .gitignore
+      - .harper-dictionary.txt
+      - .husky/**/*
+      - .lazy.lua
+      - .nvim.lua
+      - .renovaterc.json
+      - .vscode/**/*
+      - .wakatime-project
+      - README.md
+      - justfile
+      - mise.development.toml
+      - mise.toml
+  pull_request:
+    branches:
+      - '*'
+    paths-ignore: *pushPathsIgnore
+    types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_dispatch:
+    inputs:
+      noRestoreDocsDiagramsCache:
+        description: No restore docs diagrams cache
+        required: true
+        default: false
+        type: boolean
+      resetNxCache:
+        description: Reset Nx cache (when CI keep warning cache unrecognized)
+        required: true
+        default: false
+        type: boolean
+      forceNxRun:
+        description: Force Nx to run many instead of affected
+        required: true
+        default: false
+        type: boolean
+      skipNxCache:
+        description: Skip Nx cache
+        required: true
+        default: false
+        type: boolean
+      releaseCourse:
+        description: Release "course" container
+        required: true
+        default: false
+        type: boolean
+      releaseBilling:
+        description: Release "billing" container
+        required: true
+        default: false
+        type: boolean
+      releaseBlog:
+        description: Release "blog" container
+        required: true
+        default: false
+        type: boolean
+      releaseWeb:
+        description: Release "web" container
+        required: true
+        default: false
+        type: boolean
+      releaseAll:
+        description: Release all containers (Use this or the above specific release options, not both)
+        required: true
+        default: false
+        type: boolean
+      releaseContainerType:
+        type: choice
+        description: Mark the container tag as production or development
+        options:
+          - production
+          - development
+        default: development
+        required: true
+
+env:
+  MISE_OVERRIDE_CONFIG_FILENAMES: .mise.ci.toml
+  IS_RENOVATE: ${{ startsWith(github.head_ref || github.ref_name, 'renovate/') }}
+  SHOULD_CACHE: >-
+    ${{
+      (
+        github.ref_name == 'main' ||
+        github.ref_name == 'dev' ||
+        github.base_ref == 'main' ||
+        github.base_ref == 'dev'
+      ) && (
+        !startsWith(github.head_ref || github.ref_name, 'renovate/')
+      )
+    }}
+  SHOULD_RELEASE: >-
+    ${{
+      github.event_name == 'workflow_dispatch' &&
+      github.ref_name == 'main' &&
+      (
+        github.event.inputs.releaseCourse == 'true' ||
+        github.event.inputs.releaseBilling == 'true' ||
+        github.event.inputs.releaseBlog == 'true' ||
+        github.event.inputs.releaseWeb == 'true' ||
+        github.event.inputs.releaseAll == 'true'
+      )
+    }}
+  NX_PARALLEL: 3
+
+concurrency:
+  group: ${{ github.ref == 'refs/heads/main' && format('{0}-{1}', github.workflow, github.ref) || github.run_id }}
+
+jobs:
+  main:
+    name: Main
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+      packages: write
+      pages: write
+      id-token: write
+    steps:
+      - name: Setup Git User
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+        id: setup-buildx
+        if: ${{ env.SHOULD_RELEASE == 'true' }}
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          cache: ${{ env.SHOULD_CACHE == 'true' }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .tool-versions
+          cache: ${{ env.SHOULD_CACHE == 'true' && 'pnpm' || '' }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: .tool-versions
+          cache: ${{ env.SHOULD_CACHE == 'true' }}
+
+      - name: Setup golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          install-only: true
+          version-file: .tool-versions
+          skip-save-cache: ${{ env.SHOULD_CACHE != 'true' }}
+
+      - name: Setup Mise
+        uses: jdx/mise-action@v4
+        with:
+          experimental: true
+          cache: ${{ env.SHOULD_CACHE == 'true' }}
+
+      - name: Cache Buf dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/buf
+          key: ${{ runner.os }}-buf-${{ hashFiles('**/buf.lock') }}
+          restore-keys: ${{ runner.os }}-buf-
+
+      - name: Derive SHAs for Nx Affected
+        id: set-shas
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Restore Nx Cache
+        uses: actions/cache/restore@v5
+        with:
+          path: .nx
+          key: ${{ runner.os }}-nx-${{ github.ref_name }}-${{ steps.set-shas.outputs.base }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ github.ref_name }}-
+            ${{ runner.os }}-nx-${{ github.event.repository.default_branch }}-
+
+      - name: Restore Docs diagrams Cache
+        uses: actions/cache/restore@v5
+        if: ${{ github.event.inputs.noRestoreDocsDiagramsCache != 'true' }}
+        with:
+          path: docs/src/public/diagrams/
+          key: docs-diagrams-
+
+      - name: Install Node Dependencies
+        run: pnpm install
+
+      - name: Install Go Dependencies
+        run: go mod download
+
+      - name: Nx reset cache
+        if: ${{ github.event.inputs.resetNxCache == 'true' }}
+        run: npx nx reset
+
+      - name: Nx all
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx nx ${{ github.event.inputs.forceNxRun == 'true' && 'run-many' || 'affected' }} \
+            --target lint \
+            --target format:check \
+            --target gen \
+            --target bundle \
+            --target build \
+            --target test \
+            ${{ github.ref == 'refs/heads/main' && '--target deployPage' || '' }} \
+            --parallel=${{env.NX_PARALLEL }} \
+            --configuration 'production' \
+            ${{ github.event.inputs.skipNxCache == 'true' && '--skipNxCache' || '' }}
+
+      - name: Check for changes after Build/Gen
+        run: |
+          git add .
+          if ! git diff --staged --color=always --exit-code; then
+            echo 'ERROR: There are uncommitted changes after build/gen. Please commit the changes.';
+            git status --short
+            exit 1;
+          fi
+
+      - name: Nx Release
+        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BUILDX_BUILDER: ${{ steps.setup-buildx.outputs.name }}
+          DOCKER_BUILDKIT: 1
+        run: |
+          echo 'Build Docker images'
+          npx nx run-many \
+            --target docker:build \
+            --parallel=${{env.NX_PARALLEL }} \
+            --configuration production
+
+          echo 'Built Docker images'
+          docker images -a
+
+          if [ "${{ github.event.inputs.releaseAll }}" = "true" ]; then
+            npx nx release \
+              --dockerVersionScheme=${{ github.event.inputs.releaseContainerType }} \
+              --yes
+          else
+            npx nx release \
+              --dockerVersionScheme=${{ github.event.inputs.releaseContainerType }} \
+              ${{ (github.event_name == 'push' || github.event.inputs.releaseWeb == 'true') && '--projects web' || '' }} \
+              ${{ (github.event_name == 'push' || github.event.inputs.releaseCourse == 'true') && '--projects course' || '' }} \
+              ${{ (github.event_name == 'push' || github.event.inputs.releaseBilling == 'true') && '--projects billing' || '' }} \
+              ${{ (github.event_name == 'push' || github.event.inputs.releaseBlog == 'true') && '--projects blog' || '' }} \
+              --yes
+          fi
+
+      - name: Cache Nx
+        uses: actions/cache/save@v5
+        if: ${{ env.SHOULD_CACHE == 'true' }}
+        with:
+          path: .nx
+          key: ${{ runner.os }}-nx-${{ github.ref_name }}-${{ steps.set-shas.outputs.base }}
+
+      - name: Cache Docs diagrams
+        uses: actions/cache/save@v5
+        if: ${{ env.SHOULD_CACHE == 'true' }}
+        with:
+          path: docs/src/public/diagrams/
+          key: docs-diagrams-${{ hashFiles('docs/src/public/diagrams/**') }}

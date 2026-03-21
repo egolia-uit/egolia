@@ -1,7 +1,8 @@
 ---
 aside: false
 outline: false
-title: Egolia OpenAPI
+title: Notopia OpenAPI
+order: 1
 ---
 
 <script setup>
