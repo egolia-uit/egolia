@@ -1,0 +1,5 @@
+name: courseId
+in: path
+required: true
+schema:
+  $ref: ../../components/schemas/Course.yaml#/properties/id

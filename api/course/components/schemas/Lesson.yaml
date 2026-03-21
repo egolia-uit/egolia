@@ -1,0 +1,28 @@
+type: object
+
+properties:
+  id:
+    type: string
+    format: uuid
+    example: 2926aa3f-29ad-449b-9556-c44d4fc676a0
+    readOnly: true
+
+  courseId:
+    $ref: ./Course.yaml#/properties/id
+
+  title:
+    type: string
+    example: Introduction to Python
+
+  # sectionId:
+  #   $ref: ./Section.yaml#/properties/id
+
+  previousLessonId:
+    $ref: ./Lesson.yaml#/properties/id
+    example: ed405041-986f-4750-92e6-617dd9337a78
+    writeOnly: true
+
+required:
+  - id
+  - title
+  - courseId

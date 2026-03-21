@@ -20,10 +20,17 @@ info:
 tags:
   - name: Course
     description: Course
+  - name: Lesson
+    description: Lesson
 
 paths:
   /course/courses:
     $ref: ./paths/courses.yaml
+  /course/courses/{courseId}:
+    $ref: ./paths/courses_{courseId}.yaml
+
+  /course/lessons:
+    $ref: ./paths/lessons.yaml
 
 components:
   securitySchemes:

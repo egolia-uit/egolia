@@ -23,6 +23,10 @@
     {
       "name": "Course",
       "description": "Course"
+    },
+    {
+      "name": "Lesson",
+      "description": "Lesson"
     }
   ],
   "externalDocs": {
@@ -75,6 +79,98 @@
           }
         }
       }
+    },
+    "/course/courses/{courseId}": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get course",
+        "operationId": "getCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Create lesson",
+        "operationId": "createLesson",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "video": {
+                    "$ref": "#/components/schemas/VideoLesson"
+                  },
+                  "test": {
+                    "$ref": "#/components/schemas/TestLesson"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lesson created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lesson"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -99,6 +195,12 @@
       }
     },
     "schemas": {
+      "id": {
+        "type": "string",
+        "format": "number",
+        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
+        "example": "100"
+      },
       "Course": {
         "type": "object",
         "properties": {
@@ -107,8 +209,42 @@
             "format": "uuid",
             "example": "123e4567-e89b-12d3-a456-426614174000",
             "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "example": "Introduction to Programming"
+          },
+          "slug": {
+            "type": "string",
+            "example": "introduction-to-programming"
+          },
+          "instructorId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "approved",
+              "published",
+              "archived"
+            ],
+            "example": "draft"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1000000
           }
-        }
+        },
+        "required": [
+          "id",
+          "title",
+          "slug",
+          "instructorId",
+          "status",
+          "price"
+        ]
       },
       "Error": {
         "type": "object",
@@ -132,6 +268,148 @@
         "required": [
           "code",
           "message"
+        ]
+      },
+      "properties-id": {
+        "type": "string",
+        "format": "uuid",
+        "example": "123e4567-e89b-12d3-a456-426614174000",
+        "readOnly": true
+      },
+      "Lesson_properties-id": {
+        "type": "string",
+        "format": "uuid",
+        "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+        "readOnly": true
+      },
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+            "readOnly": true
+          },
+          "courseId": {
+            "$ref": "#/components/schemas/properties-id"
+          },
+          "title": {
+            "type": "string",
+            "example": "Introduction to Python"
+          },
+          "previousLessonId": {
+            "$ref": "#/components/schemas/Lesson_properties-id",
+            "example": "ed405041-986f-4750-92e6-617dd9337a78",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "courseId"
+        ]
+      },
+      "VideoLesson": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Lesson"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "videoUrl": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+              },
+              "duration": {
+                "type": "integer",
+                "format": "int64",
+                "example": 300
+              }
+            },
+            "required": [
+              "videoUrl",
+              "duration"
+            ]
+          }
+        ]
+      },
+      "TestLesson": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Lesson"
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "questions"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "singleChoice",
+                  "multipleChoice"
+                ],
+                "example": "singleChoice"
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "x-go-type-name": "TestQuestion",
+                  "required": [
+                    "id",
+                    "question",
+                    "answers"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "6da7726c-18ba-4513-baa1-7e0eeef126d5",
+                      "readOnly": true
+                    },
+                    "question": {
+                      "type": "string",
+                      "example": "What is the capital of France?"
+                    },
+                    "answers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "x-go-type-name": "TestAnswer",
+                        "required": [
+                          "id",
+                          "content",
+                          "isCorrect"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "bd0b3d9a-c5aa-497f-a904-a19cd1a5b3d6",
+                            "readOnly": true
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "Paris"
+                          },
+                          "isCorrect": {
+                            "type": "boolean",
+                            "example": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         ]
       }
     },
@@ -226,6 +504,16 @@
               "more_info": "https://api.egolia.com/docs/errors/INTERNAL_SERVER_ERROR"
             }
           }
+        }
+      }
+    },
+    "parameters": {
+      "courseIdPath": {
+        "name": "courseId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/properties-id"
         }
       }
     }

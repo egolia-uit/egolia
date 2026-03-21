@@ -1,0 +1,33 @@
+# vim: ft=yaml.openapi
+type: object
+
+properties:
+  id:
+    type: string
+    format: number
+    description: User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+    example: '100'
+
+  username:
+    type: string
+    description: Username from Authentik
+    example: user
+
+  name:
+    type: string
+    description: Full name from Authentik
+    example: User
+    nullable: true
+
+  email:
+    type: string
+    format: email
+    description: Email from Authentik
+    example: user@notopia.com
+    nullable: true
+
+required:
+  - id
+  - username
+  - name
+  - email

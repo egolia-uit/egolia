@@ -27,6 +27,7 @@ classDiagram
         <<AggregateRoot>>
         ID uuid.UUID
         Title string
+        Slug string
         InstructorID uuid.UUID
         Status CourseStatus
         Price float64
@@ -45,6 +46,7 @@ classDiagram
         ID uuid.UUID
         CourseID uuid.UUID
         SectionID uuid.UUID
+        Title string
         NextLessonID *uuid.UUID
         DeletedAt *time.Time
     }
@@ -52,7 +54,6 @@ classDiagram
     class TestLesson {
         <<AggregateRoot>>
         Lesson
-        Title string
         Type TestLessonType
         Questions []TestQuestion
     }
@@ -80,7 +81,6 @@ classDiagram
     class VideoLesson {
         <<AggregateRoot>>
         Lesson
-        Title string
         VideoURL string
         Duration time.Duration
     }

@@ -1,0 +1,32 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Create lesson
+  operationId: createLesson
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            video:
+              $ref: ../components/schemas/VideoLesson.yaml
+            test:
+              $ref: ../components/schemas/TestLesson.yaml
+  responses:
+    201:
+      description: Lesson created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Lesson.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

@@ -1,0 +1,17 @@
+allOf:
+  - $ref: ./Lesson.yaml
+  - type: object
+    properties:
+      videoUrl:
+        type: string
+        format: uri
+        example: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+      duration:
+        type: integer
+        format: int64
+        example: 300
+
+    required:
+      - videoUrl
+      - duration

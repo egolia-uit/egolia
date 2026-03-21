@@ -6,3 +6,36 @@ properties:
     format: uuid
     example: 123e4567-e89b-12d3-a456-426614174000
     readOnly: true
+
+  title:
+    type: string
+    example: Introduction to Programming
+
+  slug:
+    type: string
+    example: introduction-to-programming
+
+  instructorId:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/id
+
+  status:
+    type: string
+    enum:
+      - draft
+      - approved
+      - published
+      - archived
+    example: draft
+
+  price:
+    type: integer
+    format: int64
+    example: 1000000
+
+required:
+  - id
+  - title
+  - slug
+  - instructorId
+  - status
+  - price
