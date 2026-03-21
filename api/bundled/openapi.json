@@ -1,0 +1,241 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "description": "Egolia API",
+    "version": "0.0.0",
+    "title": "Egolia API",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/egolia-uit/egolia/blob/main/LICENSE"
+    },
+    "contact": {
+      "name": "Egolia Support",
+      "email": "egolia@googlegroups.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://api.egolia.localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Course",
+      "description": "Course",
+      "x-displayName": "Course"
+    }
+  ],
+  "externalDocs": {
+    "url": "https://egolia-uit.github.io/egolia"
+  },
+  "paths": {
+    "/course/courses": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Create course",
+        "operationId": "createCourse",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Course"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Course created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Oauth2": {
+        "type": "oauth2",
+        "description": "OAuth2 Security Scheme",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize",
+            "tokenUrl": "http://authentik.egolia.localhost/application/o/token",
+            "scopes": {
+              "openid": "Required for OIDC",
+              "profile": "Access to user profile"
+            },
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-usePkce": "SHA-256",
+            "x-scalar-credentials-location": "header"
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Course": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "readOnly": true
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "EXAMPLE_CODE"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Example error"
+          },
+          "more_info": {
+            "type": "string",
+            "description": "URL with more information about the error",
+            "example": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      }
+    },
+    "responses": {
+      "BadRequestError": {
+        "description": "Bad Request Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "BAD_REQUEST",
+              "message": "The request could not be understood by the server due to malformed syntax",
+              "more_info": "https://api.egolia.com/docs/errors/BAD_REQUEST"
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Unauthorized Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "The error response body returned when JWT validation or OPA authorization fails.",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "The category of the error encountered during the middleware lifecycle.",
+                  "enum": [
+                    "ExtractToken",
+                    "VerifyToken",
+                    "FetchJWKS",
+                    "OPA"
+                  ],
+                  "example": "ExtractToken"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "A descriptive message providing technical context for the failure.",
+                  "x-examples": [
+                    "token not found",
+                    "Authorization header is empty",
+                    "token is expired",
+                    "failed to fetch JWKS",
+                    "opa policy denied"
+                  ],
+                  "example": "token not found"
+                },
+                "custom_message": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "An optional, developer-defined message, often populated by OPA policy violations.",
+                  "example": "User does not have the required 'admin' role."
+                }
+              },
+              "required": [
+                "type",
+                "details",
+                "custom_message"
+              ]
+            }
+          }
+        }
+      },
+      "ForbiddenError": {
+        "description": "Forbidden Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "FORBIDDEN",
+              "message": "You do not have permission to access this resource",
+              "more_info": "https://api.egolia.com/docs/errors/FORBIDDEN"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "INTERNAL_SERVER_ERROR",
+              "message": "An internal server error occurred. Please try again later",
+              "more_info": "https://api.egolia.com/docs/errors/INTERNAL_SERVER_ERROR"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-tagGroups": [
+    {
+      "name": "Egolia API",
+      "tags": [
+        "Course"
+      ]
+    }
+  ]
+}

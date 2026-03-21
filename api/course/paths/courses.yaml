@@ -1,0 +1,27 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Create course
+  operationId: createCourse
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/Course.yaml
+  responses:
+    201:
+      description: Course created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Course.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

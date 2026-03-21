@@ -8,8 +8,7 @@
       "dependsOn": ["^bundle:json"]
     },
     "join": {
-      "inputs": [
-      ],
+      "inputs": [],
       "outputs": ["{projectRoot}/bundled/openapi.json"],
       "executor": "nx:run-commands",
       "options": {
@@ -77,5 +76,5 @@
       "dependsOn": ["gen:go", "gen:hey-api"]
     }
   },
-  "implicitDependencies": []
+  "implicitDependencies": ["api/course", "api/billing", "api/blog"]
 }

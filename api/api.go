@@ -12,6 +12,12 @@ var specs embed.FS
 
 type Spec string
 
+var (
+	CourseSpec  Spec = "course.json"
+	BillingSpec Spec = "billing.json"
+	BlogSpec    Spec = "blog.json"
+)
+
 func GetSpec(loader *openapi3.Loader, spec Spec) (*openapi3.T, error) {
 	if loader == nil {
 		loader = openapi3.NewLoader()

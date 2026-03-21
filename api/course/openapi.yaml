@@ -1,0 +1,34 @@
+## yaml-language-server: $schema=https://www.schemastore.org/openapi-3.X.json
+openapi: 3.0.4
+
+servers:
+  - url: http://api.egolia.localhost
+
+info:
+  description: >
+    Egolia API
+  version: 0.0.0
+  title: Egolia API
+  license:
+    name: MIT
+    url: https://github.com/egolia-uit/egolia/blob/main/LICENSE
+  contact:
+    name: Egolia Support
+    email: egolia@googlegroups.com
+  x-apiName: course
+
+tags:
+  - name: Course
+    description: Course
+
+paths:
+  /course/courses:
+    $ref: ./paths/courses.yaml
+
+components:
+  securitySchemes:
+    Oauth2:
+      $ref: ../common/components/securitySchemes/Oauth2.yaml
+
+externalDocs:
+  url: https://egolia-uit.github.io/egolia

@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/HEAD/configuration-schema.json
+package: blog
+generate:
+  models: true
+output: ../../pkg/api/billing/model.gen.go
+output-options:
+  nullable-type: false

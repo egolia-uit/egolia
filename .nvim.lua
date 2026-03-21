@@ -1,6 +1,12 @@
 local lsp = vim.lsp
 local map = vim.keymap.set
 
+vim.filetype.add({
+  pattern = {
+    [".*/api/.*%.yaml"] = "yaml.openapi",
+  },
+})
+
 -- lsp.config("yamlls", {
 --   ---@module 'codesettings'
 --   ---@type lsp.yamlls

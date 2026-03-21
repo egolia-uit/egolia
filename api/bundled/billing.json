@@ -1,0 +1,49 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "description": "Egolia API\n",
+    "version": "0.0.0",
+    "title": "Egolia API",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/egolia-uit/egolia/blob/main/LICENSE"
+    },
+    "contact": {
+      "name": "Egolia Support",
+      "email": "egolia@googlegroups.com"
+    },
+    "x-apiName": "billing"
+  },
+  "servers": [
+    {
+      "url": "http://api.egolia.localhost"
+    }
+  ],
+  "tags": [],
+  "externalDocs": {
+    "url": "https://egolia-uit.github.io/egolia"
+  },
+  "paths": {},
+  "components": {
+    "securitySchemes": {
+      "Oauth2": {
+        "type": "oauth2",
+        "description": "OAuth2 Security Scheme",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize",
+            "tokenUrl": "http://authentik.egolia.localhost/application/o/token",
+            "scopes": {
+              "openid": "Required for OIDC",
+              "profile": "Access to user profile"
+            },
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-usePkce": "SHA-256",
+            "x-scalar-credentials-location": "header"
+          }
+        }
+      }
+    }
+  }
+}

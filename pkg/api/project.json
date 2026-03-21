@@ -1,0 +1,9 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "pkg/api",
+  "projectType": "library",
+  "targets": {
+    "gen": {}
+  },
+  "implicitDependencies": ["pkg/api/course", "pkg/api/billing", "pkg/api/blog"]
+}

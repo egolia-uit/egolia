@@ -12,6 +12,9 @@ catalogs:
     '@tailwindcss/postcss':
       specifier: 4.2.1
       version: 4.2.1
+    '@tanstack/react-query':
+      specifier: 5.90.21
+      version: 5.90.21
     '@types/node':
       specifier: 25.3.5
       version: 25.3.5
@@ -90,6 +93,9 @@ catalogs:
     vitest:
       specifier: 4.0.18
       version: 4.0.18
+    zod:
+      specifier: 4.3.6
+      version: 4.3.6
 
 importers:
 
@@ -298,6 +304,15 @@ importers:
       vitepress-sidebar:
         specifier: 1.33.1
         version: 1.33.1
+
+  packages/api-gen:
+    devDependencies:
+      '@tanstack/react-query':
+        specifier: 'catalog:'
+        version: 5.90.21(react@19.2.4)
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.6
 
   page:
     dependencies:
@@ -3722,6 +3737,14 @@ packages:
 
   '@tailwindcss/postcss@4.2.1':
     resolution: {integrity: sha512-OEwGIBnXnj7zJeonOh6ZG9woofIjGrd2BORfvE5p9USYKDCZoQmfqLcfNiRWoJlRWLdNPn2IgVZuWAOM4iTYMw==}
+
+  '@tanstack/query-core@5.90.20':
+    resolution: {integrity: sha512-OMD2HLpNouXEfZJWcKeVKUgQ5n+n3A2JFmBaScpNDUqSrQSjiveC7dKMe53uJUg1nDG16ttFPz2xfilz6i2uVg==}
+
+  '@tanstack/react-query@5.90.21':
+    resolution: {integrity: sha512-0Lu6y5t+tvlTJMTO7oh5NSpJfpg/5D41LlThfepTixPYkJ0sE2Jj0m0f6yYqujBwIXlId87e234+MxG3D3g7kg==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tanstack/virtual-core@3.13.21':
     resolution: {integrity: sha512-ww+fmLHyCbPSf7JNbWZP3g7wl6SdNo3ah5Aiw+0e9FDErkVHLKprYUrwTm7dF646FtEkN/KkAKPYezxpmvOjxw==}
@@ -15005,6 +15028,13 @@ snapshots:
       '@tailwindcss/oxide': 4.2.1
       postcss: 8.5.8
       tailwindcss: 4.2.1
+
+  '@tanstack/query-core@5.90.20': {}
+
+  '@tanstack/react-query@5.90.21(react@19.2.4)':
+    dependencies:
+      '@tanstack/query-core': 5.90.20
+      react: 19.2.4
 
   '@tanstack/virtual-core@3.13.21': {}
 

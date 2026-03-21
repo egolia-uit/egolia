@@ -10,7 +10,7 @@ info:
     url: https://github.com/egolia-uit/egolia/blob/main/LICENSE
   contact:
     name: Egolia Support
-    email: kevinnitro@duck.com
+    email: egolia@googlegroups.com
 
 servers:
   - url: http://api.egolia.localhost
