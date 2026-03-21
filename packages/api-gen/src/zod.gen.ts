@@ -2,8 +2,23 @@
 
 import * as z from 'zod';
 
+/**
+ * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+ */
+export const zId = z.string();
+
 export const zCourse = z.object({
-    id: z.uuid().readonly().optional()
+    id: z.uuid().readonly(),
+    title: z.string(),
+    slug: z.string(),
+    instructorId: zId,
+    status: z.enum([
+        'draft',
+        'approved',
+        'published',
+        'archived'
+    ]),
+    price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 });
 
 export const zError = z.object({
@@ -12,8 +27,71 @@ export const zError = z.object({
     more_info: z.string().optional()
 });
 
+export const zPropertiesId = z.uuid().readonly();
+
+export const zLessonPropertiesId = z.uuid().readonly();
+
+export const zLesson = z.object({
+    id: z.uuid().readonly(),
+    courseId: zPropertiesId,
+    title: z.string()
+});
+
+export const zVideoLesson = zLesson.and(z.object({
+    videoUrl: z.url(),
+    duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+}));
+
+export const zTestLesson = zLesson.and(z.object({
+    type: z.enum(['singleChoice', 'multipleChoice']),
+    questions: z.array(z.object({
+        id: z.uuid().readonly(),
+        question: z.string(),
+        answers: z.array(z.object({
+            id: z.uuid().readonly(),
+            content: z.string(),
+            isCorrect: z.boolean()
+        }))
+    }))
+}));
+
+export const zCourseWritable = z.object({
+    title: z.string(),
+    slug: z.string(),
+    instructorId: zId,
+    status: z.enum([
+        'draft',
+        'approved',
+        'published',
+        'archived'
+    ]),
+    price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+});
+
+export const zLessonWritable = z.object({
+    title: z.string()
+});
+
+export const zVideoLessonWritable = zLessonWritable.and(z.object({
+    videoUrl: z.url(),
+    duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+}));
+
+export const zTestLessonWritable = zLessonWritable.and(z.object({
+    type: z.enum(['singleChoice', 'multipleChoice']),
+    questions: z.array(z.object({
+        question: z.string(),
+        answers: z.array(z.object({
+            content: z.string(),
+            isCorrect: z.boolean()
+        }))
+    }))
+}));
+
+export const zCourseIdPath = zPropertiesId;
+
 export const zCreateCourseData = z.object({
-    body: zCourse.optional(),
+    body: zCourseWritable.optional(),
     path: z.never().optional(),
     query: z.never().optional()
 });
@@ -22,3 +100,30 @@ export const zCreateCourseData = z.object({
  * Course created
  */
 export const zCreateCourseResponse = zCourse;
+
+export const zGetCourseData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        courseId: zPropertiesId
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Successful response
+ */
+export const zGetCourseResponse = zCourse;
+
+export const zCreateLessonData = z.object({
+    body: z.object({
+        video: zVideoLessonWritable.optional(),
+        test: zTestLessonWritable.optional()
+    }).optional(),
+    path: z.never().optional(),
+    query: z.never().optional()
+});
+
+/**
+ * Lesson created
+ */
+export const zCreateLessonResponse = zLesson;

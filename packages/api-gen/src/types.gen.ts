@@ -4,8 +4,18 @@ export type ClientOptions = {
     baseUrl: 'http://api.egolia.localhost' | (string & {});
 };
 
+/**
+ * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+ */
+export type Id = string;
+
 export type Course = {
-    readonly id?: string;
+    readonly id: string;
+    title: string;
+    slug: string;
+    instructorId: Id;
+    status: 'draft' | 'approved' | 'published' | 'archived';
+    price: number;
 };
 
 export type Error = {
@@ -23,8 +33,66 @@ export type Error = {
     more_info?: string;
 };
 
+export type PropertiesId = string;
+
+export type LessonPropertiesId = string;
+
+export type Lesson = {
+    readonly id: string;
+    courseId: PropertiesId;
+    title: string;
+};
+
+export type VideoLesson = Lesson & {
+    videoUrl: string;
+    duration: number;
+};
+
+export type TestLesson = Lesson & {
+    type: 'singleChoice' | 'multipleChoice';
+    questions: Array<{
+        readonly id: string;
+        question: string;
+        answers: Array<{
+            readonly id: string;
+            content: string;
+            isCorrect: boolean;
+        }>;
+    }>;
+};
+
+export type CourseWritable = {
+    title: string;
+    slug: string;
+    instructorId: Id;
+    status: 'draft' | 'approved' | 'published' | 'archived';
+    price: number;
+};
+
+export type LessonWritable = {
+    title: string;
+};
+
+export type VideoLessonWritable = LessonWritable & {
+    videoUrl: string;
+    duration: number;
+};
+
+export type TestLessonWritable = LessonWritable & {
+    type: 'singleChoice' | 'multipleChoice';
+    questions: Array<{
+        question: string;
+        answers: Array<{
+            content: string;
+            isCorrect: boolean;
+        }>;
+    }>;
+};
+
+export type CourseIdPath = PropertiesId;
+
 export type CreateCourseData = {
-    body?: Course;
+    body?: CourseWritable;
     path?: never;
     query?: never;
     url: '/course/courses';
@@ -72,3 +140,87 @@ export type CreateCourseResponses = {
 };
 
 export type CreateCourseResponse = CreateCourseResponses[keyof CreateCourseResponses];
+
+export type GetCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}';
+};
+
+export type GetCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
+
+export type GetCourseResponses = {
+    /**
+     * Successful response
+     */
+    200: Course;
+};
+
+export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
+
+export type CreateLessonData = {
+    body?: {
+        video?: VideoLessonWritable;
+        test?: TestLessonWritable;
+    };
+    path?: never;
+    query?: never;
+    url: '/course/lessons';
+};
+
+export type CreateLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type CreateLessonError = CreateLessonErrors[keyof CreateLessonErrors];
+
+export type CreateLessonResponses = {
+    /**
+     * Lesson created
+     */
+    201: Lesson;
+};
+
+export type CreateLessonResponse = CreateLessonResponses[keyof CreateLessonResponses];

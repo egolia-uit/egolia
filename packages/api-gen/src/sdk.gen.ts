@@ -2,8 +2,8 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateCourseData, CreateCourseErrors, CreateCourseResponses } from './types.gen';
-import { zCreateCourseData, zCreateCourseResponse } from './zod.gen';
+import type { CreateCourseData, CreateCourseErrors, CreateCourseResponses, CreateLessonData, CreateLessonErrors, CreateLessonResponses, GetCourseData, GetCourseErrors, GetCourseResponses } from './types.gen';
+import { zCreateCourseData, zCreateCourseResponse, zCreateLessonData, zCreateLessonResponse, zGetCourseData, zGetCourseResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -27,6 +27,32 @@ export const createCourse = <ThrowOnError extends boolean = false>(options?: Opt
     responseValidator: async (data) => await zCreateCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers
+    }
+});
+
+/**
+ * Get course
+ */
+export const getCourse = <ThrowOnError extends boolean = false>(options: Options<GetCourseData, ThrowOnError>) => (options.client ?? client).get<GetCourseResponses, GetCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await zGetCourseData.parseAsync(data),
+    responseValidator: async (data) => await zGetCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}',
+    ...options
+});
+
+/**
+ * Create lesson
+ */
+export const createLesson = <ThrowOnError extends boolean = false>(options?: Options<CreateLessonData, ThrowOnError>) => (options?.client ?? client).post<CreateLessonResponses, CreateLessonErrors, ThrowOnError>({
+    requestValidator: async (data) => await zCreateLessonData.parseAsync(data),
+    responseValidator: async (data) => await zCreateLessonResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/course/lessons',
     ...options,
     headers: {
         'Content-Type': 'application/json',

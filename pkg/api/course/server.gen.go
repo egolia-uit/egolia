@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
 )
 
@@ -20,6 +21,12 @@ type ServerInterface interface {
 	// Create course
 	// (POST /course/courses)
 	CreateCourse(c *gin.Context)
+	// Get course
+	// (GET /course/courses/{courseId})
+	GetCourse(c *gin.Context, courseId CourseIdPath)
+	// Create lesson
+	// (POST /course/lessons)
+	CreateLesson(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -44,6 +51,47 @@ func (siw *ServerInterfaceWrapper) CreateCourse(c *gin.Context) {
 	}
 
 	siw.Handler.CreateCourse(c)
+}
+
+// GetCourse operation middleware
+func (siw *ServerInterfaceWrapper) GetCourse(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetCourse(c, courseId)
+}
+
+// CreateLesson operation middleware
+func (siw *ServerInterfaceWrapper) CreateLesson(c *gin.Context) {
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateLesson(c)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -74,6 +122,8 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.POST(options.BaseURL+"/course/courses", wrapper.CreateCourse)
+	router.GET(options.BaseURL+"/course/courses/:courseId", wrapper.GetCourse)
+	router.POST(options.BaseURL+"/course/lessons", wrapper.CreateLesson)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -148,11 +198,109 @@ func (response CreateCourse500JSONResponse) VisitCreateCourseResponse(w http.Res
 	return json.NewEncoder(w).Encode(response)
 }
 
+type GetCourseRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+}
+
+type GetCourseResponseObject interface {
+	VisitGetCourseResponse(w http.ResponseWriter) error
+}
+
+type GetCourse200JSONResponse Course
+
+func (response GetCourse200JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetCourse400JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetCourse500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetCourse500JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateLessonRequestObject struct {
+	Body *CreateLessonJSONRequestBody
+}
+
+type CreateLessonResponseObject interface {
+	VisitCreateLessonResponse(w http.ResponseWriter) error
+}
+
+type CreateLesson201JSONResponse Lesson
+
+func (response CreateLesson201JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CreateLesson400JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CreateLesson401JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response CreateLesson403JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreateLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CreateLesson500JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Create course
 	// (POST /course/courses)
 	CreateCourse(ctx context.Context, request CreateCourseRequestObject) (CreateCourseResponseObject, error)
+	// Get course
+	// (GET /course/courses/{courseId})
+	GetCourse(ctx context.Context, request GetCourseRequestObject) (GetCourseResponseObject, error)
+	// Create lesson
+	// (POST /course/lessons)
+	CreateLesson(ctx context.Context, request CreateLessonRequestObject) (CreateLessonResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -196,6 +344,69 @@ func (sh *strictHandler) CreateCourse(ctx *gin.Context) {
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(CreateCourseResponseObject); ok {
 		if err := validResponse.VisitCreateCourseResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetCourse operation middleware
+func (sh *strictHandler) GetCourse(ctx *gin.Context, courseId CourseIdPath) {
+	var request GetCourseRequestObject
+
+	request.CourseId = courseId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetCourse(ctx, request.(GetCourseRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetCourse")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetCourseResponseObject); ok {
+		if err := validResponse.VisitGetCourseResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateLesson operation middleware
+func (sh *strictHandler) CreateLesson(ctx *gin.Context) {
+	var request CreateLessonRequestObject
+
+	var body CreateLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			ctx.Status(http.StatusBadRequest)
+			ctx.Error(err)
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateLesson(ctx, request.(CreateLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(CreateLessonResponseObject); ok {
+		if err := validResponse.VisitCreateLessonResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

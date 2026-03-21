@@ -11,6 +11,48 @@ const (
 	Oauth2Scopes = "Oauth2.Scopes"
 )
 
+// Defines values for CourseStatus.
+const (
+	Approved  CourseStatus = "approved"
+	Archived  CourseStatus = "archived"
+	Draft     CourseStatus = "draft"
+	Published CourseStatus = "published"
+)
+
+// Valid indicates whether the value is a known member of the CourseStatus enum.
+func (e CourseStatus) Valid() bool {
+	switch e {
+	case Approved:
+		return true
+	case Archived:
+		return true
+	case Draft:
+		return true
+	case Published:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TestLessonType.
+const (
+	MultipleChoice TestLessonType = "multipleChoice"
+	SingleChoice   TestLessonType = "singleChoice"
+)
+
+// Valid indicates whether the value is a known member of the TestLessonType enum.
+func (e TestLessonType) Valid() bool {
+	switch e {
+	case MultipleChoice:
+		return true
+	case SingleChoice:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for UnauthorizedErrorType.
 const (
 	ExtractToken UnauthorizedErrorType = "ExtractToken"
@@ -38,7 +80,17 @@ func (e UnauthorizedErrorType) Valid() bool {
 // Course defines model for Course.
 type Course struct {
 	Id *openapi_types.UUID `json:"id,omitempty"`
+
+	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	InstructorId Id           `json:"instructorId"`
+	Price        int64        `json:"price"`
+	Slug         string       `json:"slug"`
+	Status       CourseStatus `json:"status"`
+	Title        string       `json:"title"`
 }
+
+// CourseStatus defines model for Course.Status.
+type CourseStatus string
 
 // Error defines model for Error.
 type Error struct {
@@ -51,6 +103,63 @@ type Error struct {
 	// MoreInfo URL with more information about the error
 	MoreInfo *string `json:"more_info,omitempty"`
 }
+
+// Lesson defines model for Lesson.
+type Lesson struct {
+	CourseId         *PropertiesId       `json:"courseId,omitempty"`
+	Id               *openapi_types.UUID `json:"id,omitempty"`
+	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
+	Title            string              `json:"title"`
+}
+
+// LessonPropertiesId defines model for Lesson_properties-id.
+type LessonPropertiesId = openapi_types.UUID
+
+// TestLesson defines model for TestLesson.
+type TestLesson struct {
+	CourseId         *PropertiesId       `json:"courseId,omitempty"`
+	Id               *openapi_types.UUID `json:"id,omitempty"`
+	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
+	Questions        []TestQuestion      `json:"questions"`
+	Title            string              `json:"title"`
+	Type             TestLessonType      `json:"type"`
+}
+
+// TestAnswer defines model for .
+type TestAnswer struct {
+	Content   string              `json:"content"`
+	Id        *openapi_types.UUID `json:"id,omitempty"`
+	IsCorrect bool                `json:"isCorrect"`
+}
+
+// TestQuestion defines model for .
+type TestQuestion struct {
+	Answers  []TestAnswer        `json:"answers"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Question string              `json:"question"`
+}
+
+// TestLessonType defines model for TestLesson.Type.
+type TestLessonType string
+
+// VideoLesson defines model for VideoLesson.
+type VideoLesson struct {
+	CourseId         *PropertiesId       `json:"courseId,omitempty"`
+	Duration         int64               `json:"duration"`
+	Id               *openapi_types.UUID `json:"id,omitempty"`
+	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
+	Title            string              `json:"title"`
+	VideoUrl         string              `json:"videoUrl"`
+}
+
+// Id User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+type Id = string
+
+// PropertiesId defines model for properties-id.
+type PropertiesId = openapi_types.UUID
+
+// CourseIdPath defines model for courseIdPath.
+type CourseIdPath = PropertiesId
 
 // BadRequestError defines model for BadRequestError.
 type BadRequestError = Error
@@ -76,5 +185,14 @@ type UnauthorizedError struct {
 // UnauthorizedErrorType The category of the error encountered during the middleware lifecycle.
 type UnauthorizedErrorType string
 
+// CreateLessonJSONBody defines parameters for CreateLesson.
+type CreateLessonJSONBody struct {
+	Test  *TestLesson  `json:"test,omitempty"`
+	Video *VideoLesson `json:"video,omitempty"`
+}
+
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course
+
+// CreateLessonJSONRequestBody defines body for CreateLesson for application/json ContentType.
+type CreateLessonJSONRequestBody CreateLessonJSONBody
