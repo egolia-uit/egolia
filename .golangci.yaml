@@ -23,7 +23,7 @@ formatters:
     - gofumpt
   settings:
     gofumpt:
-      module-path: github.com/notopia-uit
+      module-path: github.com/egolia-uit
   exclusions:
     generated: strict
 
