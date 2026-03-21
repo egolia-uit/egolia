@@ -29,7 +29,7 @@
       "continuous": true,
       "dependsOn": ["build"]
     },
-    "deploy": {
+    "deployPage": {
       "executor": "nx-github-pages:deploy",
       "dependsOn": ["build"],
       "cache": true
