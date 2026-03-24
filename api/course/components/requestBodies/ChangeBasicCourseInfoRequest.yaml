@@ -15,7 +15,7 @@ content:
           maxLength: 255
           example: oop-a-z-updated
         status:
-          $ref: ../schemas/Course.yaml#/properties/status
+          $ref: ../schemas/CourseStatus.yaml
         price:
           type: number
           format: float

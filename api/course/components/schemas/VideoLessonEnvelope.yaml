@@ -4,11 +4,7 @@ allOf:
   - type: object
     properties:
       type:
-        allOf:
-          - $ref: ./LessonKind.yaml
-          - type: string
-            enum:
-              - VideoLesson
+        $ref: ./LessonKind.yaml
       data:
         $ref: ./VideoLesson.yaml
     required:

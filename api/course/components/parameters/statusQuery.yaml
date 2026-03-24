@@ -2,4 +2,4 @@ name: status
 in: query
 required: false
 schema:
-  $ref: ../schemas/Course.yaml#/properties/status
+  $ref: ../schemas/CourseStatus.yaml

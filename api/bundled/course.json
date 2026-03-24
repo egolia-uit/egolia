@@ -1518,6 +1518,17 @@
         "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
         "example": "100"
       },
+      "CourseStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "approved",
+          "published",
+          "archived"
+        ],
+        "default": "draft",
+        "example": "draft"
+      },
       "Course": {
         "type": "object",
         "properties": {
@@ -1540,14 +1551,7 @@
             "example": "100"
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "draft",
-              "approved",
-              "published",
-              "archived"
-            ],
-            "example": "draft"
+            "$ref": "#/components/schemas/CourseStatus"
           },
           "price": {
             "type": "integer",
@@ -1596,16 +1600,6 @@
           "code",
           "message"
         ]
-      },
-      "status": {
-        "type": "string",
-        "enum": [
-          "draft",
-          "approved",
-          "published",
-          "archived"
-        ],
-        "example": "draft"
       },
       "Pagination": {
         "type": "object",
@@ -2004,222 +1998,6 @@
           }
         ]
       },
-      "TestLesson": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Lesson"
-          },
-          {
-            "type": "object",
-            "required": [
-              "type",
-              "questions"
-            ],
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "singleChoice",
-                  "multipleChoice"
-                ],
-                "example": "singleChoice"
-              },
-              "questions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "x-go-type-name": "TestQuestion",
-                  "required": [
-                    "id",
-                    "question",
-                    "answers"
-                  ],
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "6da7726c-18ba-4513-baa1-7e0eeef126d5",
-                      "readOnly": true
-                    },
-                    "question": {
-                      "type": "string",
-                      "example": "What is the capital of France?"
-                    },
-                    "answers": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "x-go-type-name": "TestAnswer",
-                        "required": [
-                          "id",
-                          "content",
-                          "isCorrect"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid",
-                            "example": "bd0b3d9a-c5aa-497f-a904-a19cd1a5b3d6",
-                            "readOnly": true
-                          },
-                          "content": {
-                            "type": "string",
-                            "example": "Paris"
-                          },
-                          "isCorrect": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ]
-      },
-      "TypedDataEnvelope": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Discriminator used by clients to switch response shape."
-          },
-          "data": {}
-        },
-        "required": [
-          "type",
-          "data"
-        ]
-      },
-      "LessonKind": {
-        "type": "string",
-        "enum": [
-          "Lesson",
-          "VideoLesson",
-          "TestLesson"
-        ],
-        "example": "Lesson"
-      },
-      "LessonEnvelope": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/TypedDataEnvelope"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/LessonKind"
-                  },
-                  {
-                    "type": "string",
-                    "enum": [
-                      "Lesson"
-                    ]
-                  }
-                ]
-              },
-              "data": {
-                "$ref": "#/components/schemas/Lesson"
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ]
-          }
-        ]
-      },
-      "VideoLessonEnvelope": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/TypedDataEnvelope"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/LessonKind"
-                  },
-                  {
-                    "type": "string",
-                    "enum": [
-                      "VideoLesson"
-                    ]
-                  }
-                ]
-              },
-              "data": {
-                "$ref": "#/components/schemas/VideoLesson"
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ]
-          }
-        ]
-      },
-      "TestLessonEnvelope": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/TypedDataEnvelope"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/LessonKind"
-                  },
-                  {
-                    "type": "string",
-                    "enum": [
-                      "TestLesson"
-                    ]
-                  }
-                ]
-              },
-              "data": {
-                "$ref": "#/components/schemas/TestLesson"
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ]
-          }
-        ]
-      },
-      "LessonPolymorphicEnvelope": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/LessonEnvelope"
-          },
-          {
-            "$ref": "#/components/schemas/VideoLessonEnvelope"
-          },
-          {
-            "$ref": "#/components/schemas/TestLessonEnvelope"
-          }
-        ],
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "Lesson": "#/components/schemas/LessonEnvelope",
-            "VideoLesson": "#/components/schemas/VideoLessonEnvelope",
-            "TestLesson": "#/components/schemas/TestLessonEnvelope"
-          }
-        }
-      },
       "TestLessonType": {
         "type": "string",
         "enum": [
@@ -2282,6 +2060,141 @@
           "question",
           "answers"
         ]
+      },
+      "TestLesson": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Lesson"
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "questions"
+            ],
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/TestLessonType"
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TestQuestion"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "TypedDataEnvelope": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Discriminator used by clients to switch response shape."
+          },
+          "data": {}
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "LessonKind": {
+        "type": "string",
+        "enum": [
+          "Lesson",
+          "VideoLesson",
+          "TestLesson"
+        ],
+        "example": "Lesson"
+      },
+      "LessonEnvelope": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TypedDataEnvelope"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/LessonKind"
+              },
+              "data": {
+                "$ref": "#/components/schemas/Lesson"
+              }
+            },
+            "required": [
+              "type",
+              "data"
+            ]
+          }
+        ]
+      },
+      "VideoLessonEnvelope": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TypedDataEnvelope"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/LessonKind"
+              },
+              "data": {
+                "$ref": "#/components/schemas/VideoLesson"
+              }
+            },
+            "required": [
+              "type",
+              "data"
+            ]
+          }
+        ]
+      },
+      "TestLessonEnvelope": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TypedDataEnvelope"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/LessonKind"
+              },
+              "data": {
+                "$ref": "#/components/schemas/TestLesson"
+              }
+            },
+            "required": [
+              "type",
+              "data"
+            ]
+          }
+        ]
+      },
+      "LessonPolymorphicEnvelope": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/LessonEnvelope"
+          },
+          {
+            "$ref": "#/components/schemas/VideoLessonEnvelope"
+          },
+          {
+            "$ref": "#/components/schemas/TestLessonEnvelope"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "Lesson": "#/components/schemas/LessonEnvelope",
+            "VideoLesson": "#/components/schemas/VideoLessonEnvelope",
+            "TestLesson": "#/components/schemas/TestLessonEnvelope"
+          }
+        }
       },
       "LessonProgress": {
         "type": "object",
@@ -3362,7 +3275,7 @@
         "in": "query",
         "required": false,
         "schema": {
-          "$ref": "#/components/schemas/status"
+          "$ref": "#/components/schemas/CourseStatus"
         }
       },
       "pageQuery": {
@@ -3482,7 +3395,7 @@
                   "example": "oop-a-z-updated"
                 },
                 "status": {
-                  "$ref": "#/components/schemas/status"
+                  "$ref": "#/components/schemas/CourseStatus"
                 },
                 "price": {
                   "type": "number",

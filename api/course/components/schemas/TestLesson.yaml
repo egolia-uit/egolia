@@ -6,52 +6,9 @@ allOf:
       - questions
     properties:
       type:
-        type: string
-        enum:
-          - singleChoice
-          - multipleChoice
-        example: singleChoice
+        $ref: ./TestLessonType.yaml
 
       questions:
         type: array
         items:
-          type: object
-          x-go-type-name: TestQuestion
-          required:
-            - id
-            - question
-            - answers
-          properties:
-            id:
-              type: string
-              format: uuid
-              example: 6da7726c-18ba-4513-baa1-7e0eeef126d5
-              readOnly: true
-
-            question:
-              type: string
-              example: What is the capital of France?
-
-            answers:
-              type: array
-              items:
-                type: object
-                x-go-type-name: TestAnswer
-                required:
-                  - id
-                  - content
-                  - isCorrect
-                properties:
-                  id:
-                    type: string
-                    format: uuid
-                    example: bd0b3d9a-c5aa-497f-a904-a19cd1a5b3d6
-                    readOnly: true
-
-                  content:
-                    type: string
-                    example: Paris
-
-                  isCorrect:
-                    type: boolean
-                    example: true
+          $ref: ./TestQuestion.yaml
