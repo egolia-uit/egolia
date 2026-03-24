@@ -1,0 +1,5 @@
+description: Course basic information updated
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Course.yaml

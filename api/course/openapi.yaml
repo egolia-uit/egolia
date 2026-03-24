@@ -20,17 +20,46 @@ info:
 tags:
   - name: Course
     description: Course
+  - name: Section
+    description: Section
   - name: Lesson
     description: Lesson
+  - name: Test
+    description: Test
 
 paths:
   /course/courses:
     $ref: ./paths/courses.yaml
+  /course/courses-system:
+    $ref: ./paths/courses-system.yaml
+  /course/courses-published:
+    $ref: ./paths/courses-published.yaml
+  /course/courses-by-instructor/{instructorId}:
+    $ref: ./paths/courses-by-instructor_{instructorId}.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
+  /course/courses/{courseId}/approve:
+    $ref: ./paths/courses_{courseId}_approve.yaml
+  /course/courses/{courseId}/decline:
+    $ref: ./paths/courses_{courseId}_decline.yaml
+  /course/courses/{courseId}/hide:
+    $ref: ./paths/courses_{courseId}_hide.yaml
+  /course/courses/{courseId}/unhide:
+    $ref: ./paths/courses_{courseId}_unhide.yaml
+
+  /course/sections:
+    $ref: ./paths/sections.yaml
+  /course/sections/{sectionId}:
+    $ref: ./paths/sections_{sectionId}.yaml
 
   /course/lessons:
     $ref: ./paths/lessons.yaml
+  /course/lessons/{lessonId}:
+    $ref: ./paths/lessons_{lessonId}.yaml
+  /course/lessons/{lessonId}/upload-video-url:
+    $ref: ./paths/lessons_{lessonId}_upload-video-url.yaml
+  /course/lessons/{lessonId}/tests:
+    $ref: ./paths/lessons_{lessonId}_tests.yaml
 
 components:
   securitySchemes:

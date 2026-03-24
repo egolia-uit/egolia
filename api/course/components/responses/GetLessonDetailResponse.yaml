@@ -1,0 +1,8 @@
+description: Lesson detail
+content:
+  application/json:
+    schema:
+      oneOf:
+        - $ref: ../schemas/VideoLesson.yaml
+        - $ref: ../schemas/TestLesson.yaml
+        - $ref: ../schemas/Lesson.yaml

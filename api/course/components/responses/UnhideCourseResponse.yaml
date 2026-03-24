@@ -1,0 +1,5 @@
+description: Course unhidden
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Course.yaml

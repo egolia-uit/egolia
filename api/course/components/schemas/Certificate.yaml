@@ -1,0 +1,27 @@
+type: object
+
+properties:
+  id:
+    type: string
+    format: uuid
+    example: f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd
+    readOnly: true
+
+  courseId:
+    $ref: ./Course.yaml#/properties/id
+
+  userId:
+    type: string
+    format: uuid
+    example: 2e15aba5-cf11-430a-b92a-e8dd65620911
+
+  issuedAt:
+    type: string
+    format: date-time
+    example: 2026-05-01T07:30:00Z
+
+required:
+  - id
+  - courseId
+  - userId
+  - issuedAt

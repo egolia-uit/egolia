@@ -1,0 +1,5 @@
+description: Course declined
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Course.yaml

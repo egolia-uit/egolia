@@ -1,0 +1,24 @@
+required: true
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: OOP A-Z Updated
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: oop-a-z-updated
+        status:
+          $ref: ../schemas/Course.yaml#/properties/status
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 119.99
+      minProperties: 1

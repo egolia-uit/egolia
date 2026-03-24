@@ -1,0 +1,70 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Get lesson detail
+  operationId: getLessonDetail
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  responses:
+    200:
+      $ref: ../components/responses/GetLessonDetailResponse.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+patch:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Edit lesson
+  operationId: editLesson
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    $ref: ../components/requestBodies/EditLessonRequest.yaml
+  responses:
+    200:
+      $ref: ../components/responses/EditLessonResponse.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+delete:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Delete lesson
+  operationId: deleteLesson
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  responses:
+    204:
+      $ref: ../components/responses/DeleteLessonResponse.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

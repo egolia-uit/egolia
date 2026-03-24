@@ -1,0 +1,5 @@
+description: Section created
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Section.yaml

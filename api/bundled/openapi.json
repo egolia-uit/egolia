@@ -25,9 +25,19 @@
       "x-displayName": "Course"
     },
     {
+      "name": "Section",
+      "description": "Section",
+      "x-displayName": "Section"
+    },
+    {
       "name": "Lesson",
       "description": "Lesson",
       "x-displayName": "Lesson"
+    },
+    {
+      "name": "Test",
+      "description": "Test",
+      "x-displayName": "Test"
     }
   ],
   "externalDocs": {
@@ -116,6 +126,189 @@
             "$ref": "#/components/responses/InternalServerError"
           }
         }
+      },
+      "patch": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Change basic course info",
+        "operationId": "changeBasicCourseInfo",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP A-Z Updated"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "oop-a-z-updated"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/status"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "example": 119.99
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Course basic information updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Course"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/sections": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Create section",
+        "operationId": "createSection",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "courseId",
+                  "title"
+                ],
+                "properties": {
+                  "courseId": {
+                    "$ref": "#/components/schemas/properties-id"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP Fundamentals"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Section created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Section"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/sections/{sectionId}": {
+      "delete": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Delete section",
+        "operationId": "deleteSection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/sectionIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Section successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
       }
     },
     "/course/lessons": {
@@ -131,16 +324,34 @@
         "summary": "Create lesson",
         "operationId": "createLesson",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "courseId",
+                  "sectionId",
+                  "title"
+                ],
                 "properties": {
-                  "video": {
-                    "$ref": "#/components/schemas/VideoLesson"
+                  "courseId": {
+                    "$ref": "#/components/schemas/properties-id"
                   },
-                  "test": {
-                    "$ref": "#/components/schemas/TestLesson"
+                  "sectionId": {
+                    "$ref": "#/components/schemas/Section_properties-id"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "Encapsulation Overview"
+                  },
+                  "previousLessonId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true,
+                    "example": "ed405041-986f-4750-92e6-617dd9337a78"
                   }
                 }
               }
@@ -166,6 +377,274 @@
           },
           "403": {
             "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}": {
+      "patch": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Edit lesson",
+        "operationId": "editLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "Encapsulation Deep Dive"
+                  },
+                  "previousLessonId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true,
+                    "example": "ed405041-986f-4750-92e6-617dd9337a78"
+                  },
+                  "videoUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://cdn.egolia.localhost/videos/lesson-1.mp4"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1,
+                    "example": 300
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lesson updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Lesson"
+                    },
+                    {
+                      "$ref": "#/components/schemas/VideoLesson"
+                    },
+                    {
+                      "$ref": "#/components/schemas/TestLesson"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Delete lesson",
+        "operationId": "deleteLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Lesson successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/upload-video-url": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Get upload video lesson URL",
+        "operationId": "getUploadVideoLessonUrl",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upload URL generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "uploadUrl",
+                    "objectKey",
+                    "expiresAt"
+                  ],
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://storage.egolia.localhost/upload/signed-url-token"
+                    },
+                    "objectKey": {
+                      "type": "string",
+                      "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
+                    },
+                    "expiresAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-03-22T10:30:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/tests": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Test"
+        ],
+        "summary": "Create test",
+        "operationId": "createTest",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "questions"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/components/schemas/TestLessonType"
+                  },
+                  "questions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/components/schemas/TestQuestion"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Test created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestLesson"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
           },
           "500": {
             "$ref": "#/components/responses/InternalServerError"
@@ -275,6 +754,47 @@
         "type": "string",
         "format": "uuid",
         "example": "123e4567-e89b-12d3-a456-426614174000",
+        "readOnly": true
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "approved",
+          "published",
+          "archived"
+        ],
+        "example": "draft"
+      },
+      "Section": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+            "readOnly": true
+          },
+          "courseId": {
+            "$ref": "#/components/schemas/properties-id"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "example": "OOP Fundamentals"
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "title"
+        ]
+      },
+      "Section_properties-id": {
+        "type": "string",
+        "format": "uuid",
+        "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
         "readOnly": true
       },
       "Lesson_properties-id": {
@@ -412,6 +932,69 @@
             }
           }
         ]
+      },
+      "TestLessonType": {
+        "type": "string",
+        "enum": [
+          "multipleChoice",
+          "singleChoice"
+        ],
+        "example": "singleChoice"
+      },
+      "TestAnswer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
+            "readOnly": true
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "example": "Encapsulation hides implementation details behind a stable API."
+          },
+          "isCorrect": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "content",
+          "isCorrect"
+        ]
+      },
+      "TestQuestion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
+            "readOnly": true
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "example": "Which principle of OOP enables exposing only essential behavior?"
+          },
+          "answers": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/TestAnswer"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "question",
+          "answers"
+        ]
       }
     },
     "responses": {
@@ -506,6 +1089,21 @@
             }
           }
         }
+      },
+      "NotFoundError": {
+        "description": "Not Found Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "NOT_FOUND",
+              "message": "The requested resource was not found",
+              "more_info": "https://api.egolia.com/docs/errors/NOT_FOUND"
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -516,6 +1114,26 @@
         "schema": {
           "$ref": "#/components/schemas/properties-id"
         }
+      },
+      "sectionIdPath": {
+        "name": "sectionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
+      },
+      "lessonIdPath": {
+        "name": "lessonId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
       }
     }
   },
@@ -524,7 +1142,9 @@
       "name": "Egolia API",
       "tags": [
         "Course",
-        "Lesson"
+        "Section",
+        "Lesson",
+        "Test"
       ]
     }
   ]

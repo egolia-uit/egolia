@@ -1,0 +1,23 @@
+type: object
+
+properties:
+  id:
+    type: string
+    format: uuid
+    example: 4c413364-151d-44e4-a357-c0c5cf7c5f4a
+    readOnly: true
+
+  content:
+    type: string
+    minLength: 1
+    maxLength: 1000
+    example: Encapsulation hides implementation details behind a stable API.
+
+  isCorrect:
+    type: boolean
+    example: true
+
+required:
+  - id
+  - content
+  - isCorrect

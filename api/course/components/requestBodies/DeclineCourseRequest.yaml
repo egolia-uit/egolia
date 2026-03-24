@@ -1,0 +1,10 @@
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        reason:
+          type: string
+          maxLength: 1000
+          example: Course content does not meet quality requirements.

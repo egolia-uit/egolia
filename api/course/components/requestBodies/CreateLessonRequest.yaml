@@ -1,0 +1,24 @@
+required: true
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - courseId
+        - sectionId
+        - title
+      properties:
+        courseId:
+          $ref: ../schemas/Course.yaml#/properties/id
+        sectionId:
+          $ref: ../schemas/Section.yaml#/properties/id
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: Encapsulation Overview
+        previousLessonId:
+          type: string
+          format: uuid
+          nullable: true
+          example: ed405041-986f-4750-92e6-617dd9337a78

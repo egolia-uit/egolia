@@ -1,0 +1,5 @@
+description: Lesson created
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Lesson.yaml
