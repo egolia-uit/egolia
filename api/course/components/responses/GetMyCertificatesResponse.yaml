@@ -1,0 +1,17 @@
+description: My certificates
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../schemas/Certificate.yaml
+            pagination:
+              $ref: ../../../common/components/schemas/Pagination.yaml
+          required:
+            - data
+            - pagination

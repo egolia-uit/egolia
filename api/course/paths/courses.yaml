@@ -6,17 +6,14 @@ post:
   summary: Create course
   operationId: createCourse
   requestBody:
+    required: true
     content:
       application/json:
         schema:
           $ref: ../components/schemas/Course.yaml
   responses:
     201:
-      description: Course created
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/Course.yaml
+      $ref: ../components/responses/CreateCourseResponse.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

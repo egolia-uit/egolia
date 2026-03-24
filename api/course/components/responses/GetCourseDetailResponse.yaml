@@ -2,30 +2,32 @@ description: Full course content with section and lesson references
 content:
   application/json:
     schema:
-      type: object
-      properties:
-        data:
-          type: object
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
           properties:
-            course:
-              $ref: ../schemas/Course.yaml
-            sections:
-              type: array
-              items:
-                type: object
-                properties:
-                  section:
-                    $ref: ../schemas/Section.yaml
-                  lessonIds:
-                    type: array
-                    items:
-                      type: string
-                      format: uuid
-                required:
-                  - section
-                  - lessonIds
+            data:
+              type: object
+              properties:
+                course:
+                  $ref: ../schemas/Course.yaml
+                sections:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      section:
+                        $ref: ../schemas/Section.yaml
+                      lessonIds:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                    required:
+                      - section
+                      - lessonIds
+              required:
+                - course
+                - sections
           required:
-            - course
-            - sections
-      required:
-        - data
+            - data

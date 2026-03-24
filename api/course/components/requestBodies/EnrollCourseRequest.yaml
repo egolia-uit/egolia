@@ -1,0 +1,11 @@
+required: false
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        referredByUserId:
+          type: string
+          format: uuid
+          nullable: true
+          example: 960a8826-955e-44ce-ac0c-0cb7818704c5

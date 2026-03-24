@@ -1,0 +1,24 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Comment on lesson
+  operationId: commentOnLesson
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    $ref: ../components/requestBodies/CommentOnLessonRequest.yaml
+  responses:
+    201:
+      $ref: ../components/responses/CommentOnLessonResponse.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

@@ -1,0 +1,47 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Get lesson progress
+  operationId: getLessonProgress
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  responses:
+    200:
+      $ref: ../components/responses/GetLessonProgressResponse.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+put:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Save lesson progress
+  operationId: saveLessonProgress
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    $ref: ../components/requestBodies/SaveLessonProgressRequest.yaml
+  responses:
+    200:
+      $ref: ../components/responses/SaveLessonProgressResponse.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

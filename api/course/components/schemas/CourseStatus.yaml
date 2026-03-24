@@ -3,7 +3,7 @@ enum:
   - draft
   - approved
   - published
-  - declined
+  # - declined
   - archived
 default: draft
 example: draft

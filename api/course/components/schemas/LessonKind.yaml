@@ -1,0 +1,7 @@
+# vim: ft=yaml.openapi
+type: string
+enum:
+  - Lesson
+  - VideoLesson
+  - TestLesson
+example: Lesson

@@ -2,4 +2,11 @@ description: Section created
 content:
   application/json:
     schema:
-      $ref: ../schemas/Section.yaml
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
+          properties:
+            data:
+              $ref: ../schemas/Section.yaml
+          required:
+            - data

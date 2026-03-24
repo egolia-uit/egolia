@@ -1,0 +1,11 @@
+# vim: ft=yaml.openapi
+oneOf:
+  - $ref: ./LessonEnvelope.yaml
+  - $ref: ./VideoLessonEnvelope.yaml
+  - $ref: ./TestLessonEnvelope.yaml
+discriminator:
+  propertyName: type
+  mapping:
+    Lesson: ./LessonEnvelope.yaml
+    VideoLesson: ./VideoLessonEnvelope.yaml
+    TestLesson: ./TestLessonEnvelope.yaml

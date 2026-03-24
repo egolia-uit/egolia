@@ -1,0 +1,24 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Review course
+  operationId: reviewCourse
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  requestBody:
+    $ref: ../components/requestBodies/ReviewCourseRequest.yaml
+  responses:
+    201:
+      $ref: ../components/responses/ReviewCourseResponse.yaml
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

@@ -1,0 +1,12 @@
+description: Course review created
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
+          properties:
+            data:
+              $ref: ../schemas/Review.yaml
+          required:
+            - data

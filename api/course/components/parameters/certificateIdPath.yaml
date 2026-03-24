@@ -1,0 +1,7 @@
+name: certificateId
+in: path
+required: true
+schema:
+  type: string
+  format: uuid
+  example: f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd

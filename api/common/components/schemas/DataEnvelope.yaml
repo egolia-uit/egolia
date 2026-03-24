@@ -1,0 +1,6 @@
+# vim: ft=yaml.openapi
+type: object
+properties:
+  data: {}
+required:
+  - data

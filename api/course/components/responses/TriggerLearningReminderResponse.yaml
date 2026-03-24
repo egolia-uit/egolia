@@ -1,0 +1,12 @@
+description: Learning reminder triggered
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
+          properties:
+            data:
+              $ref: ../schemas/LearningReminderResult.yaml
+          required:
+            - data

@@ -1,0 +1,12 @@
+description: Course enrollment created
+content:
+  application/json:
+    schema:
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
+          properties:
+            data:
+              $ref: ../schemas/Enrollment.yaml
+          required:
+            - data

@@ -2,14 +2,16 @@ description: Courses in system
 content:
   application/json:
     schema:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: ../schemas/Course.yaml
-        pagination:
-          $ref: ../../../common/components/schemas/Pagination.yaml
-      required:
-        - data
-        - pagination
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../schemas/Course.yaml
+            pagination:
+              $ref: ../../../common/components/schemas/Pagination.yaml
+          required:
+            - data
+            - pagination

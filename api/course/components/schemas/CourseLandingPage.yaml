@@ -1,0 +1,41 @@
+type: object
+
+properties:
+  course:
+    type: object
+    properties:
+      id:
+        $ref: ./Course.yaml#/properties/id
+      title:
+        $ref: ./Course.yaml#/properties/title
+      slug:
+        $ref: ./Course.yaml#/properties/slug
+      instructorId:
+        $ref: ./Course.yaml#/properties/instructorId
+      overview:
+        type: string
+        example: Learn practical Go backend concepts in this beginner-friendly course.
+      introduction:
+        type: object
+        properties:
+          videoUrl:
+            type: string
+            format: uri
+            example: https://cdn.egolia.localhost/videos/course-intro.mp4
+          duration:
+            type: integer
+            format: int64
+            example: 180
+        required:
+          - videoUrl
+          - duration
+    required:
+      - id
+      - title
+      - slug
+      - instructorId
+      - overview
+      - introduction
+
+required:
+  - course

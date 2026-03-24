@@ -2,4 +2,11 @@ description: Lesson created
 content:
   application/json:
     schema:
-      $ref: ../schemas/Lesson.yaml
+      allOf:
+        - $ref: ../../../common/components/schemas/DataEnvelope.yaml
+        - type: object
+          properties:
+            data:
+              $ref: ../schemas/Lesson.yaml
+          required:
+            - data

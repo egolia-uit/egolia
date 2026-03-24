@@ -1,0 +1,16 @@
+# vim: ft=yaml.openapi
+allOf:
+  - $ref: ../../../common/components/schemas/TypedDataEnvelope.yaml
+  - type: object
+    properties:
+      type:
+        allOf:
+          - $ref: ./LessonKind.yaml
+          - type: string
+            enum:
+              - VideoLesson
+      data:
+        $ref: ./VideoLesson.yaml
+    required:
+      - type
+      - data
