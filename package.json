@@ -43,7 +43,7 @@
     "eslint-plugin-simple-import-sort": "catalog:",
     "husky": "9.1.7",
     "jiti": "2.6.1",
-    "jsdom": "~28.1.0",
+    "jsdom": "~29.0.0",
     "nx": "22.6.0",
     "nx-github-pages": "1.2.0",
     "prettier": "catalog:",
