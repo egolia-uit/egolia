@@ -1,0 +1,3 @@
+package blog
+
+type UnauthorizedErrorJSONResponseType UnauthorizedErrorType
