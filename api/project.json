@@ -8,7 +8,10 @@
       "dependsOn": ["^bundle:json"]
     },
     "join": {
-      "inputs": [],
+      "inputs": [
+        "{projectRoot}/bundled/*.json",
+        "!{projectRoot}/bundled/openapi.json"
+      ],
       "outputs": ["{projectRoot}/bundled/openapi.json"],
       "executor": "nx:run-commands",
       "options": {
