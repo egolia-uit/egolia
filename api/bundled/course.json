@@ -929,76 +929,6 @@
         }
       }
     },
-    "/course/courses/{courseId}/trigger-learning-reminder": {
-      "post": {
-        "security": [
-          {
-            "Oauth2": []
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Trigger learning reminder",
-        "operationId": "triggerLearningReminder",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "dryRun": {
-                    "type": "boolean",
-                    "example": false
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Learning reminder triggered",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/LearningReminderResult"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
     "/course/courses/{courseId}/landing": {
       "get": {
         "security": [
@@ -2050,10 +1980,7 @@
                 ],
                 "properties": {
                   "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 4000,
-                    "example": "This explanation is very clear."
+                    "$ref": "#/components/schemas/content"
                   }
                 }
               }
@@ -2125,10 +2052,7 @@
                 ],
                 "properties": {
                   "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 4000,
-                    "example": "Thanks, this helped me too."
+                    "$ref": "#/components/schemas/content"
                   }
                 }
               }
@@ -2639,30 +2563,6 @@
           "bookmarked"
         ]
       },
-      "LearningReminderResult": {
-        "type": "object",
-        "properties": {
-          "courseId": {
-            "$ref": "#/components/schemas/properties-id"
-          },
-          "triggeredAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-24T10:30:00Z"
-          },
-          "notifiedLearners": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 0,
-            "example": 128
-          }
-        },
-        "required": [
-          "courseId",
-          "triggeredAt",
-          "notifiedLearners"
-        ]
-      },
       "title": {
         "type": "string",
         "example": "Introduction to Programming"
@@ -2700,16 +2600,10 @@
                     "type": "string",
                     "format": "uri",
                     "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
-                  },
-                  "duration": {
-                    "type": "integer",
-                    "format": "int64",
-                    "example": 180
                   }
                 },
                 "required": [
-                  "videoUrl",
-                  "duration"
+                  "videoUrl"
                 ]
               }
             },
@@ -2727,12 +2621,6 @@
           "course"
         ]
       },
-      "Lesson_properties-id": {
-        "type": "string",
-        "format": "uuid",
-        "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
-        "readOnly": true
-      },
       "Lesson": {
         "type": "object",
         "properties": {
@@ -2748,11 +2636,6 @@
           "title": {
             "type": "string",
             "example": "Introduction to Python"
-          },
-          "previousLessonId": {
-            "$ref": "#/components/schemas/Lesson_properties-id",
-            "example": "ed405041-986f-4750-92e6-617dd9337a78",
-            "writeOnly": true
           }
         },
         "required": [
@@ -3004,6 +2887,12 @@
           "answers"
         ]
       },
+      "Lesson_properties-id": {
+        "type": "string",
+        "format": "uuid",
+        "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+        "readOnly": true
+      },
       "LessonProgress": {
         "type": "object",
         "properties": {
@@ -3032,6 +2921,12 @@
           "lessonId",
           "isCompleted"
         ]
+      },
+      "content": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4000,
+        "example": "This explanation of polymorphism is very clear."
       },
       "LessonComment": {
         "type": "object",

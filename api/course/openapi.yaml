@@ -54,8 +54,8 @@ paths:
     $ref: ./paths/courses_{courseId}_bookmark.yaml
   /course/courses/{courseId}/unbookmark:
     $ref: ./paths/courses_{courseId}_unbookmark.yaml
-  /course/courses/{courseId}/trigger-learning-reminder:
-    $ref: ./paths/courses_{courseId}_trigger-learning-reminder.yaml
+  # /course/courses/{courseId}/trigger-learning-reminder:
+  #   $ref: ./paths/courses_{courseId}_trigger-learning-reminder.yaml
   /course/courses/{courseId}/landing:
     $ref: ./paths/courses_{courseId}_landing.yaml
   /course/courses/{courseId}/approve:

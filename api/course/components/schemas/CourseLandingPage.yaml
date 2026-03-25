@@ -22,13 +22,8 @@ properties:
             type: string
             format: uri
             example: https://cdn.egolia.localhost/videos/course-intro.mp4
-          duration:
-            type: integer
-            format: int64
-            example: 180
         required:
           - videoUrl
-          - duration
     required:
       - id
       - title

@@ -17,10 +17,7 @@ post:
             - content
           properties:
             content:
-              type: string
-              minLength: 1
-              maxLength: 4000
-              example: This explanation is very clear.
+              $ref: ../components/schemas/LessonComment.yaml#/properties/content
   responses:
     201:
       description: Lesson comment created

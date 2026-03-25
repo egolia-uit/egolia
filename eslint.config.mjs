@@ -31,7 +31,9 @@ export default defineConfig(
       '**/dist',
       '**/vite.config.*.timestamp*',
       '**/vitest.config.*.timestamp*',
+      '**/.vitepress/**',
       '**/test-output',
+      '**/.nx/cache/**',
       '**/out-tsc',
     ],
   }

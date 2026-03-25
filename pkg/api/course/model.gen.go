@@ -246,7 +246,6 @@ type CourseLandingPage struct {
 		// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 		InstructorId Id `json:"instructorId"`
 		Introduction struct {
-			Duration int64  `json:"duration"`
 			VideoUrl string `json:"videoUrl"`
 		} `json:"introduction"`
 		Overview string `json:"overview"`
@@ -289,19 +288,11 @@ type Error struct {
 	MoreInfo *string `json:"more_info,omitempty"`
 }
 
-// LearningReminderResult defines model for LearningReminderResult.
-type LearningReminderResult struct {
-	CourseId         *PropertiesId `json:"courseId,omitempty"`
-	NotifiedLearners int32         `json:"notifiedLearners"`
-	TriggeredAt      time.Time     `json:"triggeredAt"`
-}
-
 // Lesson defines model for Lesson.
 type Lesson struct {
-	CourseId         *PropertiesId       `json:"courseId,omitempty"`
-	Id               *openapi_types.UUID `json:"id,omitempty"`
-	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
-	Title            string              `json:"title"`
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Title    string              `json:"title"`
 }
 
 // LessonComment defines model for LessonComment.
@@ -385,10 +376,9 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	CourseId         *PropertiesId       `json:"courseId,omitempty"`
-	Id               *openapi_types.UUID `json:"id,omitempty"`
-	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
-	Questions        []struct {
+	CourseId  *PropertiesId       `json:"courseId,omitempty"`
+	Id        *openapi_types.UUID `json:"id,omitempty"`
+	Questions []struct {
 		Answers []struct {
 			Content   string              `json:"content"`
 			Id        *openapi_types.UUID `json:"id,omitempty"`
@@ -419,12 +409,11 @@ type TestQuestion struct {
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	CourseId         *PropertiesId       `json:"courseId,omitempty"`
-	Duration         int64               `json:"duration"`
-	Id               *openapi_types.UUID `json:"id,omitempty"`
-	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
-	Title            string              `json:"title"`
-	VideoUrl         string              `json:"videoUrl"`
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Duration int64               `json:"duration"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Title    string              `json:"title"`
+	VideoUrl string              `json:"videoUrl"`
 }
 
 // VideoLessonEnvelope defines model for VideoLessonEnvelope.
@@ -432,6 +421,9 @@ type VideoLessonEnvelope struct {
 	Data VideoLesson `json:"data"`
 	Type LessonType  `json:"type"`
 }
+
+// Content defines model for content.
+type Content = string
 
 // Id User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 type Id = string
@@ -605,14 +597,9 @@ type ReviewCourseJSONBody struct {
 	Rating  int32  `json:"rating"`
 }
 
-// TriggerLearningReminderJSONBody defines parameters for TriggerLearningReminder.
-type TriggerLearningReminderJSONBody struct {
-	DryRun *bool `json:"dryRun,omitempty"`
-}
-
 // ReplyLessonCommentJSONBody defines parameters for ReplyLessonComment.
 type ReplyLessonCommentJSONBody struct {
-	Content string `json:"content"`
+	Content Content `json:"content"`
 }
 
 // CreateLessonJSONBody defines parameters for CreateLesson.
@@ -631,7 +618,7 @@ type EditLessonJSONBody struct {
 
 // CommentOnLessonJSONBody defines parameters for CommentOnLesson.
 type CommentOnLessonJSONBody struct {
-	Content string `json:"content"`
+	Content Content `json:"content"`
 }
 
 // SaveLessonProgressJSONBody defines parameters for SaveLessonProgress.
@@ -666,9 +653,6 @@ type EnrollInCourseJSONRequestBody EnrollInCourseJSONBody
 
 // ReviewCourseJSONRequestBody defines body for ReviewCourse for application/json ContentType.
 type ReviewCourseJSONRequestBody ReviewCourseJSONBody
-
-// TriggerLearningReminderJSONRequestBody defines body for TriggerLearningReminder for application/json ContentType.
-type TriggerLearningReminderJSONRequestBody TriggerLearningReminderJSONBody
 
 // ReplyLessonCommentJSONRequestBody defines body for ReplyLessonComment for application/json ContentType.
 type ReplyLessonCommentJSONRequestBody ReplyLessonCommentJSONBody
