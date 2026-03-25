@@ -1,9 +1,0 @@
-required: false
-content:
-  application/json:
-    schema:
-      type: object
-      properties:
-        dryRun:
-          type: boolean
-          example: false

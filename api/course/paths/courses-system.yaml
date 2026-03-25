@@ -12,7 +12,21 @@ get:
     - $ref: ../../common/components/parameters/orderQuery.yaml
   responses:
     200:
-      $ref: ../components/responses/GetSystemCoursesResponse.yaml
+      description: Courses in system
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: ../components/schemas/Course.yaml
+              pagination:
+                $ref: ../../common/components/schemas/Pagination.yaml
+            required:
+              - data
+              - pagination
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

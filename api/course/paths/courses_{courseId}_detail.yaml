@@ -9,7 +9,37 @@ get:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
     200:
-      $ref: ../components/responses/GetCourseDetailResponse.yaml
+      description: Full course content with section and lesson references
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  course:
+                    $ref: ../components/schemas/Course.yaml
+                  sections:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        section:
+                          $ref: ../components/schemas/Section.yaml
+                        lessonIds:
+                          type: array
+                          items:
+                            type: string
+                            format: uuid
+                      required:
+                        - section
+                        - lessonIds
+                required:
+                  - course
+                  - sections
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

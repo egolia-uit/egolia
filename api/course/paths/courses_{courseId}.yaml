@@ -9,7 +9,16 @@ get:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
     200:
-      $ref: ../components/responses/GetCourseResponse.yaml
+      description: Course detail
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Course.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
@@ -32,7 +41,7 @@ delete:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
     204:
-      $ref: ../components/responses/DeleteCourseResponse.yaml
+      description: Course successfully deleted
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

@@ -9,7 +9,16 @@ post:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
     200:
-      $ref: ../components/responses/UnbookmarkCourseResponse.yaml
+      description: Course unbookmarked
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/BookmarkState.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

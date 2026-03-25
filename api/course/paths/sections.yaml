@@ -6,10 +6,34 @@ post:
   summary: Create section
   operationId: createSection
   requestBody:
-    $ref: ../components/requestBodies/CreateSectionRequest.yaml
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - courseId
+            - title
+          properties:
+            courseId:
+              $ref: ../components/schemas/Course.yaml#/properties/id
+            title:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: OOP Fundamentals
   responses:
     201:
-      $ref: ../components/responses/CreateSectionResponse.yaml
+      description: Section created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Section.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

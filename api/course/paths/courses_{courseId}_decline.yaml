@@ -8,10 +8,28 @@ post:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:
-    $ref: ../components/requestBodies/DeclineCourseRequest.yaml
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            reason:
+              type: string
+              maxLength: 1000
+              example: Course content does not meet quality requirements.
   responses:
     200:
-      $ref: ../components/responses/DeclineCourseResponse.yaml
+      description: Course declined
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Course.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

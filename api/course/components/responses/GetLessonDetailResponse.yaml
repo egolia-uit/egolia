@@ -1,5 +1,0 @@
-description: Lesson detail
-content:
-  application/json:
-    schema:
-      $ref: ../schemas/LessonPolymorphicEnvelope.yaml

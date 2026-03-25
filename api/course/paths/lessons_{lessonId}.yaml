@@ -9,7 +9,11 @@ get:
     - $ref: ../components/parameters/lessonIdPath.yaml
   responses:
     200:
-      $ref: ../components/responses/GetLessonDetailResponse.yaml
+      description: Lesson detail
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/LessonPolymorphicEnvelope.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
@@ -31,10 +35,39 @@ patch:
   parameters:
     - $ref: ../components/parameters/lessonIdPath.yaml
   requestBody:
-    $ref: ../components/requestBodies/EditLessonRequest.yaml
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: Encapsulation Deep Dive
+            previousLessonId:
+              type: string
+              format: uuid
+              nullable: true
+              example: ed405041-986f-4750-92e6-617dd9337a78
+            videoUrl:
+              type: string
+              format: uri
+              example: https://cdn.egolia.localhost/videos/lesson-1.mp4
+            duration:
+              type: integer
+              format: int64
+              minimum: 1
+              example: 300
+          minProperties: 1
   responses:
     200:
-      $ref: ../components/responses/EditLessonResponse.yaml
+      description: Lesson updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/LessonPolymorphicEnvelope.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
@@ -57,7 +90,7 @@ delete:
     - $ref: ../components/parameters/lessonIdPath.yaml
   responses:
     204:
-      $ref: ../components/responses/DeleteLessonResponse.yaml
+      description: Lesson successfully deleted
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

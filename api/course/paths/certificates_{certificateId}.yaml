@@ -9,7 +9,16 @@ get:
     - $ref: ../components/parameters/certificateIdPath.yaml
   responses:
     200:
-      $ref: ../components/responses/GetCertificateByIdResponse.yaml
+      description: Certificate detail
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Certificate.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

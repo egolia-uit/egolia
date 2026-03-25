@@ -8,10 +8,27 @@ post:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:
-    $ref: ../components/requestBodies/TriggerLearningReminderRequest.yaml
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            dryRun:
+              type: boolean
+              example: false
   responses:
     200:
-      $ref: ../components/responses/TriggerLearningReminderResponse.yaml
+      description: Learning reminder triggered
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/LearningReminderResult.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

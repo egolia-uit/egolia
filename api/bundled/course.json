@@ -65,7 +65,22 @@
         },
         "responses": {
           "201": {
-            "$ref": "#/components/responses/CreateCourseResponse"
+            "description": "Course created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -110,7 +125,29 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetSystemCoursesResponse"
+            "description": "Courses in system",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -152,7 +189,29 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetPublishedCoursesResponse"
+            "description": "Published courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -194,7 +253,29 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetInstructorCoursesResponse"
+            "description": "Courses by instructor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -233,7 +314,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetCourseResponse"
+            "description": "Course detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -270,7 +366,7 @@
         ],
         "responses": {
           "204": {
-            "$ref": "#/components/responses/DeleteCourseResponse"
+            "description": "Course successfully deleted"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -309,7 +405,53 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetCourseDetailResponse"
+            "description": "Full course content with section and lesson references",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "course": {
+                          "$ref": "#/components/schemas/Course"
+                        },
+                        "sections": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "section": {
+                                "$ref": "#/components/schemas/Section"
+                              },
+                              "lessonIds": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                }
+                              }
+                            },
+                            "required": [
+                              "section",
+                              "lessonIds"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "course",
+                        "sections"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -347,11 +489,57 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/ChangeBasicCourseInfoRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP A-Z Updated"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "oop-a-z-updated"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/CourseStatus"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "example": 119.99
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/ChangeBasicCourseInfoResponse"
+            "description": "Course basic information updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -389,11 +577,41 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/EnrollCourseRequest"
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "referredByUserId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true,
+                    "example": "960a8826-955e-44ce-ac0c-0cb7818704c5"
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/EnrollCourseResponse"
+            "description": "Course enrollment created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Enrollment"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -432,7 +650,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetCourseProgressResponse"
+            "description": "Course progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CourseProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -471,7 +704,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/FinishCourseResponse"
+            "description": "Course finished and certificate issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Certificate"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -509,11 +757,51 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/ReviewCourseRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "rating",
+                  "comment"
+                ],
+                "properties": {
+                  "rating": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "example": 5
+                  },
+                  "comment": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "example": "Great course with practical examples."
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "201": {
-            "$ref": "#/components/responses/ReviewCourseResponse"
+            "description": "Course review created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Review"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -552,7 +840,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/BookmarkCourseResponse"
+            "description": "Course bookmarked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/BookmarkState"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -591,7 +894,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/UnbookmarkCourseResponse"
+            "description": "Course unbookmarked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/BookmarkState"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -629,11 +947,39 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/TriggerLearningReminderRequest"
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dryRun": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/TriggerLearningReminderResponse"
+            "description": "Learning reminder triggered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LearningReminderResult"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -672,7 +1018,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetCourseLandingPageResponse"
+            "description": "Course landing page data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CourseLandingPage"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -708,7 +1069,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/ApproveCourseResponse"
+            "description": "Course approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -746,11 +1122,40 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/DeclineCourseRequest"
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "Course content does not meet quality requirements."
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/DeclineCourseResponse"
+            "description": "Course declined",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -789,7 +1194,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/HideCourseResponse"
+            "description": "Course hidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -828,7 +1248,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/UnhideCourseResponse"
+            "description": "Course unhidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Course"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -873,7 +1308,29 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetMyEnrolledCoursesResponse"
+            "description": "My enrolled courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -900,11 +1357,48 @@
         "summary": "Create section",
         "operationId": "createSection",
         "requestBody": {
-          "$ref": "#/components/requestBodies/CreateSectionRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "courseId",
+                  "title"
+                ],
+                "properties": {
+                  "courseId": {
+                    "$ref": "#/components/schemas/properties-id"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP Fundamentals"
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "201": {
-            "$ref": "#/components/responses/CreateSectionResponse"
+            "description": "Section created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Section"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -943,7 +1437,7 @@
         ],
         "responses": {
           "204": {
-            "$ref": "#/components/responses/DeleteSectionResponse"
+            "description": "Section successfully deleted"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -995,7 +1489,22 @@
         },
         "responses": {
           "201": {
-            "$ref": "#/components/responses/CreateLessonResponse"
+            "description": "Lesson created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Lesson"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1031,7 +1540,14 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetLessonDetailResponse"
+            "description": "Lesson detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LessonPolymorphicEnvelope"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1067,11 +1583,51 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/EditLessonRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "Encapsulation Deep Dive"
+                  },
+                  "previousLessonId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true,
+                    "example": "ed405041-986f-4750-92e6-617dd9337a78"
+                  },
+                  "videoUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://cdn.egolia.localhost/videos/lesson-1.mp4"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 1,
+                    "example": 300
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/EditLessonResponse"
+            "description": "Lesson updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LessonPolymorphicEnvelope"
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1108,7 +1664,7 @@
         ],
         "responses": {
           "204": {
-            "$ref": "#/components/responses/DeleteLessonResponse"
+            "description": "Lesson successfully deleted"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1147,7 +1703,43 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetUploadVideoLessonUrlResponse"
+            "description": "Upload URL generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "uploadUrl",
+                        "objectKey",
+                        "expiresAt"
+                      ],
+                      "properties": {
+                        "uploadUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://storage.egolia.localhost/upload/signed-url-token"
+                        },
+                        "objectKey": {
+                          "type": "string",
+                          "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
+                        },
+                        "expiresAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-03-22T10:30:00Z"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1185,11 +1777,49 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/CreateTestRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "questions"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/components/schemas/TestLessonType"
+                  },
+                  "questions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/components/schemas/TestQuestion"
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "201": {
-            "$ref": "#/components/responses/CreateTestResponse"
+            "description": "Test created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TestLesson"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1228,7 +1858,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetLessonProgressResponse"
+            "description": "Lesson progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LessonProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1264,11 +1909,46 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/SaveLessonProgressRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "watchedSeconds": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "example": 245.5
+                  },
+                  "isCompleted": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/SaveLessonProgressResponse"
+            "description": "Lesson progress saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LessonProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1307,7 +1987,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/MarkLessonAsCompletedResponse"
+            "description": "Lesson marked as completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LessonProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1345,11 +2040,44 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/CommentOnLessonRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000,
+                    "example": "This explanation is very clear."
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "201": {
-            "$ref": "#/components/responses/CommentOnLessonResponse"
+            "description": "Lesson comment created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LessonComment"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1387,11 +2115,44 @@
           }
         ],
         "requestBody": {
-          "$ref": "#/components/requestBodies/ReplyLessonCommentRequest"
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000,
+                    "example": "Thanks, this helped me too."
+                  }
+                }
+              }
+            }
+          }
         },
         "responses": {
           "201": {
-            "$ref": "#/components/responses/ReplyLessonCommentResponse"
+            "description": "Lesson comment reply created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LessonComment"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1436,7 +2197,29 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetMyCertificatesResponse"
+            "description": "My certificates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Certificate"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1469,7 +2252,22 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/components/responses/GetCertificateByIdResponse"
+            "description": "Certificate detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Certificate"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1566,15 +2364,6 @@
           "instructorId",
           "status",
           "price"
-        ]
-      },
-      "DataEnvelope": {
-        "type": "object",
-        "properties": {
-          "data": {}
-        },
-        "required": [
-          "data"
         ]
       },
       "Error": {
@@ -1998,6 +2787,160 @@
           }
         ]
       },
+      "TestLesson": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Lesson"
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "questions"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "multipleChoice",
+                  "singleChoice"
+                ],
+                "example": "singleChoice"
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
+                      "readOnly": true
+                    },
+                    "question": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000,
+                      "example": "Which principle of OOP enables exposing only essential behavior?"
+                    },
+                    "answers": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
+                            "readOnly": true
+                          },
+                          "content": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 1000,
+                            "example": "Encapsulation hides implementation details behind a stable API."
+                          },
+                          "isCorrect": {
+                            "type": "boolean",
+                            "example": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "content",
+                          "isCorrect"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "question",
+                    "answers"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      "LessonType": {
+        "type": "string",
+        "enum": [
+          "Lesson",
+          "VideoLesson",
+          "TestLesson"
+        ],
+        "example": "Lesson"
+      },
+      "LessonEnvelope": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/LessonType"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Lesson"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "VideoLessonEnvelope": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/LessonType"
+          },
+          "data": {
+            "$ref": "#/components/schemas/VideoLesson"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "TestLessonEnvelope": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/LessonType"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TestLesson"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "LessonPolymorphicEnvelope": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/LessonEnvelope"
+          },
+          {
+            "$ref": "#/components/schemas/VideoLessonEnvelope"
+          },
+          {
+            "$ref": "#/components/schemas/TestLessonEnvelope"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "Lesson": "#/components/schemas/LessonEnvelope",
+            "VideoLesson": "#/components/schemas/VideoLessonEnvelope",
+            "TestLesson": "#/components/schemas/TestLessonEnvelope"
+          }
+        }
+      },
       "TestLessonType": {
         "type": "string",
         "enum": [
@@ -2060,141 +3003,6 @@
           "question",
           "answers"
         ]
-      },
-      "TestLesson": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Lesson"
-          },
-          {
-            "type": "object",
-            "required": [
-              "type",
-              "questions"
-            ],
-            "properties": {
-              "type": {
-                "$ref": "#/components/schemas/TestLessonType"
-              },
-              "questions": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/TestQuestion"
-                }
-              }
-            }
-          }
-        ]
-      },
-      "TypedDataEnvelope": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Discriminator used by clients to switch response shape."
-          },
-          "data": {}
-        },
-        "required": [
-          "type",
-          "data"
-        ]
-      },
-      "LessonKind": {
-        "type": "string",
-        "enum": [
-          "Lesson",
-          "VideoLesson",
-          "TestLesson"
-        ],
-        "example": "Lesson"
-      },
-      "LessonEnvelope": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/TypedDataEnvelope"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "$ref": "#/components/schemas/LessonKind"
-              },
-              "data": {
-                "$ref": "#/components/schemas/Lesson"
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ]
-          }
-        ]
-      },
-      "VideoLessonEnvelope": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/TypedDataEnvelope"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "$ref": "#/components/schemas/LessonKind"
-              },
-              "data": {
-                "$ref": "#/components/schemas/VideoLesson"
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ]
-          }
-        ]
-      },
-      "TestLessonEnvelope": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/TypedDataEnvelope"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "$ref": "#/components/schemas/LessonKind"
-              },
-              "data": {
-                "$ref": "#/components/schemas/TestLesson"
-              }
-            },
-            "required": [
-              "type",
-              "data"
-            ]
-          }
-        ]
-      },
-      "LessonPolymorphicEnvelope": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/LessonEnvelope"
-          },
-          {
-            "$ref": "#/components/schemas/VideoLessonEnvelope"
-          },
-          {
-            "$ref": "#/components/schemas/TestLessonEnvelope"
-          }
-        ],
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "Lesson": "#/components/schemas/LessonEnvelope",
-            "VideoLesson": "#/components/schemas/VideoLessonEnvelope",
-            "TestLesson": "#/components/schemas/TestLessonEnvelope"
-          }
-        }
       },
       "LessonProgress": {
         "type": "object",
@@ -2270,31 +3078,6 @@
       }
     },
     "responses": {
-      "CreateCourseResponse": {
-        "description": "Course created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
       "BadRequestError": {
         "description": "Bad Request Error response",
         "content": {
@@ -2387,102 +3170,6 @@
           }
         }
       },
-      "GetSystemCoursesResponse": {
-        "description": "Courses in system",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetPublishedCoursesResponse": {
-        "description": "Published courses",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetInstructorCoursesResponse": {
-        "description": "Courses by instructor",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
       "NotFoundError": {
         "description": "Not Found Error response",
         "content": {
@@ -2494,776 +3181,6 @@
               "code": "NOT_FOUND",
               "message": "The requested resource was not found",
               "more_info": "https://api.egolia.com/docs/errors/NOT_FOUND"
-            }
-          }
-        }
-      },
-      "GetCourseResponse": {
-        "description": "Course detail",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "DeleteCourseResponse": {
-        "description": "Course successfully deleted"
-      },
-      "GetCourseDetailResponse": {
-        "description": "Full course content with section and lesson references",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "course": {
-                          "$ref": "#/components/schemas/Course"
-                        },
-                        "sections": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "section": {
-                                "$ref": "#/components/schemas/Section"
-                              },
-                              "lessonIds": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                }
-                              }
-                            },
-                            "required": [
-                              "section",
-                              "lessonIds"
-                            ]
-                          }
-                        }
-                      },
-                      "required": [
-                        "course",
-                        "sections"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "ChangeBasicCourseInfoResponse": {
-        "description": "Course basic information updated",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "EnrollCourseResponse": {
-        "description": "Course enrollment created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Enrollment"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetCourseProgressResponse": {
-        "description": "Course progress",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/CourseProgress"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "FinishCourseResponse": {
-        "description": "Course finished and certificate issued",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Certificate"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "ReviewCourseResponse": {
-        "description": "Course review created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Review"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "BookmarkCourseResponse": {
-        "description": "Course bookmarked",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/BookmarkState"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "UnbookmarkCourseResponse": {
-        "description": "Course unbookmarked",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/BookmarkState"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "TriggerLearningReminderResponse": {
-        "description": "Learning reminder triggered",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/LearningReminderResult"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetCourseLandingPageResponse": {
-        "description": "Course landing page data",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/CourseLandingPage"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "ApproveCourseResponse": {
-        "description": "Course approved",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "DeclineCourseResponse": {
-        "description": "Course declined",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "HideCourseResponse": {
-        "description": "Course hidden",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "UnhideCourseResponse": {
-        "description": "Course unhidden",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetMyEnrolledCoursesResponse": {
-        "description": "My enrolled courses",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "CreateSectionResponse": {
-        "description": "Section created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Section"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "DeleteSectionResponse": {
-        "description": "Section successfully deleted"
-      },
-      "CreateLessonResponse": {
-        "description": "Lesson created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Lesson"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetLessonDetailResponse": {
-        "description": "Lesson detail",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/LessonPolymorphicEnvelope"
-            }
-          }
-        }
-      },
-      "DeleteLessonResponse": {
-        "description": "Lesson successfully deleted"
-      },
-      "EditLessonResponse": {
-        "description": "Lesson updated",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/LessonPolymorphicEnvelope"
-            }
-          }
-        }
-      },
-      "GetUploadVideoLessonUrlResponse": {
-        "description": "Upload URL generated",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "required": [
-                        "uploadUrl",
-                        "objectKey",
-                        "expiresAt"
-                      ],
-                      "properties": {
-                        "uploadUrl": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://storage.egolia.localhost/upload/signed-url-token"
-                        },
-                        "objectKey": {
-                          "type": "string",
-                          "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
-                        },
-                        "expiresAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2026-03-22T10:30:00Z"
-                        }
-                      }
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "CreateTestResponse": {
-        "description": "Test created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/TestLesson"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetLessonProgressResponse": {
-        "description": "Lesson progress",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/LessonProgress"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "SaveLessonProgressResponse": {
-        "description": "Lesson progress saved",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/LessonProgress"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "MarkLessonAsCompletedResponse": {
-        "description": "Lesson marked as completed",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/LessonProgress"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "CommentOnLessonResponse": {
-        "description": "Lesson comment created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/LessonComment"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "ReplyLessonCommentResponse": {
-        "description": "Lesson comment reply created",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/LessonComment"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetMyCertificatesResponse": {
-        "description": "My certificates",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Certificate"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              ]
-            }
-          }
-        }
-      },
-      "GetCertificateByIdResponse": {
-        "description": "Certificate detail",
-        "content": {
-          "application/json": {
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/DataEnvelope"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Certificate"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              ]
             }
           }
         }
@@ -3371,273 +3288,6 @@
           "type": "string",
           "format": "uuid",
           "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
-        }
-      }
-    },
-    "requestBodies": {
-      "ChangeBasicCourseInfoRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 255,
-                  "example": "OOP A-Z Updated"
-                },
-                "slug": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 255,
-                  "example": "oop-a-z-updated"
-                },
-                "status": {
-                  "$ref": "#/components/schemas/CourseStatus"
-                },
-                "price": {
-                  "type": "number",
-                  "format": "float",
-                  "minimum": 0,
-                  "example": 119.99
-                }
-              },
-              "minProperties": 1
-            }
-          }
-        }
-      },
-      "EnrollCourseRequest": {
-        "required": false,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "referredByUserId": {
-                  "type": "string",
-                  "format": "uuid",
-                  "nullable": true,
-                  "example": "960a8826-955e-44ce-ac0c-0cb7818704c5"
-                }
-              }
-            }
-          }
-        }
-      },
-      "ReviewCourseRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "rating",
-                "comment"
-              ],
-              "properties": {
-                "rating": {
-                  "type": "integer",
-                  "format": "int32",
-                  "minimum": 1,
-                  "maximum": 5,
-                  "example": 5
-                },
-                "comment": {
-                  "type": "string",
-                  "maxLength": 2000,
-                  "example": "Great course with practical examples."
-                }
-              }
-            }
-          }
-        }
-      },
-      "TriggerLearningReminderRequest": {
-        "required": false,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "dryRun": {
-                  "type": "boolean",
-                  "example": false
-                }
-              }
-            }
-          }
-        }
-      },
-      "DeclineCourseRequest": {
-        "required": false,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "reason": {
-                  "type": "string",
-                  "maxLength": 1000,
-                  "example": "Course content does not meet quality requirements."
-                }
-              }
-            }
-          }
-        }
-      },
-      "CreateSectionRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "courseId",
-                "title"
-              ],
-              "properties": {
-                "courseId": {
-                  "$ref": "#/components/schemas/properties-id"
-                },
-                "title": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 255,
-                  "example": "OOP Fundamentals"
-                }
-              }
-            }
-          }
-        }
-      },
-      "EditLessonRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 255,
-                  "example": "Encapsulation Deep Dive"
-                },
-                "previousLessonId": {
-                  "type": "string",
-                  "format": "uuid",
-                  "nullable": true,
-                  "example": "ed405041-986f-4750-92e6-617dd9337a78"
-                },
-                "videoUrl": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "https://cdn.egolia.localhost/videos/lesson-1.mp4"
-                },
-                "duration": {
-                  "type": "integer",
-                  "format": "int64",
-                  "minimum": 1,
-                  "example": 300
-                }
-              },
-              "minProperties": 1
-            }
-          }
-        }
-      },
-      "CreateTestRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "type",
-                "questions"
-              ],
-              "properties": {
-                "type": {
-                  "$ref": "#/components/schemas/TestLessonType"
-                },
-                "questions": {
-                  "type": "array",
-                  "minItems": 1,
-                  "items": {
-                    "$ref": "#/components/schemas/TestQuestion"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "SaveLessonProgressRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "watchedSeconds": {
-                  "type": "number",
-                  "format": "float",
-                  "minimum": 0,
-                  "example": 245.5
-                },
-                "isCompleted": {
-                  "type": "boolean",
-                  "example": false
-                }
-              },
-              "minProperties": 1
-            }
-          }
-        }
-      },
-      "CommentOnLessonRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "content"
-              ],
-              "properties": {
-                "content": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 4000,
-                  "example": "This explanation is very clear."
-                }
-              }
-            }
-          }
-        }
-      },
-      "ReplyLessonCommentRequest": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": [
-                "content"
-              ],
-              "properties": {
-                "content": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 4000,
-                  "example": "Thanks, this helped me too."
-                }
-              }
-            }
-          }
         }
       }
     }

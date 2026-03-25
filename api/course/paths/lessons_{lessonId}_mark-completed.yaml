@@ -9,7 +9,16 @@ post:
     - $ref: ../components/parameters/lessonIdPath.yaml
   responses:
     200:
-      $ref: ../components/responses/MarkLessonAsCompletedResponse.yaml
+      description: Lesson marked as completed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/LessonProgress.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

@@ -9,7 +9,7 @@ delete:
     - $ref: ../components/parameters/sectionIdPath.yaml
   responses:
     204:
-      $ref: ../components/responses/DeleteSectionResponse.yaml
+      description: Section successfully deleted
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

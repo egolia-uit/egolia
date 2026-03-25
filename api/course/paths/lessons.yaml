@@ -18,7 +18,16 @@ post:
               $ref: ../components/schemas/TestLesson.yaml
   responses:
     201:
-      $ref: ../components/responses/CreateLessonResponse.yaml
+      description: Lesson created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Lesson.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

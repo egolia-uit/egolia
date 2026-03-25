@@ -8,10 +8,31 @@ post:
   parameters:
     - $ref: ../components/parameters/commentIdPath.yaml
   requestBody:
-    $ref: ../components/requestBodies/ReplyLessonCommentRequest.yaml
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - content
+          properties:
+            content:
+              type: string
+              minLength: 1
+              maxLength: 4000
+              example: Thanks, this helped me too.
   responses:
     201:
-      $ref: ../components/responses/ReplyLessonCommentResponse.yaml
+      description: Lesson comment reply created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/LessonComment.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
