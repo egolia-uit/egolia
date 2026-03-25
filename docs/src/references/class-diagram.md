@@ -15,13 +15,13 @@ order: 3
 
 ```mermaid
 classDiagram
-    class CourseStatus {
-        <<Enum>>
-        draft
-        approved
-        published
-        archived
-    }
+    %% class CourseStatus {
+    %%     <<Enum>>
+    %%     draft
+    %%     approved
+    %%     published
+    %%     archived
+    %% }
 
     class Course {
         <<AggregateRoot>>
@@ -29,7 +29,7 @@ classDiagram
         title string
         slug string
         instructorID uuid.UUID
-        status CourseStatus
+        %% status CourseStatus
         price float64
         deletedAt *time.Time
     }
@@ -39,30 +39,40 @@ classDiagram
         id uuid.UUID
         courseID uuid.UUID
         title string
+        order string
     }
 
     class Lesson {
+        <<Interface>>
+    }
+
+    class LessonBase {
         <<AbstractStruct>>
         id uuid.UUID
-        courseID uuid.UUID
         sectionID uuid.UUID
         title string
-        nextLessonID *uuid.UUID
+        order string
         deletedAt *time.Time
+    }
+
+    class TestLessonType {
+        <<Enum>>
+        multipleChoice
+        singleChoice
     }
 
     class TestLesson {
         <<AggregateRoot>>
-        lesson
+        LessonBase
         type TestLessonType
-        questions []TestQuestion
+        questions []*TestQuestion
     }
 
     class TestQuestion {
         <<Entity>>
         id uuid.UUID
         question string
-        anwsers []TestAnswer
+        anwsers []*TestAnswer
     }
 
     class TestAnswer {
@@ -72,15 +82,9 @@ classDiagram
         isCorrect bool
     }
 
-    class TestLessonType {
-        <<Enum>>
-        multipleChoice
-        singleChoice
-    }
-
     class VideoLesson {
         <<AggregateRoot>>
-        lesson
+        LessonBase
         videoURL string
         duration time.Duration
     }
@@ -95,21 +99,26 @@ classDiagram
     }
 
     class LessonProgress {
+        <<Interface>>
+    }
+
+    class LessonProgressBase {
         <<AbstractStruct>>
         id uuid.UUID
         userID string
         lessonID uuid.UUID
         isCompleted bool
+        deletedAt *time.Time
     }
 
     class LessonProgressTest {
         <<AggregateRoot>>
-        LessonProgress
+        LessonProgressBase
     }
 
     class LessonProgressVideo {
         <<AggregateRoot>>
-        LessonProgress
+        LessonProgressBase
         watchedSeconds *float64
         lastViewedAt time.Time
     }
@@ -122,6 +131,7 @@ classDiagram
         content string
         createdAt time.Time
         parentCommentID *uuid.UUID
+        deletedAt *time.Time
     }
 
     class Review {
@@ -131,6 +141,7 @@ classDiagram
         userID string
         rating int
         comment string
+        deletedAt *time.Time
     }
 
     class Certificate {
@@ -139,22 +150,35 @@ classDiagram
         courseID uuid.UUID
         userID string
         issuedAt time.Time
+        deletedAt *time.Time
+    }
+
+    class Bookmark {
+        <<AggregateRoot>>
+        id uuid.UUID
+        userID string
+        courseID uuid.UUID
     }
 
     Course "1" *.. "0..*" Section : has
     Section "1" *.. "0..*" Lesson : has
     TestLesson --|> Lesson
     VideoLesson --|> Lesson
-    TestLessonType -- TestLesson
+    TestLesson --* LessonBase
+    VideoLesson --* LessonBase
+    TestLesson -- TestLessonType
     TestQuestion "1..*" --* "1" TestLesson
     TestAnswer "1..*" --* "1" TestQuestion
     Enrollment "0..*" .. "1" Course : enrolls
     LessonProgressVideo --|> LessonProgress
+    LessonProgressVideo --* LessonProgressBase
     LessonProgressTest --|> LessonProgress
+    LessonProgressTest --* LessonProgressBase
     LessonProgress "0..*" ..* "1" Lesson : tracks
     Review "0..*" ..* "1" Course : reviews
     LessonComment "0..*" ..* "1" Lesson : comments
     Certificate "0..*" ..* "1" Course : issues
+    Bookmark "0..*" ..* "1" Course : bookmarks
 ```
 
 ## Billing
