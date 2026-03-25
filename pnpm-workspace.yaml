@@ -22,7 +22,7 @@ catalog:
   '@vitejs/plugin-react': 5.1.4
   axios: 1.13.6
   class-variance-authority: 0.7.1
-  eslint-config-next: '16.2.0'
+  eslint-config-next: '16.2.1'
   eslint-config-prettier: '10.1.8'
   eslint-plugin-better-tailwindcss: '4.3.2'
   eslint-plugin-import: '2.32.0'
