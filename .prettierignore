@@ -8,6 +8,9 @@
 /.nx/cache
 /.nx/workspace-data
 pnpm-lock.yaml
-packages/egolia-api/src/**
+packages/api-gen/src/**
+packages/pb/**/*.d.ts
+packages/pb/**/*.js
 **/next-env.d.ts
 docs/godoc/**
+api/bundled/**/*.json

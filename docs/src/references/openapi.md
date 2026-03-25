@@ -2,7 +2,7 @@
 aside: false
 outline: false
 title: Egolia OpenAPI
-order: 1
+order: 10
 ---
 
 <script setup>

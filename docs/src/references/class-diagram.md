@@ -7,7 +7,7 @@ order: 3
 :::info
 
 - Golang syntax
-- Apply DDD, CQRS, repository pattern
+- Apply DDD, Clean architecture
 
 :::
 
@@ -15,146 +15,170 @@ order: 3
 
 ```mermaid
 classDiagram
-    class CourseStatus {
-        <<Enum>>
-        DRAFT
-        APPROVED
-        PUBLISHED
-        ARCHIVED
-    }
+    %% class CourseStatus {
+    %%     <<Enum>>
+    %%     draft
+    %%     approved
+    %%     published
+    %%     archived
+    %% }
 
     class Course {
         <<AggregateRoot>>
-        ID uuid.UUID
-        Title string
-        Slug string
-        InstructorID uuid.UUID
-        Status CourseStatus
-        Price float64
-        DeletedAt *time.Time
+        id uuid.UUID
+        title string
+        slug string
+        instructorID uuid.UUID
+        %% status CourseStatus
+        price float64
+        deletedAt *time.Time
     }
 
     class Section {
         <<AggregateRoot>>
-        ID uuid.UUID
-        CourseID uuid.UUID
-        Title string
+        id uuid.UUID
+        courseID uuid.UUID
+        title string
+        order string
     }
 
     class Lesson {
+        <<Interface>>
+    }
+
+    class LessonBase {
         <<AbstractStruct>>
-        ID uuid.UUID
-        CourseID uuid.UUID
-        SectionID uuid.UUID
-        Title string
-        NextLessonID *uuid.UUID
-        DeletedAt *time.Time
-    }
-
-    class TestLesson {
-        <<AggregateRoot>>
-        Lesson
-        Type TestLessonType
-        Questions []TestQuestion
-    }
-
-    class TestQuestion {
-        <<Entity>>
-        ID uuid.UUID
-        Question string
-        Anwsers []TestAnswer
-    }
-
-    class TestAnswer {
-        <<Entity>>
-        ID uuid.UUID
-        Content string
-        IsCorrect bool
+        id uuid.UUID
+        sectionID uuid.UUID
+        title string
+        order string
+        deletedAt *time.Time
     }
 
     class TestLessonType {
         <<Enum>>
-        MULTIPLE_CHOICE
-        SINGLE_CHOICE
+        multipleChoice
+        singleChoice
+    }
+
+    class TestLesson {
+        <<AggregateRoot>>
+        LessonBase
+        type TestLessonType
+        questions []*TestQuestion
+    }
+
+    class TestQuestion {
+        <<Entity>>
+        id uuid.UUID
+        question string
+        anwsers []*TestAnswer
+    }
+
+    class TestAnswer {
+        <<Entity>>
+        id uuid.UUID
+        content string
+        isCorrect bool
     }
 
     class VideoLesson {
         <<AggregateRoot>>
-        Lesson
-        VideoURL string
-        Duration time.Duration
+        LessonBase
+        videoURL string
+        duration time.Duration
     }
 
     class Enrollment {
         <<AggregateRoot>>
-        ID uuid.UUID
-        UserID string
-        CourseID uuid.UUID
-        EnrollmentDate time.Time
-        CompletedAt *time.Time
+        id uuid.UUID
+        userID string
+        courseID uuid.UUID
+        enrollmentDate time.Time
+        completedAt *time.Time
     }
 
     class LessonProgress {
+        <<Interface>>
+    }
+
+    class LessonProgressBase {
         <<AbstractStruct>>
-        ID uuid.UUID
-        UserID string
-        LessonID uuid.UUID
-        IsCompleted bool
+        id uuid.UUID
+        userID string
+        lessonID uuid.UUID
+        isCompleted bool
+        deletedAt *time.Time
     }
 
     class LessonProgressTest {
         <<AggregateRoot>>
-        LessonProgress
+        LessonProgressBase
     }
 
     class LessonProgressVideo {
         <<AggregateRoot>>
-        LessonProgress
-        WatchedSeconds *float64
-        LastViewedAt time.Time
+        LessonProgressBase
+        watchedSeconds *float64
+        lastViewedAt time.Time
     }
 
     class LessonComment {
         <<AggregateRoot>>
-        ID uuid.UUID
-        UserID string
-        LessonID uuid.UUID
-        Content string
-        CreatedAt time.Time
-        ParentCommentID *uuid.UUID
+        id uuid.UUID
+        userID string
+        lessonID uuid.UUID
+        content string
+        createdAt time.Time
+        parentCommentID *uuid.UUID
+        deletedAt *time.Time
     }
 
     class Review {
         <<AggregateRoot>>
-        ID uuid.UUID
-        CourseID uuid.UUID
-        UserID string
-        Rating int
-        Comment string
+        id uuid.UUID
+        courseID uuid.UUID
+        userID string
+        rating int
+        comment string
+        deletedAt *time.Time
     }
 
     class Certificate {
         <<AggregateRoot>>
-        ID uuid.UUID
-        CourseID uuid.UUID
-        UserID string
-        IssuedAt time.Time
+        id uuid.UUID
+        courseID uuid.UUID
+        userID string
+        issuedAt time.Time
+        deletedAt *time.Time
     }
 
-    Course "1" *-- "0..*" Section : has
-    Section "1" *-- "0..*" Lesson : has
+    class Bookmark {
+        <<AggregateRoot>>
+        id uuid.UUID
+        userID string
+        courseID uuid.UUID
+    }
+
+    Course "1" *.. "0..*" Section : has
+    Section "1" *.. "0..*" Lesson : has
     TestLesson --|> Lesson
     VideoLesson --|> Lesson
-    TestLessonType -- TestLesson
+    TestLesson --* LessonBase
+    VideoLesson --* LessonBase
+    TestLesson -- TestLessonType
     TestQuestion "1..*" --* "1" TestLesson
     TestAnswer "1..*" --* "1" TestQuestion
-    Enrollment "0..*" -- "1" Course : enrolls
+    Enrollment "0..*" .. "1" Course : enrolls
     LessonProgressVideo --|> LessonProgress
+    LessonProgressVideo --* LessonProgressBase
     LessonProgressTest --|> LessonProgress
-    LessonProgress "0..*" --* "1" Lesson : tracks
-    Review "0..*" --* "1" Course : reviews
-    LessonComment "0..*" --* "1" Lesson : comments
-    Certificate "0..*" --* "1" Course : issues
+    LessonProgressTest --* LessonProgressBase
+    LessonProgress "0..*" ..* "1" Lesson : tracks
+    Review "0..*" ..* "1" Course : reviews
+    LessonComment "0..*" ..* "1" Lesson : comments
+    Certificate "0..*" ..* "1" Course : issues
+    Bookmark "0..*" ..* "1" Course : bookmarks
 ```
 
 ## Billing
@@ -163,18 +187,18 @@ classDiagram
 classDiagram
     class TransactionStatus {
         <<Enum>>
-        PENDING
-        COMPLETED
-        FAILED
+        pending
+        completed
+        failed
     }
 
     class Transaction {
         <<AggregateRoot>>
-        ID uuid.UUID
-        UserID string
-        Amount float64
-        Status TransactionStatus
-        CreatedAt time.Time
+        id uuid.UUID
+        userID string
+        amount float64
+        status TransactionStatus
+        createdAt time.Time
     }
 
     Transaction  -- TransactionStatus
@@ -196,18 +220,18 @@ classDiagram
 classDiagram
     class Post {
         <<AggregateRoot>>
-        ID uuid.UUID
-        AuthorID string
-        Content string
-        Hashtags []string
+        id uuid.UUID
+        authorID string
+        content string
+        tags []string
     }
 
     class Comment {
         <<AggregateRoot>>
-        ID uuid.UUID
-        PostID uuid.UUID
-        AuthorID string
-        Content string
+        id uuid.UUID
+        postID uuid.UUID
+        authorID string
+        content string
     }
 
     Comment "0..*" --* "1" Post : comments
