@@ -125,52 +125,7 @@ export const zTestLesson = zLesson.and(z.object({
     }))
 }));
 
-export const zLessonType = z.enum([
-    'Lesson',
-    'VideoLesson',
-    'TestLesson'
-]);
-
-export const zLessonEnvelope = z.object({
-    type: zLessonType,
-    data: zLesson
-});
-
-export const zVideoLessonEnvelope = z.object({
-    type: zLessonType,
-    data: zVideoLesson
-});
-
-export const zTestLessonEnvelope = z.object({
-    type: zLessonType,
-    data: zTestLesson
-});
-
-export const zLessonPolymorphicEnvelope = z.union([
-    z.object({
-        type: z.literal('Lesson')
-    }).and(zLessonEnvelope),
-    z.object({
-        type: z.literal('VideoLesson')
-    }).and(zVideoLessonEnvelope),
-    z.object({
-        type: z.literal('TestLesson')
-    }).and(zTestLessonEnvelope)
-]);
-
 export const zTestLessonType = z.enum(['multipleChoice', 'singleChoice']);
-
-export const zTestAnswer = z.object({
-    id: z.uuid().readonly(),
-    content: z.string().min(1).max(1000),
-    isCorrect: z.boolean()
-});
-
-export const zTestQuestion = z.object({
-    id: z.uuid().readonly(),
-    question: z.string().min(1).max(2000),
-    answers: z.array(zTestAnswer).min(1)
-});
 
 export const zLessonPropertiesId = z.uuid().readonly();
 
@@ -265,43 +220,6 @@ export const zTestLessonWritable = zLessonWritable.and(z.object({
         })).min(1)
     }))
 }));
-
-export const zLessonEnvelopeWritable = z.object({
-    type: zLessonType,
-    data: zLessonWritable
-});
-
-export const zVideoLessonEnvelopeWritable = z.object({
-    type: zLessonType,
-    data: zVideoLessonWritable
-});
-
-export const zTestLessonEnvelopeWritable = z.object({
-    type: zLessonType,
-    data: zTestLessonWritable
-});
-
-export const zLessonPolymorphicEnvelopeWritable = z.union([
-    z.object({
-        type: z.literal('Lesson')
-    }).and(zLessonEnvelopeWritable),
-    z.object({
-        type: z.literal('VideoLesson')
-    }).and(zVideoLessonEnvelopeWritable),
-    z.object({
-        type: z.literal('TestLesson')
-    }).and(zTestLessonEnvelopeWritable)
-]);
-
-export const zTestAnswerWritable = z.object({
-    content: z.string().min(1).max(1000),
-    isCorrect: z.boolean()
-});
-
-export const zTestQuestionWritable = z.object({
-    question: z.string().min(1).max(2000),
-    answers: z.array(zTestAnswerWritable).min(1)
-});
 
 export const zLessonProgressWritable = z.object({
     userId: z.uuid(),
@@ -677,7 +595,8 @@ export const zGetMyEnrolledCoursesResponse = z.object({
 export const zCreateSectionData = z.object({
     body: z.object({
         courseId: zPropertiesId,
-        title: z.string().min(1).max(255)
+        title: z.string().min(1).max(255),
+        previousSectionId: z.uuid().nullable()
     }),
     path: z.never().optional(),
     query: z.never().optional()
@@ -743,7 +662,12 @@ export const zGetLessonDetailData = z.object({
 /**
  * Lesson detail
  */
-export const zGetLessonDetailResponse = zLessonPolymorphicEnvelope;
+export const zGetLessonDetailResponse = z.object({
+    data: z.union([
+        zVideoLesson,
+        zTestLesson
+    ])
+});
 
 export const zEditLessonData = z.object({
     body: z.object({
@@ -759,9 +683,14 @@ export const zEditLessonData = z.object({
 });
 
 /**
- * Lesson updated
+ * Lesson successfully updated
  */
-export const zEditLessonResponse = zLessonPolymorphicEnvelope;
+export const zEditLessonResponse = z.object({
+    data: z.union([
+        zVideoLesson,
+        zTestLesson
+    ])
+});
 
 export const zGetUploadVideoLessonUrlData = z.object({
     body: z.never().optional(),
@@ -785,7 +714,15 @@ export const zGetUploadVideoLessonUrlResponse = z.object({
 export const zCreateTestData = z.object({
     body: z.object({
         type: zTestLessonType,
-        questions: z.array(zTestQuestionWritable).min(1)
+        questions: z.array(z.object({
+            id: z.uuid().readonly(),
+            question: z.string().min(1).max(2000),
+            answers: z.array(z.object({
+                id: z.uuid().readonly(),
+                content: z.string().min(1).max(1000),
+                isCorrect: z.boolean()
+            })).min(1)
+        })).min(1)
     }),
     path: z.object({
         lessonId: z.uuid()

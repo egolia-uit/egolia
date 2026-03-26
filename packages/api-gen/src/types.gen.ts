@@ -156,52 +156,9 @@ export type TestLesson = Lesson & {
     }>;
 };
 
-export const LessonType = {
-    LESSON: 'Lesson',
-    VIDEO_LESSON: 'VideoLesson',
-    TEST_LESSON: 'TestLesson'
-} as const;
-
-export type LessonType = typeof LessonType[keyof typeof LessonType];
-
-export type LessonEnvelope = {
-    type: LessonType;
-    data: Lesson;
-};
-
-export type VideoLessonEnvelope = {
-    type: LessonType;
-    data: VideoLesson;
-};
-
-export type TestLessonEnvelope = {
-    type: LessonType;
-    data: TestLesson;
-};
-
-export type LessonPolymorphicEnvelope = ({
-    type: 'Lesson';
-} & LessonEnvelope) | ({
-    type: 'VideoLesson';
-} & VideoLessonEnvelope) | ({
-    type: 'TestLesson';
-} & TestLessonEnvelope);
-
 export const TestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
 
 export type TestLessonType = typeof TestLessonType[keyof typeof TestLessonType];
-
-export type TestAnswer = {
-    readonly id: string;
-    content: string;
-    isCorrect: boolean;
-};
-
-export type TestQuestion = {
-    readonly id: string;
-    question: string;
-    answers: Array<TestAnswer>;
-};
 
 export type LessonPropertiesId = string;
 
@@ -295,39 +252,6 @@ export type TestLessonWritable = LessonWritable & {
             isCorrect: boolean;
         }>;
     }>;
-};
-
-export type LessonEnvelopeWritable = {
-    type: LessonType;
-    data: LessonWritable;
-};
-
-export type VideoLessonEnvelopeWritable = {
-    type: LessonType;
-    data: VideoLessonWritable;
-};
-
-export type TestLessonEnvelopeWritable = {
-    type: LessonType;
-    data: TestLessonWritable;
-};
-
-export type LessonPolymorphicEnvelopeWritable = ({
-    type: 'Lesson';
-} & LessonEnvelopeWritable) | ({
-    type: 'VideoLesson';
-} & VideoLessonEnvelopeWritable) | ({
-    type: 'TestLesson';
-} & TestLessonEnvelopeWritable);
-
-export type TestAnswerWritable = {
-    content: string;
-    isCorrect: boolean;
-};
-
-export type TestQuestionWritable = {
-    question: string;
-    answers: Array<TestAnswerWritable>;
 };
 
 export type LessonProgressWritable = {
@@ -1561,6 +1485,7 @@ export type CreateSectionData = {
     body: {
         courseId: PropertiesId;
         title: string;
+        previousSectionId: string | null;
     };
     path?: never;
     query?: never;
@@ -1834,7 +1759,9 @@ export type GetLessonDetailResponses = {
     /**
      * Lesson detail
      */
-    200: LessonPolymorphicEnvelope;
+    200: {
+        data: VideoLesson | TestLesson;
+    };
 };
 
 export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
@@ -1893,9 +1820,11 @@ export type EditLessonError = EditLessonErrors[keyof EditLessonErrors];
 
 export type EditLessonResponses = {
     /**
-     * Lesson updated
+     * Lesson successfully updated
      */
-    200: LessonPolymorphicEnvelope;
+    200: {
+        data: VideoLesson | TestLesson;
+    };
 };
 
 export type EditLessonResponse = EditLessonResponses[keyof EditLessonResponses];
@@ -1965,7 +1894,15 @@ export type GetUploadVideoLessonUrlResponse = GetUploadVideoLessonUrlResponses[k
 export type CreateTestData = {
     body: {
         type: TestLessonType;
-        questions: Array<TestQuestionWritable>;
+        questions: Array<{
+            readonly id: string;
+            question: string;
+            answers: Array<{
+                readonly id: string;
+                content: string;
+                isCorrect: boolean;
+            }>;
+        }>;
     };
     path: {
         lessonId: string;

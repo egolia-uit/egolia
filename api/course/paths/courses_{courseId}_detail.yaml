@@ -17,6 +17,7 @@ get:
             properties:
               data:
                 type: object
+                x-go-type-name: CourseDetailData
                 properties:
                   course:
                     $ref: ../components/schemas/Course.yaml
@@ -24,6 +25,7 @@ get:
                     type: array
                     items:
                       type: object
+                      x-go-type-name: CourseDetailSectionItem
                       properties:
                         section:
                           $ref: ../components/schemas/Section.yaml

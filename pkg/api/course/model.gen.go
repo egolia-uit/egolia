@@ -4,11 +4,8 @@
 package course
 
 import (
-	"encoding/json"
-	"errors"
 	"time"
 
-	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -34,27 +31,6 @@ func (e CourseStatus) Valid() bool {
 	case CourseStatusDraft:
 		return true
 	case CourseStatusPublished:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for LessonType.
-const (
-	LessonTypeLesson      LessonType = "Lesson"
-	LessonTypeTestLesson  LessonType = "TestLesson"
-	LessonTypeVideoLesson LessonType = "VideoLesson"
-)
-
-// Valid indicates whether the value is a known member of the LessonType enum.
-func (e LessonType) Valid() bool {
-	switch e {
-	case LessonTypeLesson:
-		return true
-	case LessonTypeTestLesson:
-		return true
-	case LessonTypeVideoLesson:
 		return true
 	default:
 		return false
@@ -240,18 +216,24 @@ type Course struct {
 
 // CourseLandingPage defines model for CourseLandingPage.
 type CourseLandingPage struct {
-	Course struct {
-		Id *PropertiesId `json:"id,omitempty"`
+	Course CourseLandingPageCourse `json:"course"`
+}
 
-		// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-		InstructorId Id `json:"instructorId"`
-		Introduction struct {
-			VideoUrl string `json:"videoUrl"`
-		} `json:"introduction"`
-		Overview string `json:"overview"`
-		Slug     Slug   `json:"slug"`
-		Title    Title  `json:"title"`
-	} `json:"course"`
+// CourseLandingPageIntroduction defines model for .
+type CourseLandingPageIntroduction struct {
+	VideoUrl string `json:"videoUrl"`
+}
+
+// CourseLandingPageCourse defines model for .
+type CourseLandingPageCourse struct {
+	Id *PropertiesId `json:"id,omitempty"`
+
+	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	InstructorId Id                            `json:"instructorId"`
+	Introduction CourseLandingPageIntroduction `json:"introduction"`
+	Overview     string                        `json:"overview"`
+	Slug         Slug                          `json:"slug"`
+	Title        Title                         `json:"title"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -305,17 +287,6 @@ type LessonComment struct {
 	UserId          openapi_types.UUID  `json:"userId"`
 }
 
-// LessonEnvelope defines model for LessonEnvelope.
-type LessonEnvelope struct {
-	Data Lesson     `json:"data"`
-	Type LessonType `json:"type"`
-}
-
-// LessonPolymorphicEnvelope defines model for LessonPolymorphicEnvelope.
-type LessonPolymorphicEnvelope struct {
-	union json.RawMessage
-}
-
 // LessonProgress defines model for LessonProgress.
 type LessonProgress struct {
 	Id          *openapi_types.UUID `json:"id,omitempty"`
@@ -323,9 +294,6 @@ type LessonProgress struct {
 	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
 	UserId      openapi_types.UUID  `json:"userId"`
 }
-
-// LessonType defines model for LessonType.
-type LessonType string
 
 // LessonPropertiesId defines model for Lesson_properties-id.
 type LessonPropertiesId = openapi_types.UUID
@@ -378,27 +346,13 @@ type TestAnswer struct {
 type TestLesson struct {
 	CourseId  *PropertiesId       `json:"courseId,omitempty"`
 	Id        *openapi_types.UUID `json:"id,omitempty"`
-	Questions []struct {
-		Answers []struct {
-			Content   string              `json:"content"`
-			Id        *openapi_types.UUID `json:"id,omitempty"`
-			IsCorrect bool                `json:"isCorrect"`
-		} `json:"answers"`
-		Id       *openapi_types.UUID `json:"id,omitempty"`
-		Question string              `json:"question"`
-	} `json:"questions"`
-	Title string         `json:"title"`
-	Type  TestLessonType `json:"type"`
+	Questions []TestQuestion      `json:"questions"`
+	Title     string              `json:"title"`
+	Type      TestLessonType      `json:"type"`
 }
 
 // TestLessonType defines model for TestLesson.Type.
 type TestLessonType string
-
-// TestLessonEnvelope defines model for TestLessonEnvelope.
-type TestLessonEnvelope struct {
-	Data TestLesson `json:"data"`
-	Type LessonType `json:"type"`
-}
 
 // TestQuestion defines model for TestQuestion.
 type TestQuestion struct {
@@ -414,12 +368,6 @@ type VideoLesson struct {
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Title    string              `json:"title"`
 	VideoUrl string              `json:"videoUrl"`
-}
-
-// VideoLessonEnvelope defines model for VideoLessonEnvelope.
-type VideoLessonEnvelope struct {
-	Data VideoLesson `json:"data"`
-	Type LessonType  `json:"type"`
 }
 
 // Content defines model for content.
@@ -635,8 +583,9 @@ type CreateTestJSONBody struct {
 
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
-	CourseId *PropertiesId `json:"courseId,omitempty"`
-	Title    string        `json:"title"`
+	CourseId          *PropertiesId       `json:"courseId,omitempty"`
+	PreviousSectionId *openapi_types.UUID `json:"previousSectionId"`
+	Title             string              `json:"title"`
 }
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
@@ -674,122 +623,3 @@ type CreateTestJSONRequestBody CreateTestJSONBody
 
 // CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
 type CreateSectionJSONRequestBody CreateSectionJSONBody
-
-// AsLessonEnvelope returns the union data inside the LessonPolymorphicEnvelope as a LessonEnvelope
-func (t LessonPolymorphicEnvelope) AsLessonEnvelope() (LessonEnvelope, error) {
-	var body LessonEnvelope
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromLessonEnvelope overwrites any union data inside the LessonPolymorphicEnvelope as the provided LessonEnvelope
-func (t *LessonPolymorphicEnvelope) FromLessonEnvelope(v LessonEnvelope) error {
-	v.Type = "Lesson"
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeLessonEnvelope performs a merge with any union data inside the LessonPolymorphicEnvelope, using the provided LessonEnvelope
-func (t *LessonPolymorphicEnvelope) MergeLessonEnvelope(v LessonEnvelope) error {
-	v.Type = "Lesson"
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-// AsVideoLessonEnvelope returns the union data inside the LessonPolymorphicEnvelope as a VideoLessonEnvelope
-func (t LessonPolymorphicEnvelope) AsVideoLessonEnvelope() (VideoLessonEnvelope, error) {
-	var body VideoLessonEnvelope
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromVideoLessonEnvelope overwrites any union data inside the LessonPolymorphicEnvelope as the provided VideoLessonEnvelope
-func (t *LessonPolymorphicEnvelope) FromVideoLessonEnvelope(v VideoLessonEnvelope) error {
-	v.Type = "VideoLesson"
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeVideoLessonEnvelope performs a merge with any union data inside the LessonPolymorphicEnvelope, using the provided VideoLessonEnvelope
-func (t *LessonPolymorphicEnvelope) MergeVideoLessonEnvelope(v VideoLessonEnvelope) error {
-	v.Type = "VideoLesson"
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-// AsTestLessonEnvelope returns the union data inside the LessonPolymorphicEnvelope as a TestLessonEnvelope
-func (t LessonPolymorphicEnvelope) AsTestLessonEnvelope() (TestLessonEnvelope, error) {
-	var body TestLessonEnvelope
-	err := json.Unmarshal(t.union, &body)
-	return body, err
-}
-
-// FromTestLessonEnvelope overwrites any union data inside the LessonPolymorphicEnvelope as the provided TestLessonEnvelope
-func (t *LessonPolymorphicEnvelope) FromTestLessonEnvelope(v TestLessonEnvelope) error {
-	v.Type = "TestLesson"
-	b, err := json.Marshal(v)
-	t.union = b
-	return err
-}
-
-// MergeTestLessonEnvelope performs a merge with any union data inside the LessonPolymorphicEnvelope, using the provided TestLessonEnvelope
-func (t *LessonPolymorphicEnvelope) MergeTestLessonEnvelope(v TestLessonEnvelope) error {
-	v.Type = "TestLesson"
-	b, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	merged, err := runtime.JSONMerge(t.union, b)
-	t.union = merged
-	return err
-}
-
-func (t LessonPolymorphicEnvelope) Discriminator() (string, error) {
-	var discriminator struct {
-		Discriminator string `json:"type"`
-	}
-	err := json.Unmarshal(t.union, &discriminator)
-	return discriminator.Discriminator, err
-}
-
-func (t LessonPolymorphicEnvelope) ValueByDiscriminator() (interface{}, error) {
-	discriminator, err := t.Discriminator()
-	if err != nil {
-		return nil, err
-	}
-	switch discriminator {
-	case "Lesson":
-		return t.AsLessonEnvelope()
-	case "TestLesson":
-		return t.AsTestLessonEnvelope()
-	case "VideoLesson":
-		return t.AsVideoLessonEnvelope()
-	default:
-		return nil, errors.New("unknown discriminator value: " + discriminator)
-	}
-}
-
-func (t LessonPolymorphicEnvelope) MarshalJSON() ([]byte, error) {
-	b, err := t.union.MarshalJSON()
-	return b, err
-}
-
-func (t *LessonPolymorphicEnvelope) UnmarshalJSON(b []byte) error {
-	err := t.union.UnmarshalJSON(b)
-	return err
-}

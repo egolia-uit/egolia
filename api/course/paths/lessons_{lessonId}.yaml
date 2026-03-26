@@ -13,7 +13,14 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/LessonPolymorphicEnvelope.yaml
+            type: object
+            properties:
+              data:
+                oneOf:
+                  - $ref: ../components/schemas/VideoLesson.yaml
+                  - $ref: ../components/schemas/TestLesson.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
@@ -63,11 +70,18 @@ patch:
           minProperties: 1
   responses:
     200:
-      description: Lesson updated
+      description: Lesson successfully updated
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/LessonPolymorphicEnvelope.yaml
+            type: object
+            properties:
+              data:
+                oneOf:
+                  - $ref: ../components/schemas/VideoLesson.yaml
+                  - $ref: ../components/schemas/TestLesson.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

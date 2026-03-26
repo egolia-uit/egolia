@@ -10,12 +10,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // ServerInterface represents all server handlers.
@@ -2002,13 +2000,7 @@ type GetCourseDetailResponseObject interface {
 }
 
 type GetCourseDetail200JSONResponse struct {
-	Data struct {
-		Course   Course `json:"course"`
-		Sections []struct {
-			LessonIds []openapi_types.UUID `json:"lessonIds"`
-			Section   Section              `json:"section"`
-		} `json:"sections"`
-	} `json:"data"`
+	Data CourseDetailData `json:"data"`
 }
 
 func (response GetCourseDetail200JSONResponse) VisitGetCourseDetailResponse(w http.ResponseWriter) error {
@@ -2781,7 +2773,9 @@ type GetLessonDetailResponseObject interface {
 	VisitGetLessonDetailResponse(w http.ResponseWriter) error
 }
 
-type GetLessonDetail200JSONResponse LessonPolymorphicEnvelope
+type GetLessonDetail200JSONResponse struct {
+	Data GetLessonDetail200JSONResponse_Data `json:"data"`
+}
 
 func (response GetLessonDetail200JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -2846,7 +2840,9 @@ type EditLessonResponseObject interface {
 	VisitEditLessonResponse(w http.ResponseWriter) error
 }
 
-type EditLesson200JSONResponse LessonPolymorphicEnvelope
+type EditLesson200JSONResponse struct {
+	Data EditLesson200JSONResponse_Data `json:"data"`
+}
 
 func (response EditLesson200JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -3244,11 +3240,7 @@ type GetUploadVideoLessonUrlResponseObject interface {
 }
 
 type GetUploadVideoLessonUrl200JSONResponse struct {
-	Data struct {
-		ExpiresAt time.Time `json:"expiresAt"`
-		ObjectKey string    `json:"objectKey"`
-		UploadUrl string    `json:"uploadUrl"`
-	} `json:"data"`
+	Data UploadVideoUrlResponse `json:"data"`
 }
 
 func (response GetUploadVideoLessonUrl200JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {

@@ -413,6 +413,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
+                      "x-go-type-name": "CourseDetailData",
                       "properties": {
                         "course": {
                           "$ref": "#/components/schemas/Course"
@@ -421,6 +422,7 @@
                           "type": "array",
                           "items": {
                             "type": "object",
+                            "x-go-type-name": "CourseDetailSectionItem",
                             "properties": {
                               "section": {
                                 "$ref": "#/components/schemas/Section"
@@ -1294,7 +1296,8 @@
                 "type": "object",
                 "required": [
                   "courseId",
-                  "title"
+                  "title",
+                  "previousSectionId"
                 ],
                 "properties": {
                   "courseId": {
@@ -1305,6 +1308,12 @@
                     "minLength": 1,
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
+                  },
+                  "previousSectionId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "nullable": true,
+                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
                   }
                 }
               }
@@ -1474,7 +1483,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LessonPolymorphicEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/VideoLesson"
+                        },
+                        {
+                          "$ref": "#/components/schemas/TestLesson"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
                 }
               }
             }
@@ -1550,11 +1574,26 @@
         },
         "responses": {
           "200": {
-            "description": "Lesson updated",
+            "description": "Lesson successfully updated",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LessonPolymorphicEnvelope"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/VideoLesson"
+                        },
+                        {
+                          "$ref": "#/components/schemas/TestLesson"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
                 }
               }
             }
@@ -1641,6 +1680,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
+                      "x-go-type-name": "UploadVideoUrlResponse",
                       "required": [
                         "uploadUrl",
                         "objectKey",
@@ -2576,6 +2616,7 @@
         "properties": {
           "course": {
             "type": "object",
+            "x-go-type-name": "CourseLandingPageCourse",
             "properties": {
               "id": {
                 "$ref": "#/components/schemas/properties-id"
@@ -2595,6 +2636,7 @@
               },
               "introduction": {
                 "type": "object",
+                "x-go-type-name": "CourseLandingPageIntroduction",
                 "properties": {
                   "videoUrl": {
                     "type": "string",
@@ -2670,168 +2712,6 @@
           }
         ]
       },
-      "TestLesson": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Lesson"
-          },
-          {
-            "type": "object",
-            "required": [
-              "type",
-              "questions"
-            ],
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "multipleChoice",
-                  "singleChoice"
-                ],
-                "example": "singleChoice"
-              },
-              "questions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
-                      "readOnly": true
-                    },
-                    "question": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 2000,
-                      "example": "Which principle of OOP enables exposing only essential behavior?"
-                    },
-                    "answers": {
-                      "type": "array",
-                      "minItems": 1,
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid",
-                            "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
-                            "readOnly": true
-                          },
-                          "content": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1000,
-                            "example": "Encapsulation hides implementation details behind a stable API."
-                          },
-                          "isCorrect": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "content",
-                          "isCorrect"
-                        ]
-                      }
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "question",
-                    "answers"
-                  ]
-                }
-              }
-            }
-          }
-        ]
-      },
-      "LessonType": {
-        "type": "string",
-        "enum": [
-          "Lesson",
-          "VideoLesson",
-          "TestLesson"
-        ],
-        "example": "Lesson"
-      },
-      "LessonEnvelope": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/LessonType"
-          },
-          "data": {
-            "$ref": "#/components/schemas/Lesson"
-          }
-        },
-        "required": [
-          "type",
-          "data"
-        ]
-      },
-      "VideoLessonEnvelope": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/LessonType"
-          },
-          "data": {
-            "$ref": "#/components/schemas/VideoLesson"
-          }
-        },
-        "required": [
-          "type",
-          "data"
-        ]
-      },
-      "TestLessonEnvelope": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/LessonType"
-          },
-          "data": {
-            "$ref": "#/components/schemas/TestLesson"
-          }
-        },
-        "required": [
-          "type",
-          "data"
-        ]
-      },
-      "LessonPolymorphicEnvelope": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/LessonEnvelope"
-          },
-          {
-            "$ref": "#/components/schemas/VideoLessonEnvelope"
-          },
-          {
-            "$ref": "#/components/schemas/TestLessonEnvelope"
-          }
-        ],
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "Lesson": "#/components/schemas/LessonEnvelope",
-            "VideoLesson": "#/components/schemas/VideoLessonEnvelope",
-            "TestLesson": "#/components/schemas/TestLessonEnvelope"
-          }
-        }
-      },
-      "TestLessonType": {
-        "type": "string",
-        "enum": [
-          "multipleChoice",
-          "singleChoice"
-        ],
-        "example": "singleChoice"
-      },
       "TestAnswer": {
         "type": "object",
         "properties": {
@@ -2886,6 +2766,45 @@
           "question",
           "answers"
         ]
+      },
+      "TestLesson": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Lesson"
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "questions"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "multipleChoice",
+                  "singleChoice"
+                ],
+                "example": "singleChoice"
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/TestQuestion"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "TestLessonType": {
+        "type": "string",
+        "enum": [
+          "multipleChoice",
+          "singleChoice"
+        ],
+        "example": "singleChoice"
       },
       "Lesson_properties-id": {
         "type": "string",

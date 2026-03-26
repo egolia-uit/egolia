@@ -3,6 +3,7 @@ type: object
 properties:
   course:
     type: object
+    x-go-type-name: CourseLandingPageCourse
     properties:
       id:
         $ref: ./Course.yaml#/properties/id
@@ -17,6 +18,7 @@ properties:
         example: Learn practical Go backend concepts in this beginner-friendly course.
       introduction:
         type: object
+        x-go-type-name: CourseLandingPageIntroduction
         properties:
           videoUrl:
             type: string

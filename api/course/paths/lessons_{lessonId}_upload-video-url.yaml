@@ -17,6 +17,7 @@ get:
             properties:
               data:
                 type: object
+                x-go-type-name: UploadVideoUrlResponse
                 required:
                   - uploadUrl
                   - objectKey
