@@ -1,0 +1,118 @@
+CreatePostRequest:
+  type: object
+
+  properties:
+    title:
+      type: string
+      example: Cach toi toi uu hanh trinh hoc tap
+
+    content:
+      type: string
+      minLength: 1
+      example: Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.
+
+    tags:
+      type: array
+      items:
+        type: string
+      example:
+        - learning
+        - productivity
+
+  required:
+    - title
+    - content
+    - tags
+
+UpdatePostRequest:
+  type: object
+
+  properties:
+    title:
+      type: string
+      example: Cach toi toi uu hanh trinh hoc tap
+
+    content:
+      type: string
+      minLength: 1
+      example: Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.
+
+    tags:
+      type: array
+      items:
+        type: string
+      example:
+        - learning
+        - productivity
+
+  required:
+    - title
+    - content
+    - tags
+
+Post:
+  type: object
+
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: 74af02ce-4e69-4ca1-a721-c0e19c9937b8
+      readOnly: true
+
+    authorId:
+      $ref: ../../../common/components/schemas/User.yaml#/properties/id
+
+    title:
+      type: string
+      example: Cach toi toi uu hanh trinh hoc tap
+
+    content:
+      type: string
+      minLength: 1
+      example: Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.
+
+    tags:
+      type: array
+      items:
+        type: string
+      example:
+        - learning
+        - productivity
+
+    createdAt:
+      type: string
+      format: date-time
+      example: "2026-03-25T08:00:00Z"
+      readOnly: true
+
+    commentCount:
+      type: integer
+      minimum: 0
+      example: 12
+      readOnly: true
+
+  required:
+    - id
+    - authorId
+    - title
+    - content
+    - tags
+    - createdAt
+    - commentCount
+
+PostCollection:
+  type: object
+
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Post"
+
+    pagination:
+      $ref: ../../../common/components/schemas/Pagination.yaml
+
+  required:
+    - data
+    - pagination

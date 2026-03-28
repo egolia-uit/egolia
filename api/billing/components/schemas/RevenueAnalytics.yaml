@@ -1,0 +1,42 @@
+type: object
+
+properties:
+  from:
+    type: string
+    format: date
+    example: '2026-03-01'
+
+  to:
+    type: string
+    format: date
+    example: '2026-03-31'
+
+  currency:
+    type: string
+    minLength: 3
+    maxLength: 3
+    example: VND
+
+  totalRevenue:
+    type: integer
+    format: int64
+    minimum: 0
+    example: 152000000
+
+  completedTransactions:
+    type: integer
+    minimum: 0
+    example: 421
+
+  failedTransactions:
+    type: integer
+    minimum: 0
+    example: 9
+
+required:
+  - from
+  - to
+  - currency
+  - totalRevenue
+  - completedTransactions
+  - failedTransactions

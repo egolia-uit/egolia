@@ -1,0 +1,29 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Admin Billing
+  summary: Get platform transaction history
+  operationId: getPlatformTransactionHistory
+  parameters:
+    - $ref: ../../common/components/parameters/pageQuery.yaml
+    - $ref: ../../common/components/parameters/limitQuery.yaml
+    - $ref: ../../common/components/parameters/orderQuery.yaml
+    - name: status
+      in: query
+      description: Filter by transaction status
+      schema:
+        $ref: ../components/schemas/Transaction.yaml#/TransactionStatus
+  responses:
+    200:
+      description: Platform transaction history
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Transaction.yaml#/TransactionCollection
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

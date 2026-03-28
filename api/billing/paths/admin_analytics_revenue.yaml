@@ -1,0 +1,35 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Admin Billing
+  summary: Get platform revenue analytics
+  operationId: getPlatformRevenueAnalytics
+  parameters:
+    - name: from
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+      example: '2026-03-01'
+    - name: to
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+      example: '2026-03-31'
+  responses:
+    200:
+      description: Revenue analytics
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/RevenueAnalytics.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

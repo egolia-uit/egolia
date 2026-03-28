@@ -1,0 +1,76 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Post
+  summary: Get post detail
+  operationId: getPostById
+  parameters:
+    - $ref: ../components/parameters/postIdPath.yaml
+  responses:
+    200:
+      description: Blog post detail
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Post.yaml#/Post
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+put:
+  security:
+    - Oauth2: []
+  tags:
+    - Post
+  summary: Update post
+  operationId: updatePost
+  parameters:
+    - $ref: ../components/parameters/postIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/Post.yaml#/UpdatePostRequest
+  responses:
+    200:
+      description: Post updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Post.yaml#/Post
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+delete:
+  security:
+    - Oauth2: []
+  tags:
+    - Post
+  summary: Delete post
+  operationId: deletePost
+  parameters:
+    - $ref: ../components/parameters/postIdPath.yaml
+  responses:
+    204:
+      description: Post deleted successfully
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

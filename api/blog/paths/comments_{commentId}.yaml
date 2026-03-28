@@ -1,0 +1,53 @@
+put:
+  security:
+    - Oauth2: []
+  tags:
+    - Comment
+  summary: Update comment
+  operationId: updateComment
+  parameters:
+    - $ref: ../components/parameters/commentIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/Comment.yaml#/UpdateCommentRequest
+  responses:
+    200:
+      description: Comment updated
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Comment.yaml#/CommentResponse
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+delete:
+  security:
+    - Oauth2: []
+  tags:
+    - Comment
+  summary: Delete comment
+  operationId: deleteComment
+  parameters:
+    - $ref: ../components/parameters/commentIdPath.yaml
+  responses:
+    204:
+      description: Comment deleted successfully
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

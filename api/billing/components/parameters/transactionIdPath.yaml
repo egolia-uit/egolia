@@ -1,0 +1,8 @@
+name: transactionId
+in: path
+required: true
+description: Unique identifier of the billing transaction
+schema:
+  type: string
+  format: uuid
+example: 4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d

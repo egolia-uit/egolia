@@ -1,0 +1,22 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Receipt
+  summary: Get transaction receipt detail
+  operationId: getTransactionReceiptDetail
+  parameters:
+    - $ref: ../components/parameters/transactionIdPath.yaml
+  responses:
+    200:
+      description: Billing receipt detail
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Receipt.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
