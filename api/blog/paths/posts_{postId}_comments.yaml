@@ -1,0 +1,53 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Comment
+  summary: Get post comments
+  operationId: getPostComments
+  parameters:
+    - $ref: ../components/parameters/postIdPath.yaml
+  responses:
+    200:
+      description: Post comments with replies
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Comment.yaml#/CommentCollection
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Comment
+  summary: Comment on post
+  operationId: commentOnPost
+  parameters:
+    - $ref: ../components/parameters/postIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/Comment.yaml#/CreateCommentRequest
+  responses:
+    201:
+      description: Comment created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Comment.yaml#/CommentResponse
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

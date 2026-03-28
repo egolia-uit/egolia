@@ -18,9 +18,23 @@ info:
     email: egolia@googlegroups.com
   x-apiName: blog
 
-tags: []
+tags:
+  - name: Post
+    description: Blog post management
+  - name: Comment
+    description: Post comments and replies
 
-paths: {}
+paths:
+  /blog/posts:
+    $ref: ./paths/posts.yaml
+  /blog/posts/{postId}:
+    $ref: ./paths/posts_{postId}.yaml
+  /blog/posts/{postId}/comments:
+    $ref: ./paths/posts_{postId}_comments.yaml
+  /blog/comments/{commentId}:
+    $ref: ./paths/comments_{commentId}.yaml
+  /blog/comments/{commentId}/replies:
+    $ref: ./paths/comments_{commentId}_replies.yaml
 
 components:
   securitySchemes:

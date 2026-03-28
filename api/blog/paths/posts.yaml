@@ -1,0 +1,61 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Post
+  summary: Search posts
+  operationId: searchPosts
+  parameters:
+    - name: q
+      in: query
+      description: Full-text keyword for post search
+      schema:
+        type: string
+      example: hoc tap hieu qua
+    - name: tag
+      in: query
+      description: Filter posts by tag
+      schema:
+        type: string
+      example: learning
+    - $ref: ../../common/components/parameters/pageQuery.yaml
+    - $ref: ../../common/components/parameters/limitQuery.yaml
+    - $ref: ../../common/components/parameters/orderQuery.yaml
+  responses:
+    200:
+      description: Matched blog posts
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Post.yaml#/PostCollection
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Post
+  summary: Create post
+  operationId: createPost
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/Post.yaml#/CreatePostRequest
+  responses:
+    201:
+      description: Post created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Post.yaml#/Post
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

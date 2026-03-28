@@ -1,0 +1,73 @@
+Transaction:
+  type: object
+
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: 4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d
+      readOnly: true
+
+    userId:
+      $ref: ../../../common/components/schemas/User.yaml#/properties/id
+
+    # need?
+    courseId:
+      type: string
+      format: uuid
+      example: 0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc
+
+    amount:
+      type: number
+      format: double
+      minimum: 0
+      example: 499000
+
+    currency:
+      type: string
+      minLength: 3
+      maxLength: 3
+      example: VND
+
+    status:
+      $ref: "#/TransactionStatus"
+
+    createdAt:
+      type: string
+      format: date-time
+      example: "2026-03-25T08:30:00Z"
+      readOnly: true
+
+  required:
+    - id
+    - userId
+    - courseId
+    - amount
+    - currency
+    - status
+    - createdAt
+
+TransactionCollection:
+  type: object
+
+  properties:
+    data:
+      type: array
+      items:
+        $ref: "#/Transaction"
+
+    pagination:
+      $ref: ../../../common/components/schemas/Pagination.yaml
+
+  required:
+    - data
+    - pagination
+
+TransactionStatus:
+  type: string
+  description: Current status of a billing transaction
+  enum:
+    - pending
+    - completed
+    - failed
+  example: completed

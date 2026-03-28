@@ -1,0 +1,33 @@
+type: object
+
+properties:
+  transaction:
+    $ref: ./transaction.yaml#/Transaction
+
+  receiptNumber:
+    type: string
+    example: RCPT-20260325-0001
+
+  issuedAt:
+    type: string
+    format: date-time
+    example: '2026-03-25T08:35:00Z'
+
+  billedTo:
+    type: object
+    properties:
+      userId:
+        $ref: ../../../common/components/schemas/User.yaml#/properties/id
+      email:
+        type: string
+        format: email
+        example: learner@egolia.dev
+    required:
+      - userId
+      - email
+
+required:
+  - transaction
+  - receiptNumber
+  - issuedAt
+  - billedTo

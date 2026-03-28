@@ -18,9 +18,27 @@ info:
     email: egolia@googlegroups.com
   x-apiName: billing
 
-tags: []
+tags:
+  - name: Checkout
+    description: Checkout and payment creation
+  - name: Learner Billing
+    description: Billing endpoints for learners
+  - name: Receipt
+    description: Billing receipt retrieval
+  - name: Admin Billing
+    description: Billing administration and analytics
 
-paths: {}
+paths:
+  /billing/checkout:
+    $ref: ./paths/checkout.yaml
+  /billing/me/transactions:
+    $ref: ./paths/me_transactions.yaml
+  /billing/transactions/{transactionId}/receipt:
+    $ref: ./paths/transactions_{transactionId}_receipt.yaml
+  /billing/admin/analytics/revenue:
+    $ref: ./paths/admin_analytics_revenue.yaml
+  /billing/admin/transactions:
+    $ref: ./paths/admin_transactions.yaml
 
 components:
   securitySchemes:

@@ -1,0 +1,8 @@
+name: postId
+in: path
+required: true
+description: Unique identifier of the blog post
+schema:
+  type: string
+  format: uuid
+example: 74af02ce-4e69-4ca1-a721-c0e19c9937b8

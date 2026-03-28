@@ -19,11 +19,271 @@
       "url": "http://api.egolia.localhost"
     }
   ],
-  "tags": [],
+  "tags": [
+    {
+      "name": "Checkout",
+      "description": "Checkout and payment creation"
+    },
+    {
+      "name": "Learner Billing",
+      "description": "Billing endpoints for learners"
+    },
+    {
+      "name": "Receipt",
+      "description": "Billing receipt retrieval"
+    },
+    {
+      "name": "Admin Billing",
+      "description": "Billing administration and analytics"
+    }
+  ],
   "externalDocs": {
     "url": "https://egolia-uit.github.io/egolia"
   },
-  "paths": {},
+  "paths": {
+    "/billing/checkout": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Checkout"
+        ],
+        "summary": "Checkout course",
+        "operationId": "checkoutCourse",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutCourseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checkout transaction created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/me/transactions": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Learner Billing"
+        ],
+        "summary": "Get learner billing history",
+        "operationId": "getLearnerBillingHistory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Learner billing history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionCollection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/transactions/{transactionId}/receipt": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Receipt"
+        ],
+        "summary": "Get transaction receipt detail",
+        "operationId": "getTransactionReceiptDetail",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/transactionIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Billing receipt detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/admin/analytics/revenue": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Admin Billing"
+        ],
+        "summary": "Get platform revenue analytics",
+        "operationId": "getPlatformRevenueAnalytics",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-01"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-31"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revenue analytics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevenueAnalytics"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/admin/transactions": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Admin Billing"
+        ],
+        "summary": "Get platform transaction history",
+        "operationId": "getPlatformTransactionHistory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/orderQuery"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by transaction status",
+            "schema": {
+              "$ref": "#/components/schemas/TransactionStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Platform transaction history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionCollection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
   "components": {
     "securitySchemes": {
       "Oauth2": {
@@ -43,6 +303,435 @@
             "x-scalar-credentials-location": "header"
           }
         }
+      }
+    },
+    "schemas": {
+      "CheckoutCourseRequest": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 499000
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "example": "VND"
+          }
+        },
+        "required": [
+          "courseId",
+          "amount",
+          "currency",
+          "paymentMethod"
+        ]
+      },
+      "id": {
+        "type": "string",
+        "format": "number",
+        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
+        "example": "100"
+      },
+      "TransactionStatus": {
+        "type": "string",
+        "description": "Current status of a billing transaction",
+        "enum": [
+          "pending",
+          "completed",
+          "failed"
+        ],
+        "example": "completed"
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+            "readOnly": true
+          },
+          "userId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "example": 499000
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "example": "VND"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransactionStatus"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:30:00Z",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "courseId",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "EXAMPLE_CODE"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Example error"
+          },
+          "more_info": {
+            "type": "string",
+            "description": "URL with more information about the error",
+            "example": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Current page number",
+            "minimum": 1,
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Number of items per page",
+            "minimum": 1,
+            "maximum": 100,
+            "example": 20
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of items",
+            "minimum": 0,
+            "example": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of pages",
+            "minimum": 0,
+            "example": 5
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Whether there is a next page",
+            "example": true
+          },
+          "hasPrev": {
+            "type": "boolean",
+            "description": "Whether there is a previous page",
+            "example": false
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages",
+          "hasNext",
+          "hasPrev"
+        ]
+      },
+      "TransactionCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Transaction"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "Receipt": {
+        "type": "object",
+        "properties": {
+          "transaction": {
+            "$ref": "#/components/schemas/Transaction"
+          },
+          "receiptNumber": {
+            "type": "string",
+            "example": "RCPT-20260325-0001"
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:35:00Z"
+          },
+          "billedTo": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "$ref": "#/components/schemas/id"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "learner@egolia.dev"
+              }
+            },
+            "required": [
+              "userId",
+              "email"
+            ]
+          }
+        },
+        "required": [
+          "transaction",
+          "receiptNumber",
+          "issuedAt",
+          "billedTo"
+        ]
+      },
+      "RevenueAnalytics": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-01"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-31"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "example": "VND"
+          },
+          "totalRevenue": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 152000000
+          },
+          "completedTransactions": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 421
+          },
+          "failedTransactions": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 9
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "currency",
+          "totalRevenue",
+          "completedTransactions",
+          "failedTransactions"
+        ]
+      }
+    },
+    "responses": {
+      "BadRequestError": {
+        "description": "Bad Request Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "BAD_REQUEST",
+              "message": "The request could not be understood by the server due to malformed syntax",
+              "more_info": "https://api.egolia.com/docs/errors/BAD_REQUEST"
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Unauthorized Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "The error response body returned when JWT validation or OPA authorization fails.",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "The category of the error encountered during the middleware lifecycle.",
+                  "enum": [
+                    "ExtractToken",
+                    "VerifyToken",
+                    "FetchJWKS",
+                    "OPA"
+                  ],
+                  "example": "ExtractToken"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "A descriptive message providing technical context for the failure.",
+                  "x-examples": [
+                    "token not found",
+                    "Authorization header is empty",
+                    "token is expired",
+                    "failed to fetch JWKS",
+                    "opa policy denied"
+                  ],
+                  "example": "token not found"
+                },
+                "custom_message": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "An optional, developer-defined message, often populated by OPA policy violations.",
+                  "example": "User does not have the required 'admin' role."
+                }
+              },
+              "required": [
+                "type",
+                "details",
+                "custom_message"
+              ]
+            }
+          }
+        }
+      },
+      "ForbiddenError": {
+        "description": "Forbidden Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "FORBIDDEN",
+              "message": "You do not have permission to access this resource",
+              "more_info": "https://api.egolia.com/docs/errors/FORBIDDEN"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "INTERNAL_SERVER_ERROR",
+              "message": "An internal server error occurred. Please try again later",
+              "more_info": "https://api.egolia.com/docs/errors/INTERNAL_SERVER_ERROR"
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Not Found Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "code": "NOT_FOUND",
+              "message": "The requested resource was not found",
+              "more_info": "https://api.egolia.com/docs/errors/NOT_FOUND"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "pageQuery": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "example": 1
+      },
+      "limitQuery": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "example": 20
+      },
+      "orderQuery": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "example": "desc"
+        }
+      },
+      "transactionIdPath": {
+        "name": "transactionId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the billing transaction",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
       }
     }
   }

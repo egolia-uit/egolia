@@ -38,6 +38,36 @@
       "name": "Test",
       "description": "Test",
       "x-displayName": "Test"
+    },
+    {
+      "name": "Checkout",
+      "description": "Checkout and payment creation",
+      "x-displayName": "Checkout"
+    },
+    {
+      "name": "Learner Billing",
+      "description": "Billing endpoints for learners",
+      "x-displayName": "Learner Billing"
+    },
+    {
+      "name": "Receipt",
+      "description": "Billing receipt retrieval",
+      "x-displayName": "Receipt"
+    },
+    {
+      "name": "Admin Billing",
+      "description": "Billing administration and analytics",
+      "x-displayName": "Admin Billing"
+    },
+    {
+      "name": "Post",
+      "description": "Blog post management",
+      "x-displayName": "Post"
+    },
+    {
+      "name": "Comment",
+      "description": "Post comments and replies",
+      "x-displayName": "Comment"
     }
   ],
   "externalDocs": {
@@ -415,40 +445,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "object",
-                      "x-go-type-name": "CourseDetailData",
-                      "properties": {
-                        "course": {
-                          "$ref": "#/components/schemas/Course"
-                        },
-                        "sections": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "x-go-type-name": "CourseDetailSectionItem",
-                            "properties": {
-                              "section": {
-                                "$ref": "#/components/schemas/Section"
-                              },
-                              "lessonIds": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                }
-                              }
-                            },
-                            "required": [
-                              "section",
-                              "lessonIds"
-                            ]
-                          }
-                        }
-                      },
-                      "required": [
-                        "course",
-                        "sections"
-                      ]
+                      "$ref": "#/components/schemas/CourseDetailData"
                     }
                   },
                   "required": [
@@ -934,13 +931,79 @@
         }
       }
     },
-    "/course/courses/{courseId}/landing": {
-      "get": {
+    "/course/courses/{courseId}/trigger-learning-reminder": {
+      "post": {
         "security": [
           {
             "Oauth2": []
           }
         ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Trigger learning reminder",
+        "operationId": "triggerLearningReminder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dryRun": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Learning reminder triggered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LearningReminder"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/landing": {
+      "get": {
+        "security": [],
         "tags": [
           "Course"
         ],
@@ -972,9 +1035,6 @@
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
@@ -1489,14 +1549,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/VideoLesson"
-                        },
-                        {
-                          "$ref": "#/components/schemas/TestLesson"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/LessonDetail"
                     }
                   },
                   "required": [
@@ -1584,14 +1637,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/VideoLesson"
-                        },
-                        {
-                          "$ref": "#/components/schemas/TestLesson"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/LessonDetail"
                     }
                   },
                   "required": [
@@ -1682,29 +1728,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "object",
-                      "x-go-type-name": "UploadVideoLessonUrlData",
-                      "required": [
-                        "uploadUrl",
-                        "objectKey",
-                        "expiresAt"
-                      ],
-                      "properties": {
-                        "uploadUrl": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://storage.egolia.localhost/upload/signed-url-token"
-                        },
-                        "objectKey": {
-                          "type": "string",
-                          "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
-                        },
-                        "expiresAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2026-03-22T10:30:00Z"
-                        }
-                      }
+                      "$ref": "#/components/schemas/UploadVideoUrlResponse"
                     }
                   },
                   "required": [
@@ -1767,58 +1791,7 @@
                     "type": "array",
                     "minItems": 1,
                     "items": {
-                      "type": "object",
-                      "x-go-type-name": "TestQuestion",
-                      "required": [
-                        "id",
-                        "question",
-                        "answers"
-                      ],
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
-                          "readOnly": true
-                        },
-                        "question": {
-                          "type": "string",
-                          "minLength": 1,
-                          "maxLength": 2000,
-                          "example": "Which principle of OOP enables exposing only essential behavior?"
-                        },
-                        "answers": {
-                          "type": "array",
-                          "minItems": 1,
-                          "items": {
-                            "type": "object",
-                            "x-go-type-name": "TestAnswer",
-                            "required": [
-                              "id",
-                              "content",
-                              "isCorrect"
-                            ],
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "format": "uuid",
-                                "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
-                                "readOnly": true
-                              },
-                              "content": {
-                                "type": "string",
-                                "minLength": 1,
-                                "maxLength": 1000,
-                                "example": "Encapsulation hides implementation details behind a stable API."
-                              },
-                              "isCorrect": {
-                                "type": "boolean",
-                                "example": true
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "$ref": "#/components/schemas/TestQuestion"
                     }
                   }
                 }
@@ -2304,6 +2277,714 @@
           }
         }
       }
+    },
+    "/billing/checkout": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Checkout"
+        ],
+        "summary": "Checkout course",
+        "operationId": "checkoutCourse",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutCourseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Checkout transaction created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/me/transactions": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Learner Billing"
+        ],
+        "summary": "Get learner billing history",
+        "operationId": "getLearnerBillingHistory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Learner billing history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionCollection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/transactions/{transactionId}/receipt": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Receipt"
+        ],
+        "summary": "Get transaction receipt detail",
+        "operationId": "getTransactionReceiptDetail",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/transactionIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Billing receipt detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/admin/analytics/revenue": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Admin Billing"
+        ],
+        "summary": "Get platform revenue analytics",
+        "operationId": "getPlatformRevenueAnalytics",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-01"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-03-31"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revenue analytics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevenueAnalytics"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/billing/admin/transactions": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Admin Billing"
+        ],
+        "summary": "Get platform transaction history",
+        "operationId": "getPlatformTransactionHistory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/orderQuery"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by transaction status",
+            "schema": {
+              "$ref": "#/components/schemas/TransactionStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Platform transaction history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionCollection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/blog/posts": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Post"
+        ],
+        "summary": "Search posts",
+        "operationId": "searchPosts",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Full-text keyword for post search",
+            "schema": {
+              "type": "string"
+            },
+            "example": "hoc tap hieu qua"
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "Filter posts by tag",
+            "schema": {
+              "type": "string"
+            },
+            "example": "learning"
+          },
+          {
+            "$ref": "#/components/parameters/pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matched blog posts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostCollection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Post"
+        ],
+        "summary": "Create post",
+        "operationId": "createPost",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Post created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/blog/posts/{postId}": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Post"
+        ],
+        "summary": "Get post detail",
+        "operationId": "getPostById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/postIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blog post detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Post"
+        ],
+        "summary": "Update post",
+        "operationId": "updatePost",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/postIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Post"
+        ],
+        "summary": "Delete post",
+        "operationId": "deletePost",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/postIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Post deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/blog/posts/{postId}/comments": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Get post comments",
+        "operationId": "getPostComments",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/postIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post comments with replies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentCollection"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Comment on post",
+        "operationId": "commentOnPost",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/postIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comment created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/blog/comments/{commentId}": {
+      "put": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Update comment",
+        "operationId": "updateComment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/commentIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Comment updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Delete comment",
+        "operationId": "deleteComment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/commentIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Comment deleted successfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/blog/comments/{commentId}/replies": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Reply comment",
+        "operationId": "replyComment",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/commentIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reply created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reply"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2487,6 +3168,43 @@
           "title"
         ]
       },
+      "CourseDetailSectionItem": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "$ref": "#/components/schemas/Section"
+          },
+          "lessonIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "section",
+          "lessonIds"
+        ]
+      },
+      "CourseDetailData": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "$ref": "#/components/schemas/Course"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseDetailSectionItem"
+            }
+          }
+        },
+        "required": [
+          "course",
+          "sections"
+        ]
+      },
       "Enrollment": {
         "type": "object",
         "properties": {
@@ -2657,6 +3375,30 @@
           "bookmarked"
         ]
       },
+      "LearningReminder": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "$ref": "#/components/schemas/properties-id"
+          },
+          "triggeredAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T10:30:00Z"
+          },
+          "notifiedLearners": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "example": 128
+          }
+        },
+        "required": [
+          "courseId",
+          "triggeredAt",
+          "notifiedLearners"
+        ]
+      },
       "title": {
         "type": "string",
         "example": "Introduction to Programming"
@@ -2766,6 +3508,61 @@
           }
         ]
       },
+      "TestAnswer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
+            "readOnly": true
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "example": "Encapsulation hides implementation details behind a stable API."
+          },
+          "isCorrect": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "content",
+          "isCorrect"
+        ]
+      },
+      "TestQuestion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
+            "readOnly": true
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "example": "Which principle of OOP enables exposing only essential behavior?"
+          },
+          "answers": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/TestAnswer"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "question",
+          "answers"
+        ]
+      },
       "TestLesson": {
         "allOf": [
           {
@@ -2790,61 +3587,45 @@
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "x-go-type-name": "TestQuestion",
-                  "required": [
-                    "id",
-                    "question",
-                    "answers"
-                  ],
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
-                      "readOnly": true
-                    },
-                    "question": {
-                      "type": "string",
-                      "minLength": 1,
-                      "maxLength": 2000,
-                      "example": "Which principle of OOP enables exposing only essential behavior?"
-                    },
-                    "answers": {
-                      "type": "array",
-                      "minItems": 1,
-                      "items": {
-                        "type": "object",
-                        "x-go-type-name": "TestAnswer",
-                        "required": [
-                          "id",
-                          "content",
-                          "isCorrect"
-                        ],
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid",
-                            "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
-                            "readOnly": true
-                          },
-                          "content": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 1000,
-                            "example": "Encapsulation hides implementation details behind a stable API."
-                          },
-                          "isCorrect": {
-                            "type": "boolean",
-                            "example": true
-                          }
-                        }
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/TestQuestion"
                 }
               }
             }
           }
+        ]
+      },
+      "LessonDetail": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/VideoLesson"
+          },
+          {
+            "$ref": "#/components/schemas/TestLesson"
+          }
+        ]
+      },
+      "UploadVideoUrlResponse": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://storage.egolia.localhost/upload/signed-url-token"
+          },
+          "objectKey": {
+            "type": "string",
+            "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-22T10:30:00Z"
+          }
+        },
+        "required": [
+          "uploadUrl",
+          "objectKey",
+          "expiresAt"
         ]
       },
       "TestLessonType": {
@@ -2937,6 +3718,481 @@
           "lessonId",
           "content",
           "createdAt"
+        ]
+      },
+      "CheckoutCourseRequest": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 499000
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "example": "VND"
+          }
+        },
+        "required": [
+          "courseId",
+          "amount",
+          "currency",
+          "paymentMethod"
+        ]
+      },
+      "TransactionStatus": {
+        "type": "string",
+        "description": "Current status of a billing transaction",
+        "enum": [
+          "pending",
+          "completed",
+          "failed"
+        ],
+        "example": "completed"
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+            "readOnly": true
+          },
+          "userId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "example": 499000
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "example": "VND"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransactionStatus"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:30:00Z",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "courseId",
+          "amount",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "TransactionCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Transaction"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "Receipt": {
+        "type": "object",
+        "properties": {
+          "transaction": {
+            "$ref": "#/components/schemas/Transaction"
+          },
+          "receiptNumber": {
+            "type": "string",
+            "example": "RCPT-20260325-0001"
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:35:00Z"
+          },
+          "billedTo": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "$ref": "#/components/schemas/id"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "learner@egolia.dev"
+              }
+            },
+            "required": [
+              "userId",
+              "email"
+            ]
+          }
+        },
+        "required": [
+          "transaction",
+          "receiptNumber",
+          "issuedAt",
+          "billedTo"
+        ]
+      },
+      "RevenueAnalytics": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-01"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-31"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 3,
+            "example": "VND"
+          },
+          "totalRevenue": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 152000000
+          },
+          "completedTransactions": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 421
+          },
+          "failedTransactions": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 9
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "currency",
+          "totalRevenue",
+          "completedTransactions",
+          "failedTransactions"
+        ]
+      },
+      "Post": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+            "readOnly": true
+          },
+          "authorId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "title": {
+            "type": "string",
+            "example": "Cach toi toi uu hanh trinh hoc tap"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "learning",
+              "productivity"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:00:00Z",
+            "readOnly": true
+          },
+          "commentCount": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 12,
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "authorId",
+          "title",
+          "content",
+          "tags",
+          "createdAt",
+          "commentCount"
+        ]
+      },
+      "PostCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Post"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "CreatePostRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Cach toi toi uu hanh trinh hoc tap"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "learning",
+              "productivity"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "content",
+          "tags"
+        ]
+      },
+      "UpdatePostRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Cach toi toi uu hanh trinh hoc tap"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "learning",
+              "productivity"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "content",
+          "tags"
+        ]
+      },
+      "Reply": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "d1a8eaf7-2b37-4d6d-970f-d61c8fe95654",
+            "readOnly": true
+          },
+          "authorId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Minh dong y voi y kien nay."
+          },
+          "parentCommentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T09:15:00Z",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "authorId",
+          "content",
+          "parentCommentId",
+          "createdAt"
+        ]
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+            "readOnly": true
+          },
+          "authorId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Bai viet nay rat huu ich."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T09:00:00Z",
+            "readOnly": true
+          },
+          "replies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Reply"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "authorId",
+          "content",
+          "createdAt",
+          "replies"
+        ]
+      },
+      "CommentCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "CreateCommentRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Cam on ban da chia se."
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "CommentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+            "readOnly": true
+          },
+          "authorId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Bai viet nay rat huu ich."
+          },
+          "parentCommentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "example": null,
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T09:00:00Z",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "authorId",
+          "content",
+          "parentCommentId",
+          "createdAt"
+        ]
+      },
+      "UpdateCommentRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Minh da cap nhat lai noi dung binh luan."
+          }
+        },
+        "required": [
+          "content"
         ]
       }
     },
@@ -3152,6 +4408,28 @@
           "format": "uuid",
           "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
         }
+      },
+      "transactionIdPath": {
+        "name": "transactionId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the billing transaction",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
+      },
+      "postIdPath": {
+        "name": "postId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the blog post",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "74af02ce-4e69-4ca1-a721-c0e19c9937b8"
       }
     }
   },
@@ -3162,7 +4440,13 @@
         "Course",
         "Section",
         "Lesson",
-        "Test"
+        "Test",
+        "Checkout",
+        "Learner Billing",
+        "Receipt",
+        "Admin Billing",
+        "Post",
+        "Comment"
       ]
     }
   ]
