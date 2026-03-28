@@ -78,6 +78,9 @@ type ServerInterface interface {
 	// Review course
 	// (POST /course/courses/{courseId}/reviews)
 	ReviewCourse(c *gin.Context, courseId CourseIdPath)
+	// Trigger learning reminder
+	// (POST /course/courses/{courseId}/trigger-learning-reminder)
+	TriggerLearningReminder(c *gin.Context, courseId CourseIdPath)
 	// Unbookmark course
 	// (POST /course/courses/{courseId}/unbookmark)
 	UnbookmarkCourse(c *gin.Context, courseId CourseIdPath)
@@ -694,8 +697,6 @@ func (siw *ServerInterfaceWrapper) GetCourseLandingPage(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
-
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -756,6 +757,32 @@ func (siw *ServerInterfaceWrapper) ReviewCourse(c *gin.Context) {
 	}
 
 	siw.Handler.ReviewCourse(c, courseId)
+}
+
+// TriggerLearningReminder operation middleware
+func (siw *ServerInterfaceWrapper) TriggerLearningReminder(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.TriggerLearningReminder(c, courseId)
 }
 
 // UnbookmarkCourse operation middleware
@@ -1173,6 +1200,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/course/courses/:courseId/landing", wrapper.GetCourseLandingPage)
 	router.GET(options.BaseURL+"/course/courses/:courseId/progress", wrapper.GetCourseProgress)
 	router.POST(options.BaseURL+"/course/courses/:courseId/reviews", wrapper.ReviewCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/trigger-learning-reminder", wrapper.TriggerLearningReminder)
 	router.POST(options.BaseURL+"/course/courses/:courseId/unbookmark", wrapper.UnbookmarkCourse)
 	router.POST(options.BaseURL+"/course/courses/:courseId/unhide", wrapper.UnhideCourse)
 	router.POST(options.BaseURL+"/course/lesson-comments/:commentId/reply", wrapper.ReplyLessonComment)
@@ -2284,15 +2312,6 @@ func (response GetCourseLandingPage400JSONResponse) VisitGetCourseLandingPageRes
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetCourseLandingPage401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetCourseLandingPage401JSONResponse) VisitGetCourseLandingPageResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
 type GetCourseLandingPage404JSONResponse struct{ NotFoundErrorJSONResponse }
 
 func (response GetCourseLandingPage404JSONResponse) VisitGetCourseLandingPageResponse(w http.ResponseWriter) error {
@@ -2440,6 +2459,73 @@ type ReviewCourse500JSONResponse struct {
 }
 
 func (response ReviewCourse500JSONResponse) VisitReviewCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type TriggerLearningReminderRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+	Body     *TriggerLearningReminderJSONRequestBody
+}
+
+type TriggerLearningReminderResponseObject interface {
+	VisitTriggerLearningReminderResponse(w http.ResponseWriter) error
+}
+
+type TriggerLearningReminder200JSONResponse struct {
+	Data LearningReminder `json:"data"`
+}
+
+func (response TriggerLearningReminder200JSONResponse) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type TriggerLearningReminder400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response TriggerLearningReminder400JSONResponse) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type TriggerLearningReminder401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response TriggerLearningReminder401JSONResponse) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type TriggerLearningReminder403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response TriggerLearningReminder403JSONResponse) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type TriggerLearningReminder404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response TriggerLearningReminder404JSONResponse) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type TriggerLearningReminder500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response TriggerLearningReminder500JSONResponse) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -2774,7 +2860,7 @@ type GetLessonDetailResponseObject interface {
 }
 
 type GetLessonDetail200JSONResponse struct {
-	Data GetLessonDetail200JSONResponse_Data `json:"data"`
+	Data LessonDetail `json:"data"`
 }
 
 func (response GetLessonDetail200JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
@@ -2841,7 +2927,7 @@ type EditLessonResponseObject interface {
 }
 
 type EditLesson200JSONResponse struct {
-	Data EditLesson200JSONResponse_Data `json:"data"`
+	Data LessonDetail `json:"data"`
 }
 
 func (response EditLesson200JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
@@ -3488,6 +3574,9 @@ type StrictServerInterface interface {
 	// Review course
 	// (POST /course/courses/{courseId}/reviews)
 	ReviewCourse(ctx context.Context, request ReviewCourseRequestObject) (ReviewCourseResponseObject, error)
+	// Trigger learning reminder
+	// (POST /course/courses/{courseId}/trigger-learning-reminder)
+	TriggerLearningReminder(ctx context.Context, request TriggerLearningReminderRequestObject) (TriggerLearningReminderResponseObject, error)
 	// Unbookmark course
 	// (POST /course/courses/{courseId}/unbookmark)
 	UnbookmarkCourse(ctx context.Context, request UnbookmarkCourseRequestObject) (UnbookmarkCourseResponseObject, error)
@@ -4125,6 +4214,44 @@ func (sh *strictHandler) ReviewCourse(ctx *gin.Context, courseId CourseIdPath) {
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(ReviewCourseResponseObject); ok {
 		if err := validResponse.VisitReviewCourseResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// TriggerLearningReminder operation middleware
+func (sh *strictHandler) TriggerLearningReminder(ctx *gin.Context, courseId CourseIdPath) {
+	var request TriggerLearningReminderRequestObject
+
+	request.CourseId = courseId
+
+	var body TriggerLearningReminderJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			ctx.Status(http.StatusBadRequest)
+			ctx.Error(err)
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.TriggerLearningReminder(ctx, request.(TriggerLearningReminderRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "TriggerLearningReminder")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(TriggerLearningReminderResponseObject); ok {
+		if err := validResponse.VisitTriggerLearningReminderResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

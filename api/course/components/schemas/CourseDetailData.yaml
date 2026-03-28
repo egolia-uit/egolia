@@ -1,0 +1,11 @@
+type: object
+properties:
+  course:
+    $ref: ./Course.yaml
+  sections:
+    type: array
+    items:
+      $ref: ./CourseDetailSectionItem.yaml
+required:
+  - course
+  - sections

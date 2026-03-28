@@ -1,0 +1,3 @@
+oneOf:
+  - $ref: ./VideoLesson.yaml
+  - $ref: ./TestLesson.yaml

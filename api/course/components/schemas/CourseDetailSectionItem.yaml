@@ -1,0 +1,12 @@
+type: object
+properties:
+  section:
+    $ref: ./Section.yaml
+  lessonIds:
+    type: array
+    items:
+      type: string
+      format: uuid
+required:
+  - section
+  - lessonIds

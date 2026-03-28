@@ -412,40 +412,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "object",
-                      "x-go-type-name": "CourseDetailData",
-                      "properties": {
-                        "course": {
-                          "$ref": "#/components/schemas/Course"
-                        },
-                        "sections": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "x-go-type-name": "CourseDetailSectionItem",
-                            "properties": {
-                              "section": {
-                                "$ref": "#/components/schemas/Section"
-                              },
-                              "lessonIds": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string",
-                                  "format": "uuid"
-                                }
-                              }
-                            },
-                            "required": [
-                              "section",
-                              "lessonIds"
-                            ]
-                          }
-                        }
-                      },
-                      "required": [
-                        "course",
-                        "sections"
-                      ]
+                      "$ref": "#/components/schemas/CourseDetailData"
                     }
                   },
                   "required": [
@@ -931,13 +898,79 @@
         }
       }
     },
-    "/course/courses/{courseId}/landing": {
-      "get": {
+    "/course/courses/{courseId}/trigger-learning-reminder": {
+      "post": {
         "security": [
           {
             "Oauth2": []
           }
         ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Trigger learning reminder",
+        "operationId": "triggerLearningReminder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dryRun": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Learning reminder triggered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/LearningReminder"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/landing": {
+      "get": {
+        "security": [],
         "tags": [
           "Course"
         ],
@@ -969,9 +1002,6 @@
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
           },
           "404": {
             "$ref": "#/components/responses/NotFoundError"
@@ -1486,14 +1516,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/VideoLesson"
-                        },
-                        {
-                          "$ref": "#/components/schemas/TestLesson"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/LessonDetail"
                     }
                   },
                   "required": [
@@ -1581,14 +1604,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/VideoLesson"
-                        },
-                        {
-                          "$ref": "#/components/schemas/TestLesson"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/LessonDetail"
                     }
                   },
                   "required": [
@@ -1679,29 +1695,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "object",
-                      "x-go-type-name": "UploadVideoUrlResponse",
-                      "required": [
-                        "uploadUrl",
-                        "objectKey",
-                        "expiresAt"
-                      ],
-                      "properties": {
-                        "uploadUrl": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://storage.egolia.localhost/upload/signed-url-token"
-                        },
-                        "objectKey": {
-                          "type": "string",
-                          "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
-                        },
-                        "expiresAt": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2026-03-22T10:30:00Z"
-                        }
-                      }
+                      "$ref": "#/components/schemas/UploadVideoUrlResponse"
                     }
                   },
                   "required": [
@@ -2433,6 +2427,43 @@
           "title"
         ]
       },
+      "CourseDetailSectionItem": {
+        "type": "object",
+        "properties": {
+          "section": {
+            "$ref": "#/components/schemas/Section"
+          },
+          "lessonIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "section",
+          "lessonIds"
+        ]
+      },
+      "CourseDetailData": {
+        "type": "object",
+        "properties": {
+          "course": {
+            "$ref": "#/components/schemas/Course"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourseDetailSectionItem"
+            }
+          }
+        },
+        "required": [
+          "course",
+          "sections"
+        ]
+      },
       "Enrollment": {
         "type": "object",
         "properties": {
@@ -2601,6 +2632,30 @@
           "courseId",
           "userId",
           "bookmarked"
+        ]
+      },
+      "LearningReminder": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "$ref": "#/components/schemas/properties-id"
+          },
+          "triggeredAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-24T10:30:00Z"
+          },
+          "notifiedLearners": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "example": 128
+          }
+        },
+        "required": [
+          "courseId",
+          "triggeredAt",
+          "notifiedLearners"
         ]
       },
       "title": {
@@ -2796,6 +2851,40 @@
               }
             }
           }
+        ]
+      },
+      "LessonDetail": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/VideoLesson"
+          },
+          {
+            "$ref": "#/components/schemas/TestLesson"
+          }
+        ]
+      },
+      "UploadVideoUrlResponse": {
+        "type": "object",
+        "properties": {
+          "uploadUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://storage.egolia.localhost/upload/signed-url-token"
+          },
+          "objectKey": {
+            "type": "string",
+            "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-22T10:30:00Z"
+          }
+        },
+        "required": [
+          "uploadUrl",
+          "objectKey",
+          "expiresAt"
         ]
       },
       "TestLessonType": {

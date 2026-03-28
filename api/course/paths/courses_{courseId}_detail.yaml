@@ -16,30 +16,7 @@ get:
             type: object
             properties:
               data:
-                type: object
-                x-go-type-name: CourseDetailData
-                properties:
-                  course:
-                    $ref: ../components/schemas/Course.yaml
-                  sections:
-                    type: array
-                    items:
-                      type: object
-                      x-go-type-name: CourseDetailSectionItem
-                      properties:
-                        section:
-                          $ref: ../components/schemas/Section.yaml
-                        lessonIds:
-                          type: array
-                          items:
-                            type: string
-                            format: uuid
-                      required:
-                        - section
-                        - lessonIds
-                required:
-                  - course
-                  - sections
+                $ref: ../components/schemas/CourseDetailData.yaml
             required:
               - data
     400:

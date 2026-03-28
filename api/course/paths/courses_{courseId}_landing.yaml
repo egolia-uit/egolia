@@ -1,6 +1,5 @@
 get:
-  security:
-    - Oauth2: []
+  security: []
   tags:
     - Course
   summary: Get course landing page
@@ -21,8 +20,6 @@ get:
               - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
-    401:
-      $ref: ../../common/components/responses/UnauthorizedError.yaml
     404:
       $ref: ../../common/components/responses/NotFoundError.yaml
     500:

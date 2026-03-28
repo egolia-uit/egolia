@@ -4,8 +4,10 @@
 package course
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -214,6 +216,18 @@ type Course struct {
 	Title        string       `json:"title"`
 }
 
+// CourseDetailData defines model for CourseDetailData.
+type CourseDetailData struct {
+	Course   Course                    `json:"course"`
+	Sections []CourseDetailSectionItem `json:"sections"`
+}
+
+// CourseDetailSectionItem defines model for CourseDetailSectionItem.
+type CourseDetailSectionItem struct {
+	LessonIds []openapi_types.UUID `json:"lessonIds"`
+	Section   Section              `json:"section"`
+}
+
 // CourseLandingPage defines model for CourseLandingPage.
 type CourseLandingPage struct {
 	Course CourseLandingPageCourse `json:"course"`
@@ -270,6 +284,13 @@ type Error struct {
 	MoreInfo *string `json:"more_info,omitempty"`
 }
 
+// LearningReminder defines model for LearningReminder.
+type LearningReminder struct {
+	CourseId         *PropertiesId `json:"courseId,omitempty"`
+	NotifiedLearners int32         `json:"notifiedLearners"`
+	TriggeredAt      time.Time     `json:"triggeredAt"`
+}
+
 // Lesson defines model for Lesson.
 type Lesson struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
@@ -285,6 +306,11 @@ type LessonComment struct {
 	LessonId        *LessonPropertiesId `json:"lessonId,omitempty"`
 	ParentCommentId *openapi_types.UUID `json:"parentCommentId,omitempty"`
 	UserId          openapi_types.UUID  `json:"userId"`
+}
+
+// LessonDetail defines model for LessonDetail.
+type LessonDetail struct {
+	union json.RawMessage
 }
 
 // LessonProgress defines model for LessonProgress.
@@ -359,6 +385,13 @@ type TestQuestion struct {
 	Answers  []TestAnswer        `json:"answers"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Question string              `json:"question"`
+}
+
+// UploadVideoUrlResponse defines model for UploadVideoUrlResponse.
+type UploadVideoUrlResponse struct {
+	ExpiresAt time.Time `json:"expiresAt"`
+	ObjectKey string    `json:"objectKey"`
+	UploadUrl string    `json:"uploadUrl"`
 }
 
 // VideoLesson defines model for VideoLesson.
@@ -545,6 +578,11 @@ type ReviewCourseJSONBody struct {
 	Rating  int32  `json:"rating"`
 }
 
+// TriggerLearningReminderJSONBody defines parameters for TriggerLearningReminder.
+type TriggerLearningReminderJSONBody struct {
+	DryRun *bool `json:"dryRun,omitempty"`
+}
+
 // ReplyLessonCommentJSONBody defines parameters for ReplyLessonComment.
 type ReplyLessonCommentJSONBody struct {
 	Content Content `json:"content"`
@@ -603,6 +641,9 @@ type EnrollInCourseJSONRequestBody EnrollInCourseJSONBody
 // ReviewCourseJSONRequestBody defines body for ReviewCourse for application/json ContentType.
 type ReviewCourseJSONRequestBody ReviewCourseJSONBody
 
+// TriggerLearningReminderJSONRequestBody defines body for TriggerLearningReminder for application/json ContentType.
+type TriggerLearningReminderJSONRequestBody TriggerLearningReminderJSONBody
+
 // ReplyLessonCommentJSONRequestBody defines body for ReplyLessonComment for application/json ContentType.
 type ReplyLessonCommentJSONRequestBody ReplyLessonCommentJSONBody
 
@@ -623,3 +664,65 @@ type CreateTestJSONRequestBody CreateTestJSONBody
 
 // CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
 type CreateSectionJSONRequestBody CreateSectionJSONBody
+
+// AsVideoLesson returns the union data inside the LessonDetail as a VideoLesson
+func (t LessonDetail) AsVideoLesson() (VideoLesson, error) {
+	var body VideoLesson
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromVideoLesson overwrites any union data inside the LessonDetail as the provided VideoLesson
+func (t *LessonDetail) FromVideoLesson(v VideoLesson) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeVideoLesson performs a merge with any union data inside the LessonDetail, using the provided VideoLesson
+func (t *LessonDetail) MergeVideoLesson(v VideoLesson) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsTestLesson returns the union data inside the LessonDetail as a TestLesson
+func (t LessonDetail) AsTestLesson() (TestLesson, error) {
+	var body TestLesson
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTestLesson overwrites any union data inside the LessonDetail as the provided TestLesson
+func (t *LessonDetail) FromTestLesson(v TestLesson) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTestLesson performs a merge with any union data inside the LessonDetail, using the provided TestLesson
+func (t *LessonDetail) MergeTestLesson(v TestLesson) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t LessonDetail) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *LessonDetail) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
