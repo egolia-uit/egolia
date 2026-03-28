@@ -330,8 +330,7 @@
         "required": [
           "courseId",
           "amount",
-          "currency",
-          "paymentMethod"
+          "currency"
         ]
       },
       "id": {
