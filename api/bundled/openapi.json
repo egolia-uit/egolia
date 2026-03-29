@@ -2105,7 +2105,7 @@
         "operationId": "replyLessonComment",
         "parameters": [
           {
-            "$ref": "#/components/parameters/commentIdPath"
+            "$ref": "#/components/parameters/lessonCommentIdPath"
           }
         ],
         "requestBody": {
@@ -3744,8 +3744,7 @@
         "required": [
           "courseId",
           "amount",
-          "currency",
-          "paymentMethod"
+          "currency"
         ]
       },
       "TransactionStatus": {
@@ -4389,10 +4388,11 @@
           "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
         }
       },
-      "commentIdPath": {
+      "lessonCommentIdPath": {
         "name": "commentId",
         "in": "path",
         "required": true,
+        "description": "Unique identifier of the lesson comment",
         "schema": {
           "type": "string",
           "format": "uuid",
@@ -4430,6 +4430,17 @@
           "format": "uuid"
         },
         "example": "74af02ce-4e69-4ca1-a721-c0e19c9937b8"
+      },
+      "commentIdPath": {
+        "name": "commentId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the post comment",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
       }
     }
   },

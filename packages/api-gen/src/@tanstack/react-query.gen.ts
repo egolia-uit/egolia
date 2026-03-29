@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { approveCourse, bookmarkCourse, changeBasicCourseInfo, commentOnLesson, createCourse, createLesson, createSection, createTest, declineCourse, deleteCourse, deleteLesson, deleteSection, editLesson, enrollInCourse, finishCourse, getCertificateById, getCourse, getCourseDetail, getCourseLandingPage, getCourseProgress, getInstructorCourses, getLessonDetail, getLessonProgress, getMyCertificates, getMyEnrolledCourses, getPublishedCourses, getSystemCourses, getUploadVideoLessonUrl, hideCourse, markLessonAsCompleted, type Options, replyLessonComment, reviewCourse, saveLessonProgress, unbookmarkCourse, unhideCourse } from '../sdk.gen';
-import type { ApproveCourseData, ApproveCourseError, ApproveCourseResponse, BookmarkCourseData, BookmarkCourseError, BookmarkCourseResponse, ChangeBasicCourseInfoData, ChangeBasicCourseInfoError, ChangeBasicCourseInfoResponse, CommentOnLessonData, CommentOnLessonError, CommentOnLessonResponse, CreateCourseData, CreateCourseError, CreateCourseResponse, CreateLessonData, CreateLessonError, CreateLessonResponse, CreateSectionData, CreateSectionError, CreateSectionResponse, CreateTestData, CreateTestError, CreateTestResponse, DeclineCourseData, DeclineCourseError, DeclineCourseResponse, DeleteCourseData, DeleteCourseError, DeleteCourseResponse, DeleteLessonData, DeleteLessonError, DeleteLessonResponse, DeleteSectionData, DeleteSectionError, DeleteSectionResponse, EditLessonData, EditLessonError, EditLessonResponse, EnrollInCourseData, EnrollInCourseError, EnrollInCourseResponse, FinishCourseData, FinishCourseError, FinishCourseResponse, GetCertificateByIdData, GetCertificateByIdError, GetCertificateByIdResponse, GetCourseData, GetCourseDetailData, GetCourseDetailError, GetCourseDetailResponse, GetCourseError, GetCourseLandingPageData, GetCourseLandingPageError, GetCourseLandingPageResponse, GetCourseProgressData, GetCourseProgressError, GetCourseProgressResponse, GetCourseResponse, GetInstructorCoursesData, GetInstructorCoursesError, GetInstructorCoursesResponse, GetLessonDetailData, GetLessonDetailError, GetLessonDetailResponse, GetLessonProgressData, GetLessonProgressError, GetLessonProgressResponse, GetMyCertificatesData, GetMyCertificatesError, GetMyCertificatesResponse, GetMyEnrolledCoursesData, GetMyEnrolledCoursesError, GetMyEnrolledCoursesResponse, GetPublishedCoursesData, GetPublishedCoursesError, GetPublishedCoursesResponse, GetSystemCoursesData, GetSystemCoursesError, GetSystemCoursesResponse, GetUploadVideoLessonUrlData, GetUploadVideoLessonUrlError, GetUploadVideoLessonUrlResponse, HideCourseData, HideCourseError, HideCourseResponse, MarkLessonAsCompletedData, MarkLessonAsCompletedError, MarkLessonAsCompletedResponse, ReplyLessonCommentData, ReplyLessonCommentError, ReplyLessonCommentResponse, ReviewCourseData, ReviewCourseError, ReviewCourseResponse, SaveLessonProgressData, SaveLessonProgressError, SaveLessonProgressResponse, UnbookmarkCourseData, UnbookmarkCourseError, UnbookmarkCourseResponse, UnhideCourseData, UnhideCourseError, UnhideCourseResponse } from '../types.gen';
+import { approveCourse, bookmarkCourse, changeBasicCourseInfo, checkoutCourse, commentOnLesson, commentOnPost, createCourse, createLesson, createPost, createSection, createTest, declineCourse, deleteComment, deleteCourse, deleteLesson, deletePost, deleteSection, editLesson, enrollInCourse, finishCourse, getCertificateById, getCourse, getCourseDetail, getCourseLandingPage, getCourseProgress, getInstructorCourses, getLearnerBillingHistory, getLessonDetail, getLessonProgress, getMyCertificates, getMyEnrolledCourses, getPlatformRevenueAnalytics, getPlatformTransactionHistory, getPostById, getPostComments, getPublishedCourses, getSystemCourses, getTransactionReceiptDetail, getUploadVideoLessonUrl, hideCourse, markLessonAsCompleted, type Options, replyComment, replyLessonComment, reviewCourse, saveLessonProgress, searchPosts, triggerLearningReminder, unbookmarkCourse, unhideCourse, updateComment, updatePost } from '../sdk.gen';
+import type { ApproveCourseData, ApproveCourseError, ApproveCourseResponse, BookmarkCourseData, BookmarkCourseError, BookmarkCourseResponse, ChangeBasicCourseInfoData, ChangeBasicCourseInfoError, ChangeBasicCourseInfoResponse, CheckoutCourseData, CheckoutCourseError, CheckoutCourseResponse, CommentOnLessonData, CommentOnLessonError, CommentOnLessonResponse, CommentOnPostData, CommentOnPostError, CommentOnPostResponse, CreateCourseData, CreateCourseError, CreateCourseResponse, CreateLessonData, CreateLessonError, CreateLessonResponse, CreatePostData, CreatePostError, CreatePostResponse, CreateSectionData, CreateSectionError, CreateSectionResponse, CreateTestData, CreateTestError, CreateTestResponse, DeclineCourseData, DeclineCourseError, DeclineCourseResponse, DeleteCommentData, DeleteCommentError, DeleteCommentResponse, DeleteCourseData, DeleteCourseError, DeleteCourseResponse, DeleteLessonData, DeleteLessonError, DeleteLessonResponse, DeletePostData, DeletePostError, DeletePostResponse, DeleteSectionData, DeleteSectionError, DeleteSectionResponse, EditLessonData, EditLessonError, EditLessonResponse, EnrollInCourseData, EnrollInCourseError, EnrollInCourseResponse, FinishCourseData, FinishCourseError, FinishCourseResponse, GetCertificateByIdData, GetCertificateByIdError, GetCertificateByIdResponse, GetCourseData, GetCourseDetailData, GetCourseDetailError, GetCourseDetailResponse, GetCourseError, GetCourseLandingPageData, GetCourseLandingPageError, GetCourseLandingPageResponse, GetCourseProgressData, GetCourseProgressError, GetCourseProgressResponse, GetCourseResponse, GetInstructorCoursesData, GetInstructorCoursesError, GetInstructorCoursesResponse, GetLearnerBillingHistoryData, GetLearnerBillingHistoryError, GetLearnerBillingHistoryResponse, GetLessonDetailData, GetLessonDetailError, GetLessonDetailResponse, GetLessonProgressData, GetLessonProgressError, GetLessonProgressResponse, GetMyCertificatesData, GetMyCertificatesError, GetMyCertificatesResponse, GetMyEnrolledCoursesData, GetMyEnrolledCoursesError, GetMyEnrolledCoursesResponse, GetPlatformRevenueAnalyticsData, GetPlatformRevenueAnalyticsError, GetPlatformRevenueAnalyticsResponse, GetPlatformTransactionHistoryData, GetPlatformTransactionHistoryError, GetPlatformTransactionHistoryResponse, GetPostByIdData, GetPostByIdError, GetPostByIdResponse, GetPostCommentsData, GetPostCommentsError, GetPostCommentsResponse, GetPublishedCoursesData, GetPublishedCoursesError, GetPublishedCoursesResponse, GetSystemCoursesData, GetSystemCoursesError, GetSystemCoursesResponse, GetTransactionReceiptDetailData, GetTransactionReceiptDetailError, GetTransactionReceiptDetailResponse, GetUploadVideoLessonUrlData, GetUploadVideoLessonUrlError, GetUploadVideoLessonUrlResponse, HideCourseData, HideCourseError, HideCourseResponse, MarkLessonAsCompletedData, MarkLessonAsCompletedError, MarkLessonAsCompletedResponse, ReplyCommentData, ReplyCommentError, ReplyCommentResponse, ReplyLessonCommentData, ReplyLessonCommentError, ReplyLessonCommentResponse, ReviewCourseData, ReviewCourseError, ReviewCourseResponse, SaveLessonProgressData, SaveLessonProgressError, SaveLessonProgressResponse, SearchPostsData, SearchPostsError, SearchPostsResponse, TriggerLearningReminderData, TriggerLearningReminderError, TriggerLearningReminderResponse, UnbookmarkCourseData, UnbookmarkCourseError, UnbookmarkCourseResponse, UnhideCourseData, UnhideCourseError, UnhideCourseResponse, UpdateCommentData, UpdateCommentError, UpdateCommentResponse, UpdatePostData, UpdatePostError, UpdatePostResponse } from '../types.gen';
 
 /**
  * Create course
@@ -383,6 +383,23 @@ export const unbookmarkCourseMutation = (options?: Partial<Options<UnbookmarkCou
     const mutationOptions: UseMutationOptions<UnbookmarkCourseResponse, UnbookmarkCourseError, Options<UnbookmarkCourseData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await unbookmarkCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Trigger learning reminder
+ */
+export const triggerLearningReminderMutation = (options?: Partial<Options<TriggerLearningReminderData>>): UseMutationOptions<TriggerLearningReminderResponse, TriggerLearningReminderError, Options<TriggerLearningReminderData>> => {
+    const mutationOptions: UseMutationOptions<TriggerLearningReminderResponse, TriggerLearningReminderError, Options<TriggerLearningReminderData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await triggerLearningReminder({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -810,3 +827,346 @@ export const getCertificateByIdOptions = (options: Options<GetCertificateByIdDat
     },
     queryKey: getCertificateByIdQueryKey(options)
 });
+
+/**
+ * Checkout course
+ */
+export const checkoutCourseMutation = (options?: Partial<Options<CheckoutCourseData>>): UseMutationOptions<CheckoutCourseResponse, CheckoutCourseError, Options<CheckoutCourseData>> => {
+    const mutationOptions: UseMutationOptions<CheckoutCourseResponse, CheckoutCourseError, Options<CheckoutCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await checkoutCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getLearnerBillingHistoryQueryKey = (options?: Options<GetLearnerBillingHistoryData>) => createQueryKey('getLearnerBillingHistory', options);
+
+/**
+ * Get learner billing history
+ */
+export const getLearnerBillingHistoryOptions = (options?: Options<GetLearnerBillingHistoryData>) => queryOptions<GetLearnerBillingHistoryResponse, GetLearnerBillingHistoryError, GetLearnerBillingHistoryResponse, ReturnType<typeof getLearnerBillingHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getLearnerBillingHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getLearnerBillingHistoryQueryKey(options)
+});
+
+export const getLearnerBillingHistoryInfiniteQueryKey = (options?: Options<GetLearnerBillingHistoryData>): QueryKey<Options<GetLearnerBillingHistoryData>> => createQueryKey('getLearnerBillingHistory', options, true);
+
+/**
+ * Get learner billing history
+ */
+export const getLearnerBillingHistoryInfiniteOptions = (options?: Options<GetLearnerBillingHistoryData>) => infiniteQueryOptions<GetLearnerBillingHistoryResponse, GetLearnerBillingHistoryError, InfiniteData<GetLearnerBillingHistoryResponse>, QueryKey<Options<GetLearnerBillingHistoryData>>, number | Pick<QueryKey<Options<GetLearnerBillingHistoryData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetLearnerBillingHistoryData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getLearnerBillingHistory({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getLearnerBillingHistoryInfiniteQueryKey(options)
+});
+
+export const getTransactionReceiptDetailQueryKey = (options: Options<GetTransactionReceiptDetailData>) => createQueryKey('getTransactionReceiptDetail', options);
+
+/**
+ * Get transaction receipt detail
+ */
+export const getTransactionReceiptDetailOptions = (options: Options<GetTransactionReceiptDetailData>) => queryOptions<GetTransactionReceiptDetailResponse, GetTransactionReceiptDetailError, GetTransactionReceiptDetailResponse, ReturnType<typeof getTransactionReceiptDetailQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getTransactionReceiptDetail({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getTransactionReceiptDetailQueryKey(options)
+});
+
+export const getPlatformRevenueAnalyticsQueryKey = (options: Options<GetPlatformRevenueAnalyticsData>) => createQueryKey('getPlatformRevenueAnalytics', options);
+
+/**
+ * Get platform revenue analytics
+ */
+export const getPlatformRevenueAnalyticsOptions = (options: Options<GetPlatformRevenueAnalyticsData>) => queryOptions<GetPlatformRevenueAnalyticsResponse, GetPlatformRevenueAnalyticsError, GetPlatformRevenueAnalyticsResponse, ReturnType<typeof getPlatformRevenueAnalyticsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPlatformRevenueAnalytics({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPlatformRevenueAnalyticsQueryKey(options)
+});
+
+export const getPlatformTransactionHistoryQueryKey = (options?: Options<GetPlatformTransactionHistoryData>) => createQueryKey('getPlatformTransactionHistory', options);
+
+/**
+ * Get platform transaction history
+ */
+export const getPlatformTransactionHistoryOptions = (options?: Options<GetPlatformTransactionHistoryData>) => queryOptions<GetPlatformTransactionHistoryResponse, GetPlatformTransactionHistoryError, GetPlatformTransactionHistoryResponse, ReturnType<typeof getPlatformTransactionHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPlatformTransactionHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPlatformTransactionHistoryQueryKey(options)
+});
+
+export const getPlatformTransactionHistoryInfiniteQueryKey = (options?: Options<GetPlatformTransactionHistoryData>): QueryKey<Options<GetPlatformTransactionHistoryData>> => createQueryKey('getPlatformTransactionHistory', options, true);
+
+/**
+ * Get platform transaction history
+ */
+export const getPlatformTransactionHistoryInfiniteOptions = (options?: Options<GetPlatformTransactionHistoryData>) => infiniteQueryOptions<GetPlatformTransactionHistoryResponse, GetPlatformTransactionHistoryError, InfiniteData<GetPlatformTransactionHistoryResponse>, QueryKey<Options<GetPlatformTransactionHistoryData>>, number | Pick<QueryKey<Options<GetPlatformTransactionHistoryData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetPlatformTransactionHistoryData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getPlatformTransactionHistory({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPlatformTransactionHistoryInfiniteQueryKey(options)
+});
+
+export const searchPostsQueryKey = (options?: Options<SearchPostsData>) => createQueryKey('searchPosts', options);
+
+/**
+ * Search posts
+ */
+export const searchPostsOptions = (options?: Options<SearchPostsData>) => queryOptions<SearchPostsResponse, SearchPostsError, SearchPostsResponse, ReturnType<typeof searchPostsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await searchPosts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchPostsQueryKey(options)
+});
+
+export const searchPostsInfiniteQueryKey = (options?: Options<SearchPostsData>): QueryKey<Options<SearchPostsData>> => createQueryKey('searchPosts', options, true);
+
+/**
+ * Search posts
+ */
+export const searchPostsInfiniteOptions = (options?: Options<SearchPostsData>) => infiniteQueryOptions<SearchPostsResponse, SearchPostsError, InfiniteData<SearchPostsResponse>, QueryKey<Options<SearchPostsData>>, number | Pick<QueryKey<Options<SearchPostsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<SearchPostsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await searchPosts({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchPostsInfiniteQueryKey(options)
+});
+
+/**
+ * Create post
+ */
+export const createPostMutation = (options?: Partial<Options<CreatePostData>>): UseMutationOptions<CreatePostResponse, CreatePostError, Options<CreatePostData>> => {
+    const mutationOptions: UseMutationOptions<CreatePostResponse, CreatePostError, Options<CreatePostData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createPost({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete post
+ */
+export const deletePostMutation = (options?: Partial<Options<DeletePostData>>): UseMutationOptions<DeletePostResponse, DeletePostError, Options<DeletePostData>> => {
+    const mutationOptions: UseMutationOptions<DeletePostResponse, DeletePostError, Options<DeletePostData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deletePost({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getPostByIdQueryKey = (options: Options<GetPostByIdData>) => createQueryKey('getPostById', options);
+
+/**
+ * Get post detail
+ */
+export const getPostByIdOptions = (options: Options<GetPostByIdData>) => queryOptions<GetPostByIdResponse, GetPostByIdError, GetPostByIdResponse, ReturnType<typeof getPostByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPostById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPostByIdQueryKey(options)
+});
+
+/**
+ * Update post
+ */
+export const updatePostMutation = (options?: Partial<Options<UpdatePostData>>): UseMutationOptions<UpdatePostResponse, UpdatePostError, Options<UpdatePostData>> => {
+    const mutationOptions: UseMutationOptions<UpdatePostResponse, UpdatePostError, Options<UpdatePostData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updatePost({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getPostCommentsQueryKey = (options: Options<GetPostCommentsData>) => createQueryKey('getPostComments', options);
+
+/**
+ * Get post comments
+ */
+export const getPostCommentsOptions = (options: Options<GetPostCommentsData>) => queryOptions<GetPostCommentsResponse, GetPostCommentsError, GetPostCommentsResponse, ReturnType<typeof getPostCommentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPostComments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPostCommentsQueryKey(options)
+});
+
+/**
+ * Comment on post
+ */
+export const commentOnPostMutation = (options?: Partial<Options<CommentOnPostData>>): UseMutationOptions<CommentOnPostResponse, CommentOnPostError, Options<CommentOnPostData>> => {
+    const mutationOptions: UseMutationOptions<CommentOnPostResponse, CommentOnPostError, Options<CommentOnPostData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await commentOnPost({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete comment
+ */
+export const deleteCommentMutation = (options?: Partial<Options<DeleteCommentData>>): UseMutationOptions<DeleteCommentResponse, DeleteCommentError, Options<DeleteCommentData>> => {
+    const mutationOptions: UseMutationOptions<DeleteCommentResponse, DeleteCommentError, Options<DeleteCommentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteComment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update comment
+ */
+export const updateCommentMutation = (options?: Partial<Options<UpdateCommentData>>): UseMutationOptions<UpdateCommentResponse, UpdateCommentError, Options<UpdateCommentData>> => {
+    const mutationOptions: UseMutationOptions<UpdateCommentResponse, UpdateCommentError, Options<UpdateCommentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateComment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reply comment
+ */
+export const replyCommentMutation = (options?: Partial<Options<ReplyCommentData>>): UseMutationOptions<ReplyCommentResponse, ReplyCommentError, Options<ReplyCommentData>> => {
+    const mutationOptions: UseMutationOptions<ReplyCommentResponse, ReplyCommentError, Options<ReplyCommentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await replyComment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

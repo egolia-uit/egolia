@@ -89,7 +89,7 @@ type ServerInterface interface {
 	UnhideCourse(c *gin.Context, courseId CourseIdPath)
 	// Reply lesson comment
 	// (POST /course/lesson-comments/{commentId}/reply)
-	ReplyLessonComment(c *gin.Context, commentId CommentIdPath)
+	ReplyLessonComment(c *gin.Context, commentId LessonCommentIdPath)
 	// Create lesson
 	// (POST /course/lessons)
 	CreateLesson(c *gin.Context)
@@ -843,7 +843,7 @@ func (siw *ServerInterfaceWrapper) ReplyLessonComment(c *gin.Context) {
 	var err error
 
 	// ------------- Path parameter "commentId" -------------
-	var commentId CommentIdPath
+	var commentId LessonCommentIdPath
 
 	err = runtime.BindStyledParameterWithOptions("simple", "commentId", c.Param("commentId"), &commentId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
 	if err != nil {
@@ -2665,7 +2665,7 @@ func (response UnhideCourse500JSONResponse) VisitUnhideCourseResponse(w http.Res
 }
 
 type ReplyLessonCommentRequestObject struct {
-	CommentId CommentIdPath `json:"commentId"`
+	CommentId LessonCommentIdPath `json:"commentId"`
 	Body      *ReplyLessonCommentJSONRequestBody
 }
 
@@ -4314,7 +4314,7 @@ func (sh *strictHandler) UnhideCourse(ctx *gin.Context, courseId CourseIdPath) {
 }
 
 // ReplyLessonComment operation middleware
-func (sh *strictHandler) ReplyLessonComment(ctx *gin.Context, commentId CommentIdPath) {
+func (sh *strictHandler) ReplyLessonComment(ctx *gin.Context, commentId LessonCommentIdPath) {
 	var request ReplyLessonCommentRequestObject
 
 	request.CommentId = commentId

@@ -421,14 +421,14 @@ type Title = string
 // CertificateIdPath defines model for certificateIdPath.
 type CertificateIdPath = openapi_types.UUID
 
-// CommentIdPath defines model for commentIdPath.
-type CommentIdPath = openapi_types.UUID
-
 // CourseIdPath defines model for courseIdPath.
 type CourseIdPath = PropertiesId
 
 // InstructorIdPath defines model for instructorIdPath.
 type InstructorIdPath = openapi_types.UUID
+
+// LessonCommentIdPath defines model for lessonCommentIdPath.
+type LessonCommentIdPath = openapi_types.UUID
 
 // LessonIdPath defines model for lessonIdPath.
 type LessonIdPath = openapi_types.UUID

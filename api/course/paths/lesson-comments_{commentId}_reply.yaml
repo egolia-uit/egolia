@@ -6,7 +6,7 @@ post:
   summary: Reply lesson comment
   operationId: replyLessonComment
   parameters:
-    - $ref: ../components/parameters/commentIdPath.yaml
+    - $ref: ../components/parameters/lessonCommentIdPath.yaml
   requestBody:
     required: true
     content:

@@ -2072,7 +2072,7 @@
         "operationId": "replyLessonComment",
         "parameters": [
           {
-            "$ref": "#/components/parameters/commentIdPath"
+            "$ref": "#/components/parameters/lessonCommentIdPath"
           }
         ],
         "requestBody": {
@@ -3173,16 +3173,16 @@
           "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
         }
       },
-      "commentIdPath": {
+      "lessonCommentIdPath": {
         "name": "commentId",
         "in": "path",
         "required": true,
-        "description": "Unique identifier of the comment",
+        "description": "Unique identifier of the lesson comment",
         "schema": {
           "type": "string",
-          "format": "uuid"
-        },
-        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
+          "format": "uuid",
+          "example": "8fd4f406-583d-4cd5-9c24-23c490a06711"
+        }
       },
       "certificateIdPath": {
         "name": "certificateId",
