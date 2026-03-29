@@ -4,6 +4,10 @@
 package course
 
 import (
+	"encoding/json"
+	"time"
+
+	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -13,22 +17,22 @@ const (
 
 // Defines values for CourseStatus.
 const (
-	Approved  CourseStatus = "approved"
-	Archived  CourseStatus = "archived"
-	Draft     CourseStatus = "draft"
-	Published CourseStatus = "published"
+	CourseStatusApproved  CourseStatus = "approved"
+	CourseStatusArchived  CourseStatus = "archived"
+	CourseStatusDraft     CourseStatus = "draft"
+	CourseStatusPublished CourseStatus = "published"
 )
 
 // Valid indicates whether the value is a known member of the CourseStatus enum.
 func (e CourseStatus) Valid() bool {
 	switch e {
-	case Approved:
+	case CourseStatusApproved:
 		return true
-	case Archived:
+	case CourseStatusArchived:
 		return true
-	case Draft:
+	case CourseStatusDraft:
 		return true
-	case Published:
+	case CourseStatusPublished:
 		return true
 	default:
 		return false
@@ -37,16 +41,34 @@ func (e CourseStatus) Valid() bool {
 
 // Defines values for TestLessonType.
 const (
-	MultipleChoice TestLessonType = "multipleChoice"
-	SingleChoice   TestLessonType = "singleChoice"
+	TestLessonTypeMultipleChoice TestLessonType = "multipleChoice"
+	TestLessonTypeSingleChoice   TestLessonType = "singleChoice"
 )
 
 // Valid indicates whether the value is a known member of the TestLessonType enum.
 func (e TestLessonType) Valid() bool {
 	switch e {
-	case MultipleChoice:
+	case TestLessonTypeMultipleChoice:
 		return true
-	case SingleChoice:
+	case TestLessonTypeSingleChoice:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for OrderQuery.
+const (
+	OrderQueryAsc  OrderQuery = "asc"
+	OrderQueryDesc OrderQuery = "desc"
+)
+
+// Valid indicates whether the value is a known member of the OrderQuery enum.
+func (e OrderQuery) Valid() bool {
+	switch e {
+	case OrderQueryAsc:
+		return true
+	case OrderQueryDesc:
 		return true
 	default:
 		return false
@@ -55,26 +77,131 @@ func (e TestLessonType) Valid() bool {
 
 // Defines values for UnauthorizedErrorType.
 const (
-	ExtractToken UnauthorizedErrorType = "ExtractToken"
-	FetchJWKS    UnauthorizedErrorType = "FetchJWKS"
-	OPA          UnauthorizedErrorType = "OPA"
-	VerifyToken  UnauthorizedErrorType = "VerifyToken"
+	UnauthorizedErrorTypeExtractToken UnauthorizedErrorType = "ExtractToken"
+	UnauthorizedErrorTypeFetchJWKS    UnauthorizedErrorType = "FetchJWKS"
+	UnauthorizedErrorTypeOPA          UnauthorizedErrorType = "OPA"
+	UnauthorizedErrorTypeVerifyToken  UnauthorizedErrorType = "VerifyToken"
 )
 
 // Valid indicates whether the value is a known member of the UnauthorizedErrorType enum.
 func (e UnauthorizedErrorType) Valid() bool {
 	switch e {
-	case ExtractToken:
+	case UnauthorizedErrorTypeExtractToken:
 		return true
-	case FetchJWKS:
+	case UnauthorizedErrorTypeFetchJWKS:
 		return true
-	case OPA:
+	case UnauthorizedErrorTypeOPA:
 		return true
-	case VerifyToken:
+	case UnauthorizedErrorTypeVerifyToken:
 		return true
 	default:
 		return false
 	}
+}
+
+// Defines values for GetMyCertificatesParamsOrder.
+const (
+	GetMyCertificatesParamsOrderAsc  GetMyCertificatesParamsOrder = "asc"
+	GetMyCertificatesParamsOrderDesc GetMyCertificatesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetMyCertificatesParamsOrder enum.
+func (e GetMyCertificatesParamsOrder) Valid() bool {
+	switch e {
+	case GetMyCertificatesParamsOrderAsc:
+		return true
+	case GetMyCertificatesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetInstructorCoursesParamsOrder.
+const (
+	GetInstructorCoursesParamsOrderAsc  GetInstructorCoursesParamsOrder = "asc"
+	GetInstructorCoursesParamsOrderDesc GetInstructorCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetInstructorCoursesParamsOrder enum.
+func (e GetInstructorCoursesParamsOrder) Valid() bool {
+	switch e {
+	case GetInstructorCoursesParamsOrderAsc:
+		return true
+	case GetInstructorCoursesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetMyEnrolledCoursesParamsOrder.
+const (
+	GetMyEnrolledCoursesParamsOrderAsc  GetMyEnrolledCoursesParamsOrder = "asc"
+	GetMyEnrolledCoursesParamsOrderDesc GetMyEnrolledCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetMyEnrolledCoursesParamsOrder enum.
+func (e GetMyEnrolledCoursesParamsOrder) Valid() bool {
+	switch e {
+	case GetMyEnrolledCoursesParamsOrderAsc:
+		return true
+	case GetMyEnrolledCoursesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetPublishedCoursesParamsOrder.
+const (
+	GetPublishedCoursesParamsOrderAsc  GetPublishedCoursesParamsOrder = "asc"
+	GetPublishedCoursesParamsOrderDesc GetPublishedCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetPublishedCoursesParamsOrder enum.
+func (e GetPublishedCoursesParamsOrder) Valid() bool {
+	switch e {
+	case GetPublishedCoursesParamsOrderAsc:
+		return true
+	case GetPublishedCoursesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetSystemCoursesParamsOrder.
+const (
+	GetSystemCoursesParamsOrderAsc  GetSystemCoursesParamsOrder = "asc"
+	GetSystemCoursesParamsOrderDesc GetSystemCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetSystemCoursesParamsOrder enum.
+func (e GetSystemCoursesParamsOrder) Valid() bool {
+	switch e {
+	case GetSystemCoursesParamsOrderAsc:
+		return true
+	case GetSystemCoursesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// BookmarkState defines model for BookmarkState.
+type BookmarkState struct {
+	Bookmarked bool               `json:"bookmarked"`
+	CourseId   *PropertiesId      `json:"courseId,omitempty"`
+	UserId     openapi_types.UUID `json:"userId"`
+}
+
+// Certificate defines model for Certificate.
+type Certificate struct {
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	IssuedAt time.Time           `json:"issuedAt"`
+	UserId   openapi_types.UUID  `json:"userId"`
 }
 
 // Course defines model for Course.
@@ -89,8 +216,61 @@ type Course struct {
 	Title        string       `json:"title"`
 }
 
-// CourseStatus defines model for Course.Status.
+// CourseDetailData defines model for CourseDetailData.
+type CourseDetailData struct {
+	Course   Course                    `json:"course"`
+	Sections []CourseDetailSectionItem `json:"sections"`
+}
+
+// CourseDetailSectionItem defines model for CourseDetailSectionItem.
+type CourseDetailSectionItem struct {
+	LessonIds []openapi_types.UUID `json:"lessonIds"`
+	Section   Section              `json:"section"`
+}
+
+// CourseLandingPage defines model for CourseLandingPage.
+type CourseLandingPage struct {
+	Course CourseLandingPageCourse `json:"course"`
+}
+
+// CourseLandingPageIntroduction defines model for .
+type CourseLandingPageIntroduction struct {
+	VideoUrl string `json:"videoUrl"`
+}
+
+// CourseLandingPageCourse defines model for .
+type CourseLandingPageCourse struct {
+	Id *PropertiesId `json:"id,omitempty"`
+
+	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	InstructorId Id                            `json:"instructorId"`
+	Introduction CourseLandingPageIntroduction `json:"introduction"`
+	Overview     string                        `json:"overview"`
+	Slug         Slug                          `json:"slug"`
+	Title        Title                         `json:"title"`
+}
+
+// CourseProgress defines model for CourseProgress.
+type CourseProgress struct {
+	CompletedLessons int32              `json:"completedLessons"`
+	CourseId         *PropertiesId      `json:"courseId,omitempty"`
+	IsCompleted      bool               `json:"isCompleted"`
+	ProgressPercent  float32            `json:"progressPercent"`
+	TotalLessons     int32              `json:"totalLessons"`
+	UserId           openapi_types.UUID `json:"userId"`
+}
+
+// CourseStatus defines model for CourseStatus.
 type CourseStatus string
+
+// Enrollment defines model for Enrollment.
+type Enrollment struct {
+	CompletedAt    *time.Time          `json:"completedAt,omitempty"`
+	CourseId       *PropertiesId       `json:"courseId,omitempty"`
+	EnrollmentDate time.Time           `json:"enrollmentDate"`
+	Id             *openapi_types.UUID `json:"id,omitempty"`
+	UserId         openapi_types.UUID  `json:"userId"`
+}
 
 // Error defines model for Error.
 type Error struct {
@@ -104,53 +284,127 @@ type Error struct {
 	MoreInfo *string `json:"more_info,omitempty"`
 }
 
+// LearningReminder defines model for LearningReminder.
+type LearningReminder struct {
+	CourseId         *PropertiesId `json:"courseId,omitempty"`
+	NotifiedLearners int32         `json:"notifiedLearners"`
+	TriggeredAt      time.Time     `json:"triggeredAt"`
+}
+
 // Lesson defines model for Lesson.
 type Lesson struct {
-	CourseId         *PropertiesId       `json:"courseId,omitempty"`
-	Id               *openapi_types.UUID `json:"id,omitempty"`
-	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
-	Title            string              `json:"title"`
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Title    string              `json:"title"`
+}
+
+// LessonComment defines model for LessonComment.
+type LessonComment struct {
+	Content         string              `json:"content"`
+	CreatedAt       time.Time           `json:"createdAt"`
+	Id              *openapi_types.UUID `json:"id,omitempty"`
+	LessonId        *LessonPropertiesId `json:"lessonId,omitempty"`
+	ParentCommentId *openapi_types.UUID `json:"parentCommentId,omitempty"`
+	UserId          openapi_types.UUID  `json:"userId"`
+}
+
+// LessonDetail defines model for LessonDetail.
+type LessonDetail struct {
+	union json.RawMessage
+}
+
+// LessonProgress defines model for LessonProgress.
+type LessonProgress struct {
+	Id          *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted bool                `json:"isCompleted"`
+	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
+	UserId      openapi_types.UUID  `json:"userId"`
 }
 
 // LessonPropertiesId defines model for Lesson_properties-id.
 type LessonPropertiesId = openapi_types.UUID
 
-// TestLesson defines model for TestLesson.
-type TestLesson struct {
-	CourseId         *PropertiesId       `json:"courseId,omitempty"`
-	Id               *openapi_types.UUID `json:"id,omitempty"`
-	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
-	Questions        []TestQuestion      `json:"questions"`
-	Title            string              `json:"title"`
-	Type             TestLessonType      `json:"type"`
+// Pagination defines model for Pagination.
+type Pagination struct {
+	// HasNext Whether there is a next page
+	HasNext bool `json:"hasNext"`
+
+	// HasPrev Whether there is a previous page
+	HasPrev bool `json:"hasPrev"`
+
+	// Limit Number of items per page
+	Limit int `json:"limit"`
+
+	// Page Current page number
+	Page int `json:"page"`
+
+	// Total Total number of items
+	Total int `json:"total"`
+
+	// TotalPages Total number of pages
+	TotalPages int `json:"totalPages"`
 }
 
-// TestAnswer defines model for .
+// Review defines model for Review.
+type Review struct {
+	Comment  string              `json:"comment"`
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Rating   int32               `json:"rating"`
+	UserId   string              `json:"userId"`
+}
+
+// Section defines model for Section.
+type Section struct {
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Title    string              `json:"title"`
+}
+
+// TestAnswer defines model for TestAnswer.
 type TestAnswer struct {
 	Content   string              `json:"content"`
 	Id        *openapi_types.UUID `json:"id,omitempty"`
 	IsCorrect bool                `json:"isCorrect"`
 }
 
-// TestQuestion defines model for .
+// TestLesson defines model for TestLesson.
+type TestLesson struct {
+	CourseId  *PropertiesId       `json:"courseId,omitempty"`
+	Id        *openapi_types.UUID `json:"id,omitempty"`
+	Questions []TestQuestion      `json:"questions"`
+	Title     string              `json:"title"`
+	Type      TestLessonType      `json:"type"`
+}
+
+// TestLessonType defines model for TestLesson.Type.
+type TestLessonType string
+
+// TestQuestion defines model for TestQuestion.
 type TestQuestion struct {
 	Answers  []TestAnswer        `json:"answers"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Question string              `json:"question"`
 }
 
-// TestLessonType defines model for TestLesson.Type.
-type TestLessonType string
+// UploadVideoUrlResponse defines model for UploadVideoUrlResponse.
+type UploadVideoUrlResponse struct {
+	ExpiresAt time.Time `json:"expiresAt"`
+	ObjectKey string    `json:"objectKey"`
+	UploadUrl string    `json:"uploadUrl"`
+}
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	CourseId         *PropertiesId       `json:"courseId,omitempty"`
-	Duration         int64               `json:"duration"`
-	Id               *openapi_types.UUID `json:"id,omitempty"`
-	PreviousLessonId *LessonPropertiesId `json:"previousLessonId,omitempty"`
-	Title            string              `json:"title"`
-	VideoUrl         string              `json:"videoUrl"`
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Duration int64               `json:"duration"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Title    string              `json:"title"`
+	VideoUrl string              `json:"videoUrl"`
 }
+
+// Content defines model for content.
+type Content = string
 
 // Id User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 type Id = string
@@ -158,8 +412,41 @@ type Id = string
 // PropertiesId defines model for properties-id.
 type PropertiesId = openapi_types.UUID
 
+// Slug defines model for slug.
+type Slug = string
+
+// Title defines model for title.
+type Title = string
+
+// CertificateIdPath defines model for certificateIdPath.
+type CertificateIdPath = openapi_types.UUID
+
 // CourseIdPath defines model for courseIdPath.
 type CourseIdPath = PropertiesId
+
+// InstructorIdPath defines model for instructorIdPath.
+type InstructorIdPath = openapi_types.UUID
+
+// LessonCommentIdPath defines model for lessonCommentIdPath.
+type LessonCommentIdPath = openapi_types.UUID
+
+// LessonIdPath defines model for lessonIdPath.
+type LessonIdPath = openapi_types.UUID
+
+// LimitQuery defines model for limitQuery.
+type LimitQuery = int
+
+// OrderQuery defines model for orderQuery.
+type OrderQuery string
+
+// PageQuery defines model for pageQuery.
+type PageQuery = int
+
+// SectionIdPath defines model for sectionIdPath.
+type SectionIdPath = openapi_types.UUID
+
+// StatusQuery defines model for statusQuery.
+type StatusQuery = CourseStatus
 
 // BadRequestError defines model for BadRequestError.
 type BadRequestError = Error
@@ -169,6 +456,9 @@ type ForbiddenError = Error
 
 // InternalServerError defines model for InternalServerError.
 type InternalServerError = Error
+
+// NotFoundError defines model for NotFoundError.
+type NotFoundError = Error
 
 // UnauthorizedError The error response body returned when JWT validation or OPA authorization fails.
 type UnauthorizedError struct {
@@ -185,14 +475,254 @@ type UnauthorizedError struct {
 // UnauthorizedErrorType The category of the error encountered during the middleware lifecycle.
 type UnauthorizedErrorType string
 
+// GetMyCertificatesParams defines parameters for GetMyCertificates.
+type GetMyCertificatesParams struct {
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetMyCertificatesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetMyCertificatesParamsOrder defines parameters for GetMyCertificates.
+type GetMyCertificatesParamsOrder string
+
+// GetInstructorCoursesParams defines parameters for GetInstructorCourses.
+type GetInstructorCoursesParams struct {
+	Status *StatusQuery `form:"status,omitempty" json:"status,omitempty"`
+
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetInstructorCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetInstructorCoursesParamsOrder defines parameters for GetInstructorCourses.
+type GetInstructorCoursesParamsOrder string
+
+// GetMyEnrolledCoursesParams defines parameters for GetMyEnrolledCourses.
+type GetMyEnrolledCoursesParams struct {
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetMyEnrolledCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
+type GetMyEnrolledCoursesParamsOrder string
+
+// GetPublishedCoursesParams defines parameters for GetPublishedCourses.
+type GetPublishedCoursesParams struct {
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetPublishedCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetPublishedCoursesParamsOrder defines parameters for GetPublishedCourses.
+type GetPublishedCoursesParamsOrder string
+
+// GetSystemCoursesParams defines parameters for GetSystemCourses.
+type GetSystemCoursesParams struct {
+	Status *StatusQuery `form:"status,omitempty" json:"status,omitempty"`
+
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetSystemCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetSystemCoursesParamsOrder defines parameters for GetSystemCourses.
+type GetSystemCoursesParamsOrder string
+
+// ChangeBasicCourseInfoJSONBody defines parameters for ChangeBasicCourseInfo.
+type ChangeBasicCourseInfoJSONBody struct {
+	Price  *float32      `json:"price,omitempty"`
+	Slug   *string       `json:"slug,omitempty"`
+	Status *CourseStatus `json:"status,omitempty"`
+	Title  *string       `json:"title,omitempty"`
+}
+
+// DeclineCourseJSONBody defines parameters for DeclineCourse.
+type DeclineCourseJSONBody struct {
+	Reason *string `json:"reason,omitempty"`
+}
+
+// EnrollInCourseJSONBody defines parameters for EnrollInCourse.
+type EnrollInCourseJSONBody struct {
+	ReferredByUserId *openapi_types.UUID `json:"referredByUserId,omitempty"`
+}
+
+// ReviewCourseJSONBody defines parameters for ReviewCourse.
+type ReviewCourseJSONBody struct {
+	Comment string `json:"comment"`
+	Rating  int32  `json:"rating"`
+}
+
+// TriggerLearningReminderJSONBody defines parameters for TriggerLearningReminder.
+type TriggerLearningReminderJSONBody struct {
+	DryRun *bool `json:"dryRun,omitempty"`
+}
+
+// ReplyLessonCommentJSONBody defines parameters for ReplyLessonComment.
+type ReplyLessonCommentJSONBody struct {
+	Content Content `json:"content"`
+}
+
 // CreateLessonJSONBody defines parameters for CreateLesson.
 type CreateLessonJSONBody struct {
 	Test  *TestLesson  `json:"test,omitempty"`
 	Video *VideoLesson `json:"video,omitempty"`
 }
 
+// EditLessonJSONBody defines parameters for EditLesson.
+type EditLessonJSONBody struct {
+	Duration         *int64              `json:"duration,omitempty"`
+	PreviousLessonId *openapi_types.UUID `json:"previousLessonId,omitempty"`
+	Title            *string             `json:"title,omitempty"`
+	VideoUrl         *string             `json:"videoUrl,omitempty"`
+}
+
+// CommentOnLessonJSONBody defines parameters for CommentOnLesson.
+type CommentOnLessonJSONBody struct {
+	Content Content `json:"content"`
+}
+
+// SaveLessonProgressJSONBody defines parameters for SaveLessonProgress.
+type SaveLessonProgressJSONBody struct {
+	IsCompleted    *bool    `json:"isCompleted,omitempty"`
+	WatchedSeconds *float32 `json:"watchedSeconds,omitempty"`
+}
+
+// CreateTestJSONBody defines parameters for CreateTest.
+type CreateTestJSONBody struct {
+	Questions []TestQuestion `json:"questions"`
+	Type      TestLessonType `json:"type"`
+}
+
+// CreateSectionJSONBody defines parameters for CreateSection.
+type CreateSectionJSONBody struct {
+	CourseId          *PropertiesId       `json:"courseId,omitempty"`
+	PreviousSectionId *openapi_types.UUID `json:"previousSectionId"`
+	Title             string              `json:"title"`
+}
+
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course
 
+// ChangeBasicCourseInfoJSONRequestBody defines body for ChangeBasicCourseInfo for application/json ContentType.
+type ChangeBasicCourseInfoJSONRequestBody ChangeBasicCourseInfoJSONBody
+
+// DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
+type DeclineCourseJSONRequestBody DeclineCourseJSONBody
+
+// EnrollInCourseJSONRequestBody defines body for EnrollInCourse for application/json ContentType.
+type EnrollInCourseJSONRequestBody EnrollInCourseJSONBody
+
+// ReviewCourseJSONRequestBody defines body for ReviewCourse for application/json ContentType.
+type ReviewCourseJSONRequestBody ReviewCourseJSONBody
+
+// TriggerLearningReminderJSONRequestBody defines body for TriggerLearningReminder for application/json ContentType.
+type TriggerLearningReminderJSONRequestBody TriggerLearningReminderJSONBody
+
+// ReplyLessonCommentJSONRequestBody defines body for ReplyLessonComment for application/json ContentType.
+type ReplyLessonCommentJSONRequestBody ReplyLessonCommentJSONBody
+
 // CreateLessonJSONRequestBody defines body for CreateLesson for application/json ContentType.
 type CreateLessonJSONRequestBody CreateLessonJSONBody
+
+// EditLessonJSONRequestBody defines body for EditLesson for application/json ContentType.
+type EditLessonJSONRequestBody EditLessonJSONBody
+
+// CommentOnLessonJSONRequestBody defines body for CommentOnLesson for application/json ContentType.
+type CommentOnLessonJSONRequestBody CommentOnLessonJSONBody
+
+// SaveLessonProgressJSONRequestBody defines body for SaveLessonProgress for application/json ContentType.
+type SaveLessonProgressJSONRequestBody SaveLessonProgressJSONBody
+
+// CreateTestJSONRequestBody defines body for CreateTest for application/json ContentType.
+type CreateTestJSONRequestBody CreateTestJSONBody
+
+// CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
+type CreateSectionJSONRequestBody CreateSectionJSONBody
+
+// AsVideoLesson returns the union data inside the LessonDetail as a VideoLesson
+func (t LessonDetail) AsVideoLesson() (VideoLesson, error) {
+	var body VideoLesson
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromVideoLesson overwrites any union data inside the LessonDetail as the provided VideoLesson
+func (t *LessonDetail) FromVideoLesson(v VideoLesson) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeVideoLesson performs a merge with any union data inside the LessonDetail, using the provided VideoLesson
+func (t *LessonDetail) MergeVideoLesson(v VideoLesson) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsTestLesson returns the union data inside the LessonDetail as a TestLesson
+func (t LessonDetail) AsTestLesson() (TestLesson, error) {
+	var body TestLesson
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTestLesson overwrites any union data inside the LessonDetail as the provided TestLesson
+func (t *LessonDetail) FromTestLesson(v TestLesson) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTestLesson performs a merge with any union data inside the LessonDetail, using the provided TestLesson
+func (t *LessonDetail) MergeTestLesson(v TestLesson) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t LessonDetail) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *LessonDetail) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}

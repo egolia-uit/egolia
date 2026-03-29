@@ -6,6 +6,7 @@ post:
   summary: Create lesson
   operationId: createLesson
   requestBody:
+    required: true
     content:
       application/json:
         schema:
@@ -21,7 +22,12 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Lesson.yaml
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Lesson.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

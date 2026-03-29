@@ -20,17 +20,82 @@ info:
 tags:
   - name: Course
     description: Course
+  - name: Section
+    description: Section
   - name: Lesson
     description: Lesson
+  - name: Test
+    description: Test
 
 paths:
   /course/courses:
     $ref: ./paths/courses.yaml
+  /course/courses-system:
+    $ref: ./paths/courses-system.yaml
+  /course/courses-published:
+    $ref: ./paths/courses-published.yaml
+  /course/courses-by-instructor/{instructorId}:
+    $ref: ./paths/courses-by-instructor_{instructorId}.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
+  /course/courses/{courseId}/detail:
+    $ref: ./paths/courses_{courseId}_detail.yaml
+  /course/courses/{courseId}/basic-info:
+    $ref: ./paths/courses_{courseId}_basic-info.yaml
+  /course/courses/{courseId}/enroll:
+    $ref: ./paths/courses_{courseId}_enroll.yaml
+  /course/courses/{courseId}/progress:
+    $ref: ./paths/courses_{courseId}_progress.yaml
+  /course/courses/{courseId}/finish:
+    $ref: ./paths/courses_{courseId}_finish.yaml
+  /course/courses/{courseId}/reviews:
+    $ref: ./paths/courses_{courseId}_reviews.yaml
+  /course/courses/{courseId}/bookmark:
+    $ref: ./paths/courses_{courseId}_bookmark.yaml
+  /course/courses/{courseId}/unbookmark:
+    $ref: ./paths/courses_{courseId}_unbookmark.yaml
+  /course/courses/{courseId}/trigger-learning-reminder:
+    $ref: ./paths/courses_{courseId}_trigger-learning-reminder.yaml
+  /course/courses/{courseId}/landing:
+    $ref: ./paths/courses_{courseId}_landing.yaml
+  /course/courses/{courseId}/approve:
+    $ref: ./paths/courses_{courseId}_approve.yaml
+  /course/courses/{courseId}/decline:
+    $ref: ./paths/courses_{courseId}_decline.yaml
+  /course/courses/{courseId}/hide:
+    $ref: ./paths/courses_{courseId}_hide.yaml
+  /course/courses/{courseId}/unhide:
+    $ref: ./paths/courses_{courseId}_unhide.yaml
+  /course/courses-my-enrolled:
+    $ref: ./paths/courses-my-enrolled.yaml
+
+  /course/sections:
+    $ref: ./paths/sections.yaml
+  /course/sections/{sectionId}:
+    $ref: ./paths/sections_{sectionId}.yaml
 
   /course/lessons:
     $ref: ./paths/lessons.yaml
+  /course/lessons/{lessonId}:
+    $ref: ./paths/lessons_{lessonId}.yaml
+  /course/lessons/{lessonId}/upload-video-url:
+    $ref: ./paths/lessons_{lessonId}_upload-video-url.yaml
+  /course/lessons/{lessonId}/tests:
+    $ref: ./paths/lessons_{lessonId}_tests.yaml
+  /course/lessons/{lessonId}/progress:
+    $ref: ./paths/lessons_{lessonId}_progress.yaml
+  /course/lessons/{lessonId}/mark-completed:
+    $ref: ./paths/lessons_{lessonId}_mark-completed.yaml
+  /course/lessons/{lessonId}/comments:
+    $ref: ./paths/lessons_{lessonId}_comments.yaml
+
+  /course/lesson-comments/{commentId}/reply:
+    $ref: ./paths/lesson-comments_{commentId}_reply.yaml
+
+  /course/certificates-my:
+    $ref: ./paths/certificates-my.yaml
+  /course/certificates/{certificateId}:
+    $ref: ./paths/certificates_{certificateId}.yaml
 
 components:
   securitySchemes:

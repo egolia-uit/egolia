@@ -1,0 +1,31 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Get certificate by id
+  operationId: getCertificateById
+  parameters:
+    - $ref: ../components/parameters/certificateIdPath.yaml
+  responses:
+    200:
+      description: Certificate detail
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Certificate.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

@@ -1,0 +1,3 @@
+package course
+
+type UnauthorizedErrorJSONResponseType UnauthorizedErrorType

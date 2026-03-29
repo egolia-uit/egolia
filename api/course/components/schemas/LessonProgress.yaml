@@ -1,0 +1,26 @@
+type: object
+
+properties:
+  id:
+    type: string
+    format: uuid
+    example: 1e3a0a43-d6df-4f6d-a58d-60f0e5162f11
+    readOnly: true
+
+  userId:
+    type: string
+    format: uuid
+    example: 2e15aba5-cf11-430a-b92a-e8dd65620911
+
+  lessonId:
+    $ref: ./Lesson.yaml#/properties/id
+
+  isCompleted:
+    type: boolean
+    example: false
+
+required:
+  - id
+  - userId
+  - lessonId
+  - isCompleted

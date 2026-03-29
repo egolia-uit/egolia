@@ -9,12 +9,46 @@ get:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
     200:
-      description: Successful response
+      description: Course detail
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Course.yaml
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Course.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+delete:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Delete course
+  operationId: deleteCourse
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  responses:
+    204:
+      description: Course successfully deleted
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
     500:
       $ref: ../../common/components/responses/InternalServerError.yaml

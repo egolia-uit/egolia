@@ -1,0 +1,51 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Review course
+  operationId: reviewCourse
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - rating
+            - comment
+          properties:
+            rating:
+              type: integer
+              format: int32
+              minimum: 1
+              maximum: 5
+              example: 5
+            comment:
+              type: string
+              maxLength: 2000
+              example: Great course with practical examples.
+  responses:
+    201:
+      description: Course review created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Review.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

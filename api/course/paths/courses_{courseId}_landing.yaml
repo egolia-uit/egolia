@@ -1,0 +1,26 @@
+get:
+  security: []
+  tags:
+    - Course
+  summary: Get course landing page
+  operationId: getCourseLandingPage
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  responses:
+    200:
+      description: Course landing page data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/CourseLandingPage.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

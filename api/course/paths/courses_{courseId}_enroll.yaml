@@ -1,0 +1,43 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Enroll in course
+  operationId: enrollInCourse
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            referredByUserId:
+              type: string
+              format: uuid
+              nullable: true
+              example: 960a8826-955e-44ce-ac0c-0cb7818704c5
+  responses:
+    200:
+      description: Course enrollment created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Enrollment.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

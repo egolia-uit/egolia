@@ -1,0 +1,52 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Section
+  summary: Create section
+  operationId: createSection
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - courseId
+            - title
+            - previousSectionId
+          properties:
+            courseId:
+              $ref: ../components/schemas/Course.yaml#/properties/id
+            title:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: OOP Fundamentals
+            previousSectionId:
+              type: string
+              format: uuid
+              nullable: true
+              example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
+  responses:
+    201:
+      description: Section created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Section.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

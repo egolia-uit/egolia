@@ -4,12 +4,48 @@
 package blog
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
 )
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Delete comment
+	// (DELETE /blog/comments/{commentId})
+	DeleteComment(c *gin.Context, commentId CommentIdPath)
+	// Update comment
+	// (PUT /blog/comments/{commentId})
+	UpdateComment(c *gin.Context, commentId CommentIdPath)
+	// Reply comment
+	// (POST /blog/comments/{commentId}/replies)
+	ReplyComment(c *gin.Context, commentId CommentIdPath)
+	// Search posts
+	// (GET /blog/posts)
+	SearchPosts(c *gin.Context, params SearchPostsParams)
+	// Create post
+	// (POST /blog/posts)
+	CreatePost(c *gin.Context)
+	// Delete post
+	// (DELETE /blog/posts/{postId})
+	DeletePost(c *gin.Context, postId PostIdPath)
+	// Get post detail
+	// (GET /blog/posts/{postId})
+	GetPostById(c *gin.Context, postId PostIdPath)
+	// Update post
+	// (PUT /blog/posts/{postId})
+	UpdatePost(c *gin.Context, postId PostIdPath)
+	// Get post comments
+	// (GET /blog/posts/{postId}/comments)
+	GetPostComments(c *gin.Context, postId PostIdPath)
+	// Comment on post
+	// (POST /blog/posts/{postId}/comments)
+	CommentOnPost(c *gin.Context, postId PostIdPath)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -20,6 +56,289 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// DeleteComment operation middleware
+func (siw *ServerInterfaceWrapper) DeleteComment(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "commentId" -------------
+	var commentId CommentIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "commentId", c.Param("commentId"), &commentId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter commentId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeleteComment(c, commentId)
+}
+
+// UpdateComment operation middleware
+func (siw *ServerInterfaceWrapper) UpdateComment(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "commentId" -------------
+	var commentId CommentIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "commentId", c.Param("commentId"), &commentId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter commentId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UpdateComment(c, commentId)
+}
+
+// ReplyComment operation middleware
+func (siw *ServerInterfaceWrapper) ReplyComment(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "commentId" -------------
+	var commentId CommentIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "commentId", c.Param("commentId"), &commentId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter commentId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.ReplyComment(c, commentId)
+}
+
+// SearchPosts operation middleware
+func (siw *ServerInterfaceWrapper) SearchPosts(c *gin.Context) {
+
+	var err error
+
+	c.Set(Oauth2Scopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SearchPostsParams
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", c.Request.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter q: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "tag" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "tag", c.Request.URL.Query(), &params.Tag, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter tag: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "order" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.SearchPosts(c, params)
+}
+
+// CreatePost operation middleware
+func (siw *ServerInterfaceWrapper) CreatePost(c *gin.Context) {
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreatePost(c)
+}
+
+// DeletePost operation middleware
+func (siw *ServerInterfaceWrapper) DeletePost(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postId PostIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeletePost(c, postId)
+}
+
+// GetPostById operation middleware
+func (siw *ServerInterfaceWrapper) GetPostById(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postId PostIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetPostById(c, postId)
+}
+
+// UpdatePost operation middleware
+func (siw *ServerInterfaceWrapper) UpdatePost(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postId PostIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UpdatePost(c, postId)
+}
+
+// GetPostComments operation middleware
+func (siw *ServerInterfaceWrapper) GetPostComments(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postId PostIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetPostComments(c, postId)
+}
+
+// CommentOnPost operation middleware
+func (siw *ServerInterfaceWrapper) CommentOnPost(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "postId" -------------
+	var postId PostIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "postId", c.Param("postId"), &postId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter postId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CommentOnPost(c, postId)
+}
 
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
@@ -35,11 +354,607 @@ func RegisterHandlers(router gin.IRouter, si ServerInterface) {
 
 // RegisterHandlersWithOptions creates http.Handler with additional options
 func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options GinServerOptions) {
+	errorHandler := options.ErrorHandler
+	if errorHandler == nil {
+		errorHandler = func(c *gin.Context, err error, statusCode int) {
+			c.JSON(statusCode, gin.H{"msg": err.Error()})
+		}
+	}
 
+	wrapper := ServerInterfaceWrapper{
+		Handler:            si,
+		HandlerMiddlewares: options.Middlewares,
+		ErrorHandler:       errorHandler,
+	}
+
+	router.DELETE(options.BaseURL+"/blog/comments/:commentId", wrapper.DeleteComment)
+	router.PUT(options.BaseURL+"/blog/comments/:commentId", wrapper.UpdateComment)
+	router.POST(options.BaseURL+"/blog/comments/:commentId/replies", wrapper.ReplyComment)
+	router.GET(options.BaseURL+"/blog/posts", wrapper.SearchPosts)
+	router.POST(options.BaseURL+"/blog/posts", wrapper.CreatePost)
+	router.DELETE(options.BaseURL+"/blog/posts/:postId", wrapper.DeletePost)
+	router.GET(options.BaseURL+"/blog/posts/:postId", wrapper.GetPostById)
+	router.PUT(options.BaseURL+"/blog/posts/:postId", wrapper.UpdatePost)
+	router.GET(options.BaseURL+"/blog/posts/:postId/comments", wrapper.GetPostComments)
+	router.POST(options.BaseURL+"/blog/posts/:postId/comments", wrapper.CommentOnPost)
+}
+
+type BadRequestErrorJSONResponse Error
+
+type ForbiddenErrorJSONResponse Error
+
+type InternalServerErrorJSONResponse Error
+
+type NotFoundErrorJSONResponse Error
+
+type UnauthorizedErrorJSONResponse struct {
+	// CustomMessage An optional, developer-defined message, often populated by OPA policy violations.
+	CustomMessage *string `json:"custom_message"`
+
+	// Details A descriptive message providing technical context for the failure.
+	Details string `json:"details"`
+
+	// Type The category of the error encountered during the middleware lifecycle.
+	Type UnauthorizedErrorJSONResponseType `json:"type"`
+}
+
+type DeleteCommentRequestObject struct {
+	CommentId CommentIdPath `json:"commentId"`
+}
+
+type DeleteCommentResponseObject interface {
+	VisitDeleteCommentResponse(w http.ResponseWriter) error
+}
+
+type DeleteComment204Response struct {
+}
+
+func (response DeleteComment204Response) VisitDeleteCommentResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteComment401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response DeleteComment401JSONResponse) VisitDeleteCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteComment403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response DeleteComment403JSONResponse) VisitDeleteCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteComment404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response DeleteComment404JSONResponse) VisitDeleteCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeleteComment500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response DeleteComment500JSONResponse) VisitDeleteCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateCommentRequestObject struct {
+	CommentId CommentIdPath `json:"commentId"`
+	Body      *UpdateCommentJSONRequestBody
+}
+
+type UpdateCommentResponseObject interface {
+	VisitUpdateCommentResponse(w http.ResponseWriter) error
+}
+
+type UpdateComment200JSONResponse CommentResponse
+
+func (response UpdateComment200JSONResponse) VisitUpdateCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateComment400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response UpdateComment400JSONResponse) VisitUpdateCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateComment401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response UpdateComment401JSONResponse) VisitUpdateCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateComment403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response UpdateComment403JSONResponse) VisitUpdateCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateComment404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response UpdateComment404JSONResponse) VisitUpdateCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateComment500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response UpdateComment500JSONResponse) VisitUpdateCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ReplyCommentRequestObject struct {
+	CommentId CommentIdPath `json:"commentId"`
+	Body      *ReplyCommentJSONRequestBody
+}
+
+type ReplyCommentResponseObject interface {
+	VisitReplyCommentResponse(w http.ResponseWriter) error
+}
+
+type ReplyComment201JSONResponse Reply
+
+func (response ReplyComment201JSONResponse) VisitReplyCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ReplyComment400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response ReplyComment400JSONResponse) VisitReplyCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ReplyComment401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response ReplyComment401JSONResponse) VisitReplyCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ReplyComment404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response ReplyComment404JSONResponse) VisitReplyCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ReplyComment500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response ReplyComment500JSONResponse) VisitReplyCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchPostsRequestObject struct {
+	Params SearchPostsParams
+}
+
+type SearchPostsResponseObject interface {
+	VisitSearchPostsResponse(w http.ResponseWriter) error
+}
+
+type SearchPosts200JSONResponse PostCollection
+
+func (response SearchPosts200JSONResponse) VisitSearchPostsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchPosts401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response SearchPosts401JSONResponse) VisitSearchPostsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchPosts500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response SearchPosts500JSONResponse) VisitSearchPostsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreatePostRequestObject struct {
+	Body *CreatePostJSONRequestBody
+}
+
+type CreatePostResponseObject interface {
+	VisitCreatePostResponse(w http.ResponseWriter) error
+}
+
+type CreatePost201JSONResponse Post
+
+func (response CreatePost201JSONResponse) VisitCreatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreatePost400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CreatePost400JSONResponse) VisitCreatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreatePost401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CreatePost401JSONResponse) VisitCreatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CreatePost500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CreatePost500JSONResponse) VisitCreatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeletePostRequestObject struct {
+	PostId PostIdPath `json:"postId"`
+}
+
+type DeletePostResponseObject interface {
+	VisitDeletePostResponse(w http.ResponseWriter) error
+}
+
+type DeletePost204Response struct {
+}
+
+func (response DeletePost204Response) VisitDeletePostResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeletePost401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response DeletePost401JSONResponse) VisitDeletePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeletePost403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response DeletePost403JSONResponse) VisitDeletePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeletePost404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response DeletePost404JSONResponse) VisitDeletePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeletePost500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response DeletePost500JSONResponse) VisitDeletePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostByIdRequestObject struct {
+	PostId PostIdPath `json:"postId"`
+}
+
+type GetPostByIdResponseObject interface {
+	VisitGetPostByIdResponse(w http.ResponseWriter) error
+}
+
+type GetPostById200JSONResponse Post
+
+func (response GetPostById200JSONResponse) VisitGetPostByIdResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostById401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetPostById401JSONResponse) VisitGetPostByIdResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostById404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetPostById404JSONResponse) VisitGetPostByIdResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostById500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetPostById500JSONResponse) VisitGetPostByIdResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdatePostRequestObject struct {
+	PostId PostIdPath `json:"postId"`
+	Body   *UpdatePostJSONRequestBody
+}
+
+type UpdatePostResponseObject interface {
+	VisitUpdatePostResponse(w http.ResponseWriter) error
+}
+
+type UpdatePost200JSONResponse Post
+
+func (response UpdatePost200JSONResponse) VisitUpdatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdatePost400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response UpdatePost400JSONResponse) VisitUpdatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdatePost401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response UpdatePost401JSONResponse) VisitUpdatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdatePost403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response UpdatePost403JSONResponse) VisitUpdatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdatePost404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response UpdatePost404JSONResponse) VisitUpdatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdatePost500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response UpdatePost500JSONResponse) VisitUpdatePostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostCommentsRequestObject struct {
+	PostId PostIdPath `json:"postId"`
+}
+
+type GetPostCommentsResponseObject interface {
+	VisitGetPostCommentsResponse(w http.ResponseWriter) error
+}
+
+type GetPostComments200JSONResponse CommentCollection
+
+func (response GetPostComments200JSONResponse) VisitGetPostCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostComments401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetPostComments401JSONResponse) VisitGetPostCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostComments404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetPostComments404JSONResponse) VisitGetPostCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetPostComments500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetPostComments500JSONResponse) VisitGetPostCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CommentOnPostRequestObject struct {
+	PostId PostIdPath `json:"postId"`
+	Body   *CommentOnPostJSONRequestBody
+}
+
+type CommentOnPostResponseObject interface {
+	VisitCommentOnPostResponse(w http.ResponseWriter) error
+}
+
+type CommentOnPost201JSONResponse CommentResponse
+
+func (response CommentOnPost201JSONResponse) VisitCommentOnPostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CommentOnPost400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CommentOnPost400JSONResponse) VisitCommentOnPostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CommentOnPost401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CommentOnPost401JSONResponse) VisitCommentOnPostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CommentOnPost404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response CommentOnPost404JSONResponse) VisitCommentOnPostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CommentOnPost500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CommentOnPost500JSONResponse) VisitCommentOnPostResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
 }
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
+	// Delete comment
+	// (DELETE /blog/comments/{commentId})
+	DeleteComment(ctx context.Context, request DeleteCommentRequestObject) (DeleteCommentResponseObject, error)
+	// Update comment
+	// (PUT /blog/comments/{commentId})
+	UpdateComment(ctx context.Context, request UpdateCommentRequestObject) (UpdateCommentResponseObject, error)
+	// Reply comment
+	// (POST /blog/comments/{commentId}/replies)
+	ReplyComment(ctx context.Context, request ReplyCommentRequestObject) (ReplyCommentResponseObject, error)
+	// Search posts
+	// (GET /blog/posts)
+	SearchPosts(ctx context.Context, request SearchPostsRequestObject) (SearchPostsResponseObject, error)
+	// Create post
+	// (POST /blog/posts)
+	CreatePost(ctx context.Context, request CreatePostRequestObject) (CreatePostResponseObject, error)
+	// Delete post
+	// (DELETE /blog/posts/{postId})
+	DeletePost(ctx context.Context, request DeletePostRequestObject) (DeletePostResponseObject, error)
+	// Get post detail
+	// (GET /blog/posts/{postId})
+	GetPostById(ctx context.Context, request GetPostByIdRequestObject) (GetPostByIdResponseObject, error)
+	// Update post
+	// (PUT /blog/posts/{postId})
+	UpdatePost(ctx context.Context, request UpdatePostRequestObject) (UpdatePostResponseObject, error)
+	// Get post comments
+	// (GET /blog/posts/{postId}/comments)
+	GetPostComments(ctx context.Context, request GetPostCommentsRequestObject) (GetPostCommentsResponseObject, error)
+	// Comment on post
+	// (POST /blog/posts/{postId}/comments)
+	CommentOnPost(ctx context.Context, request CommentOnPostRequestObject) (CommentOnPostResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -52,4 +967,312 @@ func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareF
 type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
+}
+
+// DeleteComment operation middleware
+func (sh *strictHandler) DeleteComment(ctx *gin.Context, commentId CommentIdPath) {
+	var request DeleteCommentRequestObject
+
+	request.CommentId = commentId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteComment(ctx, request.(DeleteCommentRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteComment")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(DeleteCommentResponseObject); ok {
+		if err := validResponse.VisitDeleteCommentResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateComment operation middleware
+func (sh *strictHandler) UpdateComment(ctx *gin.Context, commentId CommentIdPath) {
+	var request UpdateCommentRequestObject
+
+	request.CommentId = commentId
+
+	var body UpdateCommentJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateComment(ctx, request.(UpdateCommentRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateComment")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(UpdateCommentResponseObject); ok {
+		if err := validResponse.VisitUpdateCommentResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ReplyComment operation middleware
+func (sh *strictHandler) ReplyComment(ctx *gin.Context, commentId CommentIdPath) {
+	var request ReplyCommentRequestObject
+
+	request.CommentId = commentId
+
+	var body ReplyCommentJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.ReplyComment(ctx, request.(ReplyCommentRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ReplyComment")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(ReplyCommentResponseObject); ok {
+		if err := validResponse.VisitReplyCommentResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SearchPosts operation middleware
+func (sh *strictHandler) SearchPosts(ctx *gin.Context, params SearchPostsParams) {
+	var request SearchPostsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.SearchPosts(ctx, request.(SearchPostsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SearchPosts")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(SearchPostsResponseObject); ok {
+		if err := validResponse.VisitSearchPostsResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreatePost operation middleware
+func (sh *strictHandler) CreatePost(ctx *gin.Context) {
+	var request CreatePostRequestObject
+
+	var body CreatePostJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreatePost(ctx, request.(CreatePostRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreatePost")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(CreatePostResponseObject); ok {
+		if err := validResponse.VisitCreatePostResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeletePost operation middleware
+func (sh *strictHandler) DeletePost(ctx *gin.Context, postId PostIdPath) {
+	var request DeletePostRequestObject
+
+	request.PostId = postId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeletePost(ctx, request.(DeletePostRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeletePost")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(DeletePostResponseObject); ok {
+		if err := validResponse.VisitDeletePostResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetPostById operation middleware
+func (sh *strictHandler) GetPostById(ctx *gin.Context, postId PostIdPath) {
+	var request GetPostByIdRequestObject
+
+	request.PostId = postId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetPostById(ctx, request.(GetPostByIdRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetPostById")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetPostByIdResponseObject); ok {
+		if err := validResponse.VisitGetPostByIdResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdatePost operation middleware
+func (sh *strictHandler) UpdatePost(ctx *gin.Context, postId PostIdPath) {
+	var request UpdatePostRequestObject
+
+	request.PostId = postId
+
+	var body UpdatePostJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdatePost(ctx, request.(UpdatePostRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdatePost")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(UpdatePostResponseObject); ok {
+		if err := validResponse.VisitUpdatePostResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetPostComments operation middleware
+func (sh *strictHandler) GetPostComments(ctx *gin.Context, postId PostIdPath) {
+	var request GetPostCommentsRequestObject
+
+	request.PostId = postId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetPostComments(ctx, request.(GetPostCommentsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetPostComments")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetPostCommentsResponseObject); ok {
+		if err := validResponse.VisitGetPostCommentsResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CommentOnPost operation middleware
+func (sh *strictHandler) CommentOnPost(ctx *gin.Context, postId PostIdPath) {
+	var request CommentOnPostRequestObject
+
+	request.PostId = postId
+
+	var body CommentOnPostJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CommentOnPost(ctx, request.(CommentOnPostRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CommentOnPost")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(CommentOnPostResponseObject); ok {
+		if err := validResponse.VisitCommentOnPostResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
 }

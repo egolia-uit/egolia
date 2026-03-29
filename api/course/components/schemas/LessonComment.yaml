@@ -1,0 +1,40 @@
+type: object
+
+properties:
+  id:
+    type: string
+    format: uuid
+    example: 1c948f26-c6db-4f20-b6ac-2d10164fb8c0
+    readOnly: true
+
+  userId:
+    type: string
+    format: uuid
+    example: 2e15aba5-cf11-430a-b92a-e8dd65620911
+
+  lessonId:
+    $ref: ./Lesson.yaml#/properties/id
+
+  content:
+    type: string
+    minLength: 1
+    maxLength: 4000
+    example: This explanation of polymorphism is very clear.
+
+  createdAt:
+    type: string
+    format: date-time
+    example: 2026-03-22T10:30:00Z
+
+  parentCommentId:
+    type: string
+    format: uuid
+    nullable: true
+    example: 8fd4f406-583d-4cd5-9c24-23c490a06711
+
+required:
+  - id
+  - userId
+  - lessonId
+  - content
+  - createdAt

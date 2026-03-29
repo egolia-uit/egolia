@@ -17,11 +17,6 @@ properties:
   # sectionId:
   #   $ref: ./Section.yaml#/properties/id
 
-  previousLessonId:
-    $ref: ./Lesson.yaml#/properties/id
-    example: ed405041-986f-4750-92e6-617dd9337a78
-    writeOnly: true
-
 required:
   - id
   - title

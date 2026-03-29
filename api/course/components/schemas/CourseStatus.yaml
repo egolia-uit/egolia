@@ -1,0 +1,9 @@
+type: string
+enum:
+  - draft
+  - approved
+  - published
+  # - declined
+  - archived
+default: draft
+example: draft

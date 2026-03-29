@@ -17,15 +17,10 @@ properties:
 
   instructorId:
     $ref: ../../../common/components/schemas/User.yaml#/properties/id
+    example: '100'
 
   status:
-    type: string
-    enum:
-      - draft
-      - approved
-      - published
-      - archived
-    example: draft
+    $ref: ./CourseStatus.yaml
 
   price:
     type: integer

@@ -1,0 +1,48 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Test
+  summary: Create test
+  operationId: createTest
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - type
+            - questions
+          properties:
+            type:
+              $ref: ../components/schemas/TestLessonType.yaml
+            questions:
+              type: array
+              minItems: 1
+              items:
+                $ref: ../components/schemas/TestQuestion.yaml
+  responses:
+    201:
+      description: Test created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/TestLesson.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

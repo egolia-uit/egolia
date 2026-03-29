@@ -1,0 +1,42 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Decline course
+  operationId: declineCourse
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            reason:
+              type: string
+              maxLength: 1000
+              example: Course content does not meet quality requirements.
+  responses:
+    200:
+      description: Course declined
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Course.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

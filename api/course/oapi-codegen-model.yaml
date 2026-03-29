@@ -3,5 +3,7 @@ package: course
 generate:
   models: true
 output: ../../pkg/api/course/model.gen.go
+compatibility:
+  always-prefix-enum-values: true
 output-options:
   nullable-type: false

@@ -2,7 +2,7 @@ type: object
 
 properties:
   transaction:
-    $ref: ./transaction.yaml#/Transaction
+    $ref: ./Transaction.yaml#/Transaction
 
   receiptNumber:
     type: string

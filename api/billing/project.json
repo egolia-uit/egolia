@@ -19,9 +19,9 @@
     "watch-bundle:json": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "pnpm nx watch --projects=api/billing -- pnpm nx bundle:json \\$NX_PROJECT_NAME",
+        "command": "pnpm nx watch --projects=api/billing -- pnpm nx run api/billing:bundle:json",
         "forwardAllArgs": false,
-        "cwd": "{projectRoot}"
+        "cwd": "{workspaceRoot}"
       },
       "continuous": true
     },

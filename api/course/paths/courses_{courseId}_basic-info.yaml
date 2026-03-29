@@ -1,0 +1,56 @@
+patch:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Change basic course information
+  operationId: changeBasicCourseInfo
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: OOP A-Z Updated
+            slug:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: oop-a-z-updated
+            status:
+              $ref: ../components/schemas/CourseStatus.yaml
+            price:
+              type: number
+              format: float
+              minimum: 0
+              example: 119.99
+          minProperties: 1
+  responses:
+    200:
+      description: Course basic information updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/Course.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

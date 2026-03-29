@@ -1,0 +1,42 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Comment on lesson
+  operationId: commentOnLesson
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - content
+          properties:
+            content:
+              $ref: ../components/schemas/LessonComment.yaml#/properties/content
+  responses:
+    201:
+      description: Lesson comment created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/LessonComment.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

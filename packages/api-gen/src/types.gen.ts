@@ -9,13 +9,22 @@ export type ClientOptions = {
  */
 export type Id = string;
 
+export const CourseStatus = {
+    DRAFT: 'draft',
+    APPROVED: 'approved',
+    PUBLISHED: 'published',
+    ARCHIVED: 'archived'
+} as const;
+
+export type CourseStatus = typeof CourseStatus[keyof typeof CourseStatus];
+
 export type Course = {
     readonly id: string;
     title: string;
     slug: string;
     instructorId: Id;
-    status: 'draft' | 'approved' | 'published' | 'archived';
-    price: number;
+    status: CourseStatus;
+    price: bigint;
 };
 
 export type Error = {
@@ -33,9 +42,111 @@ export type Error = {
     more_info?: string;
 };
 
+export type Pagination = {
+    /**
+     * Current page number
+     */
+    page: number;
+    /**
+     * Number of items per page
+     */
+    limit: number;
+    /**
+     * Total number of items
+     */
+    total: number;
+    /**
+     * Total number of pages
+     */
+    totalPages: number;
+    /**
+     * Whether there is a next page
+     */
+    hasNext: boolean;
+    /**
+     * Whether there is a previous page
+     */
+    hasPrev: boolean;
+};
+
 export type PropertiesId = string;
 
-export type LessonPropertiesId = string;
+export type Section = {
+    readonly id: string;
+    courseId: PropertiesId;
+    title: string;
+};
+
+export type CourseDetailSectionItem = {
+    section: Section;
+    lessonIds: Array<string>;
+};
+
+export type CourseDetailData = {
+    course: Course;
+    sections: Array<CourseDetailSectionItem>;
+};
+
+export type Enrollment = {
+    readonly id: string;
+    userId: string;
+    courseId: PropertiesId;
+    enrollmentDate: Date;
+    completedAt?: Date | null;
+};
+
+export type CourseProgress = {
+    courseId: PropertiesId;
+    userId: string;
+    totalLessons: number;
+    completedLessons: number;
+    progressPercent: number;
+    isCompleted: boolean;
+};
+
+export type Certificate = {
+    readonly id: string;
+    courseId: PropertiesId;
+    userId: string;
+    issuedAt: Date;
+};
+
+export type Review = {
+    readonly id: string;
+    courseId: PropertiesId;
+    userId: string;
+    rating: number;
+    comment: string;
+};
+
+export type BookmarkState = {
+    courseId: PropertiesId;
+    userId: string;
+    bookmarked: boolean;
+};
+
+export type LearningReminder = {
+    courseId: PropertiesId;
+    triggeredAt: Date;
+    notifiedLearners: number;
+};
+
+export type Title = string;
+
+export type Slug = string;
+
+export type CourseLandingPage = {
+    course: {
+        id: PropertiesId;
+        title: Title;
+        slug: Slug;
+        instructorId: Id;
+        overview: string;
+        introduction: {
+            videoUrl: string;
+        };
+    };
+};
 
 export type Lesson = {
     readonly id: string;
@@ -45,28 +156,242 @@ export type Lesson = {
 
 export type VideoLesson = Lesson & {
     videoUrl: string;
-    duration: number;
+    duration: bigint;
+};
+
+export type TestAnswer = {
+    readonly id: string;
+    content: string;
+    isCorrect: boolean;
+};
+
+export type TestQuestion = {
+    readonly id: string;
+    question: string;
+    answers: Array<TestAnswer>;
 };
 
 export type TestLesson = Lesson & {
-    type: 'singleChoice' | 'multipleChoice';
-    questions: Array<{
-        readonly id: string;
-        question: string;
-        answers: Array<{
-            readonly id: string;
-            content: string;
-            isCorrect: boolean;
-        }>;
-    }>;
+    type: 'multipleChoice' | 'singleChoice';
+    questions: Array<unknown>;
+};
+
+export type LessonDetail = VideoLesson | TestLesson;
+
+export type UploadVideoUrlResponse = {
+    uploadUrl: string;
+    objectKey: string;
+    expiresAt: Date;
+};
+
+export const TestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
+
+export type TestLessonType = typeof TestLessonType[keyof typeof TestLessonType];
+
+export type LessonPropertiesId = string;
+
+export type LessonProgress = {
+    readonly id: string;
+    userId: string;
+    lessonId: LessonPropertiesId;
+    isCompleted: boolean;
+};
+
+export type Content = string;
+
+export type LessonComment = {
+    readonly id: string;
+    userId: string;
+    lessonId: LessonPropertiesId;
+    content: string;
+    createdAt: Date;
+    parentCommentId?: string | null;
+};
+
+export type CheckoutCourseRequest = {
+    courseId: string;
+    amount: bigint;
+    currency: string;
+};
+
+/**
+ * Current status of a billing transaction
+ */
+export const TransactionStatus = {
+    PENDING: 'pending',
+    COMPLETED: 'completed',
+    FAILED: 'failed'
+} as const;
+
+/**
+ * Current status of a billing transaction
+ */
+export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];
+
+export type Transaction = {
+    readonly id: string;
+    userId: Id;
+    courseId: string;
+    amount: number;
+    currency: string;
+    status: TransactionStatus;
+    readonly createdAt: Date;
+};
+
+export type TransactionCollection = {
+    data: Array<Transaction>;
+    pagination: Pagination;
+};
+
+export type Receipt = {
+    transaction: Transaction;
+    receiptNumber: string;
+    issuedAt: Date;
+    billedTo: {
+        userId: Id;
+        email: string;
+    };
+};
+
+export type RevenueAnalytics = {
+    from: Date;
+    to: Date;
+    currency: string;
+    totalRevenue: bigint;
+    completedTransactions: number;
+    failedTransactions: number;
+};
+
+export type Post = {
+    readonly id: string;
+    authorId: Id;
+    title: string;
+    content: string;
+    tags: Array<string>;
+    readonly createdAt: Date;
+    readonly commentCount: number;
+};
+
+export type PostCollection = {
+    data: Array<Post>;
+    pagination: Pagination;
+};
+
+export type CreatePostRequest = {
+    title: string;
+    content: string;
+    tags: Array<string>;
+};
+
+export type UpdatePostRequest = {
+    title: string;
+    content: string;
+    tags: Array<string>;
+};
+
+export type Reply = {
+    readonly id: string;
+    authorId: Id;
+    content: string;
+    readonly parentCommentId: string;
+    readonly createdAt: Date;
+};
+
+export type Comment = {
+    readonly id: string;
+    authorId: Id;
+    content: string;
+    readonly createdAt: Date;
+    replies: Array<Reply>;
+};
+
+export type CommentCollection = {
+    data: Array<Comment>;
+};
+
+export type CreateCommentRequest = {
+    content: string;
+};
+
+export type CommentResponse = {
+    readonly id: string;
+    authorId: Id;
+    content: string;
+    readonly parentCommentId: string | null;
+    readonly createdAt: Date;
+};
+
+export type UpdateCommentRequest = {
+    content: string;
 };
 
 export type CourseWritable = {
     title: string;
     slug: string;
     instructorId: Id;
-    status: 'draft' | 'approved' | 'published' | 'archived';
-    price: number;
+    status: CourseStatus;
+    price: bigint;
+};
+
+export type SectionWritable = {
+    title: string;
+};
+
+export type CourseDetailSectionItemWritable = {
+    section: SectionWritable;
+    lessonIds: Array<string>;
+};
+
+export type CourseDetailDataWritable = {
+    course: CourseWritable;
+    sections: Array<CourseDetailSectionItemWritable>;
+};
+
+export type EnrollmentWritable = {
+    userId: string;
+    enrollmentDate: Date;
+    completedAt?: Date | null;
+};
+
+export type CourseProgressWritable = {
+    userId: string;
+    totalLessons: number;
+    completedLessons: number;
+    progressPercent: number;
+    isCompleted: boolean;
+};
+
+export type CertificateWritable = {
+    userId: string;
+    issuedAt: Date;
+};
+
+export type ReviewWritable = {
+    userId: string;
+    rating: number;
+    comment: string;
+};
+
+export type BookmarkStateWritable = {
+    userId: string;
+    bookmarked: boolean;
+};
+
+export type LearningReminderWritable = {
+    triggeredAt: Date;
+    notifiedLearners: number;
+};
+
+export type CourseLandingPageWritable = {
+    course: {
+        title: Title;
+        slug: Slug;
+        instructorId: Id;
+        overview: string;
+        introduction: {
+            videoUrl: string;
+        };
+    };
 };
 
 export type LessonWritable = {
@@ -75,24 +400,147 @@ export type LessonWritable = {
 
 export type VideoLessonWritable = LessonWritable & {
     videoUrl: string;
-    duration: number;
+    duration: bigint;
+};
+
+export type TestAnswerWritable = {
+    content: string;
+    isCorrect: boolean;
+};
+
+export type TestQuestionWritable = {
+    question: string;
+    answers: Array<TestAnswerWritable>;
 };
 
 export type TestLessonWritable = LessonWritable & {
-    type: 'singleChoice' | 'multipleChoice';
-    questions: Array<{
-        question: string;
-        answers: Array<{
-            content: string;
-            isCorrect: boolean;
-        }>;
-    }>;
+    type: 'multipleChoice' | 'singleChoice';
+    questions: Array<unknown>;
 };
+
+export type LessonDetailWritable = VideoLessonWritable | TestLessonWritable;
+
+export type LessonProgressWritable = {
+    userId: string;
+    isCompleted: boolean;
+};
+
+export type LessonCommentWritable = {
+    userId: string;
+    content: string;
+    createdAt: Date;
+    parentCommentId?: string | null;
+};
+
+export type TransactionWritable = {
+    userId: Id;
+    courseId: string;
+    amount: number;
+    currency: string;
+    status: TransactionStatus;
+};
+
+export type TransactionCollectionWritable = {
+    data: Array<TransactionWritable>;
+    pagination: Pagination;
+};
+
+export type ReceiptWritable = {
+    transaction: TransactionWritable;
+    receiptNumber: string;
+    issuedAt: Date;
+    billedTo: {
+        userId: Id;
+        email: string;
+    };
+};
+
+export type PostWritable = {
+    authorId: Id;
+    title: string;
+    content: string;
+    tags: Array<string>;
+};
+
+export type PostCollectionWritable = {
+    data: Array<PostWritable>;
+    pagination: Pagination;
+};
+
+export type ReplyWritable = {
+    authorId: Id;
+    content: string;
+};
+
+export type CommentWritable = {
+    authorId: Id;
+    content: string;
+    replies: Array<ReplyWritable>;
+};
+
+export type CommentCollectionWritable = {
+    data: Array<CommentWritable>;
+};
+
+export type CommentResponseWritable = {
+    authorId: Id;
+    content: string;
+};
+
+export type StatusQuery = CourseStatus;
+
+/**
+ * Page number for pagination
+ */
+export type PageQuery = number;
+
+/**
+ * Number of items per page
+ */
+export type LimitQuery = number;
+
+/**
+ * Sort order
+ */
+export const OrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
+
+/**
+ * Sort order
+ */
+export type OrderQuery = typeof OrderQuery[keyof typeof OrderQuery];
+
+export type InstructorIdPath = string;
 
 export type CourseIdPath = PropertiesId;
 
+export type SectionIdPath = string;
+
+export type LessonIdPath = string;
+
+/**
+ * Unique identifier of the lesson comment
+ */
+export type LessonCommentIdPath = string;
+
+export type CertificateIdPath = string;
+
+/**
+ * Unique identifier of the billing transaction
+ */
+export type TransactionIdPath = string;
+
+/**
+ * Unique identifier of the blog post
+ */
+export type PostIdPath = string;
+
+/**
+ * Unique identifier of the post comment
+ */
+export type CommentIdPath = string;
+
 export type CreateCourseData = {
-    body?: CourseWritable;
+    body: CourseWritable;
     path?: never;
     query?: never;
     url: '/course/courses';
@@ -136,10 +584,253 @@ export type CreateCourseResponses = {
     /**
      * Course created
      */
-    201: Course;
+    201: {
+        data: Course;
+    };
 };
 
 export type CreateCourseResponse = CreateCourseResponses[keyof CreateCourseResponses];
+
+export type GetSystemCoursesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        status?: CourseStatus;
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/courses-system';
+};
+
+export type GetSystemCoursesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetSystemCoursesError = GetSystemCoursesErrors[keyof GetSystemCoursesErrors];
+
+export type GetSystemCoursesResponses = {
+    /**
+     * Courses in system
+     */
+    200: {
+        data: Array<Course>;
+        pagination: Pagination;
+    };
+};
+
+export type GetSystemCoursesResponse = GetSystemCoursesResponses[keyof GetSystemCoursesResponses];
+
+export type GetPublishedCoursesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/courses-published';
+};
+
+export type GetPublishedCoursesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetPublishedCoursesError = GetPublishedCoursesErrors[keyof GetPublishedCoursesErrors];
+
+export type GetPublishedCoursesResponses = {
+    /**
+     * Published courses
+     */
+    200: {
+        data: Array<Course>;
+        pagination: Pagination;
+    };
+};
+
+export type GetPublishedCoursesResponse = GetPublishedCoursesResponses[keyof GetPublishedCoursesResponses];
+
+export type GetInstructorCoursesData = {
+    body?: never;
+    path: {
+        instructorId: string;
+    };
+    query?: {
+        status?: CourseStatus;
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/courses-by-instructor/{instructorId}';
+};
+
+export type GetInstructorCoursesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetInstructorCoursesError = GetInstructorCoursesErrors[keyof GetInstructorCoursesErrors];
+
+export type GetInstructorCoursesResponses = {
+    /**
+     * Courses by instructor
+     */
+    200: {
+        data: Array<Course>;
+        pagination: Pagination;
+    };
+};
+
+export type GetInstructorCoursesResponse = GetInstructorCoursesResponses[keyof GetInstructorCoursesResponses];
+
+export type DeleteCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}';
+};
+
+export type DeleteCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type DeleteCourseError = DeleteCourseErrors[keyof DeleteCourseErrors];
+
+export type DeleteCourseResponses = {
+    /**
+     * Course successfully deleted
+     */
+    204: void;
+};
+
+export type DeleteCourseResponse = DeleteCourseResponses[keyof DeleteCourseResponses];
 
 export type GetCourseData = {
     body?: never;
@@ -156,6 +847,31 @@ export type GetCourseErrors = {
      */
     400: Error;
     /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
      * Internal Server Error response
      */
     500: Error;
@@ -165,15 +881,1000 @@ export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
 
 export type GetCourseResponses = {
     /**
-     * Successful response
+     * Course detail
      */
-    200: Course;
+    200: {
+        data: Course;
+    };
 };
 
 export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
 
-export type CreateLessonData = {
+export type GetCourseDetailData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/detail';
+};
+
+export type GetCourseDetailErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetCourseDetailError = GetCourseDetailErrors[keyof GetCourseDetailErrors];
+
+export type GetCourseDetailResponses = {
+    /**
+     * Full course content with section and lesson references
+     */
+    200: {
+        data: CourseDetailData;
+    };
+};
+
+export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
+
+export type ChangeBasicCourseInfoData = {
+    body: {
+        title?: string;
+        slug?: string;
+        status?: CourseStatus;
+        price?: number;
+    };
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/basic-info';
+};
+
+export type ChangeBasicCourseInfoErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type ChangeBasicCourseInfoError = ChangeBasicCourseInfoErrors[keyof ChangeBasicCourseInfoErrors];
+
+export type ChangeBasicCourseInfoResponses = {
+    /**
+     * Course basic information updated
+     */
+    200: {
+        data: Course;
+    };
+};
+
+export type ChangeBasicCourseInfoResponse = ChangeBasicCourseInfoResponses[keyof ChangeBasicCourseInfoResponses];
+
+export type EnrollInCourseData = {
     body?: {
+        referredByUserId?: string | null;
+    };
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/enroll';
+};
+
+export type EnrollInCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type EnrollInCourseError = EnrollInCourseErrors[keyof EnrollInCourseErrors];
+
+export type EnrollInCourseResponses = {
+    /**
+     * Course enrollment created
+     */
+    200: {
+        data: Enrollment;
+    };
+};
+
+export type EnrollInCourseResponse = EnrollInCourseResponses[keyof EnrollInCourseResponses];
+
+export type GetCourseProgressData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/progress';
+};
+
+export type GetCourseProgressErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetCourseProgressError = GetCourseProgressErrors[keyof GetCourseProgressErrors];
+
+export type GetCourseProgressResponses = {
+    /**
+     * Course progress
+     */
+    200: {
+        data: CourseProgress;
+    };
+};
+
+export type GetCourseProgressResponse = GetCourseProgressResponses[keyof GetCourseProgressResponses];
+
+export type FinishCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/finish';
+};
+
+export type FinishCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type FinishCourseError = FinishCourseErrors[keyof FinishCourseErrors];
+
+export type FinishCourseResponses = {
+    /**
+     * Course finished and certificate issued
+     */
+    200: {
+        data: Certificate;
+    };
+};
+
+export type FinishCourseResponse = FinishCourseResponses[keyof FinishCourseResponses];
+
+export type ReviewCourseData = {
+    body: {
+        rating: number;
+        comment: string;
+    };
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/reviews';
+};
+
+export type ReviewCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type ReviewCourseError = ReviewCourseErrors[keyof ReviewCourseErrors];
+
+export type ReviewCourseResponses = {
+    /**
+     * Course review created
+     */
+    201: {
+        data: Review;
+    };
+};
+
+export type ReviewCourseResponse = ReviewCourseResponses[keyof ReviewCourseResponses];
+
+export type BookmarkCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/bookmark';
+};
+
+export type BookmarkCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type BookmarkCourseError = BookmarkCourseErrors[keyof BookmarkCourseErrors];
+
+export type BookmarkCourseResponses = {
+    /**
+     * Course bookmarked
+     */
+    200: {
+        data: BookmarkState;
+    };
+};
+
+export type BookmarkCourseResponse = BookmarkCourseResponses[keyof BookmarkCourseResponses];
+
+export type UnbookmarkCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/unbookmark';
+};
+
+export type UnbookmarkCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
+
+export type UnbookmarkCourseResponses = {
+    /**
+     * Course unbookmarked
+     */
+    200: {
+        data: BookmarkState;
+    };
+};
+
+export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
+
+export type TriggerLearningReminderData = {
+    body?: {
+        dryRun?: boolean;
+    };
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/trigger-learning-reminder';
+};
+
+export type TriggerLearningReminderErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type TriggerLearningReminderError = TriggerLearningReminderErrors[keyof TriggerLearningReminderErrors];
+
+export type TriggerLearningReminderResponses = {
+    /**
+     * Learning reminder triggered
+     */
+    200: {
+        data: LearningReminder;
+    };
+};
+
+export type TriggerLearningReminderResponse = TriggerLearningReminderResponses[keyof TriggerLearningReminderResponses];
+
+export type GetCourseLandingPageData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/landing';
+};
+
+export type GetCourseLandingPageErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetCourseLandingPageError = GetCourseLandingPageErrors[keyof GetCourseLandingPageErrors];
+
+export type GetCourseLandingPageResponses = {
+    /**
+     * Course landing page data
+     */
+    200: {
+        data: CourseLandingPage;
+    };
+};
+
+export type GetCourseLandingPageResponse = GetCourseLandingPageResponses[keyof GetCourseLandingPageResponses];
+
+export type ApproveCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/approve';
+};
+
+export type ApproveCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type ApproveCourseError = ApproveCourseErrors[keyof ApproveCourseErrors];
+
+export type ApproveCourseResponses = {
+    /**
+     * Course approved
+     */
+    200: {
+        data: Course;
+    };
+};
+
+export type ApproveCourseResponse = ApproveCourseResponses[keyof ApproveCourseResponses];
+
+export type DeclineCourseData = {
+    body?: {
+        reason?: string;
+    };
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/decline';
+};
+
+export type DeclineCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type DeclineCourseError = DeclineCourseErrors[keyof DeclineCourseErrors];
+
+export type DeclineCourseResponses = {
+    /**
+     * Course declined
+     */
+    200: {
+        data: Course;
+    };
+};
+
+export type DeclineCourseResponse = DeclineCourseResponses[keyof DeclineCourseResponses];
+
+export type HideCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/hide';
+};
+
+export type HideCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type HideCourseError = HideCourseErrors[keyof HideCourseErrors];
+
+export type HideCourseResponses = {
+    /**
+     * Course hidden
+     */
+    200: {
+        data: Course;
+    };
+};
+
+export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
+
+export type UnhideCourseData = {
+    body?: never;
+    path: {
+        courseId: PropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/unhide';
+};
+
+export type UnhideCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type UnhideCourseError = UnhideCourseErrors[keyof UnhideCourseErrors];
+
+export type UnhideCourseResponses = {
+    /**
+     * Course unhidden
+     */
+    200: {
+        data: Course;
+    };
+};
+
+export type UnhideCourseResponse = UnhideCourseResponses[keyof UnhideCourseResponses];
+
+export type GetMyEnrolledCoursesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/courses-my-enrolled';
+};
+
+export type GetMyEnrolledCoursesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetMyEnrolledCoursesError = GetMyEnrolledCoursesErrors[keyof GetMyEnrolledCoursesErrors];
+
+export type GetMyEnrolledCoursesResponses = {
+    /**
+     * My enrolled courses
+     */
+    200: {
+        data: Array<Course>;
+        pagination: Pagination;
+    };
+};
+
+export type GetMyEnrolledCoursesResponse = GetMyEnrolledCoursesResponses[keyof GetMyEnrolledCoursesResponses];
+
+export type CreateSectionData = {
+    body: {
+        courseId: PropertiesId;
+        title: string;
+        previousSectionId: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/course/sections';
+};
+
+export type CreateSectionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type CreateSectionError = CreateSectionErrors[keyof CreateSectionErrors];
+
+export type CreateSectionResponses = {
+    /**
+     * Section created
+     */
+    201: {
+        data: Section;
+    };
+};
+
+export type CreateSectionResponse = CreateSectionResponses[keyof CreateSectionResponses];
+
+export type DeleteSectionData = {
+    body?: never;
+    path: {
+        sectionId: string;
+    };
+    query?: never;
+    url: '/course/sections/{sectionId}';
+};
+
+export type DeleteSectionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type DeleteSectionError = DeleteSectionErrors[keyof DeleteSectionErrors];
+
+export type DeleteSectionResponses = {
+    /**
+     * Section successfully deleted
+     */
+    204: void;
+};
+
+export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionResponses];
+
+export type CreateLessonData = {
+    body: {
         video?: VideoLessonWritable;
         test?: TestLessonWritable;
     };
@@ -220,7 +1921,1542 @@ export type CreateLessonResponses = {
     /**
      * Lesson created
      */
-    201: Lesson;
+    201: {
+        data: Lesson;
+    };
 };
 
 export type CreateLessonResponse = CreateLessonResponses[keyof CreateLessonResponses];
+
+export type DeleteLessonData = {
+    body?: never;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}';
+};
+
+export type DeleteLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type DeleteLessonError = DeleteLessonErrors[keyof DeleteLessonErrors];
+
+export type DeleteLessonResponses = {
+    /**
+     * Lesson successfully deleted
+     */
+    204: void;
+};
+
+export type DeleteLessonResponse = DeleteLessonResponses[keyof DeleteLessonResponses];
+
+export type GetLessonDetailData = {
+    body?: never;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}';
+};
+
+export type GetLessonDetailErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetLessonDetailError = GetLessonDetailErrors[keyof GetLessonDetailErrors];
+
+export type GetLessonDetailResponses = {
+    /**
+     * Lesson detail
+     */
+    200: {
+        data: LessonDetail;
+    };
+};
+
+export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
+
+export type EditLessonData = {
+    body: {
+        title?: string;
+        previousLessonId?: string | null;
+        videoUrl?: string;
+        duration?: bigint;
+    };
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}';
+};
+
+export type EditLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type EditLessonError = EditLessonErrors[keyof EditLessonErrors];
+
+export type EditLessonResponses = {
+    /**
+     * Lesson successfully updated
+     */
+    200: {
+        data: LessonDetail;
+    };
+};
+
+export type EditLessonResponse = EditLessonResponses[keyof EditLessonResponses];
+
+export type GetUploadVideoLessonUrlData = {
+    body?: never;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/upload-video-url';
+};
+
+export type GetUploadVideoLessonUrlErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetUploadVideoLessonUrlError = GetUploadVideoLessonUrlErrors[keyof GetUploadVideoLessonUrlErrors];
+
+export type GetUploadVideoLessonUrlResponses = {
+    /**
+     * Upload URL generated
+     */
+    200: {
+        data: UploadVideoUrlResponse;
+    };
+};
+
+export type GetUploadVideoLessonUrlResponse = GetUploadVideoLessonUrlResponses[keyof GetUploadVideoLessonUrlResponses];
+
+export type CreateTestData = {
+    body: {
+        type: TestLessonType;
+        questions: Array<TestQuestionWritable>;
+    };
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/tests';
+};
+
+export type CreateTestErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type CreateTestError = CreateTestErrors[keyof CreateTestErrors];
+
+export type CreateTestResponses = {
+    /**
+     * Test created
+     */
+    201: {
+        data: TestLesson;
+    };
+};
+
+export type CreateTestResponse = CreateTestResponses[keyof CreateTestResponses];
+
+export type GetLessonProgressData = {
+    body?: never;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/progress';
+};
+
+export type GetLessonProgressErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetLessonProgressError = GetLessonProgressErrors[keyof GetLessonProgressErrors];
+
+export type GetLessonProgressResponses = {
+    /**
+     * Lesson progress
+     */
+    200: {
+        data: LessonProgress;
+    };
+};
+
+export type GetLessonProgressResponse = GetLessonProgressResponses[keyof GetLessonProgressResponses];
+
+export type SaveLessonProgressData = {
+    body: {
+        watchedSeconds?: number;
+        isCompleted?: boolean;
+    };
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/progress';
+};
+
+export type SaveLessonProgressErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type SaveLessonProgressError = SaveLessonProgressErrors[keyof SaveLessonProgressErrors];
+
+export type SaveLessonProgressResponses = {
+    /**
+     * Lesson progress saved
+     */
+    200: {
+        data: LessonProgress;
+    };
+};
+
+export type SaveLessonProgressResponse = SaveLessonProgressResponses[keyof SaveLessonProgressResponses];
+
+export type MarkLessonAsCompletedData = {
+    body?: never;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/mark-completed';
+};
+
+export type MarkLessonAsCompletedErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type MarkLessonAsCompletedError = MarkLessonAsCompletedErrors[keyof MarkLessonAsCompletedErrors];
+
+export type MarkLessonAsCompletedResponses = {
+    /**
+     * Lesson marked as completed
+     */
+    200: {
+        data: LessonProgress;
+    };
+};
+
+export type MarkLessonAsCompletedResponse = MarkLessonAsCompletedResponses[keyof MarkLessonAsCompletedResponses];
+
+export type CommentOnLessonData = {
+    body: {
+        content: Content;
+    };
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/comments';
+};
+
+export type CommentOnLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type CommentOnLessonError = CommentOnLessonErrors[keyof CommentOnLessonErrors];
+
+export type CommentOnLessonResponses = {
+    /**
+     * Lesson comment created
+     */
+    201: {
+        data: LessonComment;
+    };
+};
+
+export type CommentOnLessonResponse = CommentOnLessonResponses[keyof CommentOnLessonResponses];
+
+export type ReplyLessonCommentData = {
+    body: {
+        content: Content;
+    };
+    path: {
+        /**
+         * Unique identifier of the lesson comment
+         */
+        commentId: string;
+    };
+    query?: never;
+    url: '/course/lesson-comments/{commentId}/reply';
+};
+
+export type ReplyLessonCommentErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type ReplyLessonCommentError = ReplyLessonCommentErrors[keyof ReplyLessonCommentErrors];
+
+export type ReplyLessonCommentResponses = {
+    /**
+     * Lesson comment reply created
+     */
+    201: {
+        data: LessonComment;
+    };
+};
+
+export type ReplyLessonCommentResponse = ReplyLessonCommentResponses[keyof ReplyLessonCommentResponses];
+
+export type GetMyCertificatesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/certificates-my';
+};
+
+export type GetMyCertificatesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetMyCertificatesError = GetMyCertificatesErrors[keyof GetMyCertificatesErrors];
+
+export type GetMyCertificatesResponses = {
+    /**
+     * My certificates
+     */
+    200: {
+        data: Array<Certificate>;
+        pagination: Pagination;
+    };
+};
+
+export type GetMyCertificatesResponse = GetMyCertificatesResponses[keyof GetMyCertificatesResponses];
+
+export type GetCertificateByIdData = {
+    body?: never;
+    path: {
+        certificateId: string;
+    };
+    query?: never;
+    url: '/course/certificates/{certificateId}';
+};
+
+export type GetCertificateByIdErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetCertificateByIdError = GetCertificateByIdErrors[keyof GetCertificateByIdErrors];
+
+export type GetCertificateByIdResponses = {
+    /**
+     * Certificate detail
+     */
+    200: {
+        data: Certificate;
+    };
+};
+
+export type GetCertificateByIdResponse = GetCertificateByIdResponses[keyof GetCertificateByIdResponses];
+
+export type CheckoutCourseData = {
+    body: CheckoutCourseRequest;
+    path?: never;
+    query?: never;
+    url: '/billing/checkout';
+};
+
+export type CheckoutCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type CheckoutCourseError = CheckoutCourseErrors[keyof CheckoutCourseErrors];
+
+export type CheckoutCourseResponses = {
+    /**
+     * Checkout transaction created
+     */
+    201: Transaction;
+};
+
+export type CheckoutCourseResponse = CheckoutCourseResponses[keyof CheckoutCourseResponses];
+
+export type GetLearnerBillingHistoryData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/billing/me/transactions';
+};
+
+export type GetLearnerBillingHistoryErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetLearnerBillingHistoryError = GetLearnerBillingHistoryErrors[keyof GetLearnerBillingHistoryErrors];
+
+export type GetLearnerBillingHistoryResponses = {
+    /**
+     * Learner billing history
+     */
+    200: TransactionCollection;
+};
+
+export type GetLearnerBillingHistoryResponse = GetLearnerBillingHistoryResponses[keyof GetLearnerBillingHistoryResponses];
+
+export type GetTransactionReceiptDetailData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the billing transaction
+         */
+        transactionId: string;
+    };
+    query?: never;
+    url: '/billing/transactions/{transactionId}/receipt';
+};
+
+export type GetTransactionReceiptDetailErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetTransactionReceiptDetailError = GetTransactionReceiptDetailErrors[keyof GetTransactionReceiptDetailErrors];
+
+export type GetTransactionReceiptDetailResponses = {
+    /**
+     * Billing receipt detail
+     */
+    200: Receipt;
+};
+
+export type GetTransactionReceiptDetailResponse = GetTransactionReceiptDetailResponses[keyof GetTransactionReceiptDetailResponses];
+
+export type GetPlatformRevenueAnalyticsData = {
+    body?: never;
+    path?: never;
+    query: {
+        from: Date;
+        to: Date;
+    };
+    url: '/billing/admin/analytics/revenue';
+};
+
+export type GetPlatformRevenueAnalyticsErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetPlatformRevenueAnalyticsError = GetPlatformRevenueAnalyticsErrors[keyof GetPlatformRevenueAnalyticsErrors];
+
+export type GetPlatformRevenueAnalyticsResponses = {
+    /**
+     * Revenue analytics
+     */
+    200: RevenueAnalytics;
+};
+
+export type GetPlatformRevenueAnalyticsResponse = GetPlatformRevenueAnalyticsResponses[keyof GetPlatformRevenueAnalyticsResponses];
+
+export type GetPlatformTransactionHistoryData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+        /**
+         * Filter by transaction status
+         */
+        status?: TransactionStatus;
+    };
+    url: '/billing/admin/transactions';
+};
+
+export type GetPlatformTransactionHistoryErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetPlatformTransactionHistoryError = GetPlatformTransactionHistoryErrors[keyof GetPlatformTransactionHistoryErrors];
+
+export type GetPlatformTransactionHistoryResponses = {
+    /**
+     * Platform transaction history
+     */
+    200: TransactionCollection;
+};
+
+export type GetPlatformTransactionHistoryResponse = GetPlatformTransactionHistoryResponses[keyof GetPlatformTransactionHistoryResponses];
+
+export type SearchPostsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Full-text keyword for post search
+         */
+        q?: string;
+        /**
+         * Filter posts by tag
+         */
+        tag?: string;
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/blog/posts';
+};
+
+export type SearchPostsErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type SearchPostsError = SearchPostsErrors[keyof SearchPostsErrors];
+
+export type SearchPostsResponses = {
+    /**
+     * Matched blog posts
+     */
+    200: PostCollection;
+};
+
+export type SearchPostsResponse = SearchPostsResponses[keyof SearchPostsResponses];
+
+export type CreatePostData = {
+    body: CreatePostRequest;
+    path?: never;
+    query?: never;
+    url: '/blog/posts';
+};
+
+export type CreatePostErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type CreatePostError = CreatePostErrors[keyof CreatePostErrors];
+
+export type CreatePostResponses = {
+    /**
+     * Post created
+     */
+    201: Post;
+};
+
+export type CreatePostResponse = CreatePostResponses[keyof CreatePostResponses];
+
+export type DeletePostData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the blog post
+         */
+        postId: string;
+    };
+    query?: never;
+    url: '/blog/posts/{postId}';
+};
+
+export type DeletePostErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type DeletePostError = DeletePostErrors[keyof DeletePostErrors];
+
+export type DeletePostResponses = {
+    /**
+     * Post deleted successfully
+     */
+    204: void;
+};
+
+export type DeletePostResponse = DeletePostResponses[keyof DeletePostResponses];
+
+export type GetPostByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the blog post
+         */
+        postId: string;
+    };
+    query?: never;
+    url: '/blog/posts/{postId}';
+};
+
+export type GetPostByIdErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetPostByIdError = GetPostByIdErrors[keyof GetPostByIdErrors];
+
+export type GetPostByIdResponses = {
+    /**
+     * Blog post detail
+     */
+    200: Post;
+};
+
+export type GetPostByIdResponse = GetPostByIdResponses[keyof GetPostByIdResponses];
+
+export type UpdatePostData = {
+    body: UpdatePostRequest;
+    path: {
+        /**
+         * Unique identifier of the blog post
+         */
+        postId: string;
+    };
+    query?: never;
+    url: '/blog/posts/{postId}';
+};
+
+export type UpdatePostErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type UpdatePostError = UpdatePostErrors[keyof UpdatePostErrors];
+
+export type UpdatePostResponses = {
+    /**
+     * Post updated
+     */
+    200: Post;
+};
+
+export type UpdatePostResponse = UpdatePostResponses[keyof UpdatePostResponses];
+
+export type GetPostCommentsData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the blog post
+         */
+        postId: string;
+    };
+    query?: never;
+    url: '/blog/posts/{postId}/comments';
+};
+
+export type GetPostCommentsErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type GetPostCommentsError = GetPostCommentsErrors[keyof GetPostCommentsErrors];
+
+export type GetPostCommentsResponses = {
+    /**
+     * Post comments with replies
+     */
+    200: CommentCollection;
+};
+
+export type GetPostCommentsResponse = GetPostCommentsResponses[keyof GetPostCommentsResponses];
+
+export type CommentOnPostData = {
+    body: CreateCommentRequest;
+    path: {
+        /**
+         * Unique identifier of the blog post
+         */
+        postId: string;
+    };
+    query?: never;
+    url: '/blog/posts/{postId}/comments';
+};
+
+export type CommentOnPostErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type CommentOnPostError = CommentOnPostErrors[keyof CommentOnPostErrors];
+
+export type CommentOnPostResponses = {
+    /**
+     * Comment created
+     */
+    201: CommentResponse;
+};
+
+export type CommentOnPostResponse = CommentOnPostResponses[keyof CommentOnPostResponses];
+
+export type DeleteCommentData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the post comment
+         */
+        commentId: string;
+    };
+    query?: never;
+    url: '/blog/comments/{commentId}';
+};
+
+export type DeleteCommentErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type DeleteCommentError = DeleteCommentErrors[keyof DeleteCommentErrors];
+
+export type DeleteCommentResponses = {
+    /**
+     * Comment deleted successfully
+     */
+    204: void;
+};
+
+export type DeleteCommentResponse = DeleteCommentResponses[keyof DeleteCommentResponses];
+
+export type UpdateCommentData = {
+    body: UpdateCommentRequest;
+    path: {
+        /**
+         * Unique identifier of the post comment
+         */
+        commentId: string;
+    };
+    query?: never;
+    url: '/blog/comments/{commentId}';
+};
+
+export type UpdateCommentErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: Error;
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type UpdateCommentError = UpdateCommentErrors[keyof UpdateCommentErrors];
+
+export type UpdateCommentResponses = {
+    /**
+     * Comment updated
+     */
+    200: CommentResponse;
+};
+
+export type UpdateCommentResponse = UpdateCommentResponses[keyof UpdateCommentResponses];
+
+export type ReplyCommentData = {
+    body: CreateCommentRequest;
+    path: {
+        /**
+         * Unique identifier of the post comment
+         */
+        commentId: string;
+    };
+    query?: never;
+    url: '/blog/comments/{commentId}/replies';
+};
+
+export type ReplyCommentErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: Error;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Not Found Error response
+     */
+    404: Error;
+    /**
+     * Internal Server Error response
+     */
+    500: Error;
+};
+
+export type ReplyCommentError = ReplyCommentErrors[keyof ReplyCommentErrors];
+
+export type ReplyCommentResponses = {
+    /**
+     * Reply created
+     */
+    201: Reply;
+};
+
+export type ReplyCommentResponse = ReplyCommentResponses[keyof ReplyCommentResponses];

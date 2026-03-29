@@ -1,0 +1,113 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Get lesson detail
+  operationId: getLessonDetail
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  responses:
+    200:
+      description: Lesson detail
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/LessonDetail.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+patch:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Edit lesson
+  operationId: editLesson
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: Encapsulation Deep Dive
+            previousLessonId:
+              type: string
+              format: uuid
+              nullable: true
+              example: ed405041-986f-4750-92e6-617dd9337a78
+            videoUrl:
+              type: string
+              format: uri
+              example: https://cdn.egolia.localhost/videos/lesson-1.mp4
+            duration:
+              type: integer
+              format: int64
+              minimum: 1
+              example: 300
+          minProperties: 1
+  responses:
+    200:
+      description: Lesson successfully updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/LessonDetail.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+delete:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Delete lesson
+  operationId: deleteLesson
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  responses:
+    204:
+      description: Lesson successfully deleted
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
