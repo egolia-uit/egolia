@@ -1,0 +1,12 @@
+/api/ @egolia-uit/team-backend @egolia-uit/team-backend
+/proto/ @egolia-uit/team-backend
+/docs/ @egolia-uit/team-backend @egolia-uit/team-backend
+/packages/api-web/ @egolia-uit/team-frontend @egolia-uit/team-backend
+
+/apps/web/ @egolia-uit/team-frontend
+/packages/ @egolia-uit/team-frontend
+
+/packages/api-pb/ @egolia-uit/team-backend
+/cmd/ @egolia-uit/team-backend
+/internal/ @egolia-uit/team-backend
+/pkg/ @egolia-uit/team-backend

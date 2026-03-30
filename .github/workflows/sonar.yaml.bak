@@ -1,0 +1,81 @@
+name: Sonar
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - .dockerignore
+      - .editorconfig
+      - .gitattributes
+      - .gitignore
+      - .harper-dictionary.txt
+      - .husky/**/*
+      - .lazy.lua
+      - .nvim.lua
+      - .renovaterc.json
+      - .vscode/**/*
+      - .wakatime-project
+      - README.md
+      - deploy/**/*
+      - justfile
+      - mise.development.toml
+      - mise.toml
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches-ignore:
+      - renovate/**/*
+
+jobs:
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    steps:
+      - &checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v7
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_WEB }}
+        with:
+          projectBaseDir: apps/web/
+
+  course:
+    name: Course
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v7
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_COURSE }}
+        with:
+          projectBaseDir: cmd/course/
+
+  billing:
+    name: Billing
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v7
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BILLING }}
+        with:
+          projectBaseDir: cmd/billing/
+
+  blog:
+    name: Blog
+    runs-on: ubuntu-latest
+    steps:
+      - *checkout
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v7
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BLOG }}
+        with:
+          projectBaseDir: cmd/blog/
