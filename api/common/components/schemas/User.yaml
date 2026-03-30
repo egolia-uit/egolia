@@ -23,7 +23,7 @@ properties:
     type: string
     format: email
     description: Email from Authentik
-    example: user@notopia.com
+    example: user@egolia.com
     nullable: true
 
 required:

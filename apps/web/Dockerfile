@@ -1,0 +1,24 @@
+FROM node:25.6.1-alpine3.23 AS builder
+ENV NODE_ENV=production
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV NEXT_TELEMETRY_DISABLED=1
+WORKDIR /egolia
+RUN npm install -g pnpm@10.28.2
+COPY . .
+RUN pnpm --filter @egolia-uit/web... install --frozen-lockfile
+WORKDIR /egolia/apps/web
+RUN pnpm exec next build
+
+FROM node:25.6.1-alpine3.23 AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+ENV NEXT_TELEMETRY_DISABLED=1
+COPY --from=builder /egolia/apps/web/public ./public
+COPY --from=builder /egolia/apps/web/.next/standalone ./
+COPY --from=builder /egolia/apps/web/.next/static ./.next/static
+COPY --from=builder /egolia/apps/web/.next/cache ./.next/cache
+EXPOSE 3000
+CMD ["node", "apps/web/server.js"]

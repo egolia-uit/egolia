@@ -1,0 +1,92 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "course",
+  "projectType": "application",
+  "tags": ["scope:service", "type:go"],
+  "namedInputs": {
+    "default": [
+      "goPkgFiles",
+      "goFiles",
+      "{workspaceRoot}/api/**/*.go",
+      "{workspaceRoot}/internal/course/**/*.go"
+    ]
+  },
+  "targets": {
+    "gen:wire": {
+      "executor": "nx:run-commands",
+      "inputs": ["default"],
+      "outputs": ["{projectRoot}/wire_gen.go"],
+      "options": {
+        "command": "wire",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "inputs": ["default"],
+      "options": {
+        "command": "go run .",
+        "cwd": "{projectRoot}",
+        "tty": true
+      },
+      "dependsOn": ["gen:wire", "^gen*"],
+      "continuous": true
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "inputs": ["default"],
+      "options": {
+        "command": "go build -o ./course .",
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["gen:wire", "^gen*", "^build*"]
+    },
+    "preview": {
+      "executor": "nx:run-commands",
+      "inputs": ["default"],
+      "options": {
+        "command": "./course",
+        "cwd": "{projectRoot}",
+        "tty": true
+      },
+      "continuous": true,
+      "dependsOn": ["build"]
+    },
+    "debug": {
+      "executor": "nx:run-commands",
+      "inputs": ["default"],
+      "options": {
+        "command": "dlv debug --headless --listen=127.0.0.1:23451 --accept-multiclient",
+        "cwd": "{projectRoot}",
+        "tty": true
+      },
+      "dependsOn": ["gen:wire", "^gen*"],
+      "continuous": true
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "golangci-lint run ./...",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false,
+      "parallelism": false
+    },
+    "tidy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go mod tidy"
+      }
+    },
+    "nx-release-publish": {
+      "parallelism": false
+    }
+  },
+  "implicitDependencies": ["pkg"],
+  "release": {
+    "docker": {
+      "repositoryName": "egolia-uit/course"
+    }
+  }
+}

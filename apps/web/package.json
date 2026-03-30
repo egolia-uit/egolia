@@ -1,0 +1,20 @@
+{
+  "name": "@egolia-uit/web",
+  "private": true,
+  "dependencies": {
+    "@egolia-uit/ui": "workspace:",
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "lucide-react": "catalog:",
+    "next": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "shadcn": "catalog:"
+  },
+  "devDependencies": {
+    "autoprefixer": "catalog:",
+    "postcss": "catalog:",
+    "tailwind-merge": "catalog:",
+    "tw-animate-css": "catalog:"
+  }
+}
