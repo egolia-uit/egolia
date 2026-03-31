@@ -15,7 +15,7 @@ if [[ -z "${ALLOWED_USERS[$current_user]}" ]]; then
 fi
 
 CI=true pnpm nx affected \
-  --typecheck \
+  --target typecheck \
   --target lint \
   --target format:check \
   --tui false
