@@ -8,17 +8,22 @@ vite.config.*.timestamp*
 
 # Next.js
 .next
+next-env.d.ts
 out
 
 coverage.out
 
 # go bin, usually run with nx won't generate this, but if you accidentally run go build
-/note
-/note.exe
+/course
+/course.exe
+/billing
+/billing.exe
+/blog
+/blog.exe
 
 # from dlv
 __debug_bin*
 
 # tmp, curently having .docker-version from nx
 tmp
-.claude
+.nx/polygraph
