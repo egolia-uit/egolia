@@ -1,9 +1,8 @@
 // Uncomment this line to use CSS modules
 // import styles from './app.module.css';
-import '@scalar/api-reference-react/style.css';
-
 import openapi from '@egolia-uit/api/openapi' with { type: 'json' };
 import { ApiReferenceReact } from '@scalar/api-reference-react';
+import '@scalar/api-reference-react/style.css';
 
 export function App() {
   return (
@@ -17,6 +16,7 @@ export function App() {
               title: 'Egolia API',
             },
           ],
+          showOperationId: true,
           persistAuth: true,
           telemetry: false,
         }}
