@@ -1,5 +1,7 @@
 # vim:ft=sh:
 
+FILE_LIMIT_BYTES=1000000 # 1MB
+
 declare -A ALLOWED_USERS
 ALLOWED_USERS["trannguyenthaibinh46@gmail.com"]="Kevin Nitro"
 ALLOWED_USERS["minhlephan1901@gmail.com"]="Leminionn"
@@ -12,7 +14,19 @@ if [[ -z "${ALLOWED_USERS[$current_user]}" ]]; then
   exit 1
 fi
 
-CI=true pnpm nx run-many \
+CI=true pnpm nx affected \
+  --typecheck \
   --target lint \
   --target format:check \
   --tui false
+
+for file in $(git diff --cached --name-only --diff-filter=A); do
+  if [ "$(wc -c <"$file")" -gt "$FILE_LIMIT_BYTES" ]; then
+    echo "Error: File '$file' is too large (>${FILE_LIMIT_BYTES} bytes)."
+    exit 2
+  fi
+  if file --mime "$file" | grep -q "binary"; then
+    echo "Error: Binary file '$file' detected. Use Git LFS."
+    exit 3
+  fi
+done
