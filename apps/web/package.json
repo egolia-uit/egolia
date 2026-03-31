@@ -2,7 +2,6 @@
   "name": "@egolia-uit/web",
   "private": true,
   "dependencies": {
-    "@egolia-uit/ui": "workspace:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
     "lucide-react": "catalog:",
