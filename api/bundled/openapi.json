@@ -2295,7 +2295,31 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckoutCourseRequest"
+                "type": "object",
+                "properties": {
+                  "courseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 0,
+                    "example": 499000
+                  },
+                  "currency": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 3,
+                    "example": "VND"
+                  }
+                },
+                "required": [
+                  "courseId",
+                  "amount",
+                  "currency"
+                ]
               }
             }
           }
@@ -2355,7 +2379,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionCollection"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transaction"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
                 }
               }
             }
@@ -2503,7 +2542,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionCollection"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transaction"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
                 }
               }
             }
@@ -2567,7 +2621,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PostCollection"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Post"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
                 }
               }
             }
@@ -2596,7 +2665,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatePostRequest"
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Cach toi toi uu hanh trinh hoc tap"
+                  },
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "learning",
+                      "productivity"
+                    ]
+                  }
+                },
+                "required": [
+                  "title",
+                  "content",
+                  "tags"
+                ]
               }
             }
           }
@@ -2684,7 +2779,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdatePostRequest"
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "Cach toi toi uu hanh trinh hoc tap"
+                  },
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "learning",
+                      "productivity"
+                    ]
+                  }
+                },
+                "required": [
+                  "title",
+                  "content",
+                  "tags"
+                ]
               }
             }
           }
@@ -2771,11 +2892,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Post comments with replies",
+            "description": "Top-level comments for the post",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CommentCollection"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Comment"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
                 }
               }
             }
@@ -2812,7 +2944,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCommentRequest"
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "Cam on ban da chia se."
+                  }
+                },
+                "required": [
+                  "content"
+                ]
               }
             }
           }
@@ -2823,7 +2965,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CommentResponse"
+                  "$ref": "#/components/schemas/Comment"
                 }
               }
             }
@@ -2865,7 +3007,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateCommentRequest"
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "Minh da cap nhat lai noi dung binh luan."
+                  }
+                },
+                "required": [
+                  "content"
+                ]
               }
             }
           }
@@ -2876,7 +3028,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CommentResponse"
+                  "$ref": "#/components/schemas/Comment"
                 }
               }
             }
@@ -2955,7 +3107,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateCommentRequest"
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "Cam on ban da chia se."
+                  }
+                },
+                "required": [
+                  "content"
+                ]
               }
             }
           }
@@ -2966,7 +3128,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Reply"
+                  "$ref": "#/components/schemas/Comment"
                 }
               }
             }
@@ -3720,33 +3882,6 @@
           "createdAt"
         ]
       },
-      "CheckoutCourseRequest": {
-        "type": "object",
-        "properties": {
-          "courseId": {
-            "type": "string",
-            "format": "uuid",
-            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
-          },
-          "amount": {
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 499000
-          },
-          "currency": {
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 3,
-            "example": "VND"
-          }
-        },
-        "required": [
-          "courseId",
-          "amount",
-          "currency"
-        ]
-      },
       "TransactionStatus": {
         "type": "string",
         "description": "Current status of a billing transaction",
@@ -3806,23 +3941,12 @@
           "createdAt"
         ]
       },
-      "TransactionCollection": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Transaction"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          }
-        },
-        "required": [
-          "data",
-          "pagination"
-        ]
+      "email": {
+        "type": "string",
+        "format": "email",
+        "description": "Email from Authentik",
+        "example": "user@egolia.com",
+        "nullable": true
       },
       "Receipt": {
         "type": "object",
@@ -3846,14 +3970,11 @@
                 "$ref": "#/components/schemas/id"
               },
               "email": {
-                "type": "string",
-                "format": "email",
-                "example": "learner@egolia.dev"
+                "$ref": "#/components/schemas/email"
               }
             },
             "required": [
-              "userId",
-              "email"
+              "userId"
             ]
           }
         },
@@ -3963,120 +4084,6 @@
           "commentCount"
         ]
       },
-      "PostCollection": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Post"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          }
-        },
-        "required": [
-          "data",
-          "pagination"
-        ]
-      },
-      "CreatePostRequest": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "Cach toi toi uu hanh trinh hoc tap"
-          },
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "learning",
-              "productivity"
-            ]
-          }
-        },
-        "required": [
-          "title",
-          "content",
-          "tags"
-        ]
-      },
-      "UpdatePostRequest": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "Cach toi toi uu hanh trinh hoc tap"
-          },
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": [
-              "learning",
-              "productivity"
-            ]
-          }
-        },
-        "required": [
-          "title",
-          "content",
-          "tags"
-        ]
-      },
-      "Reply": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "d1a8eaf7-2b37-4d6d-970f-d61c8fe95654",
-            "readOnly": true
-          },
-          "authorId": {
-            "$ref": "#/components/schemas/id"
-          },
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "example": "Minh dong y voi y kien nay."
-          },
-          "parentCommentId": {
-            "type": "string",
-            "format": "uuid",
-            "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
-            "readOnly": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-25T09:15:00Z",
-            "readOnly": true
-          }
-        },
-        "required": [
-          "id",
-          "authorId",
-          "content",
-          "parentCommentId",
-          "createdAt"
-        ]
-      },
       "Comment": {
         "type": "object",
         "properties": {
@@ -4086,69 +4093,10 @@
             "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
             "readOnly": true
           },
-          "authorId": {
-            "$ref": "#/components/schemas/id"
-          },
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "example": "Bai viet nay rat huu ich."
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-25T09:00:00Z",
-            "readOnly": true
-          },
-          "replies": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Reply"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "authorId",
-          "content",
-          "createdAt",
-          "replies"
-        ]
-      },
-      "CommentCollection": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Comment"
-            }
-          }
-        },
-        "required": [
-          "data"
-        ]
-      },
-      "CreateCommentRequest": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "example": "Cam on ban da chia se."
-          }
-        },
-        "required": [
-          "content"
-        ]
-      },
-      "CommentResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
+          "postId": {
             "type": "string",
             "format": "uuid",
-            "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+            "example": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
             "readOnly": true
           },
           "authorId": {
@@ -4175,23 +4123,11 @@
         },
         "required": [
           "id",
+          "postId",
           "authorId",
           "content",
           "parentCommentId",
           "createdAt"
-        ]
-      },
-      "UpdateCommentRequest": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "example": "Minh da cap nhat lai noi dung binh luan."
-          }
-        },
-        "required": [
-          "content"
         ]
       }
     },

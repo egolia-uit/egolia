@@ -12,14 +12,21 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/Comment.yaml#/UpdateCommentRequest
+          type: object
+          properties:
+            content:
+              type: string
+              minLength: 1
+              example: Minh da cap nhat lai noi dung binh luan.
+          required:
+            - content
   responses:
     200:
       description: Comment updated
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Comment.yaml#/CommentResponse
+            $ref: ../components/schemas/Comment.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

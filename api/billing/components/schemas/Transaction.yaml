@@ -47,22 +47,6 @@ Transaction:
     - status
     - createdAt
 
-TransactionCollection:
-  type: object
-
-  properties:
-    data:
-      type: array
-      items:
-        $ref: "#/Transaction"
-
-    pagination:
-      $ref: ../../../common/components/schemas/Pagination.yaml
-
-  required:
-    - data
-    - pagination
-
 TransactionStatus:
   type: string
   description: Current status of a billing transaction

@@ -20,7 +20,17 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Transaction.yaml#/TransactionCollection
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: ../components/schemas/Transaction.yaml#/Transaction
+              pagination:
+                $ref: ../../common/components/schemas/Pagination.yaml
+            required:
+              - data
+              - pagination
     401:
       $ref: ../../common/components/responses/UnauthorizedError.yaml
     403:

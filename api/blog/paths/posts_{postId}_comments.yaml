@@ -9,11 +9,18 @@ get:
     - $ref: ../components/parameters/postIdPath.yaml
   responses:
     200:
-      description: Post comments with replies
+      description: Top-level comments for the post
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Comment.yaml#/CommentCollection
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: ../components/schemas/Comment.yaml
+            required:
+              - data
     401:
       $ref: ../../common/components/responses/UnauthorizedError.yaml
     404:
@@ -35,14 +42,21 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/Comment.yaml#/CreateCommentRequest
+          type: object
+          properties:
+            content:
+              type: string
+              minLength: 1
+              example: Cam on ban da chia se.
+          required:
+            - content
   responses:
     201:
       description: Comment created
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Comment.yaml#/CommentResponse
+            $ref: ../components/schemas/Comment.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

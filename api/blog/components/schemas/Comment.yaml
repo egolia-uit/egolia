@@ -1,146 +1,43 @@
-CreateCommentRequest:
-  type: object
+type: object
 
-  properties:
-    content:
-      type: string
-      minLength: 1
-      example: Cam on ban da chia se.
+properties:
+  id:
+    type: string
+    format: uuid
+    example: 834897ce-45e7-43a5-92b2-4ec1f0dc3cd1
+    readOnly: true
 
-  required:
-    - content
+  postId:
+    type: string
+    format: uuid
+    example: 74af02ce-4e69-4ca1-a721-c0e19c9937b8
+    readOnly: true
 
-UpdateCommentRequest:
-  type: object
+  authorId:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/id
 
-  properties:
-    content:
-      type: string
-      minLength: 1
-      example: Minh da cap nhat lai noi dung binh luan.
+  content:
+    type: string
+    minLength: 1
+    example: Bai viet nay rat huu ich.
 
-  required:
-    - content
+  parentCommentId:
+    type: string
+    format: uuid
+    nullable: true
+    example: null
+    readOnly: true
 
-CommentResponse:
-  type: object
+  createdAt:
+    type: string
+    format: date-time
+    example: "2026-03-25T09:00:00Z"
+    readOnly: true
 
-  properties:
-    id:
-      type: string
-      format: uuid
-      example: 834897ce-45e7-43a5-92b2-4ec1f0dc3cd1
-      readOnly: true
-
-    authorId:
-      $ref: ../../../common/components/schemas/User.yaml#/properties/id
-
-    content:
-      type: string
-      minLength: 1
-      example: Bai viet nay rat huu ich.
-
-    parentCommentId:
-      type: string
-      format: uuid
-      nullable: true
-      example: null
-      readOnly: true
-
-    createdAt:
-      type: string
-      format: date-time
-      example: "2026-03-25T09:00:00Z"
-      readOnly: true
-
-  required:
-    - id
-    - authorId
-    - content
-    - parentCommentId
-    - createdAt
-
-Reply:
-  type: object
-
-  properties:
-    id:
-      type: string
-      format: uuid
-      example: d1a8eaf7-2b37-4d6d-970f-d61c8fe95654
-      readOnly: true
-
-    authorId:
-      $ref: ../../../common/components/schemas/User.yaml#/properties/id
-
-    content:
-      type: string
-      minLength: 1
-      example: Minh dong y voi y kien nay.
-
-    parentCommentId:
-      type: string
-      format: uuid
-      example: 834897ce-45e7-43a5-92b2-4ec1f0dc3cd1
-      readOnly: true
-
-    createdAt:
-      type: string
-      format: date-time
-      example: "2026-03-25T09:15:00Z"
-      readOnly: true
-
-  required:
-    - id
-    - authorId
-    - content
-    - parentCommentId
-    - createdAt
-
-Comment:
-  type: object
-
-  properties:
-    id:
-      type: string
-      format: uuid
-      example: 834897ce-45e7-43a5-92b2-4ec1f0dc3cd1
-      readOnly: true
-
-    authorId:
-      $ref: ../../../common/components/schemas/User.yaml#/properties/id
-
-    content:
-      type: string
-      minLength: 1
-      example: Bai viet nay rat huu ich.
-
-    createdAt:
-      type: string
-      format: date-time
-      example: "2026-03-25T09:00:00Z"
-      readOnly: true
-
-    replies:
-      type: array
-      items:
-        $ref: "#/Reply"
-
-  required:
-    - id
-    - authorId
-    - content
-    - createdAt
-    - replies
-
-CommentCollection:
-  type: object
-
-  properties:
-    data:
-      type: array
-      items:
-        $ref: "#/Comment"
-
-  required:
-    - data
+required:
+  - id
+  - postId
+  - authorId
+  - content
+  - parentCommentId
+  - createdAt
