@@ -1,0 +1,3 @@
+# vim:ft=sh:
+
+node .husky/post-checkout.cjs
