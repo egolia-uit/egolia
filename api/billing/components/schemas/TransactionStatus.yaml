@@ -1,0 +1,7 @@
+type: string
+description: Current status of a billing transaction
+enum:
+  - pending
+  - completed
+  - failed
+example: completed

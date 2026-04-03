@@ -2,16 +2,17 @@ type: object
 
 properties:
   transaction:
-    $ref: ./Transaction.yaml#/Transaction
+    $ref: ./Transaction.yaml
 
   receiptNumber:
     type: string
+    format: uuid
     example: RCPT-20260325-0001
 
   issuedAt:
     type: string
     format: date-time
-    example: "2026-03-25T08:35:00Z"
+    example: '2026-03-25T08:35:00Z'
 
   billedTo:
     type: object
