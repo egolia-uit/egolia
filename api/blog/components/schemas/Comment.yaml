@@ -15,6 +15,7 @@ properties:
 
   authorId:
     $ref: ../../../common/components/schemas/User.yaml#/properties/id
+    readOnly: true
 
   content:
     type: string
@@ -31,7 +32,7 @@ properties:
   createdAt:
     type: string
     format: date-time
-    example: "2026-03-25T09:00:00Z"
+    example: '2026-03-25T09:00:00Z'
     readOnly: true
 
 required:

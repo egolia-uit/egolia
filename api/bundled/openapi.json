@@ -46,18 +46,12 @@
       "x-displayName": "Checkout"
     },
     {
-      "name": "Learner Billing",
-      "description": "Billing endpoints for learners",
-      "x-displayName": "Learner Billing"
-    },
-    {
-      "name": "Receipt",
-      "description": "Billing receipt retrieval",
-      "x-displayName": "Receipt"
+      "name": "Transaction",
+      "description": "Transaction",
+      "x-displayName": "Transaction"
     },
     {
       "name": "Admin Billing",
-      "description": "Billing administration and analytics",
       "x-displayName": "Admin Billing"
     },
     {
@@ -1996,24 +1990,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "courseId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
-                  },
-                  "amount": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 0,
-                    "example": 499000
-                  }
-                },
-                "required": [
-                  "courseId",
-                  "amount"
-                ]
+                "$ref": "#/components/schemas/billing_Transaction"
               }
             }
           }
@@ -2037,104 +2014,6 @@
           },
           "403": {
             "$ref": "#/components/responses/billing_ForbiddenError"
-          },
-          "500": {
-            "$ref": "#/components/responses/billing_InternalServerError"
-          }
-        }
-      }
-    },
-    "/billing/me/transactions": {
-      "get": {
-        "security": [
-          {
-            "billing_Oauth2": []
-          }
-        ],
-        "tags": [
-          "Learner Billing"
-        ],
-        "summary": "Get learner billing history",
-        "operationId": "getLearnerBillingHistory",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/billing_pageQuery"
-          },
-          {
-            "$ref": "#/components/parameters/billing_limitQuery"
-          },
-          {
-            "$ref": "#/components/parameters/billing_orderQuery"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Learner billing history",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/billing_Transaction"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/billing_Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/billing_UnauthorizedError"
-          },
-          "500": {
-            "$ref": "#/components/responses/billing_InternalServerError"
-          }
-        }
-      }
-    },
-    "/billing/transactions/{transactionId}/receipt": {
-      "get": {
-        "security": [
-          {
-            "billing_Oauth2": []
-          }
-        ],
-        "tags": [
-          "Receipt"
-        ],
-        "summary": "Get transaction receipt detail",
-        "operationId": "getTransactionReceiptDetail",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/billing_transactionIdPath"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Billing receipt detail",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/billing_Receipt"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/billing_UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/billing_NotFoundError"
           },
           "500": {
             "$ref": "#/components/responses/billing_InternalServerError"
@@ -2199,7 +2078,7 @@
         }
       }
     },
-    "/billing/admin/transactions": {
+    "/billing/transactions": {
       "get": {
         "security": [
           {
@@ -2207,10 +2086,10 @@
           }
         ],
         "tags": [
-          "Admin Billing"
+          "Transaction"
         ],
-        "summary": "Get platform transaction history",
-        "operationId": "getPlatformTransactionHistory",
+        "summary": "Get transactions",
+        "operationId": "getTransactions",
         "parameters": [
           {
             "$ref": "#/components/parameters/billing_pageQuery"
@@ -2222,17 +2101,27 @@
             "$ref": "#/components/parameters/billing_orderQuery"
           },
           {
-            "name": "status",
+            "name": "courseId",
             "in": "query",
-            "description": "Filter by transaction status",
+            "required": false,
             "schema": {
-              "$ref": "#/components/schemas/billing_TransactionStatus"
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "learnerId",
+            "in": "query",
+            "description": "If requested by non admin, then it will be that user",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/billing_id"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Platform transaction history",
+            "description": "Learner billing history",
             "content": {
               "application/json": {
                 "schema": {
@@ -2258,9 +2147,6 @@
           },
           "401": {
             "$ref": "#/components/responses/billing_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/billing_ForbiddenError"
           },
           "500": {
             "$ref": "#/components/responses/billing_InternalServerError"
@@ -2359,33 +2245,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "example": "Cach toi toi uu hanh trinh hoc tap"
-                  },
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "example": [
-                      "learning",
-                      "productivity"
-                    ]
-                  }
-                },
-                "required": [
-                  "title",
-                  "content",
-                  "tags"
-                ]
+                "$ref": "#/components/schemas/blog_Post"
               }
             }
           }
@@ -2638,17 +2498,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Cam on ban da chia se."
-                  }
-                },
-                "required": [
-                  "content"
-                ]
+                "$ref": "#/components/schemas/blog_Comment"
               }
             }
           }
@@ -2701,17 +2551,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Minh da cap nhat lai noi dung binh luan."
-                  }
-                },
-                "required": [
-                  "content"
-                ]
+                "$ref": "#/components/schemas/blog_Comment"
               }
             }
           }
@@ -2801,17 +2641,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Cam on ban da chia se."
-                  }
-                },
-                "required": [
-                  "content"
-                ]
+                "$ref": "#/components/schemas/blog_Comment"
               }
             }
           }
@@ -3450,6 +3280,22 @@
         "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
         "example": "100"
       },
+      "billing_username": {
+        "type": "string",
+        "description": "Username from Authentik",
+        "example": "user"
+      },
+      "billing_email": {
+        "type": "string",
+        "format": "email",
+        "description": "Email from Authentik",
+        "example": "user@egolia.com",
+        "nullable": true
+      },
+      "billing_title": {
+        "type": "string",
+        "example": "Introduction to Programming"
+      },
       "billing_TransactionStatus": {
         "type": "string",
         "description": "Current status of a billing transaction",
@@ -3470,36 +3316,61 @@
             "readOnly": true
           },
           "userId": {
-            "$ref": "#/components/schemas/billing_id"
+            "$ref": "#/components/schemas/billing_id",
+            "readOnly": true
+          },
+          "username": {
+            "$ref": "#/components/schemas/billing_username",
+            "readOnly": true
+          },
+          "userEmail": {
+            "$ref": "#/components/schemas/billing_email",
+            "readOnly": true
           },
           "courseId": {
             "type": "string",
             "format": "uuid",
             "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
           },
+          "courseTitle": {
+            "$ref": "#/components/schemas/billing_title",
+            "readOnly": true
+          },
           "amount": {
             "type": "number",
             "format": "double",
             "minimum": 0,
-            "example": 499000
+            "example": 499000,
+            "readOnly": true
           },
           "status": {
-            "$ref": "#/components/schemas/billing_TransactionStatus"
+            "$ref": "#/components/schemas/billing_TransactionStatus",
+            "readOnly": true
           },
           "createdAt": {
             "type": "string",
             "format": "date-time",
             "example": "2026-03-25T08:30:00Z",
             "readOnly": true
+          },
+          "issuedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": null,
+            "nullable": true,
+            "readOnly": true
           }
         },
         "required": [
           "id",
           "userId",
+          "username",
+          "userEmail",
           "courseId",
           "amount",
           "status",
-          "createdAt"
+          "createdAt",
+          "issuedAt"
         ]
       },
       "billing_Error": {
@@ -3524,6 +3395,44 @@
         "required": [
           "code",
           "message"
+        ]
+      },
+      "billing_RevenueAnalytics": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-22T10:30:00Z"
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-22T10:30:00Z"
+          },
+          "totalRevenue": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 152000000
+          },
+          "completedTransactions": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 421
+          },
+          "failedTransactions": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 9
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "totalRevenue",
+          "completedTransactions",
+          "failedTransactions"
         ]
       },
       "billing_Pagination": {
@@ -3574,88 +3483,6 @@
           "hasPrev"
         ]
       },
-      "billing_email": {
-        "type": "string",
-        "format": "email",
-        "description": "Email from Authentik",
-        "example": "user@egolia.com",
-        "nullable": true
-      },
-      "billing_Receipt": {
-        "type": "object",
-        "properties": {
-          "transaction": {
-            "$ref": "#/components/schemas/billing_Transaction"
-          },
-          "receiptNumber": {
-            "type": "string",
-            "example": "RCPT-20260325-0001"
-          },
-          "issuedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-25T08:35:00Z"
-          },
-          "billedTo": {
-            "type": "object",
-            "properties": {
-              "userId": {
-                "$ref": "#/components/schemas/billing_id"
-              },
-              "email": {
-                "$ref": "#/components/schemas/billing_email"
-              }
-            },
-            "required": [
-              "userId"
-            ]
-          }
-        },
-        "required": [
-          "transaction",
-          "receiptNumber",
-          "issuedAt",
-          "billedTo"
-        ]
-      },
-      "billing_RevenueAnalytics": {
-        "type": "object",
-        "properties": {
-          "from": {
-            "type": "string",
-            "format": "date",
-            "example": "2026-03-01"
-          },
-          "to": {
-            "type": "string",
-            "format": "date",
-            "example": "2026-03-31"
-          },
-          "totalRevenue": {
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 152000000
-          },
-          "completedTransactions": {
-            "type": "integer",
-            "minimum": 0,
-            "example": 421
-          },
-          "failedTransactions": {
-            "type": "integer",
-            "minimum": 0,
-            "example": 9
-          }
-        },
-        "required": [
-          "from",
-          "to",
-          "totalRevenue",
-          "completedTransactions",
-          "failedTransactions"
-        ]
-      },
       "blog_id": {
         "type": "string",
         "format": "number",
@@ -3672,7 +3499,8 @@
             "readOnly": true
           },
           "authorId": {
-            "$ref": "#/components/schemas/blog_id"
+            "$ref": "#/components/schemas/blog_id",
+            "readOnly": true
           },
           "title": {
             "type": "string",
@@ -3804,7 +3632,8 @@
             "readOnly": true
           },
           "authorId": {
-            "$ref": "#/components/schemas/blog_id"
+            "$ref": "#/components/schemas/blog_id",
+            "readOnly": true
           },
           "content": {
             "type": "string",
@@ -4031,21 +3860,6 @@
               "code": "INTERNAL_SERVER_ERROR",
               "message": "An internal server error occurred. Please try again later",
               "more_info": "https://api.egolia.com/docs/errors/INTERNAL_SERVER_ERROR"
-            }
-          }
-        }
-      },
-      "billing_NotFoundError": {
-        "description": "Not Found Error response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/billing_Error"
-            },
-            "example": {
-              "code": "NOT_FOUND",
-              "message": "The requested resource was not found",
-              "more_info": "https://api.egolia.com/docs/errors/NOT_FOUND"
             }
           }
         }
@@ -4300,17 +4114,6 @@
           "example": "desc"
         }
       },
-      "billing_transactionIdPath": {
-        "name": "transactionId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the billing transaction",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
-      },
       "blog_pageQuery": {
         "name": "page",
         "in": "query",
@@ -4381,8 +4184,7 @@
         "Section",
         "Lesson",
         "Checkout",
-        "Learner Billing",
-        "Receipt",
+        "Transaction",
         "Admin Billing",
         "Post",
         "Comment"

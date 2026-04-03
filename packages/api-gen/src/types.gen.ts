@@ -177,6 +177,18 @@ export type CourseCertificate = {
 export type BillingId = string;
 
 /**
+ * Username from Authentik
+ */
+export type BillingUsername = string;
+
+/**
+ * Email from Authentik
+ */
+export type BillingEmail = string | null;
+
+export type BillingTitle = string;
+
+/**
  * Current status of a billing transaction
  */
 export const BillingTransactionStatus = {
@@ -193,10 +205,14 @@ export type BillingTransactionStatus = typeof BillingTransactionStatus[keyof typ
 export type BillingTransaction = {
     readonly id: string;
     userId: BillingId;
+    username: BillingUsername;
+    userEmail: BillingEmail;
     courseId: string;
-    amount: number;
+    courseTitle?: BillingTitle;
+    readonly amount: number;
     status: BillingTransactionStatus;
     readonly createdAt: Date;
+    readonly issuedAt: Date | null;
 };
 
 export type BillingError = {
@@ -212,6 +228,14 @@ export type BillingError = {
      * URL with more information about the error
      */
     more_info?: string;
+};
+
+export type BillingRevenueAnalytics = {
+    from: Date;
+    to: Date;
+    totalRevenue: bigint;
+    completedTransactions: number;
+    failedTransactions: number;
 };
 
 export type BillingPagination = {
@@ -239,29 +263,6 @@ export type BillingPagination = {
      * Whether there is a previous page
      */
     hasPrev: boolean;
-};
-
-/**
- * Email from Authentik
- */
-export type BillingEmail = string | null;
-
-export type BillingReceipt = {
-    transaction: BillingTransaction;
-    receiptNumber: string;
-    issuedAt: Date;
-    billedTo: {
-        userId: BillingId;
-        email?: BillingEmail;
-    };
-};
-
-export type BillingRevenueAnalytics = {
-    from: Date;
-    to: Date;
-    totalRevenue: bigint;
-    completedTransactions: number;
-    failedTransactions: number;
 };
 
 /**
@@ -409,31 +410,16 @@ export type CourseCertificateWritable = {
 };
 
 export type BillingTransactionWritable = {
-    userId: BillingId;
     courseId: string;
-    amount: number;
-    status: BillingTransactionStatus;
-};
-
-export type BillingReceiptWritable = {
-    transaction: BillingTransactionWritable;
-    receiptNumber: string;
-    issuedAt: Date;
-    billedTo: {
-        userId: BillingId;
-        email?: BillingEmail;
-    };
 };
 
 export type BlogPostWritable = {
-    authorId: BlogId;
     title: string;
     content: string;
     tags: Array<string>;
 };
 
 export type BlogCommentWritable = {
-    authorId: BlogId;
     content: string;
 };
 
@@ -493,11 +479,6 @@ export const BillingOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
  * Sort order
  */
 export type BillingOrderQuery = typeof BillingOrderQuery[keyof typeof BillingOrderQuery];
-
-/**
- * Unique identifier of the billing transaction
- */
-export type BillingTransactionIdPath = string;
 
 /**
  * Page number for pagination
@@ -2577,10 +2558,7 @@ export type GetCertificateByIdResponses = {
 export type GetCertificateByIdResponse = GetCertificateByIdResponses[keyof GetCertificateByIdResponses];
 
 export type CheckoutCourseData = {
-    body: {
-        courseId: string;
-        amount: bigint;
-    };
+    body: BillingTransactionWritable;
     path?: never;
     query?: never;
     url: '/billing/checkout';
@@ -2628,115 +2606,6 @@ export type CheckoutCourseResponses = {
 };
 
 export type CheckoutCourseResponse = CheckoutCourseResponses[keyof CheckoutCourseResponses];
-
-export type GetLearnerBillingHistoryData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Page number for pagination
-         */
-        page?: number;
-        /**
-         * Number of items per page
-         */
-        limit?: number;
-        /**
-         * Sort order
-         */
-        order?: 'asc' | 'desc';
-    };
-    url: '/billing/me/transactions';
-};
-
-export type GetLearnerBillingHistoryErrors = {
-    /**
-     * The error response body returned when JWT validation or OPA authorization fails.
-     */
-    401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
-    };
-    /**
-     * Internal Server Error response
-     */
-    500: BillingError;
-};
-
-export type GetLearnerBillingHistoryError = GetLearnerBillingHistoryErrors[keyof GetLearnerBillingHistoryErrors];
-
-export type GetLearnerBillingHistoryResponses = {
-    /**
-     * Learner billing history
-     */
-    200: {
-        data: Array<BillingTransaction>;
-        pagination: BillingPagination;
-    };
-};
-
-export type GetLearnerBillingHistoryResponse = GetLearnerBillingHistoryResponses[keyof GetLearnerBillingHistoryResponses];
-
-export type GetTransactionReceiptDetailData = {
-    body?: never;
-    path: {
-        /**
-         * Unique identifier of the billing transaction
-         */
-        transactionId: string;
-    };
-    query?: never;
-    url: '/billing/transactions/{transactionId}/receipt';
-};
-
-export type GetTransactionReceiptDetailErrors = {
-    /**
-     * The error response body returned when JWT validation or OPA authorization fails.
-     */
-    401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
-    };
-    /**
-     * Not Found Error response
-     */
-    404: BillingError;
-    /**
-     * Internal Server Error response
-     */
-    500: BillingError;
-};
-
-export type GetTransactionReceiptDetailError = GetTransactionReceiptDetailErrors[keyof GetTransactionReceiptDetailErrors];
-
-export type GetTransactionReceiptDetailResponses = {
-    /**
-     * Billing receipt detail
-     */
-    200: BillingReceipt;
-};
-
-export type GetTransactionReceiptDetailResponse = GetTransactionReceiptDetailResponses[keyof GetTransactionReceiptDetailResponses];
 
 export type GetPlatformRevenueAnalyticsData = {
     body?: never;
@@ -2787,7 +2656,7 @@ export type GetPlatformRevenueAnalyticsResponses = {
 
 export type GetPlatformRevenueAnalyticsResponse = GetPlatformRevenueAnalyticsResponses[keyof GetPlatformRevenueAnalyticsResponses];
 
-export type GetPlatformTransactionHistoryData = {
+export type GetTransactionsData = {
     body?: never;
     path?: never;
     query?: {
@@ -2803,15 +2672,16 @@ export type GetPlatformTransactionHistoryData = {
          * Sort order
          */
         order?: 'asc' | 'desc';
+        courseId?: string;
         /**
-         * Filter by transaction status
+         * If requested by non admin, then it will be that user
          */
-        status?: BillingTransactionStatus;
+        learnerId?: BillingId;
     };
-    url: '/billing/admin/transactions';
+    url: '/billing/transactions';
 };
 
-export type GetPlatformTransactionHistoryErrors = {
+export type GetTransactionsErrors = {
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2830,20 +2700,16 @@ export type GetPlatformTransactionHistoryErrors = {
         custom_message: string | null;
     };
     /**
-     * Forbidden Error response
-     */
-    403: BillingError;
-    /**
      * Internal Server Error response
      */
     500: BillingError;
 };
 
-export type GetPlatformTransactionHistoryError = GetPlatformTransactionHistoryErrors[keyof GetPlatformTransactionHistoryErrors];
+export type GetTransactionsError = GetTransactionsErrors[keyof GetTransactionsErrors];
 
-export type GetPlatformTransactionHistoryResponses = {
+export type GetTransactionsResponses = {
     /**
-     * Platform transaction history
+     * Learner billing history
      */
     200: {
         data: Array<BillingTransaction>;
@@ -2851,7 +2717,7 @@ export type GetPlatformTransactionHistoryResponses = {
     };
 };
 
-export type GetPlatformTransactionHistoryResponse = GetPlatformTransactionHistoryResponses[keyof GetPlatformTransactionHistoryResponses];
+export type GetTransactionsResponse = GetTransactionsResponses[keyof GetTransactionsResponses];
 
 export type SearchPostsData = {
     body?: never;
@@ -2920,11 +2786,7 @@ export type SearchPostsResponses = {
 export type SearchPostsResponse = SearchPostsResponses[keyof SearchPostsResponses];
 
 export type CreatePostData = {
-    body: {
-        title: string;
-        content: string;
-        tags: Array<string>;
-    };
+    body: BlogPostWritable;
     path?: never;
     query?: never;
     url: '/blog/posts';
@@ -3192,9 +3054,7 @@ export type GetPostCommentsResponses = {
 export type GetPostCommentsResponse = GetPostCommentsResponses[keyof GetPostCommentsResponses];
 
 export type CommentOnPostData = {
-    body: {
-        content: string;
-    };
+    body: BlogCommentWritable;
     path: {
         /**
          * Unique identifier of the blog post
@@ -3304,9 +3164,7 @@ export type DeleteCommentResponses = {
 export type DeleteCommentResponse = DeleteCommentResponses[keyof DeleteCommentResponses];
 
 export type UpdateCommentData = {
-    body: {
-        content: string;
-    };
+    body: BlogCommentWritable;
     path: {
         /**
          * Unique identifier of the post comment
@@ -3365,9 +3223,7 @@ export type UpdateCommentResponses = {
 export type UpdateCommentResponse = UpdateCommentResponses[keyof UpdateCommentResponses];
 
 export type ReplyCommentData = {
-    body: {
-        content: string;
-    };
+    body: BlogCommentWritable;
     path: {
         /**
          * Unique identifier of the post comment

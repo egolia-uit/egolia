@@ -19,18 +19,12 @@ type ServerInterface interface {
 	// Get platform revenue analytics
 	// (GET /billing/admin/analytics/revenue)
 	GetPlatformRevenueAnalytics(c *gin.Context, params GetPlatformRevenueAnalyticsParams)
-	// Get platform transaction history
-	// (GET /billing/admin/transactions)
-	GetPlatformTransactionHistory(c *gin.Context, params GetPlatformTransactionHistoryParams)
 	// Checkout course
 	// (POST /billing/checkout)
 	CheckoutCourse(c *gin.Context)
-	// Get learner billing history
-	// (GET /billing/me/transactions)
-	GetLearnerBillingHistory(c *gin.Context, params GetLearnerBillingHistoryParams)
-	// Get transaction receipt detail
-	// (GET /billing/transactions/{transactionId}/receipt)
-	GetTransactionReceiptDetail(c *gin.Context, transactionId TransactionIdPath)
+	// Get transactions
+	// (GET /billing/transactions)
+	GetTransactions(c *gin.Context, params GetTransactionsParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -92,58 +86,6 @@ func (siw *ServerInterfaceWrapper) GetPlatformRevenueAnalytics(c *gin.Context) {
 	siw.Handler.GetPlatformRevenueAnalytics(c, params)
 }
 
-// GetPlatformTransactionHistory operation middleware
-func (siw *ServerInterfaceWrapper) GetPlatformTransactionHistory(c *gin.Context) {
-
-	var err error
-
-	c.Set(Oauth2Scopes, []string{})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetPlatformTransactionHistoryParams
-
-	// ------------- Optional query parameter "page" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "order" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", c.Request.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter status: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetPlatformTransactionHistory(c, params)
-}
-
 // CheckoutCourse operation middleware
 func (siw *ServerInterfaceWrapper) CheckoutCourse(c *gin.Context) {
 
@@ -159,15 +101,15 @@ func (siw *ServerInterfaceWrapper) CheckoutCourse(c *gin.Context) {
 	siw.Handler.CheckoutCourse(c)
 }
 
-// GetLearnerBillingHistory operation middleware
-func (siw *ServerInterfaceWrapper) GetLearnerBillingHistory(c *gin.Context) {
+// GetTransactions operation middleware
+func (siw *ServerInterfaceWrapper) GetTransactions(c *gin.Context) {
 
 	var err error
 
 	c.Set(Oauth2Scopes, []string{})
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetLearnerBillingHistoryParams
+	var params GetTransactionsParams
 
 	// ------------- Optional query parameter "page" -------------
 
@@ -193,31 +135,21 @@ func (siw *ServerInterfaceWrapper) GetLearnerBillingHistory(c *gin.Context) {
 		return
 	}
 
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
+	// ------------- Optional query parameter "courseId" -------------
 
-	siw.Handler.GetLearnerBillingHistory(c, params)
-}
-
-// GetTransactionReceiptDetail operation middleware
-func (siw *ServerInterfaceWrapper) GetTransactionReceiptDetail(c *gin.Context) {
-
-	var err error
-
-	// ------------- Path parameter "transactionId" -------------
-	var transactionId TransactionIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "transactionId", c.Param("transactionId"), &transactionId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "courseId", c.Request.URL.Query(), &params.CourseId, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter transactionId: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	// ------------- Optional query parameter "learnerId" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "learnerId", c.Request.URL.Query(), &params.LearnerId, runtime.BindQueryParameterOptions{Type: "string", Format: "number"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter learnerId: %w", err), http.StatusBadRequest)
+		return
+	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -226,7 +158,7 @@ func (siw *ServerInterfaceWrapper) GetTransactionReceiptDetail(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetTransactionReceiptDetail(c, transactionId)
+	siw.Handler.GetTransactions(c, params)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -257,10 +189,8 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/billing/admin/analytics/revenue", wrapper.GetPlatformRevenueAnalytics)
-	router.GET(options.BaseURL+"/billing/admin/transactions", wrapper.GetPlatformTransactionHistory)
 	router.POST(options.BaseURL+"/billing/checkout", wrapper.CheckoutCourse)
-	router.GET(options.BaseURL+"/billing/me/transactions", wrapper.GetLearnerBillingHistory)
-	router.GET(options.BaseURL+"/billing/transactions/:transactionId/receipt", wrapper.GetTransactionReceiptDetail)
+	router.GET(options.BaseURL+"/billing/transactions", wrapper.GetTransactions)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -268,8 +198,6 @@ type BadRequestErrorJSONResponse Error
 type ForbiddenErrorJSONResponse Error
 
 type InternalServerErrorJSONResponse Error
-
-type NotFoundErrorJSONResponse Error
 
 type UnauthorizedErrorJSONResponse struct {
 	// CustomMessage An optional, developer-defined message, often populated by OPA policy violations.
@@ -322,55 +250,6 @@ type GetPlatformRevenueAnalytics500JSONResponse struct {
 }
 
 func (response GetPlatformRevenueAnalytics500JSONResponse) VisitGetPlatformRevenueAnalyticsResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetPlatformTransactionHistoryRequestObject struct {
-	Params GetPlatformTransactionHistoryParams
-}
-
-type GetPlatformTransactionHistoryResponseObject interface {
-	VisitGetPlatformTransactionHistoryResponse(w http.ResponseWriter) error
-}
-
-type GetPlatformTransactionHistory200JSONResponse struct {
-	Data       []Transaction `json:"data"`
-	Pagination Pagination    `json:"pagination"`
-}
-
-func (response GetPlatformTransactionHistory200JSONResponse) VisitGetPlatformTransactionHistoryResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetPlatformTransactionHistory401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetPlatformTransactionHistory401JSONResponse) VisitGetPlatformTransactionHistoryResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetPlatformTransactionHistory403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response GetPlatformTransactionHistory403JSONResponse) VisitGetPlatformTransactionHistoryResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetPlatformTransactionHistory500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetPlatformTransactionHistory500JSONResponse) VisitGetPlatformTransactionHistoryResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -432,86 +311,40 @@ func (response CheckoutCourse500JSONResponse) VisitCheckoutCourseResponse(w http
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetLearnerBillingHistoryRequestObject struct {
-	Params GetLearnerBillingHistoryParams
+type GetTransactionsRequestObject struct {
+	Params GetTransactionsParams
 }
 
-type GetLearnerBillingHistoryResponseObject interface {
-	VisitGetLearnerBillingHistoryResponse(w http.ResponseWriter) error
+type GetTransactionsResponseObject interface {
+	VisitGetTransactionsResponse(w http.ResponseWriter) error
 }
 
-type GetLearnerBillingHistory200JSONResponse struct {
+type GetTransactions200JSONResponse struct {
 	Data       []Transaction `json:"data"`
 	Pagination Pagination    `json:"pagination"`
 }
 
-func (response GetLearnerBillingHistory200JSONResponse) VisitGetLearnerBillingHistoryResponse(w http.ResponseWriter) error {
+func (response GetTransactions200JSONResponse) VisitGetTransactionsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetLearnerBillingHistory401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+type GetTransactions401JSONResponse struct{ UnauthorizedErrorJSONResponse }
 
-func (response GetLearnerBillingHistory401JSONResponse) VisitGetLearnerBillingHistoryResponse(w http.ResponseWriter) error {
+func (response GetTransactions401JSONResponse) VisitGetTransactionsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(401)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetLearnerBillingHistory500JSONResponse struct {
+type GetTransactions500JSONResponse struct {
 	InternalServerErrorJSONResponse
 }
 
-func (response GetLearnerBillingHistory500JSONResponse) VisitGetLearnerBillingHistoryResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetTransactionReceiptDetailRequestObject struct {
-	TransactionId TransactionIdPath `json:"transactionId"`
-}
-
-type GetTransactionReceiptDetailResponseObject interface {
-	VisitGetTransactionReceiptDetailResponse(w http.ResponseWriter) error
-}
-
-type GetTransactionReceiptDetail200JSONResponse Receipt
-
-func (response GetTransactionReceiptDetail200JSONResponse) VisitGetTransactionReceiptDetailResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetTransactionReceiptDetail401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetTransactionReceiptDetail401JSONResponse) VisitGetTransactionReceiptDetailResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetTransactionReceiptDetail404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response GetTransactionReceiptDetail404JSONResponse) VisitGetTransactionReceiptDetailResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetTransactionReceiptDetail500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetTransactionReceiptDetail500JSONResponse) VisitGetTransactionReceiptDetailResponse(w http.ResponseWriter) error {
+func (response GetTransactions500JSONResponse) VisitGetTransactionsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -523,18 +356,12 @@ type StrictServerInterface interface {
 	// Get platform revenue analytics
 	// (GET /billing/admin/analytics/revenue)
 	GetPlatformRevenueAnalytics(ctx context.Context, request GetPlatformRevenueAnalyticsRequestObject) (GetPlatformRevenueAnalyticsResponseObject, error)
-	// Get platform transaction history
-	// (GET /billing/admin/transactions)
-	GetPlatformTransactionHistory(ctx context.Context, request GetPlatformTransactionHistoryRequestObject) (GetPlatformTransactionHistoryResponseObject, error)
 	// Checkout course
 	// (POST /billing/checkout)
 	CheckoutCourse(ctx context.Context, request CheckoutCourseRequestObject) (CheckoutCourseResponseObject, error)
-	// Get learner billing history
-	// (GET /billing/me/transactions)
-	GetLearnerBillingHistory(ctx context.Context, request GetLearnerBillingHistoryRequestObject) (GetLearnerBillingHistoryResponseObject, error)
-	// Get transaction receipt detail
-	// (GET /billing/transactions/{transactionId}/receipt)
-	GetTransactionReceiptDetail(ctx context.Context, request GetTransactionReceiptDetailRequestObject) (GetTransactionReceiptDetailResponseObject, error)
+	// Get transactions
+	// (GET /billing/transactions)
+	GetTransactions(ctx context.Context, request GetTransactionsRequestObject) (GetTransactionsResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -576,33 +403,6 @@ func (sh *strictHandler) GetPlatformRevenueAnalytics(ctx *gin.Context, params Ge
 	}
 }
 
-// GetPlatformTransactionHistory operation middleware
-func (sh *strictHandler) GetPlatformTransactionHistory(ctx *gin.Context, params GetPlatformTransactionHistoryParams) {
-	var request GetPlatformTransactionHistoryRequestObject
-
-	request.Params = params
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetPlatformTransactionHistory(ctx, request.(GetPlatformTransactionHistoryRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetPlatformTransactionHistory")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetPlatformTransactionHistoryResponseObject); ok {
-		if err := validResponse.VisitGetPlatformTransactionHistoryResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // CheckoutCourse operation middleware
 func (sh *strictHandler) CheckoutCourse(ctx *gin.Context) {
 	var request CheckoutCourseRequestObject
@@ -636,17 +436,17 @@ func (sh *strictHandler) CheckoutCourse(ctx *gin.Context) {
 	}
 }
 
-// GetLearnerBillingHistory operation middleware
-func (sh *strictHandler) GetLearnerBillingHistory(ctx *gin.Context, params GetLearnerBillingHistoryParams) {
-	var request GetLearnerBillingHistoryRequestObject
+// GetTransactions operation middleware
+func (sh *strictHandler) GetTransactions(ctx *gin.Context, params GetTransactionsParams) {
+	var request GetTransactionsRequestObject
 
 	request.Params = params
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetLearnerBillingHistory(ctx, request.(GetLearnerBillingHistoryRequestObject))
+		return sh.ssi.GetTransactions(ctx, request.(GetTransactionsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetLearnerBillingHistory")
+		handler = middleware(handler, "GetTransactions")
 	}
 
 	response, err := handler(ctx, request)
@@ -654,35 +454,8 @@ func (sh *strictHandler) GetLearnerBillingHistory(ctx *gin.Context, params GetLe
 	if err != nil {
 		ctx.Error(err)
 		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetLearnerBillingHistoryResponseObject); ok {
-		if err := validResponse.VisitGetLearnerBillingHistoryResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetTransactionReceiptDetail operation middleware
-func (sh *strictHandler) GetTransactionReceiptDetail(ctx *gin.Context, transactionId TransactionIdPath) {
-	var request GetTransactionReceiptDetailRequestObject
-
-	request.TransactionId = transactionId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetTransactionReceiptDetail(ctx, request.(GetTransactionReceiptDetailRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetTransactionReceiptDetail")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetTransactionReceiptDetailResponseObject); ok {
-		if err := validResponse.VisitGetTransactionReceiptDetailResponse(ctx.Writer); err != nil {
+	} else if validResponse, ok := response.(GetTransactionsResponseObject); ok {
+		if err := validResponse.VisitGetTransactionsResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

@@ -13,7 +13,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Post.yaml#/Post
+            $ref: ../components/schemas/Post.yaml
     401:
       $ref: ../../common/components/responses/UnauthorizedError.yaml
     404:
@@ -61,7 +61,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Post.yaml#/Post
+            $ref: ../components/schemas/Post.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

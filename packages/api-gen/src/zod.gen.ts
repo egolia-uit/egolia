@@ -147,6 +147,18 @@ export const zCourseCertificate = z.object({
 export const zBillingId = z.string();
 
 /**
+ * Username from Authentik
+ */
+export const zBillingUsername = z.string();
+
+/**
+ * Email from Authentik
+ */
+export const zBillingEmail = z.email().nullable();
+
+export const zBillingTitle = z.string();
+
+/**
  * Current status of a billing transaction
  */
 export const zBillingTransactionStatus = z.enum([
@@ -158,16 +170,28 @@ export const zBillingTransactionStatus = z.enum([
 export const zBillingTransaction = z.object({
     id: z.uuid().readonly(),
     userId: zBillingId,
+    username: zBillingUsername,
+    userEmail: zBillingEmail,
     courseId: z.uuid(),
-    amount: z.number().gte(0),
+    courseTitle: zBillingTitle.optional(),
+    amount: z.number().gte(0).readonly(),
     status: zBillingTransactionStatus,
-    createdAt: z.iso.datetime().readonly()
+    createdAt: z.iso.datetime().readonly(),
+    issuedAt: z.iso.datetime().readonly().nullable()
 });
 
 export const zBillingError = z.object({
     code: z.string(),
     message: z.string(),
     more_info: z.string().optional()
+});
+
+export const zBillingRevenueAnalytics = z.object({
+    from: z.iso.datetime(),
+    to: z.iso.datetime(),
+    totalRevenue: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+    completedTransactions: z.int().gte(0),
+    failedTransactions: z.int().gte(0)
 });
 
 export const zBillingPagination = z.object({
@@ -177,29 +201,6 @@ export const zBillingPagination = z.object({
     totalPages: z.int().gte(0),
     hasNext: z.boolean(),
     hasPrev: z.boolean()
-});
-
-/**
- * Email from Authentik
- */
-export const zBillingEmail = z.email().nullable();
-
-export const zBillingReceipt = z.object({
-    transaction: zBillingTransaction,
-    receiptNumber: z.string(),
-    issuedAt: z.iso.datetime(),
-    billedTo: z.object({
-        userId: zBillingId,
-        email: zBillingEmail.optional()
-    })
-});
-
-export const zBillingRevenueAnalytics = z.object({
-    from: z.iso.date(),
-    to: z.iso.date(),
-    totalRevenue: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
-    completedTransactions: z.int().gte(0),
-    failedTransactions: z.int().gte(0)
 });
 
 /**
@@ -323,31 +324,16 @@ export const zCourseCertificateWritable = z.object({
 });
 
 export const zBillingTransactionWritable = z.object({
-    userId: zBillingId,
-    courseId: z.uuid(),
-    amount: z.number().gte(0),
-    status: zBillingTransactionStatus
-});
-
-export const zBillingReceiptWritable = z.object({
-    transaction: zBillingTransactionWritable,
-    receiptNumber: z.string(),
-    issuedAt: z.iso.datetime(),
-    billedTo: z.object({
-        userId: zBillingId,
-        email: zBillingEmail.optional()
-    })
+    courseId: z.uuid()
 });
 
 export const zBlogPostWritable = z.object({
-    authorId: zBlogId,
     title: z.string(),
     content: z.string().min(1),
     tags: z.array(z.string())
 });
 
 export const zBlogCommentWritable = z.object({
-    authorId: zBlogId,
     content: z.string().min(1)
 });
 
@@ -397,11 +383,6 @@ export const zBillingLimitQuery = z.int().gte(1).lte(100).default(20);
  * Sort order
  */
 export const zBillingOrderQuery = z.enum(['asc', 'desc']);
-
-/**
- * Unique identifier of the billing transaction
- */
-export const zBillingTransactionIdPath = z.uuid();
 
 /**
  * Page number for pagination
@@ -927,10 +908,7 @@ export const zGetCertificateByIdResponse = z.object({
 });
 
 export const zCheckoutCourseData = z.object({
-    body: z.object({
-        courseId: z.uuid(),
-        amount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
-    }),
+    body: zBillingTransactionWritable,
     path: z.never().optional(),
     query: z.never().optional()
 });
@@ -939,37 +917,6 @@ export const zCheckoutCourseData = z.object({
  * Checkout transaction created
  */
 export const zCheckoutCourseResponse = zBillingTransaction;
-
-export const zGetLearnerBillingHistoryData = z.object({
-    body: z.never().optional(),
-    path: z.never().optional(),
-    query: z.object({
-        page: z.int().gte(1).optional().default(1),
-        limit: z.int().gte(1).lte(100).optional().default(20),
-        order: z.enum(['asc', 'desc']).optional()
-    }).optional()
-});
-
-/**
- * Learner billing history
- */
-export const zGetLearnerBillingHistoryResponse = z.object({
-    data: z.array(zBillingTransaction),
-    pagination: zBillingPagination
-});
-
-export const zGetTransactionReceiptDetailData = z.object({
-    body: z.never().optional(),
-    path: z.object({
-        transactionId: z.uuid()
-    }),
-    query: z.never().optional()
-});
-
-/**
- * Billing receipt detail
- */
-export const zGetTransactionReceiptDetailResponse = zBillingReceipt;
 
 export const zGetPlatformRevenueAnalyticsData = z.object({
     body: z.never().optional(),
@@ -985,21 +932,22 @@ export const zGetPlatformRevenueAnalyticsData = z.object({
  */
 export const zGetPlatformRevenueAnalyticsResponse = zBillingRevenueAnalytics;
 
-export const zGetPlatformTransactionHistoryData = z.object({
+export const zGetTransactionsData = z.object({
     body: z.never().optional(),
     path: z.never().optional(),
     query: z.object({
         page: z.int().gte(1).optional().default(1),
         limit: z.int().gte(1).lte(100).optional().default(20),
         order: z.enum(['asc', 'desc']).optional(),
-        status: zBillingTransactionStatus.optional()
+        courseId: z.uuid().optional(),
+        learnerId: zBillingId.optional()
     }).optional()
 });
 
 /**
- * Platform transaction history
+ * Learner billing history
  */
-export const zGetPlatformTransactionHistoryResponse = z.object({
+export const zGetTransactionsResponse = z.object({
     data: z.array(zBillingTransaction),
     pagination: zBillingPagination
 });
@@ -1025,11 +973,7 @@ export const zSearchPostsResponse = z.object({
 });
 
 export const zCreatePostData = z.object({
-    body: z.object({
-        title: z.string(),
-        content: z.string().min(1),
-        tags: z.array(z.string())
-    }),
+    body: zBlogPostWritable,
     path: z.never().optional(),
     query: z.never().optional()
 });
@@ -1098,9 +1042,7 @@ export const zGetPostCommentsResponse = z.object({
 });
 
 export const zCommentOnPostData = z.object({
-    body: z.object({
-        content: z.string().min(1)
-    }),
+    body: zBlogCommentWritable,
     path: z.object({
         postId: z.uuid()
     }),
@@ -1126,9 +1068,7 @@ export const zDeleteCommentData = z.object({
 export const zDeleteCommentResponse = z.void();
 
 export const zUpdateCommentData = z.object({
-    body: z.object({
-        content: z.string().min(1)
-    }),
+    body: zBlogCommentWritable,
     path: z.object({
         commentId: z.uuid()
     }),
@@ -1141,9 +1081,7 @@ export const zUpdateCommentData = z.object({
 export const zUpdateCommentResponse = zBlogComment;
 
 export const zReplyCommentData = z.object({
-    body: z.object({
-        content: z.string().min(1)
-    }),
+    body: zBlogCommentWritable,
     path: z.object({
         commentId: z.uuid()
     }),

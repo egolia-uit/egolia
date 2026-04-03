@@ -9,21 +9,35 @@ properties:
 
   userId:
     $ref: ../../../common/components/schemas/User.yaml#/properties/id
+    readOnly: true
 
-  # need?
+  username:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/username
+    readOnly: true
+
+  userEmail:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/email
+    readOnly: true
+
   courseId:
     type: string
     format: uuid
     example: 0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc
+
+  courseTitle:
+    $ref: ../../../course/components/schemas/Course.yaml#/properties/title
+    readOnly: true
 
   amount:
     type: number
     format: double
     minimum: 0
     example: 499000
+    readOnly: true
 
   status:
     $ref: ./TransactionStatus.yaml
+    readOnly: true
 
   createdAt:
     type: string
@@ -31,10 +45,20 @@ properties:
     example: '2026-03-25T08:30:00Z'
     readOnly: true
 
+  issuedAt:
+    type: string
+    format: date-time
+    example: null
+    nullable: true
+    readOnly: true
+
 required:
   - id
   - userId
+  - username
+  - userEmail
   - courseId
   - amount
   - status
   - createdAt
+  - issuedAt

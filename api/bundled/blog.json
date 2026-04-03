@@ -124,33 +124,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "example": "Cach toi toi uu hanh trinh hoc tap"
-                  },
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia."
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "example": [
-                      "learning",
-                      "productivity"
-                    ]
-                  }
-                },
-                "required": [
-                  "title",
-                  "content",
-                  "tags"
-                ]
+                "$ref": "#/components/schemas/Post"
               }
             }
           }
@@ -403,17 +377,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Cam on ban da chia se."
-                  }
-                },
-                "required": [
-                  "content"
-                ]
+                "$ref": "#/components/schemas/Comment"
               }
             }
           }
@@ -466,17 +430,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Minh da cap nhat lai noi dung binh luan."
-                  }
-                },
-                "required": [
-                  "content"
-                ]
+                "$ref": "#/components/schemas/Comment"
               }
             }
           }
@@ -566,17 +520,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "Cam on ban da chia se."
-                  }
-                },
-                "required": [
-                  "content"
-                ]
+                "$ref": "#/components/schemas/Comment"
               }
             }
           }
@@ -707,7 +651,8 @@
             "readOnly": true
           },
           "authorId": {
-            "$ref": "#/components/schemas/id"
+            "$ref": "#/components/schemas/id",
+            "readOnly": true
           },
           "title": {
             "type": "string",
@@ -839,7 +784,8 @@
             "readOnly": true
           },
           "authorId": {
-            "$ref": "#/components/schemas/id"
+            "$ref": "#/components/schemas/id",
+            "readOnly": true
           },
           "content": {
             "type": "string",

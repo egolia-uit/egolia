@@ -10,27 +10,14 @@ post:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            courseId:
-              type: string
-              format: uuid
-              example: 0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc
-            amount:
-              type: integer
-              format: int64
-              minimum: 0
-              example: 499000
-          required:
-            - courseId
-            - amount
+          $ref: ../components/schemas/Transaction.yaml
   responses:
     201:
       description: Checkout transaction created
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Transaction.yaml#/Transaction
+            $ref: ../components/schemas/Transaction.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

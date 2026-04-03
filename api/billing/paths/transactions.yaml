@@ -2,21 +2,28 @@ get:
   security:
     - Oauth2: []
   tags:
-    - Admin Billing
-  summary: Get platform transaction history
-  operationId: getPlatformTransactionHistory
+    - Transaction
+  summary: Get transactions
+  operationId: getTransactions
   parameters:
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml
     - $ref: ../../common/components/parameters/orderQuery.yaml
-    - name: status
+    - name: courseId
       in: query
-      description: Filter by transaction status
+      required: false
       schema:
-        $ref: ../components/schemas/Transaction.yaml#/TransactionStatus
+        type: string
+        format: uuid
+    - name: learnerId
+      in: query
+      description: If requested by non admin, then it will be that user
+      required: false
+      schema:
+        $ref: ../../common/components/schemas/User.yaml#/properties/id
   responses:
     200:
-      description: Platform transaction history
+      description: Learner billing history
       content:
         application/json:
           schema:
@@ -25,7 +32,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: ../components/schemas/Transaction.yaml#/Transaction
+                  $ref: ../components/schemas/Transaction.yaml
               pagination:
                 $ref: ../../common/components/schemas/Pagination.yaml
             required:
@@ -33,7 +40,5 @@ get:
               - pagination
     401:
       $ref: ../../common/components/responses/UnauthorizedError.yaml
-    403:
-      $ref: ../../common/components/responses/ForbiddenError.yaml
     500:
       $ref: ../../common/components/responses/InternalServerError.yaml

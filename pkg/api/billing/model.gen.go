@@ -76,36 +76,18 @@ func (e UnauthorizedErrorType) Valid() bool {
 	}
 }
 
-// Defines values for GetPlatformTransactionHistoryParamsOrder.
+// Defines values for GetTransactionsParamsOrder.
 const (
-	GetPlatformTransactionHistoryParamsOrderAsc  GetPlatformTransactionHistoryParamsOrder = "asc"
-	GetPlatformTransactionHistoryParamsOrderDesc GetPlatformTransactionHistoryParamsOrder = "desc"
+	GetTransactionsParamsOrderAsc  GetTransactionsParamsOrder = "asc"
+	GetTransactionsParamsOrderDesc GetTransactionsParamsOrder = "desc"
 )
 
-// Valid indicates whether the value is a known member of the GetPlatformTransactionHistoryParamsOrder enum.
-func (e GetPlatformTransactionHistoryParamsOrder) Valid() bool {
+// Valid indicates whether the value is a known member of the GetTransactionsParamsOrder enum.
+func (e GetTransactionsParamsOrder) Valid() bool {
 	switch e {
-	case GetPlatformTransactionHistoryParamsOrderAsc:
+	case GetTransactionsParamsOrderAsc:
 		return true
-	case GetPlatformTransactionHistoryParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetLearnerBillingHistoryParamsOrder.
-const (
-	Asc  GetLearnerBillingHistoryParamsOrder = "asc"
-	Desc GetLearnerBillingHistoryParamsOrder = "desc"
-)
-
-// Valid indicates whether the value is a known member of the GetLearnerBillingHistoryParamsOrder enum.
-func (e GetLearnerBillingHistoryParamsOrder) Valid() bool {
-	switch e {
-	case Asc:
-		return true
-	case Desc:
+	case GetTransactionsParamsOrderDesc:
 		return true
 	default:
 		return false
@@ -145,41 +127,35 @@ type Pagination struct {
 	TotalPages int `json:"totalPages"`
 }
 
-// Receipt defines model for Receipt.
-type Receipt struct {
-	BilledTo struct {
-		// Email Email from Authentik
-		Email *Email `json:"email,omitempty"`
-
-		// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-		UserId Id `json:"userId"`
-	} `json:"billedTo"`
-	IssuedAt      time.Time   `json:"issuedAt"`
-	ReceiptNumber string      `json:"receiptNumber"`
-	Transaction   Transaction `json:"transaction"`
-}
-
 // RevenueAnalytics defines model for RevenueAnalytics.
 type RevenueAnalytics struct {
-	CompletedTransactions int                `json:"completedTransactions"`
-	FailedTransactions    int                `json:"failedTransactions"`
-	From                  openapi_types.Date `json:"from"`
-	To                    openapi_types.Date `json:"to"`
-	TotalRevenue          int64              `json:"totalRevenue"`
+	CompletedTransactions int       `json:"completedTransactions"`
+	FailedTransactions    int       `json:"failedTransactions"`
+	From                  time.Time `json:"from"`
+	To                    time.Time `json:"to"`
+	TotalRevenue          int64     `json:"totalRevenue"`
 }
 
 // Transaction defines model for Transaction.
 type Transaction struct {
-	Amount    float64             `json:"amount"`
-	CourseId  openapi_types.UUID  `json:"courseId"`
-	CreatedAt *time.Time          `json:"createdAt,omitempty"`
-	Id        *openapi_types.UUID `json:"id,omitempty"`
+	Amount      *float64            `json:"amount,omitempty"`
+	CourseId    openapi_types.UUID  `json:"courseId"`
+	CourseTitle *Title              `json:"courseTitle,omitempty"`
+	CreatedAt   *time.Time          `json:"createdAt,omitempty"`
+	Id          *openapi_types.UUID `json:"id,omitempty"`
+	IssuedAt    *time.Time          `json:"issuedAt,omitempty"`
 
 	// Status Current status of a billing transaction
 	Status TransactionStatus `json:"status"`
 
+	// UserEmail Email from Authentik
+	UserEmail *Email `json:"userEmail"`
+
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId Id `json:"userId"`
+
+	// Username Username from Authentik
+	Username Username `json:"username"`
 }
 
 // TransactionStatus Current status of a billing transaction
@@ -191,6 +167,12 @@ type Email = openapi_types.Email
 // Id User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 type Id = string
 
+// Title defines model for title.
+type Title = string
+
+// Username Username from Authentik
+type Username = string
+
 // LimitQuery defines model for limitQuery.
 type LimitQuery = int
 
@@ -200,9 +182,6 @@ type OrderQuery string
 // PageQuery defines model for pageQuery.
 type PageQuery = int
 
-// TransactionIdPath defines model for transactionIdPath.
-type TransactionIdPath = openapi_types.UUID
-
 // BadRequestError defines model for BadRequestError.
 type BadRequestError = Error
 
@@ -211,9 +190,6 @@ type ForbiddenError = Error
 
 // InternalServerError defines model for InternalServerError.
 type InternalServerError = Error
-
-// NotFoundError defines model for NotFoundError.
-type NotFoundError = Error
 
 // UnauthorizedError The error response body returned when JWT validation or OPA authorization fails.
 type UnauthorizedError struct {
@@ -236,8 +212,8 @@ type GetPlatformRevenueAnalyticsParams struct {
 	To   openapi_types.Date `form:"to" json:"to"`
 }
 
-// GetPlatformTransactionHistoryParams defines parameters for GetPlatformTransactionHistory.
-type GetPlatformTransactionHistoryParams struct {
+// GetTransactionsParams defines parameters for GetTransactions.
+type GetTransactionsParams struct {
 	// Page Page number for pagination
 	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
 
@@ -245,35 +221,15 @@ type GetPlatformTransactionHistoryParams struct {
 	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
 
 	// Order Sort order
-	Order *GetPlatformTransactionHistoryParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+	Order    *GetTransactionsParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+	CourseId *openapi_types.UUID         `form:"courseId,omitempty" json:"courseId,omitempty"`
 
-	// Status Filter by transaction status
-	Status *TransactionStatus `form:"status,omitempty" json:"status,omitempty"`
+	// LearnerId If requested by non admin, then it will be that user
+	LearnerId *Id `form:"learnerId,omitempty" json:"learnerId,omitempty"`
 }
 
-// GetPlatformTransactionHistoryParamsOrder defines parameters for GetPlatformTransactionHistory.
-type GetPlatformTransactionHistoryParamsOrder string
-
-// CheckoutCourseJSONBody defines parameters for CheckoutCourse.
-type CheckoutCourseJSONBody struct {
-	Amount   int64              `json:"amount"`
-	CourseId openapi_types.UUID `json:"courseId"`
-}
-
-// GetLearnerBillingHistoryParams defines parameters for GetLearnerBillingHistory.
-type GetLearnerBillingHistoryParams struct {
-	// Page Page number for pagination
-	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
-
-	// Limit Number of items per page
-	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Order Sort order
-	Order *GetLearnerBillingHistoryParamsOrder `form:"order,omitempty" json:"order,omitempty"`
-}
-
-// GetLearnerBillingHistoryParamsOrder defines parameters for GetLearnerBillingHistory.
-type GetLearnerBillingHistoryParamsOrder string
+// GetTransactionsParamsOrder defines parameters for GetTransactions.
+type GetTransactionsParamsOrder string
 
 // CheckoutCourseJSONRequestBody defines body for CheckoutCourse for application/json ContentType.
-type CheckoutCourseJSONRequestBody CheckoutCourseJSONBody
+type CheckoutCourseJSONRequestBody = Transaction

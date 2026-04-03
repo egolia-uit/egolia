@@ -32,7 +32,7 @@ get:
               data:
                 type: array
                 items:
-                  $ref: ../components/schemas/Post.yaml#/Post
+                  $ref: ../components/schemas/Post.yaml
               pagination:
                 $ref: ../../common/components/schemas/Pagination.yaml
             required:
@@ -55,33 +55,14 @@ post:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            title:
-              type: string
-              example: Cach toi toi uu hanh trinh hoc tap
-            content:
-              type: string
-              minLength: 1
-              example: Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.
-            tags:
-              type: array
-              items:
-                type: string
-              example:
-                - learning
-                - productivity
-          required:
-            - title
-            - content
-            - tags
+          $ref: ../components/schemas/Post.yaml
   responses:
     201:
       description: Post created
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Post.yaml#/Post
+            $ref: ../components/schemas/Post.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

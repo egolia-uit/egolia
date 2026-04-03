@@ -174,16 +174,6 @@ type UnauthorizedError struct {
 // UnauthorizedErrorType The category of the error encountered during the middleware lifecycle.
 type UnauthorizedErrorType string
 
-// UpdateCommentJSONBody defines parameters for UpdateComment.
-type UpdateCommentJSONBody struct {
-	Content string `json:"content"`
-}
-
-// ReplyCommentJSONBody defines parameters for ReplyComment.
-type ReplyCommentJSONBody struct {
-	Content string `json:"content"`
-}
-
 // SearchPostsParams defines parameters for SearchPosts.
 type SearchPostsParams struct {
 	// Q Full-text keyword for post search
@@ -205,13 +195,6 @@ type SearchPostsParams struct {
 // SearchPostsParamsOrder defines parameters for SearchPosts.
 type SearchPostsParamsOrder string
 
-// CreatePostJSONBody defines parameters for CreatePost.
-type CreatePostJSONBody struct {
-	Content string   `json:"content"`
-	Tags    []string `json:"tags"`
-	Title   string   `json:"title"`
-}
-
 // UpdatePostJSONBody defines parameters for UpdatePost.
 type UpdatePostJSONBody struct {
 	Content string   `json:"content"`
@@ -219,22 +202,17 @@ type UpdatePostJSONBody struct {
 	Title   string   `json:"title"`
 }
 
-// CommentOnPostJSONBody defines parameters for CommentOnPost.
-type CommentOnPostJSONBody struct {
-	Content string `json:"content"`
-}
-
 // UpdateCommentJSONRequestBody defines body for UpdateComment for application/json ContentType.
-type UpdateCommentJSONRequestBody UpdateCommentJSONBody
+type UpdateCommentJSONRequestBody = Comment
 
 // ReplyCommentJSONRequestBody defines body for ReplyComment for application/json ContentType.
-type ReplyCommentJSONRequestBody ReplyCommentJSONBody
+type ReplyCommentJSONRequestBody = Comment
 
 // CreatePostJSONRequestBody defines body for CreatePost for application/json ContentType.
-type CreatePostJSONRequestBody CreatePostJSONBody
+type CreatePostJSONRequestBody = Post
 
 // UpdatePostJSONRequestBody defines body for UpdatePost for application/json ContentType.
 type UpdatePostJSONRequestBody UpdatePostJSONBody
 
 // CommentOnPostJSONRequestBody defines body for CommentOnPost for application/json ContentType.
-type CommentOnPostJSONRequestBody CommentOnPostJSONBody
+type CommentOnPostJSONRequestBody = Comment

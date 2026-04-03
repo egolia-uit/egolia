@@ -42,14 +42,7 @@ post:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            content:
-              type: string
-              minLength: 1
-              example: Cam on ban da chia se.
-          required:
-            - content
+          $ref: ../components/schemas/Comment.yaml
   responses:
     201:
       description: Comment created

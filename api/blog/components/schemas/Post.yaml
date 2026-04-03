@@ -1,50 +1,50 @@
-Post:
-  type: object
+type: object
 
-  properties:
-    id:
+properties:
+  id:
+    type: string
+    format: uuid
+    example: 74af02ce-4e69-4ca1-a721-c0e19c9937b8
+    readOnly: true
+
+  authorId:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/id
+    readOnly: true
+
+  title:
+    type: string
+    example: Cach toi toi uu hanh trinh hoc tap
+
+  content:
+    type: string
+    minLength: 1
+    example: Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.
+
+  tags:
+    type: array
+    items:
       type: string
-      format: uuid
-      example: 74af02ce-4e69-4ca1-a721-c0e19c9937b8
-      readOnly: true
+    example:
+      - learning
+      - productivity
 
-    authorId:
-      $ref: ../../../common/components/schemas/User.yaml#/properties/id
+  createdAt:
+    type: string
+    format: date-time
+    example: '2026-03-25T08:00:00Z'
+    readOnly: true
 
-    title:
-      type: string
-      example: Cach toi toi uu hanh trinh hoc tap
+  commentCount:
+    type: integer
+    minimum: 0
+    example: 12
+    readOnly: true
 
-    content:
-      type: string
-      minLength: 1
-      example: Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.
-
-    tags:
-      type: array
-      items:
-        type: string
-      example:
-        - learning
-        - productivity
-
-    createdAt:
-      type: string
-      format: date-time
-      example: "2026-03-25T08:00:00Z"
-      readOnly: true
-
-    commentCount:
-      type: integer
-      minimum: 0
-      example: 12
-      readOnly: true
-
-  required:
-    - id
-    - authorId
-    - title
-    - content
-    - tags
-    - createdAt
-    - commentCount
+required:
+  - id
+  - authorId
+  - title
+  - content
+  - tags
+  - createdAt
+  - commentCount

@@ -2,4 +2,4 @@
 order: 3
 ---
 
-# Class Diagram
+# Logic Diagram

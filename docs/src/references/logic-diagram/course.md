@@ -451,14 +451,14 @@ erDiagram
 
     test_lessons {
         UUID lesson_id PK, FK
-        VARCHAR(50) test_type "MULTIPLE_CHOICE, ESSAY"
+        VARCHAR(50) test_type "multiple_choice, single_choice"
     }
 
     test_questions {
         UUID id PK
         UUID test_lesson_id FK
         TEXT question_text
-        TEXT[] options "Lưu array các lựa chọn A, B, C, D"
+        TEXT[] options
     }
 
     test_answers {
@@ -468,14 +468,34 @@ erDiagram
         BOOLEAN is_correct
     }
 
-    courses ||--o{ sections : "has"
-    sections ||--o{ lessons : "contains"
-    lessons ||--o| video_lessons : "is_type"
-    lessons ||--o| test_lessons : "is_type"
-    test_lessons ||--o{ test_questions : "contains"
-    test_questions ||--o{ test_answers : "has"
+    reviews {
+        UUID id PK
+        UUID course_id FK
+        UUID user_id "Soft Link"
+        INT rating "Not Null"
+        TEXT comment
+        TIMESTAMPTZ created_at
+        TIMESTAMPTZ updated_at
+        TIMESTAMPTZ deleted_at "Soft Delete (Index)"
+    }
 
-    read_ {
+    certificates {
+        UUID id PK
+        UUID course_id FK
+        UUID user_id "Soft Link"
+        VARCHAR(1024) certificate_url
+        TIMESTAMPTZ issued_at
+        TIMESTAMPTZ deleted_at "Soft Delete (Index)"
+    }
+
+    bookmarks {
+        UUID id PK
+        UUID user_id "Soft Link"
+        UUID course_id FK
+        TIMESTAMPTZ created_at
+    }
+
+    read_courses {
         UUID course_id PK
         VARCHAR(255) slug UK "Đánh Unique Index để truy vấn Web"
         VARCHAR(255) title
@@ -484,7 +504,6 @@ erDiagram
         TIMESTAMPTZ published_at
     }
 
-    %% --- 1C. TRACKING CONTEXT (WRITE MODEL) ---
     enrollments {
         UUID id PK "Aggregate Root của Tracking"
         UUID course_id FK "FK hợp lệ vì nằm chung Course DB"
@@ -492,6 +511,7 @@ erDiagram
         TIMESTAMPTZ enrolled_at
         TIMESTAMPTZ expired_at "NULL = Học trọn đời"
     }
+
     lesson_progresses {
         UUID id PK
         UUID enrollment_id FK
@@ -500,78 +520,38 @@ erDiagram
         BOOLEAN is_completed
         TIMESTAMPTZ updated_at
     }
+
     video_progresses {
         UUID progress_id PK, FK "Đa hình 1-1"
         INT watched_seconds "Giây đang xem dở"
         TIMESTAMPTZ last_viewed_at
     }
+
     test_progresses {
-        UUID progress_id PK, FK "Đa hình 1-1"
-        DECIMAL(5_2) score "Điểm số"
-        SMALLINT attempts "Số lần thi lại"
+        UUID progress_id PK, FK
+        DECIMAL(5_2) score
     }
+
     lesson_comments {
         UUID id PK
         UUID lesson_id FK
-        UUID learner_id "Soft Link"
+        UUID learner_id
         TEXT content
-        UUID parent_comment_id FK "Self-reference (Reply comment)"
+        UUID parent_comment_id FK
         TIMESTAMPTZ created_at
     }
+
+    courses ||--o{ sections : "has"
+    sections ||--o{ lessons : "contains"
+    lessons ||--o| video_lessons : "is_type"
+    lessons ||--o| test_lessons : "is_type"
+    test_lessons ||--o{ test_questions : "contains"
+    test_questions ||--o{ test_answers : "has"
 
     enrollments ||--o{ lesson_progresses : "tracks"
     lesson_progresses ||--o| video_progresses : "is_type"
     lesson_progresses ||--o| test_progresses : "is_type"
 
-
-    %% =========================================================
-    %% KHU VỰC 2: DATABASE CỦA BILLING SERVICE
-    %% (Xử lý giao dịch, cấm nối FK sang Course DB)
-    %% =========================================================
-
-    billing_course_catalogs {
-        UUID course_id PK "Bản sao Sync từ Kafka, Soft Link"
-        DECIMAL(12_2) current_price
-        UUID instructor_id
-        TIMESTAMPTZ synced_at
-    }
-    transactions {
-        UUID id PK
-        UUID user_id "Soft Link"
-        UUID course_id "Soft Link -> billing_course_catalogs"
-        VARCHAR(100) payment_gateway_ref "Mã tham chiếu Stripe/VNPay"
-        DECIMAL(12_2) amount_paid "Chốt cứng giá tiền lúc mua"
-        VARCHAR(50) status "PENDING, SUCCESS, FAILED"
-        TIMESTAMPTZ created_at
-    }
-
-    billing_course_catalogs ||--o{ transactions : "purchased_in"
-
-
-    %% =========================================================
-    %% KHU VỰC 3: DATABASE CỦA BLOG SERVICE
-    %% (Xử lý mạng xã hội, tin tức)
-    %% =========================================================
-
-    blog_posts {
-        UUID id PK
-        UUID author_id "Soft Link"
-        VARCHAR(255) title
-        VARCHAR(255) slug UK "Unique Index"
-        TEXT content "HTML / Markdown"
-        VARCHAR(50) status "DRAFT, PUBLISHED"
-        INT view_count
-        TIMESTAMPTZ published_at
-    }
-    blog_comments {
-        UUID id PK
-        UUID post_id FK "FK hợp lệ vì nằm trong Blog DB"
-        UUID user_id "Soft Link"
-        TEXT content
-        TIMESTAMPTZ created_at
-    }
-
-    blog_posts ||--o{ blog_comments : "has_comments"
 ```
 
 <!-- vim:set tabstop=4 shiftwidth=4: -->

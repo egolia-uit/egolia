@@ -12,14 +12,7 @@ put:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            content:
-              type: string
-              minLength: 1
-              example: Minh da cap nhat lai noi dung binh luan.
-          required:
-            - content
+          $ref: ../components/schemas/Comment.yaml
   responses:
     200:
       description: Comment updated
