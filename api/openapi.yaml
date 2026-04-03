@@ -11,6 +11,7 @@ info:
   contact:
     name: Egolia Support
     email: egolia@googlegroups.com
+  x-apiName: api
 
 servers:
   - url: http://api.egolia.localhost

@@ -7,27 +7,27 @@ export type ClientOptions = {
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
-export type Id = string;
+export type CourseId = string;
 
-export const CourseStatus = {
+export const CourseCourseStatus = {
     DRAFT: 'draft',
     APPROVED: 'approved',
     PUBLISHED: 'published',
     ARCHIVED: 'archived'
 } as const;
 
-export type CourseStatus = typeof CourseStatus[keyof typeof CourseStatus];
+export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
 
-export type Course = {
+export type CourseCourse = {
     readonly id: string;
     title: string;
     slug: string;
-    instructorId: Id;
-    status: CourseStatus;
+    instructorId: CourseId;
+    status: CourseCourseStatus;
     price: bigint;
 };
 
-export type Error = {
+export type CourseError = {
     /**
      * Error code
      */
@@ -42,7 +42,7 @@ export type Error = {
     more_info?: string;
 };
 
-export type Pagination = {
+export type CoursePagination = {
     /**
      * Current page number
      */
@@ -69,43 +69,43 @@ export type Pagination = {
     hasPrev: boolean;
 };
 
-export type PropertiesId = string;
+export type CoursePropertiesId = string;
 
-export type Section = {
+export type CourseSection = {
     readonly id: string;
-    courseId: PropertiesId;
+    courseId: CoursePropertiesId;
     title: string;
 };
 
-export type CourseDetailSectionItem = {
-    section: Section;
+export type CourseCourseDetailSectionItem = {
+    section: CourseSection;
     lessonIds: Array<string>;
 };
 
-export type CourseDetail = {
-    course: Course;
-    sections: Array<CourseDetailSectionItem>;
+export type CourseCourseDetail = {
+    course: CourseCourse;
+    sections: Array<CourseCourseDetailSectionItem>;
 };
 
-export type CourseProgress = {
-    courseId: PropertiesId;
-    userId: Id;
+export type CourseCourseProgress = {
+    courseId: CoursePropertiesId;
+    userId: CourseId;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
 };
 
-export type Title = string;
+export type CourseTitle = string;
 
-export type Slug = string;
+export type CourseSlug = string;
 
-export type CourseLandingPage = {
+export type CourseCourseLandingPage = {
     course: {
-        id: PropertiesId;
-        title: Title;
-        slug: Slug;
-        instructorId: Id;
+        id: CoursePropertiesId;
+        title: CourseTitle;
+        slug: CourseSlug;
+        instructorId: CourseId;
         overview: string;
         introduction: {
             videoUrl: string;
@@ -113,68 +113,73 @@ export type CourseLandingPage = {
     };
 };
 
-export type Lesson = {
+export type CourseLesson = {
     readonly id: string;
-    courseId: PropertiesId;
+    courseId: CoursePropertiesId;
     title: string;
 };
 
-export type VideoLesson = Lesson & {
+export type CourseVideoLesson = CourseLesson & {
     videoUrl: string;
     duration: bigint;
 };
 
-export type TestAnswer = {
+export type CourseTestAnswer = {
     readonly id: string;
     content: string;
     isCorrect: boolean;
 };
 
-export type TestQuestion = {
+export type CourseTestQuestion = {
     readonly id: string;
     question: string;
-    answers: Array<TestAnswer>;
+    answers: Array<CourseTestAnswer>;
 };
 
-export type TestLesson = Lesson & {
+export type CourseTestLesson = CourseLesson & {
     type: 'multipleChoice' | 'singleChoice';
     questions: Array<unknown>;
 };
 
-export type LessonDetail = VideoLesson | TestLesson;
+export type CourseLessonDetail = CourseVideoLesson | CourseTestLesson;
 
-export type UploadVideoUrlResponse = {
+export type CourseUploadVideoUrlResponse = {
     uploadUrl: string;
     objectKey: string;
     expiresAt: Date;
 };
 
-export const TestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
+export const CourseTestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
 
-export type TestLessonType = typeof TestLessonType[keyof typeof TestLessonType];
+export type CourseTestLessonType = typeof CourseTestLessonType[keyof typeof CourseTestLessonType];
 
-export type LessonPropertiesId = string;
+export type CourseLessonPropertiesId = string;
 
-export type LessonProgress = {
+export type CourseLessonProgress = {
     readonly id: string;
-    userId: Id;
-    lessonId: LessonPropertiesId;
+    userId: CourseId;
+    lessonId: CourseLessonPropertiesId;
     isCompleted: boolean;
 };
 
-export type Content = string;
+export type CourseContent = string;
 
-export type Certificate = {
+export type CourseCertificate = {
     readonly id: string;
-    courseId: PropertiesId;
-    userId: Id;
+    courseId: CoursePropertiesId;
+    userId: CourseId;
     issuedAt: Date;
 };
 
 /**
+ * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+ */
+export type BillingId = string;
+
+/**
  * Current status of a billing transaction
  */
-export const TransactionStatus = {
+export const BillingTransactionStatus = {
     PENDING: 'pending',
     COMPLETED: 'completed',
     FAILED: 'failed'
@@ -183,33 +188,75 @@ export const TransactionStatus = {
 /**
  * Current status of a billing transaction
  */
-export type TransactionStatus = typeof TransactionStatus[keyof typeof TransactionStatus];
+export type BillingTransactionStatus = typeof BillingTransactionStatus[keyof typeof BillingTransactionStatus];
 
-export type Transaction = {
+export type BillingTransaction = {
     readonly id: string;
-    userId: Id;
+    userId: BillingId;
     courseId: string;
     amount: number;
-    status: TransactionStatus;
+    status: BillingTransactionStatus;
     readonly createdAt: Date;
+};
+
+export type BillingError = {
+    /**
+     * Error code
+     */
+    code: string;
+    /**
+     * Human-readable error message
+     */
+    message: string;
+    /**
+     * URL with more information about the error
+     */
+    more_info?: string;
+};
+
+export type BillingPagination = {
+    /**
+     * Current page number
+     */
+    page: number;
+    /**
+     * Number of items per page
+     */
+    limit: number;
+    /**
+     * Total number of items
+     */
+    total: number;
+    /**
+     * Total number of pages
+     */
+    totalPages: number;
+    /**
+     * Whether there is a next page
+     */
+    hasNext: boolean;
+    /**
+     * Whether there is a previous page
+     */
+    hasPrev: boolean;
 };
 
 /**
  * Email from Authentik
  */
-export type Email = string | null;
+export type BillingEmail = string | null;
 
-export type Receipt = {
-    transaction: Transaction;
+export type BillingReceipt = {
+    transaction: BillingTransaction;
     receiptNumber: string;
     issuedAt: Date;
     billedTo: {
-        userId: Id;
-        email?: Email;
+        userId: BillingId;
+        email?: BillingEmail;
     };
 };
 
-export type RevenueAnalytics = {
+export type BillingRevenueAnalytics = {
     from: Date;
     to: Date;
     totalRevenue: bigint;
@@ -217,9 +264,14 @@ export type RevenueAnalytics = {
     failedTransactions: number;
 };
 
-export type Post = {
+/**
+ * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+ */
+export type BlogId = string;
+
+export type BlogPost = {
     readonly id: string;
-    authorId: Id;
+    authorId: BlogId;
     title: string;
     content: string;
     tags: Array<string>;
@@ -227,50 +279,92 @@ export type Post = {
     readonly commentCount: number;
 };
 
-export type Comment = {
+export type BlogPagination = {
+    /**
+     * Current page number
+     */
+    page: number;
+    /**
+     * Number of items per page
+     */
+    limit: number;
+    /**
+     * Total number of items
+     */
+    total: number;
+    /**
+     * Total number of pages
+     */
+    totalPages: number;
+    /**
+     * Whether there is a next page
+     */
+    hasNext: boolean;
+    /**
+     * Whether there is a previous page
+     */
+    hasPrev: boolean;
+};
+
+export type BlogError = {
+    /**
+     * Error code
+     */
+    code: string;
+    /**
+     * Human-readable error message
+     */
+    message: string;
+    /**
+     * URL with more information about the error
+     */
+    more_info?: string;
+};
+
+export type BlogComment = {
     readonly id: string;
     readonly postId: string;
-    authorId: Id;
+    authorId: BlogId;
     content: string;
     readonly parentCommentId: string | null;
     readonly createdAt: Date;
 };
 
-export type CourseWritable = {
+export type CourseCourseWritable = {
     title: string;
     slug: string;
-    instructorId: Id;
-    status: CourseStatus;
+    instructorId: CourseId;
+    status: CourseCourseStatus;
     price: bigint;
 };
 
-export type SectionWritable = {
+export type CourseSectionWritable = {
     title: string;
 };
 
-export type CourseDetailSectionItemWritable = {
-    section: SectionWritable;
+export type CourseCourseDetailSectionItemWritable = {
+    section: CourseSectionWritable;
     lessonIds: Array<string>;
 };
 
-export type CourseDetailWritable = {
-    course: CourseWritable;
-    sections: Array<CourseDetailSectionItemWritable>;
+export type CourseCourseDetailWritable = {
+    course: CourseCourseWritable;
+    sections: Array<CourseCourseDetailSectionItemWritable>;
 };
 
-export type CourseProgressWritable = {
-    userId: Id;
+export type CourseCourseProgressWritable = {
+    userId: CourseId;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
 };
 
-export type CourseLandingPageWritable = {
+export type CourseCourseLandingPageWritable = {
     course: {
-        title: Title;
-        slug: Slug;
-        instructorId: Id;
+        title: CourseTitle;
+        slug: CourseSlug;
+        instructorId: CourseId;
         overview: string;
         introduction: {
             videoUrl: string;
@@ -278,120 +372,165 @@ export type CourseLandingPageWritable = {
     };
 };
 
-export type LessonWritable = {
+export type CourseLessonWritable = {
     title: string;
 };
 
-export type VideoLessonWritable = LessonWritable & {
+export type CourseVideoLessonWritable = CourseLessonWritable & {
     videoUrl: string;
     duration: bigint;
 };
 
-export type TestAnswerWritable = {
+export type CourseTestAnswerWritable = {
     content: string;
     isCorrect: boolean;
 };
 
-export type TestQuestionWritable = {
+export type CourseTestQuestionWritable = {
     question: string;
-    answers: Array<TestAnswerWritable>;
+    answers: Array<CourseTestAnswerWritable>;
 };
 
-export type TestLessonWritable = LessonWritable & {
+export type CourseTestLessonWritable = CourseLessonWritable & {
     type: 'multipleChoice' | 'singleChoice';
     questions: Array<unknown>;
 };
 
-export type LessonDetailWritable = VideoLessonWritable | TestLessonWritable;
+export type CourseLessonDetailWritable = CourseVideoLessonWritable | CourseTestLessonWritable;
 
-export type LessonProgressWritable = {
-    userId: Id;
+export type CourseLessonProgressWritable = {
+    userId: CourseId;
     isCompleted: boolean;
 };
 
-export type CertificateWritable = {
-    userId: Id;
+export type CourseCertificateWritable = {
+    userId: CourseId;
     issuedAt: Date;
 };
 
-export type TransactionWritable = {
-    userId: Id;
+export type BillingTransactionWritable = {
+    userId: BillingId;
     courseId: string;
     amount: number;
-    status: TransactionStatus;
+    status: BillingTransactionStatus;
 };
 
-export type ReceiptWritable = {
-    transaction: TransactionWritable;
+export type BillingReceiptWritable = {
+    transaction: BillingTransactionWritable;
     receiptNumber: string;
     issuedAt: Date;
     billedTo: {
-        userId: Id;
-        email?: Email;
+        userId: BillingId;
+        email?: BillingEmail;
     };
 };
 
-export type PostWritable = {
-    authorId: Id;
+export type BlogPostWritable = {
+    authorId: BlogId;
     title: string;
     content: string;
     tags: Array<string>;
 };
 
-export type CommentWritable = {
-    authorId: Id;
+export type BlogCommentWritable = {
+    authorId: BlogId;
     content: string;
 };
 
-export type StatusQuery = CourseStatus;
+export type CourseStatusQuery = CourseCourseStatus;
 
 /**
  * Page number for pagination
  */
-export type PageQuery = number;
+export type CoursePageQuery = number;
 
 /**
  * Number of items per page
  */
-export type LimitQuery = number;
+export type CourseLimitQuery = number;
 
 /**
  * Sort order
  */
-export const OrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
+export const CourseOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
 
 /**
  * Sort order
  */
-export type OrderQuery = typeof OrderQuery[keyof typeof OrderQuery];
+export type CourseOrderQuery = typeof CourseOrderQuery[keyof typeof CourseOrderQuery];
 
-export type InstructorIdPath = string;
+export type CourseInstructorIdPath = string;
 
-export type CourseIdPath = PropertiesId;
+export type CourseCourseIdPath = CoursePropertiesId;
 
-export type SectionIdPath = string;
+export type CourseSectionIdPath = string;
 
-export type LessonIdPath = string;
+export type CourseLessonIdPath = string;
 
 /**
  * Unique identifier of the comment
  */
-export type CommentIdPath = string;
+export type CourseCommentIdPath = string;
 
-export type CertificateIdPath = string;
+export type CourseCertificateIdPath = string;
+
+/**
+ * Page number for pagination
+ */
+export type BillingPageQuery = number;
+
+/**
+ * Number of items per page
+ */
+export type BillingLimitQuery = number;
+
+/**
+ * Sort order
+ */
+export const BillingOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
+
+/**
+ * Sort order
+ */
+export type BillingOrderQuery = typeof BillingOrderQuery[keyof typeof BillingOrderQuery];
 
 /**
  * Unique identifier of the billing transaction
  */
-export type TransactionIdPath = string;
+export type BillingTransactionIdPath = string;
+
+/**
+ * Page number for pagination
+ */
+export type BlogPageQuery = number;
+
+/**
+ * Number of items per page
+ */
+export type BlogLimitQuery = number;
+
+/**
+ * Sort order
+ */
+export const BlogOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
+
+/**
+ * Sort order
+ */
+export type BlogOrderQuery = typeof BlogOrderQuery[keyof typeof BlogOrderQuery];
 
 /**
  * Unique identifier of the blog post
  */
-export type PostIdPath = string;
+export type BlogPostIdPath = string;
+
+/**
+ * Unique identifier of the comment
+ */
+export type BlogCommentIdPath = string;
 
 export type CreateCourseData = {
-    body: CourseWritable;
+    body: CourseCourseWritable;
     path?: never;
     query?: never;
     url: '/course/courses';
@@ -401,7 +540,7 @@ export type CreateCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -422,11 +561,11 @@ export type CreateCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type CreateCourseError = CreateCourseErrors[keyof CreateCourseErrors];
@@ -442,7 +581,7 @@ export type GetSystemCoursesData = {
     body?: never;
     path?: never;
     query?: {
-        status?: CourseStatus;
+        status?: CourseCourseStatus;
         /**
          * Page number for pagination
          */
@@ -463,7 +602,7 @@ export type GetSystemCoursesErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -484,11 +623,11 @@ export type GetSystemCoursesErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetSystemCoursesError = GetSystemCoursesErrors[keyof GetSystemCoursesErrors];
@@ -498,8 +637,8 @@ export type GetSystemCoursesResponses = {
      * Courses in system
      */
     200: {
-        data: Array<Course>;
-        pagination: Pagination;
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
     };
 };
 
@@ -529,11 +668,11 @@ export type GetPublishedCoursesErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetPublishedCoursesError = GetPublishedCoursesErrors[keyof GetPublishedCoursesErrors];
@@ -543,8 +682,8 @@ export type GetPublishedCoursesResponses = {
      * Published courses
      */
     200: {
-        data: Array<Course>;
-        pagination: Pagination;
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
     };
 };
 
@@ -556,7 +695,7 @@ export type GetInstructorCoursesData = {
         instructorId: string;
     };
     query?: {
-        status?: CourseStatus;
+        status?: CourseCourseStatus;
         /**
          * Page number for pagination
          */
@@ -577,7 +716,7 @@ export type GetInstructorCoursesErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -598,15 +737,15 @@ export type GetInstructorCoursesErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetInstructorCoursesError = GetInstructorCoursesErrors[keyof GetInstructorCoursesErrors];
@@ -616,8 +755,8 @@ export type GetInstructorCoursesResponses = {
      * Courses by instructor
      */
     200: {
-        data: Array<Course>;
-        pagination: Pagination;
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
     };
 };
 
@@ -626,7 +765,7 @@ export type GetInstructorCoursesResponse = GetInstructorCoursesResponses[keyof G
 export type DeleteCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}';
@@ -636,7 +775,7 @@ export type DeleteCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -657,15 +796,15 @@ export type DeleteCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type DeleteCourseError = DeleteCourseErrors[keyof DeleteCourseErrors];
@@ -682,7 +821,7 @@ export type DeleteCourseResponse = DeleteCourseResponses[keyof DeleteCourseRespo
 export type GetCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}';
@@ -692,7 +831,7 @@ export type GetCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -713,15 +852,15 @@ export type GetCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
@@ -731,7 +870,7 @@ export type GetCourseResponses = {
      * Course detail
      */
     200: {
-        data: Course;
+        data: CourseCourse;
     };
 };
 
@@ -740,7 +879,7 @@ export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
 export type GetCourseDetailData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/detail';
@@ -750,7 +889,7 @@ export type GetCourseDetailErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -771,15 +910,15 @@ export type GetCourseDetailErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetCourseDetailError = GetCourseDetailErrors[keyof GetCourseDetailErrors];
@@ -789,7 +928,7 @@ export type GetCourseDetailResponses = {
      * Full course content with section and lesson references
      */
     200: {
-        data: CourseDetail;
+        data: CourseCourseDetail;
     };
 };
 
@@ -799,11 +938,11 @@ export type ChangeBasicCourseInfoData = {
     body: {
         title?: string;
         slug?: string;
-        status?: CourseStatus;
+        status?: CourseCourseStatus;
         price?: bigint;
     };
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/basic-info';
@@ -813,7 +952,7 @@ export type ChangeBasicCourseInfoErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -834,15 +973,15 @@ export type ChangeBasicCourseInfoErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type ChangeBasicCourseInfoError = ChangeBasicCourseInfoErrors[keyof ChangeBasicCourseInfoErrors];
@@ -861,7 +1000,7 @@ export type EnrollInCourseData = {
         referredByUserId?: string | null;
     };
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/enroll';
@@ -871,7 +1010,7 @@ export type EnrollInCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -892,15 +1031,15 @@ export type EnrollInCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type EnrollInCourseError = EnrollInCourseErrors[keyof EnrollInCourseErrors];
@@ -915,7 +1054,7 @@ export type EnrollInCourseResponses = {
 export type GetCourseProgressData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/progress';
@@ -925,7 +1064,7 @@ export type GetCourseProgressErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -946,15 +1085,15 @@ export type GetCourseProgressErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetCourseProgressError = GetCourseProgressErrors[keyof GetCourseProgressErrors];
@@ -964,7 +1103,7 @@ export type GetCourseProgressResponses = {
      * Course progress
      */
     200: {
-        data: CourseProgress;
+        data: CourseCourseProgress;
     };
 };
 
@@ -973,7 +1112,7 @@ export type GetCourseProgressResponse = GetCourseProgressResponses[keyof GetCour
 export type FinishCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/finish';
@@ -983,7 +1122,7 @@ export type FinishCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1004,15 +1143,15 @@ export type FinishCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type FinishCourseError = FinishCourseErrors[keyof FinishCourseErrors];
@@ -1032,7 +1171,7 @@ export type ReviewCourseData = {
         comment: string;
     };
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/reviews';
@@ -1042,7 +1181,7 @@ export type ReviewCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1063,15 +1202,15 @@ export type ReviewCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type ReviewCourseError = ReviewCourseErrors[keyof ReviewCourseErrors];
@@ -1086,7 +1225,7 @@ export type ReviewCourseResponses = {
 export type BookmarkCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/bookmark';
@@ -1096,7 +1235,7 @@ export type BookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1117,15 +1256,15 @@ export type BookmarkCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type BookmarkCourseError = BookmarkCourseErrors[keyof BookmarkCourseErrors];
@@ -1140,7 +1279,7 @@ export type BookmarkCourseResponses = {
 export type UnbookmarkCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/unbookmark';
@@ -1150,7 +1289,7 @@ export type UnbookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1171,15 +1310,15 @@ export type UnbookmarkCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
@@ -1198,7 +1337,7 @@ export type TriggerLearningReminderData = {
         dryRun?: boolean;
     };
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/trigger-learning-reminder';
@@ -1208,7 +1347,7 @@ export type TriggerLearningReminderErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1229,15 +1368,15 @@ export type TriggerLearningReminderErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type TriggerLearningReminderError = TriggerLearningReminderErrors[keyof TriggerLearningReminderErrors];
@@ -1254,7 +1393,7 @@ export type TriggerLearningReminderResponse = TriggerLearningReminderResponses[k
 export type GetCourseLandingPageData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/landing';
@@ -1264,15 +1403,15 @@ export type GetCourseLandingPageErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetCourseLandingPageError = GetCourseLandingPageErrors[keyof GetCourseLandingPageErrors];
@@ -1282,7 +1421,7 @@ export type GetCourseLandingPageResponses = {
      * Course landing page data
      */
     200: {
-        data: CourseLandingPage;
+        data: CourseCourseLandingPage;
     };
 };
 
@@ -1291,7 +1430,7 @@ export type GetCourseLandingPageResponse = GetCourseLandingPageResponses[keyof G
 export type ApproveCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/approve';
@@ -1301,7 +1440,7 @@ export type ApproveCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1322,15 +1461,15 @@ export type ApproveCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type ApproveCourseError = ApproveCourseErrors[keyof ApproveCourseErrors];
@@ -1349,7 +1488,7 @@ export type DeclineCourseData = {
         reason?: string;
     };
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/decline';
@@ -1359,7 +1498,7 @@ export type DeclineCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1380,15 +1519,15 @@ export type DeclineCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type DeclineCourseError = DeclineCourseErrors[keyof DeclineCourseErrors];
@@ -1405,7 +1544,7 @@ export type DeclineCourseResponse = DeclineCourseResponses[keyof DeclineCourseRe
 export type HideCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/hide';
@@ -1415,7 +1554,7 @@ export type HideCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1436,15 +1575,15 @@ export type HideCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type HideCourseError = HideCourseErrors[keyof HideCourseErrors];
@@ -1461,7 +1600,7 @@ export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
 export type UnhideCourseData = {
     body?: never;
     path: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
     };
     query?: never;
     url: '/course/courses/{courseId}/unhide';
@@ -1471,7 +1610,7 @@ export type UnhideCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1492,15 +1631,15 @@ export type UnhideCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type UnhideCourseError = UnhideCourseErrors[keyof UnhideCourseErrors];
@@ -1538,7 +1677,7 @@ export type GetMyEnrolledCoursesErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1559,7 +1698,7 @@ export type GetMyEnrolledCoursesErrors = {
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetMyEnrolledCoursesError = GetMyEnrolledCoursesErrors[keyof GetMyEnrolledCoursesErrors];
@@ -1569,8 +1708,8 @@ export type GetMyEnrolledCoursesResponses = {
      * My enrolled courses
      */
     200: {
-        data: Array<Course>;
-        pagination: Pagination;
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
     };
 };
 
@@ -1578,7 +1717,7 @@ export type GetMyEnrolledCoursesResponse = GetMyEnrolledCoursesResponses[keyof G
 
 export type CreateSectionData = {
     body: {
-        courseId: PropertiesId;
+        courseId: CoursePropertiesId;
         title: string;
         previousSectionId: string | null;
     };
@@ -1591,7 +1730,7 @@ export type CreateSectionErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1612,15 +1751,15 @@ export type CreateSectionErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type CreateSectionError = CreateSectionErrors[keyof CreateSectionErrors];
@@ -1645,7 +1784,7 @@ export type DeleteSectionErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1666,15 +1805,15 @@ export type DeleteSectionErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type DeleteSectionError = DeleteSectionErrors[keyof DeleteSectionErrors];
@@ -1690,8 +1829,8 @@ export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionRe
 
 export type CreateLessonData = {
     body: {
-        video?: VideoLessonWritable;
-        test?: TestLessonWritable;
+        video?: CourseVideoLessonWritable;
+        test?: CourseTestLessonWritable;
     };
     path?: never;
     query?: never;
@@ -1702,7 +1841,7 @@ export type CreateLessonErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1723,11 +1862,11 @@ export type CreateLessonErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type CreateLessonError = CreateLessonErrors[keyof CreateLessonErrors];
@@ -1752,7 +1891,7 @@ export type DeleteLessonErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1773,15 +1912,15 @@ export type DeleteLessonErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type DeleteLessonError = DeleteLessonErrors[keyof DeleteLessonErrors];
@@ -1808,7 +1947,7 @@ export type GetLessonDetailErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1829,15 +1968,15 @@ export type GetLessonDetailErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetLessonDetailError = GetLessonDetailErrors[keyof GetLessonDetailErrors];
@@ -1847,7 +1986,7 @@ export type GetLessonDetailResponses = {
      * Lesson detail
      */
     200: {
-        data: LessonDetail;
+        data: CourseLessonDetail;
     };
 };
 
@@ -1871,7 +2010,7 @@ export type EditLessonErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1892,15 +2031,15 @@ export type EditLessonErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type EditLessonError = EditLessonErrors[keyof EditLessonErrors];
@@ -1927,7 +2066,7 @@ export type GetUploadVideoLessonUrlErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -1948,15 +2087,15 @@ export type GetUploadVideoLessonUrlErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetUploadVideoLessonUrlError = GetUploadVideoLessonUrlErrors[keyof GetUploadVideoLessonUrlErrors];
@@ -1966,7 +2105,7 @@ export type GetUploadVideoLessonUrlResponses = {
      * Upload URL generated
      */
     200: {
-        data: UploadVideoUrlResponse;
+        data: CourseUploadVideoUrlResponse;
     };
 };
 
@@ -1974,8 +2113,8 @@ export type GetUploadVideoLessonUrlResponse = GetUploadVideoLessonUrlResponses[k
 
 export type CreateTestData = {
     body: {
-        type: TestLessonType;
-        questions: Array<TestQuestionWritable>;
+        type: CourseTestLessonType;
+        questions: Array<CourseTestQuestionWritable>;
     };
     path: {
         lessonId: string;
@@ -1988,7 +2127,7 @@ export type CreateTestErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2009,15 +2148,15 @@ export type CreateTestErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type CreateTestError = CreateTestErrors[keyof CreateTestErrors];
@@ -2042,7 +2181,7 @@ export type GetLessonProgressErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2063,15 +2202,15 @@ export type GetLessonProgressErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetLessonProgressError = GetLessonProgressErrors[keyof GetLessonProgressErrors];
@@ -2081,7 +2220,7 @@ export type GetLessonProgressResponses = {
      * Lesson progress
      */
     200: {
-        data: LessonProgress;
+        data: CourseLessonProgress;
     };
 };
 
@@ -2103,7 +2242,7 @@ export type SaveLessonProgressErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2124,15 +2263,15 @@ export type SaveLessonProgressErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type SaveLessonProgressError = SaveLessonProgressErrors[keyof SaveLessonProgressErrors];
@@ -2159,7 +2298,7 @@ export type MarkLessonAsCompletedErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2180,15 +2319,15 @@ export type MarkLessonAsCompletedErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type MarkLessonAsCompletedError = MarkLessonAsCompletedErrors[keyof MarkLessonAsCompletedErrors];
@@ -2204,7 +2343,7 @@ export type MarkLessonAsCompletedResponse = MarkLessonAsCompletedResponses[keyof
 
 export type CommentOnLessonData = {
     body: {
-        content: Content;
+        content: CourseContent;
     };
     path: {
         lessonId: string;
@@ -2217,7 +2356,7 @@ export type CommentOnLessonErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2238,15 +2377,15 @@ export type CommentOnLessonErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type CommentOnLessonError = CommentOnLessonErrors[keyof CommentOnLessonErrors];
@@ -2260,7 +2399,7 @@ export type CommentOnLessonResponses = {
 
 export type ReplyLessonCommentData = {
     body: {
-        content: Content;
+        content: CourseContent;
     };
     path: {
         /**
@@ -2276,7 +2415,7 @@ export type ReplyLessonCommentErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2297,15 +2436,15 @@ export type ReplyLessonCommentErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type ReplyLessonCommentError = ReplyLessonCommentErrors[keyof ReplyLessonCommentErrors];
@@ -2341,7 +2480,7 @@ export type GetMyCertificatesErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2362,7 +2501,7 @@ export type GetMyCertificatesErrors = {
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetMyCertificatesError = GetMyCertificatesErrors[keyof GetMyCertificatesErrors];
@@ -2372,8 +2511,8 @@ export type GetMyCertificatesResponses = {
      * My certificates
      */
     200: {
-        data: Array<Certificate>;
-        pagination: Pagination;
+        data: Array<CourseCertificate>;
+        pagination: CoursePagination;
     };
 };
 
@@ -2392,7 +2531,7 @@ export type GetCertificateByIdErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: CourseError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2413,15 +2552,15 @@ export type GetCertificateByIdErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: CourseError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: CourseError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: CourseError;
 };
 
 export type GetCertificateByIdError = GetCertificateByIdErrors[keyof GetCertificateByIdErrors];
@@ -2431,7 +2570,7 @@ export type GetCertificateByIdResponses = {
      * Certificate detail
      */
     200: {
-        data: Certificate;
+        data: CourseCertificate;
     };
 };
 
@@ -2451,7 +2590,7 @@ export type CheckoutCourseErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: BillingError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2472,11 +2611,11 @@ export type CheckoutCourseErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: BillingError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BillingError;
 };
 
 export type CheckoutCourseError = CheckoutCourseErrors[keyof CheckoutCourseErrors];
@@ -2485,7 +2624,7 @@ export type CheckoutCourseResponses = {
     /**
      * Checkout transaction created
      */
-    201: Transaction;
+    201: BillingTransaction;
 };
 
 export type CheckoutCourseResponse = CheckoutCourseResponses[keyof CheckoutCourseResponses];
@@ -2531,7 +2670,7 @@ export type GetLearnerBillingHistoryErrors = {
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BillingError;
 };
 
 export type GetLearnerBillingHistoryError = GetLearnerBillingHistoryErrors[keyof GetLearnerBillingHistoryErrors];
@@ -2541,8 +2680,8 @@ export type GetLearnerBillingHistoryResponses = {
      * Learner billing history
      */
     200: {
-        data: Array<Transaction>;
-        pagination: Pagination;
+        data: Array<BillingTransaction>;
+        pagination: BillingPagination;
     };
 };
 
@@ -2581,11 +2720,11 @@ export type GetTransactionReceiptDetailErrors = {
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BillingError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BillingError;
 };
 
 export type GetTransactionReceiptDetailError = GetTransactionReceiptDetailErrors[keyof GetTransactionReceiptDetailErrors];
@@ -2594,7 +2733,7 @@ export type GetTransactionReceiptDetailResponses = {
     /**
      * Billing receipt detail
      */
-    200: Receipt;
+    200: BillingReceipt;
 };
 
 export type GetTransactionReceiptDetailResponse = GetTransactionReceiptDetailResponses[keyof GetTransactionReceiptDetailResponses];
@@ -2630,11 +2769,11 @@ export type GetPlatformRevenueAnalyticsErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: BillingError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BillingError;
 };
 
 export type GetPlatformRevenueAnalyticsError = GetPlatformRevenueAnalyticsErrors[keyof GetPlatformRevenueAnalyticsErrors];
@@ -2643,7 +2782,7 @@ export type GetPlatformRevenueAnalyticsResponses = {
     /**
      * Revenue analytics
      */
-    200: RevenueAnalytics;
+    200: BillingRevenueAnalytics;
 };
 
 export type GetPlatformRevenueAnalyticsResponse = GetPlatformRevenueAnalyticsResponses[keyof GetPlatformRevenueAnalyticsResponses];
@@ -2667,7 +2806,7 @@ export type GetPlatformTransactionHistoryData = {
         /**
          * Filter by transaction status
          */
-        status?: TransactionStatus;
+        status?: BillingTransactionStatus;
     };
     url: '/billing/admin/transactions';
 };
@@ -2693,11 +2832,11 @@ export type GetPlatformTransactionHistoryErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: BillingError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BillingError;
 };
 
 export type GetPlatformTransactionHistoryError = GetPlatformTransactionHistoryErrors[keyof GetPlatformTransactionHistoryErrors];
@@ -2707,8 +2846,8 @@ export type GetPlatformTransactionHistoryResponses = {
      * Platform transaction history
      */
     200: {
-        data: Array<Transaction>;
-        pagination: Pagination;
+        data: Array<BillingTransaction>;
+        pagination: BillingPagination;
     };
 };
 
@@ -2763,7 +2902,7 @@ export type SearchPostsErrors = {
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type SearchPostsError = SearchPostsErrors[keyof SearchPostsErrors];
@@ -2773,8 +2912,8 @@ export type SearchPostsResponses = {
      * Matched blog posts
      */
     200: {
-        data: Array<Post>;
-        pagination: Pagination;
+        data: Array<BlogPost>;
+        pagination: BlogPagination;
     };
 };
 
@@ -2795,7 +2934,7 @@ export type CreatePostErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: BlogError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2816,7 +2955,7 @@ export type CreatePostErrors = {
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type CreatePostError = CreatePostErrors[keyof CreatePostErrors];
@@ -2825,7 +2964,7 @@ export type CreatePostResponses = {
     /**
      * Post created
      */
-    201: Post;
+    201: BlogPost;
 };
 
 export type CreatePostResponse = CreatePostResponses[keyof CreatePostResponses];
@@ -2863,15 +3002,15 @@ export type DeletePostErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: BlogError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type DeletePostError = DeletePostErrors[keyof DeletePostErrors];
@@ -2918,11 +3057,11 @@ export type GetPostByIdErrors = {
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type GetPostByIdError = GetPostByIdErrors[keyof GetPostByIdErrors];
@@ -2931,7 +3070,7 @@ export type GetPostByIdResponses = {
     /**
      * Blog post detail
      */
-    200: Post;
+    200: BlogPost;
 };
 
 export type GetPostByIdResponse = GetPostByIdResponses[keyof GetPostByIdResponses];
@@ -2956,7 +3095,7 @@ export type UpdatePostErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: BlogError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -2977,15 +3116,15 @@ export type UpdatePostErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: BlogError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type UpdatePostError = UpdatePostErrors[keyof UpdatePostErrors];
@@ -2994,7 +3133,7 @@ export type UpdatePostResponses = {
     /**
      * Post updated
      */
-    200: Post;
+    200: BlogPost;
 };
 
 export type UpdatePostResponse = UpdatePostResponses[keyof UpdatePostResponses];
@@ -3032,11 +3171,11 @@ export type GetPostCommentsErrors = {
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type GetPostCommentsError = GetPostCommentsErrors[keyof GetPostCommentsErrors];
@@ -3046,7 +3185,7 @@ export type GetPostCommentsResponses = {
      * Top-level comments for the post
      */
     200: {
-        data: Array<Comment>;
+        data: Array<BlogComment>;
     };
 };
 
@@ -3070,7 +3209,7 @@ export type CommentOnPostErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: BlogError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -3091,11 +3230,11 @@ export type CommentOnPostErrors = {
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type CommentOnPostError = CommentOnPostErrors[keyof CommentOnPostErrors];
@@ -3104,7 +3243,7 @@ export type CommentOnPostResponses = {
     /**
      * Comment created
      */
-    201: Comment;
+    201: BlogComment;
 };
 
 export type CommentOnPostResponse = CommentOnPostResponses[keyof CommentOnPostResponses];
@@ -3142,15 +3281,15 @@ export type DeleteCommentErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: BlogError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type DeleteCommentError = DeleteCommentErrors[keyof DeleteCommentErrors];
@@ -3182,7 +3321,7 @@ export type UpdateCommentErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: BlogError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -3203,15 +3342,15 @@ export type UpdateCommentErrors = {
     /**
      * Forbidden Error response
      */
-    403: Error;
+    403: BlogError;
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type UpdateCommentError = UpdateCommentErrors[keyof UpdateCommentErrors];
@@ -3220,7 +3359,7 @@ export type UpdateCommentResponses = {
     /**
      * Comment updated
      */
-    200: Comment;
+    200: BlogComment;
 };
 
 export type UpdateCommentResponse = UpdateCommentResponses[keyof UpdateCommentResponses];
@@ -3243,7 +3382,7 @@ export type ReplyCommentErrors = {
     /**
      * Bad Request Error response
      */
-    400: Error;
+    400: BlogError;
     /**
      * The error response body returned when JWT validation or OPA authorization fails.
      */
@@ -3264,11 +3403,11 @@ export type ReplyCommentErrors = {
     /**
      * Not Found Error response
      */
-    404: Error;
+    404: BlogError;
     /**
      * Internal Server Error response
      */
-    500: Error;
+    500: BlogError;
 };
 
 export type ReplyCommentError = ReplyCommentErrors[keyof ReplyCommentErrors];
@@ -3277,7 +3416,7 @@ export type ReplyCommentResponses = {
     /**
      * Reply created
      */
-    201: Comment;
+    201: BlogComment;
 };
 
 export type ReplyCommentResponse = ReplyCommentResponses[keyof ReplyCommentResponses];
