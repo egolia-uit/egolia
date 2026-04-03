@@ -336,7 +336,10 @@ type GetPlatformTransactionHistoryResponseObject interface {
 	VisitGetPlatformTransactionHistoryResponse(w http.ResponseWriter) error
 }
 
-type GetPlatformTransactionHistory200JSONResponse TransactionCollection
+type GetPlatformTransactionHistory200JSONResponse struct {
+	Data       []Transaction `json:"data"`
+	Pagination Pagination    `json:"pagination"`
+}
 
 func (response GetPlatformTransactionHistory200JSONResponse) VisitGetPlatformTransactionHistoryResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -437,7 +440,10 @@ type GetLearnerBillingHistoryResponseObject interface {
 	VisitGetLearnerBillingHistoryResponse(w http.ResponseWriter) error
 }
 
-type GetLearnerBillingHistory200JSONResponse TransactionCollection
+type GetLearnerBillingHistory200JSONResponse struct {
+	Data       []Transaction `json:"data"`
+	Pagination Pagination    `json:"pagination"`
+}
 
 func (response GetLearnerBillingHistory200JSONResponse) VisitGetLearnerBillingHistoryResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")

@@ -112,13 +112,6 @@ func (e GetLearnerBillingHistoryParamsOrder) Valid() bool {
 	}
 }
 
-// CheckoutCourseRequest defines model for CheckoutCourseRequest.
-type CheckoutCourseRequest struct {
-	Amount   int64              `json:"amount"`
-	CourseId openapi_types.UUID `json:"courseId"`
-	Currency string             `json:"currency"`
-}
-
 // Error defines model for Error.
 type Error struct {
 	// Code Error code
@@ -155,7 +148,8 @@ type Pagination struct {
 // Receipt defines model for Receipt.
 type Receipt struct {
 	BilledTo struct {
-		Email openapi_types.Email `json:"email"`
+		// Email Email from Authentik
+		Email *Email `json:"email,omitempty"`
 
 		// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 		UserId Id `json:"userId"`
@@ -168,7 +162,6 @@ type Receipt struct {
 // RevenueAnalytics defines model for RevenueAnalytics.
 type RevenueAnalytics struct {
 	CompletedTransactions int                `json:"completedTransactions"`
-	Currency              string             `json:"currency"`
 	FailedTransactions    int                `json:"failedTransactions"`
 	From                  openapi_types.Date `json:"from"`
 	To                    openapi_types.Date `json:"to"`
@@ -180,7 +173,6 @@ type Transaction struct {
 	Amount    float64             `json:"amount"`
 	CourseId  openapi_types.UUID  `json:"courseId"`
 	CreatedAt *time.Time          `json:"createdAt,omitempty"`
-	Currency  string              `json:"currency"`
 	Id        *openapi_types.UUID `json:"id,omitempty"`
 
 	// Status Current status of a billing transaction
@@ -190,14 +182,11 @@ type Transaction struct {
 	UserId Id `json:"userId"`
 }
 
-// TransactionCollection defines model for TransactionCollection.
-type TransactionCollection struct {
-	Data       []Transaction `json:"data"`
-	Pagination Pagination    `json:"pagination"`
-}
-
 // TransactionStatus Current status of a billing transaction
 type TransactionStatus string
+
+// Email Email from Authentik
+type Email = openapi_types.Email
 
 // Id User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 type Id = string
@@ -265,6 +254,12 @@ type GetPlatformTransactionHistoryParams struct {
 // GetPlatformTransactionHistoryParamsOrder defines parameters for GetPlatformTransactionHistory.
 type GetPlatformTransactionHistoryParamsOrder string
 
+// CheckoutCourseJSONBody defines parameters for CheckoutCourse.
+type CheckoutCourseJSONBody struct {
+	Amount   int64              `json:"amount"`
+	CourseId openapi_types.UUID `json:"courseId"`
+}
+
 // GetLearnerBillingHistoryParams defines parameters for GetLearnerBillingHistory.
 type GetLearnerBillingHistoryParams struct {
 	// Page Page number for pagination
@@ -281,4 +276,4 @@ type GetLearnerBillingHistoryParams struct {
 type GetLearnerBillingHistoryParamsOrder string
 
 // CheckoutCourseJSONRequestBody defines body for CheckoutCourse for application/json ContentType.
-type CheckoutCourseJSONRequestBody = CheckoutCourseRequest
+type CheckoutCourseJSONRequestBody CheckoutCourseJSONBody

@@ -70,18 +70,11 @@
                     "format": "int64",
                     "minimum": 0,
                     "example": 499000
-                  },
-                  "currency": {
-                    "type": "string",
-                    "minLength": 3,
-                    "maxLength": 3,
-                    "example": "VND"
                   }
                 },
                 "required": [
                   "courseId",
-                  "amount",
-                  "currency"
+                  "amount"
                 ]
               }
             }
@@ -399,12 +392,6 @@
             "minimum": 0,
             "example": 499000
           },
-          "currency": {
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 3,
-            "example": "VND"
-          },
           "status": {
             "$ref": "#/components/schemas/TransactionStatus"
           },
@@ -420,7 +407,6 @@
           "userId",
           "courseId",
           "amount",
-          "currency",
           "status",
           "createdAt"
         ]
@@ -554,12 +540,6 @@
             "format": "date",
             "example": "2026-03-31"
           },
-          "currency": {
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 3,
-            "example": "VND"
-          },
           "totalRevenue": {
             "type": "integer",
             "format": "int64",
@@ -580,7 +560,6 @@
         "required": [
           "from",
           "to",
-          "currency",
           "totalRevenue",
           "completedTransactions",
           "failedTransactions"

@@ -23,12 +23,6 @@ Transaction:
       minimum: 0
       example: 499000
 
-    currency:
-      type: string
-      minLength: 3
-      maxLength: 3
-      example: VND
-
     status:
       $ref: "#/TransactionStatus"
 
@@ -43,7 +37,6 @@ Transaction:
     - userId
     - courseId
     - amount
-    - currency
     - status
     - createdAt
 

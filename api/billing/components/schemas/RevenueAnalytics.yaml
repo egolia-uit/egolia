@@ -11,12 +11,6 @@ properties:
     format: date
     example: '2026-03-31'
 
-  currency:
-    type: string
-    minLength: 3
-    maxLength: 3
-    example: VND
-
   totalRevenue:
     type: integer
     format: int64
@@ -36,7 +30,6 @@ properties:
 required:
   - from
   - to
-  - currency
   - totalRevenue
   - completedTransactions
   - failedTransactions
