@@ -8,17 +8,8 @@ post:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
-    200:
+    204:
       description: Course finished and certificate issued
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/Certificate.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

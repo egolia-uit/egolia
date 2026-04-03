@@ -2,7 +2,7 @@ get:
   security:
     - Oauth2: []
   tags:
-    - Course
+    - Certificate
   summary: Get my certificates
   operationId: getMyCertificates
   parameters:

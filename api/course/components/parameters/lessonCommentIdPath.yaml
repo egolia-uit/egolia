@@ -1,8 +1,0 @@
-name: commentId
-in: path
-required: true
-description: Unique identifier of the lesson comment
-schema:
-  type: string
-  format: uuid
-  example: 8fd4f406-583d-4cd5-9c24-23c490a06711

@@ -20,12 +20,12 @@ info:
 tags:
   - name: Course
     description: Course
+  - name: Certificate
+    description: Certificate
   - name: Section
     description: Section
   - name: Lesson
     description: Lesson
-  - name: Test
-    description: Test
 
 paths:
   /course/courses:
@@ -66,8 +66,8 @@ paths:
     $ref: ./paths/courses_{courseId}_hide.yaml
   /course/courses/{courseId}/unhide:
     $ref: ./paths/courses_{courseId}_unhide.yaml
-  /course/courses-my-enrolled:
-    $ref: ./paths/courses-my-enrolled.yaml
+  /course/courses/me/enrolled:
+    $ref: ./paths/courses-me-enrolled.yaml
 
   /course/sections:
     $ref: ./paths/sections.yaml
@@ -92,8 +92,8 @@ paths:
   /course/lesson-comments/{commentId}/reply:
     $ref: ./paths/lesson-comments_{commentId}_reply.yaml
 
-  /course/certificates-my:
-    $ref: ./paths/certificates-my.yaml
+  /course/certificates/me:
+    $ref: ./paths/certificates-me.yaml
   /course/certificates/{certificateId}:
     $ref: ./paths/certificates_{certificateId}.yaml
 

@@ -135,24 +135,6 @@ func (e GetInstructorCoursesParamsOrder) Valid() bool {
 	}
 }
 
-// Defines values for GetMyEnrolledCoursesParamsOrder.
-const (
-	GetMyEnrolledCoursesParamsOrderAsc  GetMyEnrolledCoursesParamsOrder = "asc"
-	GetMyEnrolledCoursesParamsOrderDesc GetMyEnrolledCoursesParamsOrder = "desc"
-)
-
-// Valid indicates whether the value is a known member of the GetMyEnrolledCoursesParamsOrder enum.
-func (e GetMyEnrolledCoursesParamsOrder) Valid() bool {
-	switch e {
-	case GetMyEnrolledCoursesParamsOrderAsc:
-		return true
-	case GetMyEnrolledCoursesParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for GetPublishedCoursesParamsOrder.
 const (
 	GetPublishedCoursesParamsOrderAsc  GetPublishedCoursesParamsOrder = "asc"
@@ -189,11 +171,22 @@ func (e GetSystemCoursesParamsOrder) Valid() bool {
 	}
 }
 
-// BookmarkState defines model for BookmarkState.
-type BookmarkState struct {
-	Bookmarked bool               `json:"bookmarked"`
-	CourseId   *PropertiesId      `json:"courseId,omitempty"`
-	UserId     openapi_types.UUID `json:"userId"`
+// Defines values for GetMyEnrolledCoursesParamsOrder.
+const (
+	GetMyEnrolledCoursesParamsOrderAsc  GetMyEnrolledCoursesParamsOrder = "asc"
+	GetMyEnrolledCoursesParamsOrderDesc GetMyEnrolledCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetMyEnrolledCoursesParamsOrder enum.
+func (e GetMyEnrolledCoursesParamsOrder) Valid() bool {
+	switch e {
+	case GetMyEnrolledCoursesParamsOrderAsc:
+		return true
+	case GetMyEnrolledCoursesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
 }
 
 // Certificate defines model for Certificate.
@@ -201,7 +194,9 @@ type Certificate struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	IssuedAt time.Time           `json:"issuedAt"`
-	UserId   openapi_types.UUID  `json:"userId"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId Id `json:"userId"`
 }
 
 // Course defines model for Course.
@@ -216,8 +211,8 @@ type Course struct {
 	Title        string       `json:"title"`
 }
 
-// CourseDetailData defines model for CourseDetailData.
-type CourseDetailData struct {
+// CourseDetail defines model for CourseDetail.
+type CourseDetail struct {
 	Course   Course                    `json:"course"`
 	Sections []CourseDetailSectionItem `json:"sections"`
 }
@@ -252,25 +247,18 @@ type CourseLandingPageCourse struct {
 
 // CourseProgress defines model for CourseProgress.
 type CourseProgress struct {
-	CompletedLessons int32              `json:"completedLessons"`
-	CourseId         *PropertiesId      `json:"courseId,omitempty"`
-	IsCompleted      bool               `json:"isCompleted"`
-	ProgressPercent  float32            `json:"progressPercent"`
-	TotalLessons     int32              `json:"totalLessons"`
-	UserId           openapi_types.UUID `json:"userId"`
+	CompletedLessons int32         `json:"completedLessons"`
+	CourseId         *PropertiesId `json:"courseId,omitempty"`
+	IsCompleted      bool          `json:"isCompleted"`
+	ProgressPercent  float32       `json:"progressPercent"`
+	TotalLessons     int32         `json:"totalLessons"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId Id `json:"userId"`
 }
 
 // CourseStatus defines model for CourseStatus.
 type CourseStatus string
-
-// Enrollment defines model for Enrollment.
-type Enrollment struct {
-	CompletedAt    *time.Time          `json:"completedAt,omitempty"`
-	CourseId       *PropertiesId       `json:"courseId,omitempty"`
-	EnrollmentDate time.Time           `json:"enrollmentDate"`
-	Id             *openapi_types.UUID `json:"id,omitempty"`
-	UserId         openapi_types.UUID  `json:"userId"`
-}
 
 // Error defines model for Error.
 type Error struct {
@@ -284,28 +272,11 @@ type Error struct {
 	MoreInfo *string `json:"more_info,omitempty"`
 }
 
-// LearningReminder defines model for LearningReminder.
-type LearningReminder struct {
-	CourseId         *PropertiesId `json:"courseId,omitempty"`
-	NotifiedLearners int32         `json:"notifiedLearners"`
-	TriggeredAt      time.Time     `json:"triggeredAt"`
-}
-
 // Lesson defines model for Lesson.
 type Lesson struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Title    string              `json:"title"`
-}
-
-// LessonComment defines model for LessonComment.
-type LessonComment struct {
-	Content         string              `json:"content"`
-	CreatedAt       time.Time           `json:"createdAt"`
-	Id              *openapi_types.UUID `json:"id,omitempty"`
-	LessonId        *LessonPropertiesId `json:"lessonId,omitempty"`
-	ParentCommentId *openapi_types.UUID `json:"parentCommentId,omitempty"`
-	UserId          openapi_types.UUID  `json:"userId"`
 }
 
 // LessonDetail defines model for LessonDetail.
@@ -318,7 +289,9 @@ type LessonProgress struct {
 	Id          *openapi_types.UUID `json:"id,omitempty"`
 	IsCompleted bool                `json:"isCompleted"`
 	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
-	UserId      openapi_types.UUID  `json:"userId"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId Id `json:"userId"`
 }
 
 // LessonPropertiesId defines model for Lesson_properties-id.
@@ -343,15 +316,6 @@ type Pagination struct {
 
 	// TotalPages Total number of pages
 	TotalPages int `json:"totalPages"`
-}
-
-// Review defines model for Review.
-type Review struct {
-	Comment  string              `json:"comment"`
-	CourseId *PropertiesId       `json:"courseId,omitempty"`
-	Id       *openapi_types.UUID `json:"id,omitempty"`
-	Rating   int32               `json:"rating"`
-	UserId   string              `json:"userId"`
 }
 
 // Section defines model for Section.
@@ -421,14 +385,14 @@ type Title = string
 // CertificateIdPath defines model for certificateIdPath.
 type CertificateIdPath = openapi_types.UUID
 
+// CommentIdPath defines model for commentIdPath.
+type CommentIdPath = openapi_types.UUID
+
 // CourseIdPath defines model for courseIdPath.
 type CourseIdPath = PropertiesId
 
 // InstructorIdPath defines model for instructorIdPath.
 type InstructorIdPath = openapi_types.UUID
-
-// LessonCommentIdPath defines model for lessonCommentIdPath.
-type LessonCommentIdPath = openapi_types.UUID
 
 // LessonIdPath defines model for lessonIdPath.
 type LessonIdPath = openapi_types.UUID
@@ -507,21 +471,6 @@ type GetInstructorCoursesParams struct {
 // GetInstructorCoursesParamsOrder defines parameters for GetInstructorCourses.
 type GetInstructorCoursesParamsOrder string
 
-// GetMyEnrolledCoursesParams defines parameters for GetMyEnrolledCourses.
-type GetMyEnrolledCoursesParams struct {
-	// Page Page number for pagination
-	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
-
-	// Limit Number of items per page
-	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Order Sort order
-	Order *GetMyEnrolledCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
-}
-
-// GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
-type GetMyEnrolledCoursesParamsOrder string
-
 // GetPublishedCoursesParams defines parameters for GetPublishedCourses.
 type GetPublishedCoursesParams struct {
 	// Page Page number for pagination
@@ -554,9 +503,24 @@ type GetSystemCoursesParams struct {
 // GetSystemCoursesParamsOrder defines parameters for GetSystemCourses.
 type GetSystemCoursesParamsOrder string
 
+// GetMyEnrolledCoursesParams defines parameters for GetMyEnrolledCourses.
+type GetMyEnrolledCoursesParams struct {
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetMyEnrolledCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
+type GetMyEnrolledCoursesParamsOrder string
+
 // ChangeBasicCourseInfoJSONBody defines parameters for ChangeBasicCourseInfo.
 type ChangeBasicCourseInfoJSONBody struct {
-	Price  *float32      `json:"price,omitempty"`
+	Price  *int64        `json:"price,omitempty"`
 	Slug   *string       `json:"slug,omitempty"`
 	Status *CourseStatus `json:"status,omitempty"`
 	Title  *string       `json:"title,omitempty"`
@@ -569,7 +533,7 @@ type DeclineCourseJSONBody struct {
 
 // EnrollInCourseJSONBody defines parameters for EnrollInCourse.
 type EnrollInCourseJSONBody struct {
-	ReferredByUserId *openapi_types.UUID `json:"referredByUserId,omitempty"`
+	ReferredByUserId *string `json:"referredByUserId,omitempty"`
 }
 
 // ReviewCourseJSONBody defines parameters for ReviewCourse.

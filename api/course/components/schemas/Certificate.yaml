@@ -11,9 +11,7 @@ properties:
     $ref: ./Course.yaml#/properties/id
 
   userId:
-    type: string
-    format: uuid
-    example: 2e15aba5-cf11-430a-b92a-e8dd65620911
+    $ref: ../../../common/components/schemas/User.yaml#/properties/id
 
   issuedAt:
     type: string

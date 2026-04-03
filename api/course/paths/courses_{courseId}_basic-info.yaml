@@ -3,7 +3,7 @@ patch:
     - Oauth2: []
   tags:
     - Course
-  summary: Change basic course information
+  summary: Update course basic information
   operationId: changeBasicCourseInfo
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
@@ -27,23 +27,14 @@ patch:
             status:
               $ref: ../components/schemas/CourseStatus.yaml
             price:
-              type: number
-              format: float
+              type: integer
+              format: int64
               minimum: 0
-              example: 119.99
+              example: 119900
           minProperties: 1
   responses:
-    200:
+    204:
       description: Course basic information updated
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/Course.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

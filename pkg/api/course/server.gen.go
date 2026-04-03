@@ -19,7 +19,7 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Get my certificates
-	// (GET /course/certificates-my)
+	// (GET /course/certificates/me)
 	GetMyCertificates(c *gin.Context, params GetMyCertificatesParams)
 	// Get certificate by id
 	// (GET /course/certificates/{certificateId})
@@ -30,15 +30,15 @@ type ServerInterface interface {
 	// Get instructor courses
 	// (GET /course/courses-by-instructor/{instructorId})
 	GetInstructorCourses(c *gin.Context, instructorId InstructorIdPath, params GetInstructorCoursesParams)
-	// Get my enrolled courses
-	// (GET /course/courses-my-enrolled)
-	GetMyEnrolledCourses(c *gin.Context, params GetMyEnrolledCoursesParams)
 	// Get published courses
 	// (GET /course/courses-published)
 	GetPublishedCourses(c *gin.Context, params GetPublishedCoursesParams)
 	// Get system courses
 	// (GET /course/courses-system)
 	GetSystemCourses(c *gin.Context, params GetSystemCoursesParams)
+	// Get my enrolled courses
+	// (GET /course/courses/me/enrolled)
+	GetMyEnrolledCourses(c *gin.Context, params GetMyEnrolledCoursesParams)
 	// Delete course
 	// (DELETE /course/courses/{courseId})
 	DeleteCourse(c *gin.Context, courseId CourseIdPath)
@@ -48,7 +48,7 @@ type ServerInterface interface {
 	// Approve course
 	// (POST /course/courses/{courseId}/approve)
 	ApproveCourse(c *gin.Context, courseId CourseIdPath)
-	// Change basic course information
+	// Update course basic information
 	// (PATCH /course/courses/{courseId}/basic-info)
 	ChangeBasicCourseInfo(c *gin.Context, courseId CourseIdPath)
 	// Bookmark course
@@ -89,7 +89,7 @@ type ServerInterface interface {
 	UnhideCourse(c *gin.Context, courseId CourseIdPath)
 	// Reply lesson comment
 	// (POST /course/lesson-comments/{commentId}/reply)
-	ReplyLessonComment(c *gin.Context, commentId LessonCommentIdPath)
+	ReplyLessonComment(c *gin.Context, commentId CommentIdPath)
 	// Create lesson
 	// (POST /course/lessons)
 	CreateLesson(c *gin.Context)
@@ -283,50 +283,6 @@ func (siw *ServerInterfaceWrapper) GetInstructorCourses(c *gin.Context) {
 	siw.Handler.GetInstructorCourses(c, instructorId, params)
 }
 
-// GetMyEnrolledCourses operation middleware
-func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
-
-	var err error
-
-	c.Set(Oauth2Scopes, []string{})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetMyEnrolledCoursesParams
-
-	// ------------- Optional query parameter "page" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "order" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetMyEnrolledCourses(c, params)
-}
-
 // GetPublishedCourses operation middleware
 func (siw *ServerInterfaceWrapper) GetPublishedCourses(c *gin.Context) {
 
@@ -421,6 +377,50 @@ func (siw *ServerInterfaceWrapper) GetSystemCourses(c *gin.Context) {
 	}
 
 	siw.Handler.GetSystemCourses(c, params)
+}
+
+// GetMyEnrolledCourses operation middleware
+func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
+
+	var err error
+
+	c.Set(Oauth2Scopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMyEnrolledCoursesParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "order" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetMyEnrolledCourses(c, params)
 }
 
 // DeleteCourse operation middleware
@@ -843,7 +843,7 @@ func (siw *ServerInterfaceWrapper) ReplyLessonComment(c *gin.Context) {
 	var err error
 
 	// ------------- Path parameter "commentId" -------------
-	var commentId LessonCommentIdPath
+	var commentId CommentIdPath
 
 	err = runtime.BindStyledParameterWithOptions("simple", "commentId", c.Param("commentId"), &commentId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
 	if err != nil {
@@ -1180,13 +1180,13 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
-	router.GET(options.BaseURL+"/course/certificates-my", wrapper.GetMyCertificates)
+	router.GET(options.BaseURL+"/course/certificates/me", wrapper.GetMyCertificates)
 	router.GET(options.BaseURL+"/course/certificates/:certificateId", wrapper.GetCertificateById)
 	router.POST(options.BaseURL+"/course/courses", wrapper.CreateCourse)
 	router.GET(options.BaseURL+"/course/courses-by-instructor/:instructorId", wrapper.GetInstructorCourses)
-	router.GET(options.BaseURL+"/course/courses-my-enrolled", wrapper.GetMyEnrolledCourses)
 	router.GET(options.BaseURL+"/course/courses-published", wrapper.GetPublishedCourses)
 	router.GET(options.BaseURL+"/course/courses-system", wrapper.GetSystemCourses)
+	router.GET(options.BaseURL+"/course/courses/me/enrolled", wrapper.GetMyEnrolledCourses)
 	router.DELETE(options.BaseURL+"/course/courses/:courseId", wrapper.DeleteCourse)
 	router.GET(options.BaseURL+"/course/courses/:courseId", wrapper.GetCourse)
 	router.POST(options.BaseURL+"/course/courses/:courseId/approve", wrapper.ApproveCourse)
@@ -1360,15 +1360,12 @@ type CreateCourseResponseObject interface {
 	VisitCreateCourseResponse(w http.ResponseWriter) error
 }
 
-type CreateCourse201JSONResponse struct {
-	Data Course `json:"data"`
+type CreateCourse201Response struct {
 }
 
-func (response CreateCourse201JSONResponse) VisitCreateCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
+func (response CreateCourse201Response) VisitCreateCourseResponse(w http.ResponseWriter) error {
 	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
+	return nil
 }
 
 type CreateCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -1477,55 +1474,6 @@ func (response GetInstructorCourses500JSONResponse) VisitGetInstructorCoursesRes
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetMyEnrolledCoursesRequestObject struct {
-	Params GetMyEnrolledCoursesParams
-}
-
-type GetMyEnrolledCoursesResponseObject interface {
-	VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error
-}
-
-type GetMyEnrolledCourses200JSONResponse struct {
-	Data       []Course   `json:"data"`
-	Pagination Pagination `json:"pagination"`
-}
-
-func (response GetMyEnrolledCourses200JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetMyEnrolledCourses400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetMyEnrolledCourses400JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetMyEnrolledCourses401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetMyEnrolledCourses401JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetMyEnrolledCourses500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetMyEnrolledCourses500JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
 type GetPublishedCoursesRequestObject struct {
 	Params GetPublishedCoursesParams
 }
@@ -1618,6 +1566,55 @@ type GetSystemCourses500JSONResponse struct {
 }
 
 func (response GetSystemCourses500JSONResponse) VisitGetSystemCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCoursesRequestObject struct {
+	Params GetMyEnrolledCoursesParams
+}
+
+type GetMyEnrolledCoursesResponseObject interface {
+	VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error
+}
+
+type GetMyEnrolledCourses200JSONResponse struct {
+	Data       []Course   `json:"data"`
+	Pagination Pagination `json:"pagination"`
+}
+
+func (response GetMyEnrolledCourses200JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCourses400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetMyEnrolledCourses400JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCourses401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetMyEnrolledCourses401JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCourses500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetMyEnrolledCourses500JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -1761,15 +1758,12 @@ type ApproveCourseResponseObject interface {
 	VisitApproveCourseResponse(w http.ResponseWriter) error
 }
 
-type ApproveCourse200JSONResponse struct {
-	Data Course `json:"data"`
+type ApproveCourse204Response struct {
 }
 
-func (response ApproveCourse200JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response ApproveCourse204Response) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type ApproveCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -1828,15 +1822,12 @@ type ChangeBasicCourseInfoResponseObject interface {
 	VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error
 }
 
-type ChangeBasicCourseInfo200JSONResponse struct {
-	Data Course `json:"data"`
+type ChangeBasicCourseInfo204Response struct {
 }
 
-func (response ChangeBasicCourseInfo200JSONResponse) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response ChangeBasicCourseInfo204Response) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type ChangeBasicCourseInfo400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -1894,15 +1885,12 @@ type BookmarkCourseResponseObject interface {
 	VisitBookmarkCourseResponse(w http.ResponseWriter) error
 }
 
-type BookmarkCourse200JSONResponse struct {
-	Data BookmarkState `json:"data"`
+type BookmarkCourse201Response struct {
 }
 
-func (response BookmarkCourse200JSONResponse) VisitBookmarkCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response BookmarkCourse201Response) VisitBookmarkCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(201)
+	return nil
 }
 
 type BookmarkCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -1961,15 +1949,12 @@ type DeclineCourseResponseObject interface {
 	VisitDeclineCourseResponse(w http.ResponseWriter) error
 }
 
-type DeclineCourse200JSONResponse struct {
-	Data Course `json:"data"`
+type DeclineCourse204Response struct {
 }
 
-func (response DeclineCourse200JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response DeclineCourse204Response) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type DeclineCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2028,7 +2013,7 @@ type GetCourseDetailResponseObject interface {
 }
 
 type GetCourseDetail200JSONResponse struct {
-	Data CourseDetailData `json:"data"`
+	Data CourseDetail `json:"data"`
 }
 
 func (response GetCourseDetail200JSONResponse) VisitGetCourseDetailResponse(w http.ResponseWriter) error {
@@ -2094,15 +2079,12 @@ type EnrollInCourseResponseObject interface {
 	VisitEnrollInCourseResponse(w http.ResponseWriter) error
 }
 
-type EnrollInCourse200JSONResponse struct {
-	Data Enrollment `json:"data"`
+type EnrollInCourse201Response struct {
 }
 
-func (response EnrollInCourse200JSONResponse) VisitEnrollInCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response EnrollInCourse201Response) VisitEnrollInCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(201)
+	return nil
 }
 
 type EnrollInCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2160,15 +2142,12 @@ type FinishCourseResponseObject interface {
 	VisitFinishCourseResponse(w http.ResponseWriter) error
 }
 
-type FinishCourse200JSONResponse struct {
-	Data Certificate `json:"data"`
+type FinishCourse204Response struct {
 }
 
-func (response FinishCourse200JSONResponse) VisitFinishCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response FinishCourse204Response) VisitFinishCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type FinishCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2226,15 +2205,12 @@ type HideCourseResponseObject interface {
 	VisitHideCourseResponse(w http.ResponseWriter) error
 }
 
-type HideCourse200JSONResponse struct {
-	Data Course `json:"data"`
+type HideCourse204Response struct {
 }
 
-func (response HideCourse200JSONResponse) VisitHideCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response HideCourse204Response) VisitHideCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type HideCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2407,15 +2383,12 @@ type ReviewCourseResponseObject interface {
 	VisitReviewCourseResponse(w http.ResponseWriter) error
 }
 
-type ReviewCourse201JSONResponse struct {
-	Data Review `json:"data"`
+type ReviewCourse201Response struct {
 }
 
-func (response ReviewCourse201JSONResponse) VisitReviewCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
+func (response ReviewCourse201Response) VisitReviewCourseResponse(w http.ResponseWriter) error {
 	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
+	return nil
 }
 
 type ReviewCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2474,15 +2447,12 @@ type TriggerLearningReminderResponseObject interface {
 	VisitTriggerLearningReminderResponse(w http.ResponseWriter) error
 }
 
-type TriggerLearningReminder200JSONResponse struct {
-	Data LearningReminder `json:"data"`
+type TriggerLearningReminder204Response struct {
 }
 
-func (response TriggerLearningReminder200JSONResponse) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response TriggerLearningReminder204Response) VisitTriggerLearningReminderResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type TriggerLearningReminder400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2540,15 +2510,12 @@ type UnbookmarkCourseResponseObject interface {
 	VisitUnbookmarkCourseResponse(w http.ResponseWriter) error
 }
 
-type UnbookmarkCourse200JSONResponse struct {
-	Data BookmarkState `json:"data"`
+type UnbookmarkCourse204Response struct {
 }
 
-func (response UnbookmarkCourse200JSONResponse) VisitUnbookmarkCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response UnbookmarkCourse204Response) VisitUnbookmarkCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type UnbookmarkCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2606,15 +2573,12 @@ type UnhideCourseResponseObject interface {
 	VisitUnhideCourseResponse(w http.ResponseWriter) error
 }
 
-type UnhideCourse200JSONResponse struct {
-	Data Course `json:"data"`
+type UnhideCourse204Response struct {
 }
 
-func (response UnhideCourse200JSONResponse) VisitUnhideCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response UnhideCourse204Response) VisitUnhideCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type UnhideCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2665,7 +2629,7 @@ func (response UnhideCourse500JSONResponse) VisitUnhideCourseResponse(w http.Res
 }
 
 type ReplyLessonCommentRequestObject struct {
-	CommentId LessonCommentIdPath `json:"commentId"`
+	CommentId CommentIdPath `json:"commentId"`
 	Body      *ReplyLessonCommentJSONRequestBody
 }
 
@@ -2673,15 +2637,12 @@ type ReplyLessonCommentResponseObject interface {
 	VisitReplyLessonCommentResponse(w http.ResponseWriter) error
 }
 
-type ReplyLessonComment201JSONResponse struct {
-	Data LessonComment `json:"data"`
+type ReplyLessonComment201Response struct {
 }
 
-func (response ReplyLessonComment201JSONResponse) VisitReplyLessonCommentResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
+func (response ReplyLessonComment201Response) VisitReplyLessonCommentResponse(w http.ResponseWriter) error {
 	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
+	return nil
 }
 
 type ReplyLessonComment400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2739,15 +2700,12 @@ type CreateLessonResponseObject interface {
 	VisitCreateLessonResponse(w http.ResponseWriter) error
 }
 
-type CreateLesson201JSONResponse struct {
-	Data Lesson `json:"data"`
+type CreateLesson201Response struct {
 }
 
-func (response CreateLesson201JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
+func (response CreateLesson201Response) VisitCreateLessonResponse(w http.ResponseWriter) error {
 	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
+	return nil
 }
 
 type CreateLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2926,15 +2884,12 @@ type EditLessonResponseObject interface {
 	VisitEditLessonResponse(w http.ResponseWriter) error
 }
 
-type EditLesson200JSONResponse struct {
-	Data LessonDetail `json:"data"`
+type EditLesson204Response struct {
 }
 
-func (response EditLesson200JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response EditLesson204Response) VisitEditLessonResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type EditLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -2993,15 +2948,12 @@ type CommentOnLessonResponseObject interface {
 	VisitCommentOnLessonResponse(w http.ResponseWriter) error
 }
 
-type CommentOnLesson201JSONResponse struct {
-	Data LessonComment `json:"data"`
+type CommentOnLesson201Response struct {
 }
 
-func (response CommentOnLesson201JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
+func (response CommentOnLesson201Response) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
 	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
+	return nil
 }
 
 type CommentOnLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -3059,15 +3011,12 @@ type MarkLessonAsCompletedResponseObject interface {
 	VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error
 }
 
-type MarkLessonAsCompleted200JSONResponse struct {
-	Data LessonProgress `json:"data"`
+type MarkLessonAsCompleted204Response struct {
 }
 
-func (response MarkLessonAsCompleted200JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response MarkLessonAsCompleted204Response) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type MarkLessonAsCompleted400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -3192,15 +3141,12 @@ type SaveLessonProgressResponseObject interface {
 	VisitSaveLessonProgressResponse(w http.ResponseWriter) error
 }
 
-type SaveLessonProgress200JSONResponse struct {
-	Data LessonProgress `json:"data"`
+type SaveLessonProgress204Response struct {
 }
 
-func (response SaveLessonProgress200JSONResponse) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
+func (response SaveLessonProgress204Response) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
 type SaveLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -3259,15 +3205,12 @@ type CreateTestResponseObject interface {
 	VisitCreateTestResponse(w http.ResponseWriter) error
 }
 
-type CreateTest201JSONResponse struct {
-	Data TestLesson `json:"data"`
+type CreateTest201Response struct {
 }
 
-func (response CreateTest201JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
+func (response CreateTest201Response) VisitCreateTestResponse(w http.ResponseWriter) error {
 	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
+	return nil
 }
 
 type CreateTest400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -3391,15 +3334,12 @@ type CreateSectionResponseObject interface {
 	VisitCreateSectionResponse(w http.ResponseWriter) error
 }
 
-type CreateSection201JSONResponse struct {
-	Data Section `json:"data"`
+type CreateSection201Response struct {
 }
 
-func (response CreateSection201JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
+func (response CreateSection201Response) VisitCreateSectionResponse(w http.ResponseWriter) error {
 	w.WriteHeader(201)
-
-	return json.NewEncoder(w).Encode(response)
+	return nil
 }
 
 type CreateSection400JSONResponse struct{ BadRequestErrorJSONResponse }
@@ -3515,7 +3455,7 @@ func (response DeleteSection500JSONResponse) VisitDeleteSectionResponse(w http.R
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Get my certificates
-	// (GET /course/certificates-my)
+	// (GET /course/certificates/me)
 	GetMyCertificates(ctx context.Context, request GetMyCertificatesRequestObject) (GetMyCertificatesResponseObject, error)
 	// Get certificate by id
 	// (GET /course/certificates/{certificateId})
@@ -3526,15 +3466,15 @@ type StrictServerInterface interface {
 	// Get instructor courses
 	// (GET /course/courses-by-instructor/{instructorId})
 	GetInstructorCourses(ctx context.Context, request GetInstructorCoursesRequestObject) (GetInstructorCoursesResponseObject, error)
-	// Get my enrolled courses
-	// (GET /course/courses-my-enrolled)
-	GetMyEnrolledCourses(ctx context.Context, request GetMyEnrolledCoursesRequestObject) (GetMyEnrolledCoursesResponseObject, error)
 	// Get published courses
 	// (GET /course/courses-published)
 	GetPublishedCourses(ctx context.Context, request GetPublishedCoursesRequestObject) (GetPublishedCoursesResponseObject, error)
 	// Get system courses
 	// (GET /course/courses-system)
 	GetSystemCourses(ctx context.Context, request GetSystemCoursesRequestObject) (GetSystemCoursesResponseObject, error)
+	// Get my enrolled courses
+	// (GET /course/courses/me/enrolled)
+	GetMyEnrolledCourses(ctx context.Context, request GetMyEnrolledCoursesRequestObject) (GetMyEnrolledCoursesResponseObject, error)
 	// Delete course
 	// (DELETE /course/courses/{courseId})
 	DeleteCourse(ctx context.Context, request DeleteCourseRequestObject) (DeleteCourseResponseObject, error)
@@ -3544,7 +3484,7 @@ type StrictServerInterface interface {
 	// Approve course
 	// (POST /course/courses/{courseId}/approve)
 	ApproveCourse(ctx context.Context, request ApproveCourseRequestObject) (ApproveCourseResponseObject, error)
-	// Change basic course information
+	// Update course basic information
 	// (PATCH /course/courses/{courseId}/basic-info)
 	ChangeBasicCourseInfo(ctx context.Context, request ChangeBasicCourseInfoRequestObject) (ChangeBasicCourseInfoResponseObject, error)
 	// Bookmark course
@@ -3751,33 +3691,6 @@ func (sh *strictHandler) GetInstructorCourses(ctx *gin.Context, instructorId Ins
 	}
 }
 
-// GetMyEnrolledCourses operation middleware
-func (sh *strictHandler) GetMyEnrolledCourses(ctx *gin.Context, params GetMyEnrolledCoursesParams) {
-	var request GetMyEnrolledCoursesRequestObject
-
-	request.Params = params
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetMyEnrolledCourses(ctx, request.(GetMyEnrolledCoursesRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetMyEnrolledCourses")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetMyEnrolledCoursesResponseObject); ok {
-		if err := validResponse.VisitGetMyEnrolledCoursesResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // GetPublishedCourses operation middleware
 func (sh *strictHandler) GetPublishedCourses(ctx *gin.Context, params GetPublishedCoursesParams) {
 	var request GetPublishedCoursesRequestObject
@@ -3825,6 +3738,33 @@ func (sh *strictHandler) GetSystemCourses(ctx *gin.Context, params GetSystemCour
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(GetSystemCoursesResponseObject); ok {
 		if err := validResponse.VisitGetSystemCoursesResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetMyEnrolledCourses operation middleware
+func (sh *strictHandler) GetMyEnrolledCourses(ctx *gin.Context, params GetMyEnrolledCoursesParams) {
+	var request GetMyEnrolledCoursesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMyEnrolledCourses(ctx, request.(GetMyEnrolledCoursesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMyEnrolledCourses")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetMyEnrolledCoursesResponseObject); ok {
+		if err := validResponse.VisitGetMyEnrolledCoursesResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {
@@ -4314,7 +4254,7 @@ func (sh *strictHandler) UnhideCourse(ctx *gin.Context, courseId CourseIdPath) {
 }
 
 // ReplyLessonComment operation middleware
-func (sh *strictHandler) ReplyLessonComment(ctx *gin.Context, commentId LessonCommentIdPath) {
+func (sh *strictHandler) ReplyLessonComment(ctx *gin.Context, commentId CommentIdPath) {
 	var request ReplyLessonCommentRequestObject
 
 	request.CommentId = commentId

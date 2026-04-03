@@ -82,53 +82,18 @@ export type CourseDetailSectionItem = {
     lessonIds: Array<string>;
 };
 
-export type CourseDetailData = {
+export type CourseDetail = {
     course: Course;
     sections: Array<CourseDetailSectionItem>;
 };
 
-export type Enrollment = {
-    readonly id: string;
-    userId: string;
-    courseId: PropertiesId;
-    enrollmentDate: Date;
-    completedAt?: Date | null;
-};
-
 export type CourseProgress = {
     courseId: PropertiesId;
-    userId: string;
+    userId: Id;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
-};
-
-export type Certificate = {
-    readonly id: string;
-    courseId: PropertiesId;
-    userId: string;
-    issuedAt: Date;
-};
-
-export type Review = {
-    readonly id: string;
-    courseId: PropertiesId;
-    userId: string;
-    rating: number;
-    comment: string;
-};
-
-export type BookmarkState = {
-    courseId: PropertiesId;
-    userId: string;
-    bookmarked: boolean;
-};
-
-export type LearningReminder = {
-    courseId: PropertiesId;
-    triggeredAt: Date;
-    notifiedLearners: number;
 };
 
 export type Title = string;
@@ -192,20 +157,18 @@ export type LessonPropertiesId = string;
 
 export type LessonProgress = {
     readonly id: string;
-    userId: string;
+    userId: Id;
     lessonId: LessonPropertiesId;
     isCompleted: boolean;
 };
 
 export type Content = string;
 
-export type LessonComment = {
+export type Certificate = {
     readonly id: string;
-    userId: string;
-    lessonId: LessonPropertiesId;
-    content: string;
-    createdAt: Date;
-    parentCommentId?: string | null;
+    courseId: PropertiesId;
+    userId: Id;
+    issuedAt: Date;
 };
 
 /**
@@ -290,44 +253,17 @@ export type CourseDetailSectionItemWritable = {
     lessonIds: Array<string>;
 };
 
-export type CourseDetailDataWritable = {
+export type CourseDetailWritable = {
     course: CourseWritable;
     sections: Array<CourseDetailSectionItemWritable>;
 };
 
-export type EnrollmentWritable = {
-    userId: string;
-    enrollmentDate: Date;
-    completedAt?: Date | null;
-};
-
 export type CourseProgressWritable = {
-    userId: string;
+    userId: Id;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
-};
-
-export type CertificateWritable = {
-    userId: string;
-    issuedAt: Date;
-};
-
-export type ReviewWritable = {
-    userId: string;
-    rating: number;
-    comment: string;
-};
-
-export type BookmarkStateWritable = {
-    userId: string;
-    bookmarked: boolean;
-};
-
-export type LearningReminderWritable = {
-    triggeredAt: Date;
-    notifiedLearners: number;
 };
 
 export type CourseLandingPageWritable = {
@@ -369,15 +305,13 @@ export type TestLessonWritable = LessonWritable & {
 export type LessonDetailWritable = VideoLessonWritable | TestLessonWritable;
 
 export type LessonProgressWritable = {
-    userId: string;
+    userId: Id;
     isCompleted: boolean;
 };
 
-export type LessonCommentWritable = {
-    userId: string;
-    content: string;
-    createdAt: Date;
-    parentCommentId?: string | null;
+export type CertificateWritable = {
+    userId: Id;
+    issuedAt: Date;
 };
 
 export type TransactionWritable = {
@@ -440,9 +374,9 @@ export type SectionIdPath = string;
 export type LessonIdPath = string;
 
 /**
- * Unique identifier of the lesson comment
+ * Unique identifier of the comment
  */
-export type LessonCommentIdPath = string;
+export type CommentIdPath = string;
 
 export type CertificateIdPath = string;
 
@@ -455,11 +389,6 @@ export type TransactionIdPath = string;
  * Unique identifier of the blog post
  */
 export type PostIdPath = string;
-
-/**
- * Unique identifier of the post comment
- */
-export type CommentIdPath = string;
 
 export type CreateCourseData = {
     body: CourseWritable;
@@ -506,12 +435,8 @@ export type CreateCourseResponses = {
     /**
      * Course created
      */
-    201: {
-        data: Course;
-    };
+    201: unknown;
 };
-
-export type CreateCourseResponse = CreateCourseResponses[keyof CreateCourseResponses];
 
 export type GetSystemCoursesData = {
     body?: never;
@@ -864,7 +789,7 @@ export type GetCourseDetailResponses = {
      * Full course content with section and lesson references
      */
     200: {
-        data: CourseDetailData;
+        data: CourseDetail;
     };
 };
 
@@ -875,7 +800,7 @@ export type ChangeBasicCourseInfoData = {
         title?: string;
         slug?: string;
         status?: CourseStatus;
-        price?: number;
+        price?: bigint;
     };
     path: {
         courseId: PropertiesId;
@@ -926,9 +851,7 @@ export type ChangeBasicCourseInfoResponses = {
     /**
      * Course basic information updated
      */
-    200: {
-        data: Course;
-    };
+    204: void;
 };
 
 export type ChangeBasicCourseInfoResponse = ChangeBasicCourseInfoResponses[keyof ChangeBasicCourseInfoResponses];
@@ -986,12 +909,8 @@ export type EnrollInCourseResponses = {
     /**
      * Course enrollment created
      */
-    200: {
-        data: Enrollment;
-    };
+    201: unknown;
 };
-
-export type EnrollInCourseResponse = EnrollInCourseResponses[keyof EnrollInCourseResponses];
 
 export type GetCourseProgressData = {
     body?: never;
@@ -1102,9 +1021,7 @@ export type FinishCourseResponses = {
     /**
      * Course finished and certificate issued
      */
-    200: {
-        data: Certificate;
-    };
+    204: void;
 };
 
 export type FinishCourseResponse = FinishCourseResponses[keyof FinishCourseResponses];
@@ -1163,12 +1080,8 @@ export type ReviewCourseResponses = {
     /**
      * Course review created
      */
-    201: {
-        data: Review;
-    };
+    201: unknown;
 };
-
-export type ReviewCourseResponse = ReviewCourseResponses[keyof ReviewCourseResponses];
 
 export type BookmarkCourseData = {
     body?: never;
@@ -1221,12 +1134,8 @@ export type BookmarkCourseResponses = {
     /**
      * Course bookmarked
      */
-    200: {
-        data: BookmarkState;
-    };
+    201: unknown;
 };
-
-export type BookmarkCourseResponse = BookmarkCourseResponses[keyof BookmarkCourseResponses];
 
 export type UnbookmarkCourseData = {
     body?: never;
@@ -1277,11 +1186,9 @@ export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCours
 
 export type UnbookmarkCourseResponses = {
     /**
-     * Course unbookmarked
+     * Course unbookmarked successfully
      */
-    200: {
-        data: BookmarkState;
-    };
+    204: void;
 };
 
 export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
@@ -1339,9 +1246,7 @@ export type TriggerLearningReminderResponses = {
     /**
      * Learning reminder triggered
      */
-    200: {
-        data: LearningReminder;
-    };
+    204: void;
 };
 
 export type TriggerLearningReminderResponse = TriggerLearningReminderResponses[keyof TriggerLearningReminderResponses];
@@ -1434,9 +1339,7 @@ export type ApproveCourseResponses = {
     /**
      * Course approved
      */
-    200: {
-        data: Course;
-    };
+    204: void;
 };
 
 export type ApproveCourseResponse = ApproveCourseResponses[keyof ApproveCourseResponses];
@@ -1494,9 +1397,7 @@ export type DeclineCourseResponses = {
     /**
      * Course declined
      */
-    200: {
-        data: Course;
-    };
+    204: void;
 };
 
 export type DeclineCourseResponse = DeclineCourseResponses[keyof DeclineCourseResponses];
@@ -1552,9 +1453,7 @@ export type HideCourseResponses = {
     /**
      * Course hidden
      */
-    200: {
-        data: Course;
-    };
+    204: void;
 };
 
 export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
@@ -1610,9 +1509,7 @@ export type UnhideCourseResponses = {
     /**
      * Course unhidden
      */
-    200: {
-        data: Course;
-    };
+    204: void;
 };
 
 export type UnhideCourseResponse = UnhideCourseResponses[keyof UnhideCourseResponses];
@@ -1634,7 +1531,7 @@ export type GetMyEnrolledCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/courses-my-enrolled';
+    url: '/course/courses/me/enrolled';
 };
 
 export type GetMyEnrolledCoursesErrors = {
@@ -1732,12 +1629,8 @@ export type CreateSectionResponses = {
     /**
      * Section created
      */
-    201: {
-        data: Section;
-    };
+    201: unknown;
 };
-
-export type CreateSectionResponse = CreateSectionResponses[keyof CreateSectionResponses];
 
 export type DeleteSectionData = {
     body?: never;
@@ -1843,12 +1736,8 @@ export type CreateLessonResponses = {
     /**
      * Lesson created
      */
-    201: {
-        data: Lesson;
-    };
+    201: unknown;
 };
-
-export type CreateLessonResponse = CreateLessonResponses[keyof CreateLessonResponses];
 
 export type DeleteLessonData = {
     body?: never;
@@ -2020,9 +1909,7 @@ export type EditLessonResponses = {
     /**
      * Lesson successfully updated
      */
-    200: {
-        data: LessonDetail;
-    };
+    204: void;
 };
 
 export type EditLessonResponse = EditLessonResponses[keyof EditLessonResponses];
@@ -2139,12 +2026,8 @@ export type CreateTestResponses = {
     /**
      * Test created
      */
-    201: {
-        data: TestLesson;
-    };
+    201: unknown;
 };
-
-export type CreateTestResponse = CreateTestResponses[keyof CreateTestResponses];
 
 export type GetLessonProgressData = {
     body?: never;
@@ -2258,9 +2141,7 @@ export type SaveLessonProgressResponses = {
     /**
      * Lesson progress saved
      */
-    200: {
-        data: LessonProgress;
-    };
+    204: void;
 };
 
 export type SaveLessonProgressResponse = SaveLessonProgressResponses[keyof SaveLessonProgressResponses];
@@ -2316,9 +2197,7 @@ export type MarkLessonAsCompletedResponses = {
     /**
      * Lesson marked as completed
      */
-    200: {
-        data: LessonProgress;
-    };
+    204: void;
 };
 
 export type MarkLessonAsCompletedResponse = MarkLessonAsCompletedResponses[keyof MarkLessonAsCompletedResponses];
@@ -2376,12 +2255,8 @@ export type CommentOnLessonResponses = {
     /**
      * Lesson comment created
      */
-    201: {
-        data: LessonComment;
-    };
+    201: unknown;
 };
-
-export type CommentOnLessonResponse = CommentOnLessonResponses[keyof CommentOnLessonResponses];
 
 export type ReplyLessonCommentData = {
     body: {
@@ -2389,7 +2264,7 @@ export type ReplyLessonCommentData = {
     };
     path: {
         /**
-         * Unique identifier of the lesson comment
+         * Unique identifier of the comment
          */
         commentId: string;
     };
@@ -2439,12 +2314,8 @@ export type ReplyLessonCommentResponses = {
     /**
      * Lesson comment reply created
      */
-    201: {
-        data: LessonComment;
-    };
+    201: unknown;
 };
-
-export type ReplyLessonCommentResponse = ReplyLessonCommentResponses[keyof ReplyLessonCommentResponses];
 
 export type GetMyCertificatesData = {
     body?: never;
@@ -2463,7 +2334,7 @@ export type GetMyCertificatesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/certificates-my';
+    url: '/course/certificates/me';
 };
 
 export type GetMyCertificatesErrors = {
@@ -3242,7 +3113,7 @@ export type DeleteCommentData = {
     body?: never;
     path: {
         /**
-         * Unique identifier of the post comment
+         * Unique identifier of the comment
          */
         commentId: string;
     };
@@ -3299,7 +3170,7 @@ export type UpdateCommentData = {
     };
     path: {
         /**
-         * Unique identifier of the post comment
+         * Unique identifier of the comment
          */
         commentId: string;
     };
@@ -3360,7 +3231,7 @@ export type ReplyCommentData = {
     };
     path: {
         /**
-         * Unique identifier of the post comment
+         * Unique identifier of the comment
          */
         commentId: string;
     };
