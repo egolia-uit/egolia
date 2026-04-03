@@ -27,15 +27,6 @@ post:
   responses:
     201:
       description: Test created
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/TestLesson.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

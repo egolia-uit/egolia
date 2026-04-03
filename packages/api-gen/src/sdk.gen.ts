@@ -2,9 +2,9 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import { approveCourseResponseTransformer, changeBasicCourseInfoResponseTransformer, checkoutCourseResponseTransformer, commentOnLessonResponseTransformer, commentOnPostResponseTransformer, createCourseResponseTransformer, createPostResponseTransformer, declineCourseResponseTransformer, enrollInCourseResponseTransformer, finishCourseResponseTransformer, getCertificateByIdResponseTransformer, getCourseDetailResponseTransformer, getCourseResponseTransformer, getInstructorCoursesResponseTransformer, getLearnerBillingHistoryResponseTransformer, getMyCertificatesResponseTransformer, getMyEnrolledCoursesResponseTransformer, getPlatformRevenueAnalyticsResponseTransformer, getPlatformTransactionHistoryResponseTransformer, getPostByIdResponseTransformer, getPostCommentsResponseTransformer, getPublishedCoursesResponseTransformer, getSystemCoursesResponseTransformer, getTransactionReceiptDetailResponseTransformer, getUploadVideoLessonUrlResponseTransformer, hideCourseResponseTransformer, replyCommentResponseTransformer, replyLessonCommentResponseTransformer, searchPostsResponseTransformer, triggerLearningReminderResponseTransformer, unhideCourseResponseTransformer, updateCommentResponseTransformer, updatePostResponseTransformer } from './transformers.gen';
+import { checkoutCourseResponseTransformer, commentOnPostResponseTransformer, createPostResponseTransformer, getCertificateByIdResponseTransformer, getCourseDetailResponseTransformer, getCourseResponseTransformer, getInstructorCoursesResponseTransformer, getLearnerBillingHistoryResponseTransformer, getMyCertificatesResponseTransformer, getMyEnrolledCoursesResponseTransformer, getPlatformRevenueAnalyticsResponseTransformer, getPlatformTransactionHistoryResponseTransformer, getPostByIdResponseTransformer, getPostCommentsResponseTransformer, getPublishedCoursesResponseTransformer, getSystemCoursesResponseTransformer, getTransactionReceiptDetailResponseTransformer, getUploadVideoLessonUrlResponseTransformer, replyCommentResponseTransformer, searchPostsResponseTransformer, updateCommentResponseTransformer, updatePostResponseTransformer } from './transformers.gen';
 import type { ApproveCourseData, ApproveCourseErrors, ApproveCourseResponses, BookmarkCourseData, BookmarkCourseErrors, BookmarkCourseResponses, ChangeBasicCourseInfoData, ChangeBasicCourseInfoErrors, ChangeBasicCourseInfoResponses, CheckoutCourseData, CheckoutCourseErrors, CheckoutCourseResponses, CommentOnLessonData, CommentOnLessonErrors, CommentOnLessonResponses, CommentOnPostData, CommentOnPostErrors, CommentOnPostResponses, CreateCourseData, CreateCourseErrors, CreateCourseResponses, CreateLessonData, CreateLessonErrors, CreateLessonResponses, CreatePostData, CreatePostErrors, CreatePostResponses, CreateSectionData, CreateSectionErrors, CreateSectionResponses, CreateTestData, CreateTestErrors, CreateTestResponses, DeclineCourseData, DeclineCourseErrors, DeclineCourseResponses, DeleteCommentData, DeleteCommentErrors, DeleteCommentResponses, DeleteCourseData, DeleteCourseErrors, DeleteCourseResponses, DeleteLessonData, DeleteLessonErrors, DeleteLessonResponses, DeletePostData, DeletePostErrors, DeletePostResponses, DeleteSectionData, DeleteSectionErrors, DeleteSectionResponses, EditLessonData, EditLessonErrors, EditLessonResponses, EnrollInCourseData, EnrollInCourseErrors, EnrollInCourseResponses, FinishCourseData, FinishCourseErrors, FinishCourseResponses, GetCertificateByIdData, GetCertificateByIdErrors, GetCertificateByIdResponses, GetCourseData, GetCourseDetailData, GetCourseDetailErrors, GetCourseDetailResponses, GetCourseErrors, GetCourseLandingPageData, GetCourseLandingPageErrors, GetCourseLandingPageResponses, GetCourseProgressData, GetCourseProgressErrors, GetCourseProgressResponses, GetCourseResponses, GetInstructorCoursesData, GetInstructorCoursesErrors, GetInstructorCoursesResponses, GetLearnerBillingHistoryData, GetLearnerBillingHistoryErrors, GetLearnerBillingHistoryResponses, GetLessonDetailData, GetLessonDetailErrors, GetLessonDetailResponses, GetLessonProgressData, GetLessonProgressErrors, GetLessonProgressResponses, GetMyCertificatesData, GetMyCertificatesErrors, GetMyCertificatesResponses, GetMyEnrolledCoursesData, GetMyEnrolledCoursesErrors, GetMyEnrolledCoursesResponses, GetPlatformRevenueAnalyticsData, GetPlatformRevenueAnalyticsErrors, GetPlatformRevenueAnalyticsResponses, GetPlatformTransactionHistoryData, GetPlatformTransactionHistoryErrors, GetPlatformTransactionHistoryResponses, GetPostByIdData, GetPostByIdErrors, GetPostByIdResponses, GetPostCommentsData, GetPostCommentsErrors, GetPostCommentsResponses, GetPublishedCoursesData, GetPublishedCoursesErrors, GetPublishedCoursesResponses, GetSystemCoursesData, GetSystemCoursesErrors, GetSystemCoursesResponses, GetTransactionReceiptDetailData, GetTransactionReceiptDetailErrors, GetTransactionReceiptDetailResponses, GetUploadVideoLessonUrlData, GetUploadVideoLessonUrlErrors, GetUploadVideoLessonUrlResponses, HideCourseData, HideCourseErrors, HideCourseResponses, MarkLessonAsCompletedData, MarkLessonAsCompletedErrors, MarkLessonAsCompletedResponses, ReplyCommentData, ReplyCommentErrors, ReplyCommentResponses, ReplyLessonCommentData, ReplyLessonCommentErrors, ReplyLessonCommentResponses, ReviewCourseData, ReviewCourseErrors, ReviewCourseResponses, SaveLessonProgressData, SaveLessonProgressErrors, SaveLessonProgressResponses, SearchPostsData, SearchPostsErrors, SearchPostsResponses, TriggerLearningReminderData, TriggerLearningReminderErrors, TriggerLearningReminderResponses, UnbookmarkCourseData, UnbookmarkCourseErrors, UnbookmarkCourseResponses, UnhideCourseData, UnhideCourseErrors, UnhideCourseResponses, UpdateCommentData, UpdateCommentErrors, UpdateCommentResponses, UpdatePostData, UpdatePostErrors, UpdatePostResponses } from './types.gen';
-import { zApproveCourseData, zApproveCourseResponse, zBookmarkCourseData, zBookmarkCourseResponse, zChangeBasicCourseInfoData, zChangeBasicCourseInfoResponse, zCheckoutCourseData, zCheckoutCourseResponse, zCommentOnLessonData, zCommentOnLessonResponse, zCommentOnPostData, zCommentOnPostResponse, zCreateCourseData, zCreateCourseResponse, zCreateLessonData, zCreateLessonResponse, zCreatePostData, zCreatePostResponse, zCreateSectionData, zCreateSectionResponse, zCreateTestData, zCreateTestResponse, zDeclineCourseData, zDeclineCourseResponse, zDeleteCommentData, zDeleteCommentResponse, zDeleteCourseData, zDeleteCourseResponse, zDeleteLessonData, zDeleteLessonResponse, zDeletePostData, zDeletePostResponse, zDeleteSectionData, zDeleteSectionResponse, zEditLessonData, zEditLessonResponse, zEnrollInCourseData, zEnrollInCourseResponse, zFinishCourseData, zFinishCourseResponse, zGetCertificateByIdData, zGetCertificateByIdResponse, zGetCourseData, zGetCourseDetailData, zGetCourseDetailResponse, zGetCourseLandingPageData, zGetCourseLandingPageResponse, zGetCourseProgressData, zGetCourseProgressResponse, zGetCourseResponse, zGetInstructorCoursesData, zGetInstructorCoursesResponse, zGetLearnerBillingHistoryData, zGetLearnerBillingHistoryResponse, zGetLessonDetailData, zGetLessonDetailResponse, zGetLessonProgressData, zGetLessonProgressResponse, zGetMyCertificatesData, zGetMyCertificatesResponse, zGetMyEnrolledCoursesData, zGetMyEnrolledCoursesResponse, zGetPlatformRevenueAnalyticsData, zGetPlatformRevenueAnalyticsResponse, zGetPlatformTransactionHistoryData, zGetPlatformTransactionHistoryResponse, zGetPostByIdData, zGetPostByIdResponse, zGetPostCommentsData, zGetPostCommentsResponse, zGetPublishedCoursesData, zGetPublishedCoursesResponse, zGetSystemCoursesData, zGetSystemCoursesResponse, zGetTransactionReceiptDetailData, zGetTransactionReceiptDetailResponse, zGetUploadVideoLessonUrlData, zGetUploadVideoLessonUrlResponse, zHideCourseData, zHideCourseResponse, zMarkLessonAsCompletedData, zMarkLessonAsCompletedResponse, zReplyCommentData, zReplyCommentResponse, zReplyLessonCommentData, zReplyLessonCommentResponse, zReviewCourseData, zReviewCourseResponse, zSaveLessonProgressData, zSaveLessonProgressResponse, zSearchPostsData, zSearchPostsResponse, zTriggerLearningReminderData, zTriggerLearningReminderResponse, zUnbookmarkCourseData, zUnbookmarkCourseResponse, zUnhideCourseData, zUnhideCourseResponse, zUpdateCommentData, zUpdateCommentResponse, zUpdatePostData, zUpdatePostResponse } from './zod.gen';
+import { zApproveCourseData, zApproveCourseResponse, zBookmarkCourseData, zChangeBasicCourseInfoData, zChangeBasicCourseInfoResponse, zCheckoutCourseData, zCheckoutCourseResponse, zCommentOnLessonData, zCommentOnPostData, zCommentOnPostResponse, zCreateCourseData, zCreateLessonData, zCreatePostData, zCreatePostResponse, zCreateSectionData, zCreateTestData, zDeclineCourseData, zDeclineCourseResponse, zDeleteCommentData, zDeleteCommentResponse, zDeleteCourseData, zDeleteCourseResponse, zDeleteLessonData, zDeleteLessonResponse, zDeletePostData, zDeletePostResponse, zDeleteSectionData, zDeleteSectionResponse, zEditLessonData, zEditLessonResponse, zEnrollInCourseData, zFinishCourseData, zFinishCourseResponse, zGetCertificateByIdData, zGetCertificateByIdResponse, zGetCourseData, zGetCourseDetailData, zGetCourseDetailResponse, zGetCourseLandingPageData, zGetCourseLandingPageResponse, zGetCourseProgressData, zGetCourseProgressResponse, zGetCourseResponse, zGetInstructorCoursesData, zGetInstructorCoursesResponse, zGetLearnerBillingHistoryData, zGetLearnerBillingHistoryResponse, zGetLessonDetailData, zGetLessonDetailResponse, zGetLessonProgressData, zGetLessonProgressResponse, zGetMyCertificatesData, zGetMyCertificatesResponse, zGetMyEnrolledCoursesData, zGetMyEnrolledCoursesResponse, zGetPlatformRevenueAnalyticsData, zGetPlatformRevenueAnalyticsResponse, zGetPlatformTransactionHistoryData, zGetPlatformTransactionHistoryResponse, zGetPostByIdData, zGetPostByIdResponse, zGetPostCommentsData, zGetPostCommentsResponse, zGetPublishedCoursesData, zGetPublishedCoursesResponse, zGetSystemCoursesData, zGetSystemCoursesResponse, zGetTransactionReceiptDetailData, zGetTransactionReceiptDetailResponse, zGetUploadVideoLessonUrlData, zGetUploadVideoLessonUrlResponse, zHideCourseData, zHideCourseResponse, zMarkLessonAsCompletedData, zMarkLessonAsCompletedResponse, zReplyCommentData, zReplyCommentResponse, zReplyLessonCommentData, zReviewCourseData, zSaveLessonProgressData, zSaveLessonProgressResponse, zSearchPostsData, zSearchPostsResponse, zTriggerLearningReminderData, zTriggerLearningReminderResponse, zUnbookmarkCourseData, zUnbookmarkCourseResponse, zUnhideCourseData, zUnhideCourseResponse, zUpdateCommentData, zUpdateCommentResponse, zUpdatePostData, zUpdatePostResponse } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -25,8 +25,6 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  */
 export const createCourse = <ThrowOnError extends boolean = false>(options: Options<CreateCourseData, ThrowOnError>) => (options.client ?? client).post<CreateCourseResponses, CreateCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zCreateCourseData.parseAsync(data),
-    responseTransformer: createCourseResponseTransformer,
-    responseValidator: async (data) => await zCreateCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses',
     ...options,
@@ -108,11 +106,10 @@ export const getCourseDetail = <ThrowOnError extends boolean = false>(options: O
 });
 
 /**
- * Change basic course information
+ * Update course basic information
  */
 export const changeBasicCourseInfo = <ThrowOnError extends boolean = false>(options: Options<ChangeBasicCourseInfoData, ThrowOnError>) => (options.client ?? client).patch<ChangeBasicCourseInfoResponses, ChangeBasicCourseInfoErrors, ThrowOnError>({
     requestValidator: async (data) => await zChangeBasicCourseInfoData.parseAsync(data),
-    responseTransformer: changeBasicCourseInfoResponseTransformer,
     responseValidator: async (data) => await zChangeBasicCourseInfoResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/basic-info',
@@ -128,8 +125,6 @@ export const changeBasicCourseInfo = <ThrowOnError extends boolean = false>(opti
  */
 export const enrollInCourse = <ThrowOnError extends boolean = false>(options: Options<EnrollInCourseData, ThrowOnError>) => (options.client ?? client).post<EnrollInCourseResponses, EnrollInCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zEnrollInCourseData.parseAsync(data),
-    responseTransformer: enrollInCourseResponseTransformer,
-    responseValidator: async (data) => await zEnrollInCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/enroll',
     ...options,
@@ -155,7 +150,6 @@ export const getCourseProgress = <ThrowOnError extends boolean = false>(options:
  */
 export const finishCourse = <ThrowOnError extends boolean = false>(options: Options<FinishCourseData, ThrowOnError>) => (options.client ?? client).post<FinishCourseResponses, FinishCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zFinishCourseData.parseAsync(data),
-    responseTransformer: finishCourseResponseTransformer,
     responseValidator: async (data) => await zFinishCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/finish',
@@ -167,7 +161,6 @@ export const finishCourse = <ThrowOnError extends boolean = false>(options: Opti
  */
 export const reviewCourse = <ThrowOnError extends boolean = false>(options: Options<ReviewCourseData, ThrowOnError>) => (options.client ?? client).post<ReviewCourseResponses, ReviewCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zReviewCourseData.parseAsync(data),
-    responseValidator: async (data) => await zReviewCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/reviews',
     ...options,
@@ -182,7 +175,6 @@ export const reviewCourse = <ThrowOnError extends boolean = false>(options: Opti
  */
 export const bookmarkCourse = <ThrowOnError extends boolean = false>(options: Options<BookmarkCourseData, ThrowOnError>) => (options.client ?? client).post<BookmarkCourseResponses, BookmarkCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zBookmarkCourseData.parseAsync(data),
-    responseValidator: async (data) => await zBookmarkCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/bookmark',
     ...options
@@ -204,7 +196,6 @@ export const unbookmarkCourse = <ThrowOnError extends boolean = false>(options: 
  */
 export const triggerLearningReminder = <ThrowOnError extends boolean = false>(options: Options<TriggerLearningReminderData, ThrowOnError>) => (options.client ?? client).post<TriggerLearningReminderResponses, TriggerLearningReminderErrors, ThrowOnError>({
     requestValidator: async (data) => await zTriggerLearningReminderData.parseAsync(data),
-    responseTransformer: triggerLearningReminderResponseTransformer,
     responseValidator: async (data) => await zTriggerLearningReminderResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/trigger-learning-reminder',
@@ -230,7 +221,6 @@ export const getCourseLandingPage = <ThrowOnError extends boolean = false>(optio
  */
 export const approveCourse = <ThrowOnError extends boolean = false>(options: Options<ApproveCourseData, ThrowOnError>) => (options.client ?? client).post<ApproveCourseResponses, ApproveCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zApproveCourseData.parseAsync(data),
-    responseTransformer: approveCourseResponseTransformer,
     responseValidator: async (data) => await zApproveCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/approve',
@@ -242,7 +232,6 @@ export const approveCourse = <ThrowOnError extends boolean = false>(options: Opt
  */
 export const declineCourse = <ThrowOnError extends boolean = false>(options: Options<DeclineCourseData, ThrowOnError>) => (options.client ?? client).post<DeclineCourseResponses, DeclineCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zDeclineCourseData.parseAsync(data),
-    responseTransformer: declineCourseResponseTransformer,
     responseValidator: async (data) => await zDeclineCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/decline',
@@ -258,7 +247,6 @@ export const declineCourse = <ThrowOnError extends boolean = false>(options: Opt
  */
 export const hideCourse = <ThrowOnError extends boolean = false>(options: Options<HideCourseData, ThrowOnError>) => (options.client ?? client).post<HideCourseResponses, HideCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zHideCourseData.parseAsync(data),
-    responseTransformer: hideCourseResponseTransformer,
     responseValidator: async (data) => await zHideCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/hide',
@@ -270,7 +258,6 @@ export const hideCourse = <ThrowOnError extends boolean = false>(options: Option
  */
 export const unhideCourse = <ThrowOnError extends boolean = false>(options: Options<UnhideCourseData, ThrowOnError>) => (options.client ?? client).post<UnhideCourseResponses, UnhideCourseErrors, ThrowOnError>({
     requestValidator: async (data) => await zUnhideCourseData.parseAsync(data),
-    responseTransformer: unhideCourseResponseTransformer,
     responseValidator: async (data) => await zUnhideCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/courses/{courseId}/unhide',
@@ -285,7 +272,7 @@ export const getMyEnrolledCourses = <ThrowOnError extends boolean = false>(optio
     responseTransformer: getMyEnrolledCoursesResponseTransformer,
     responseValidator: async (data) => await zGetMyEnrolledCoursesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses-my-enrolled',
+    url: '/course/courses/me/enrolled',
     ...options
 });
 
@@ -294,7 +281,6 @@ export const getMyEnrolledCourses = <ThrowOnError extends boolean = false>(optio
  */
 export const createSection = <ThrowOnError extends boolean = false>(options: Options<CreateSectionData, ThrowOnError>) => (options.client ?? client).post<CreateSectionResponses, CreateSectionErrors, ThrowOnError>({
     requestValidator: async (data) => await zCreateSectionData.parseAsync(data),
-    responseValidator: async (data) => await zCreateSectionResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/sections',
     ...options,
@@ -320,7 +306,6 @@ export const deleteSection = <ThrowOnError extends boolean = false>(options: Opt
  */
 export const createLesson = <ThrowOnError extends boolean = false>(options: Options<CreateLessonData, ThrowOnError>) => (options.client ?? client).post<CreateLessonResponses, CreateLessonErrors, ThrowOnError>({
     requestValidator: async (data) => await zCreateLessonData.parseAsync(data),
-    responseValidator: async (data) => await zCreateLessonResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/lessons',
     ...options,
@@ -384,7 +369,6 @@ export const getUploadVideoLessonUrl = <ThrowOnError extends boolean = false>(op
  */
 export const createTest = <ThrowOnError extends boolean = false>(options: Options<CreateTestData, ThrowOnError>) => (options.client ?? client).post<CreateTestResponses, CreateTestErrors, ThrowOnError>({
     requestValidator: async (data) => await zCreateTestData.parseAsync(data),
-    responseValidator: async (data) => await zCreateTestResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/lessons/{lessonId}/tests',
     ...options,
@@ -436,8 +420,6 @@ export const markLessonAsCompleted = <ThrowOnError extends boolean = false>(opti
  */
 export const commentOnLesson = <ThrowOnError extends boolean = false>(options: Options<CommentOnLessonData, ThrowOnError>) => (options.client ?? client).post<CommentOnLessonResponses, CommentOnLessonErrors, ThrowOnError>({
     requestValidator: async (data) => await zCommentOnLessonData.parseAsync(data),
-    responseTransformer: commentOnLessonResponseTransformer,
-    responseValidator: async (data) => await zCommentOnLessonResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/lessons/{lessonId}/comments',
     ...options,
@@ -452,8 +434,6 @@ export const commentOnLesson = <ThrowOnError extends boolean = false>(options: O
  */
 export const replyLessonComment = <ThrowOnError extends boolean = false>(options: Options<ReplyLessonCommentData, ThrowOnError>) => (options.client ?? client).post<ReplyLessonCommentResponses, ReplyLessonCommentErrors, ThrowOnError>({
     requestValidator: async (data) => await zReplyLessonCommentData.parseAsync(data),
-    responseTransformer: replyLessonCommentResponseTransformer,
-    responseValidator: async (data) => await zReplyLessonCommentResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/course/lesson-comments/{commentId}/reply',
     ...options,
@@ -471,7 +451,7 @@ export const getMyCertificates = <ThrowOnError extends boolean = false>(options?
     responseTransformer: getMyCertificatesResponseTransformer,
     responseValidator: async (data) => await zGetMyCertificatesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/certificates-my',
+    url: '/course/certificates/me',
     ...options
 });
 

@@ -31,15 +31,6 @@ post:
   responses:
     201:
       description: Section created
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/Section.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

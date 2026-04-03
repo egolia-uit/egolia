@@ -18,17 +18,8 @@ post:
               type: boolean
               example: false
   responses:
-    200:
+    204:
       description: Learning reminder triggered
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/LearningReminder.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

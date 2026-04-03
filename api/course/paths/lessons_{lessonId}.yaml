@@ -67,17 +67,8 @@ patch:
               example: 300
           minProperties: 1
   responses:
-    200:
+    204:
       description: Lesson successfully updated
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/LessonDetail.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

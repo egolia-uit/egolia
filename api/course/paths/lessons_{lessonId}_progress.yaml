@@ -56,17 +56,8 @@ put:
               example: false
           minProperties: 1
   responses:
-    200:
+    204:
       description: Lesson progress saved
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/LessonProgress.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

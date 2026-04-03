@@ -14,15 +14,6 @@ post:
   responses:
     201:
       description: Course created
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-              - data
-            properties:
-              data:
-                $ref: ../components/schemas/Course.yaml
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

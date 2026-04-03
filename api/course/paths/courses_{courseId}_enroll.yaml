@@ -16,21 +16,12 @@ post:
           properties:
             referredByUserId:
               type: string
-              format: uuid
+              format: number
               nullable: true
-              example: 960a8826-955e-44ce-ac0c-0cb7818704c5
+              example: '100'
   responses:
-    200:
+    201:
       description: Course enrollment created
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/Enrollment.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

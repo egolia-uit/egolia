@@ -21,15 +21,6 @@ post:
   responses:
     201:
       description: Lesson comment created
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/LessonComment.yaml
-            required:
-              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
