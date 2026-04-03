@@ -11,7 +11,7 @@
   "scripts": {
     "openapi-ts": "openapi-ts",
     "redocly": "redocly",
-    "redocly:join": "redocly join ./openapi.yaml ./bundled/course.json ./bundled/billing.json ./bundled/blog.json -o ./bundled/openapi.json",
+    "redocly:join": "redocly join ./openapi.yaml ./bundled/course.json ./bundled/billing.json ./bundled/blog.json --prefix-components-with-info-prop x-apiName -o ./bundled/openapi.json",
     "scalar": "scalar"
   },
   "devDependencies": {
