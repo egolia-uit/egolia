@@ -6,7 +6,7 @@ post:
   summary: Reply comment
   operationId: replyComment
   parameters:
-    - $ref: ../../common/components/parameters/commentIdPath.yaml
+    - $ref: ../components/parameters/commentIdPath.yaml
   requestBody:
     required: true
     content:

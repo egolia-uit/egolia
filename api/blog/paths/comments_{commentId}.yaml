@@ -6,7 +6,7 @@ put:
   summary: Update comment
   operationId: updateComment
   parameters:
-    - $ref: ../../common/components/parameters/commentIdPath.yaml
+    - $ref: ../components/parameters/commentIdPath.yaml
   requestBody:
     required: true
     content:
@@ -46,7 +46,7 @@ delete:
   summary: Delete comment
   operationId: deleteComment
   parameters:
-    - $ref: ../../common/components/parameters/commentIdPath.yaml
+    - $ref: ../components/parameters/commentIdPath.yaml
   responses:
     204:
       description: Comment deleted successfully

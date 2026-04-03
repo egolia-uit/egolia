@@ -682,7 +682,7 @@
         "name": "commentId",
         "in": "path",
         "required": true,
-        "description": "Unique identifier of the comment",
+        "description": "Unique identifier of the post comment",
         "schema": {
           "type": "string",
           "format": "uuid"
