@@ -35,10 +35,6 @@
     {
       "name": "Lesson",
       "description": "Lesson"
-    },
-    {
-      "name": "Test",
-      "description": "Test"
     }
   ],
   "externalDocs": {
@@ -1510,7 +1506,7 @@
           }
         ],
         "tags": [
-          "Test"
+          "Lesson"
         ],
         "summary": "Create test",
         "operationId": "createTest",

@@ -2,7 +2,7 @@ post:
   security:
     - Oauth2: []
   tags:
-    - Test
+    - Lesson
   summary: Create test
   operationId: createTest
   parameters:

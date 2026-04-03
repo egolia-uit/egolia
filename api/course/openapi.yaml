@@ -26,8 +26,6 @@ tags:
     description: Section
   - name: Lesson
     description: Lesson
-  - name: Test
-    description: Test
 
 paths:
   /course/courses:
