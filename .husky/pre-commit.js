@@ -9,6 +9,7 @@ const ALLOWED_USERS = [
   'trannguyenthaibinh46@gmail.com',
   'minhlephan1901@gmail.com',
   '23520320@gm.uit.edu.vn',
+  'nhattri172@gmail.com',
 ];
 
 try {
