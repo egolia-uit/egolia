@@ -2,14 +2,17 @@
 
 FILE_LIMIT_BYTES=1000000 # 1MB
 
-declare -A ALLOWED_USERS
-ALLOWED_USERS["trannguyenthaibinh46@gmail.com"]="Kevin Nitro"
-ALLOWED_USERS["minhlephan1901@gmail.com"]="Leminionn"
-ALLOWED_USERS["23520320@gm.uit.edu.vn"]="Ductran-05"
+ALLOWED_USERS=(
+  "trannguyenthaibinh46@gmail.com"
+  "minhlephan1901@gmail.com"
+  "23520320@gm.uit.edu.vn"
+)
 
 current_user=$(git config user.email)
 
-if [[ -z "${ALLOWED_USERS[$current_user]}" ]]; then
+if [[ " ${ALLOWED_USERS[*]} " =~ ${current_user} ]]; then
+  echo "Access granted for $current_user."
+else
   echo "Error: User '$current_user' is not allowed to commit."
   exit 1
 fi
