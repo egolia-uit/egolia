@@ -8,7 +8,7 @@
   "packageRules": [
     {
       "groupName": "Nx Monorepo Toolkit",
-      "matchPackageNames": ["nx", "/^@nx//", "/^nx$/"],
+      "matchPackageNames": ["nx", "/^@nx//", "/^nx$/", "/^npm:nx$/"],
       "automerge": false,
       "description": "Group all Nx packages to prevent version mismatch and allow manual migration. Note that renovate still create PRs for minor/major updates, but they will not be automerged."
     },
@@ -24,7 +24,7 @@
     }
   ],
   "docker-compose": {
-    "fileMatch": ["(^|/)deploy/compose/.+\\.ya?ml$"]
+    "managerFilePatterns": ["/^deploy\\/compose\\/.+\\/.+\\.ya?ml$/"]
   },
   "schedule": ["* 1-18 * * 3,0"]
 }

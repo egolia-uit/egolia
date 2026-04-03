@@ -11,25 +11,17 @@ order: 3
 
 :::
 
-## App Model
-
-```mermaid
-classDiagram
-    class CourseDTO {
-    }
-```
-
 ## Domain Model
 
 ```mermaid
 classDiagram
-    %% class CourseStatus {
-    %%     <<Enum>>
-    %%     draft
-    %%     approved
-    %%     published
-    %%     archived
-    %% }
+    class CourseStatus {
+        <<Enum>>
+        draft
+        approved
+        published
+        archived
+     }
 
     class Course {
         <<AggregateRoot>>
@@ -37,7 +29,7 @@ classDiagram
         title string
         slug string
         instructorID uuid.UUID
-        %% status CourseStatus
+        status CourseStatus
         price float64
         deletedAt *time.Time
     }
@@ -100,7 +92,7 @@ classDiagram
     class Enrollment {
         <<AggregateRoot>>
         id uuid.UUID
-        userID string
+        learnerID string
         courseID uuid.UUID
         enrollmentDate time.Time
         completedAt *time.Time
@@ -113,7 +105,7 @@ classDiagram
     class LessonProgressBase {
         <<AbstractStruct>>
         id uuid.UUID
-        userID string
+        enrollmentID uuid.UUID
         lessonID uuid.UUID
         isCompleted bool
         deletedAt *time.Time
@@ -139,7 +131,7 @@ classDiagram
         content string
         createdAt time.Time
         parentCommentID *uuid.UUID
-        deletedAt *time.Time
+        deetedAt *time.Time
     }
 
     class Review {
@@ -168,6 +160,7 @@ classDiagram
         courseID uuid.UUID
     }
 
+    CourseStatus -- Course
     Course "1" *.. "0..*" Section : has
     Section "1" *.. "0..*" Lesson : has
     TestLesson --|> Lesson
@@ -182,7 +175,8 @@ classDiagram
     LessonProgressVideo --* LessonProgressBase
     LessonProgressTest --|> LessonProgress
     LessonProgressTest --* LessonProgressBase
-    LessonProgress "0..*" ..* "1" Lesson : tracks
+    LessonProgressBase "0..*" ..* "1" Lesson : tracks
+    LessonProgress "0..*" ..* "1" Enrollment : belongs to
     Review "0..*" ..* "1" Course : reviews
     LessonComment "0..*" ..* "1" Lesson : comments
     Certificate "0..*" ..* "1" Course : issues

@@ -14,9 +14,6 @@ properties:
     type: string
     example: Introduction to Python
 
-  # sectionId:
-  #   $ref: ./Section.yaml#/properties/id
-
 required:
   - id
   - title
