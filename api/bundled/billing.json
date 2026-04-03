@@ -58,7 +58,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckoutCourseRequest"
+                "type": "object",
+                "properties": {
+                  "courseId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "minimum": 0,
+                    "example": 499000
+                  }
+                },
+                "required": [
+                  "courseId",
+                  "amount"
+                ]
               }
             }
           }
@@ -118,7 +135,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionCollection"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transaction"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
                 }
               }
             }
@@ -266,7 +298,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionCollection"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transaction"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
                 }
               }
             }
@@ -306,33 +353,6 @@
       }
     },
     "schemas": {
-      "CheckoutCourseRequest": {
-        "type": "object",
-        "properties": {
-          "courseId": {
-            "type": "string",
-            "format": "uuid",
-            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
-          },
-          "amount": {
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 499000
-          },
-          "currency": {
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 3,
-            "example": "VND"
-          }
-        },
-        "required": [
-          "courseId",
-          "amount",
-          "currency"
-        ]
-      },
       "id": {
         "type": "string",
         "format": "number",
@@ -372,12 +392,6 @@
             "minimum": 0,
             "example": 499000
           },
-          "currency": {
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 3,
-            "example": "VND"
-          },
           "status": {
             "$ref": "#/components/schemas/TransactionStatus"
           },
@@ -393,7 +407,6 @@
           "userId",
           "courseId",
           "amount",
-          "currency",
           "status",
           "createdAt"
         ]
@@ -470,23 +483,12 @@
           "hasPrev"
         ]
       },
-      "TransactionCollection": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Transaction"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/Pagination"
-          }
-        },
-        "required": [
-          "data",
-          "pagination"
-        ]
+      "email": {
+        "type": "string",
+        "format": "email",
+        "description": "Email from Authentik",
+        "example": "user@egolia.com",
+        "nullable": true
       },
       "Receipt": {
         "type": "object",
@@ -510,14 +512,11 @@
                 "$ref": "#/components/schemas/id"
               },
               "email": {
-                "type": "string",
-                "format": "email",
-                "example": "learner@egolia.dev"
+                "$ref": "#/components/schemas/email"
               }
             },
             "required": [
-              "userId",
-              "email"
+              "userId"
             ]
           }
         },
@@ -541,12 +540,6 @@
             "format": "date",
             "example": "2026-03-31"
           },
-          "currency": {
-            "type": "string",
-            "minLength": 3,
-            "maxLength": 3,
-            "example": "VND"
-          },
           "totalRevenue": {
             "type": "integer",
             "format": "int64",
@@ -567,7 +560,6 @@
         "required": [
           "from",
           "to",
-          "currency",
           "totalRevenue",
           "completedTransactions",
           "failedTransactions"

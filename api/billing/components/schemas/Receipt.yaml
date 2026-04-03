@@ -11,7 +11,7 @@ properties:
   issuedAt:
     type: string
     format: date-time
-    example: '2026-03-25T08:35:00Z'
+    example: "2026-03-25T08:35:00Z"
 
   billedTo:
     type: object
@@ -19,12 +19,9 @@ properties:
       userId:
         $ref: ../../../common/components/schemas/User.yaml#/properties/id
       email:
-        type: string
-        format: email
-        example: learner@egolia.dev
+        $ref: ../../../common/components/schemas/User.yaml#/properties/email
     required:
       - userId
-      - email
 
 required:
   - transaction

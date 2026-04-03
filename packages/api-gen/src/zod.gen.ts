@@ -141,12 +141,6 @@ export const zCertificate = z.object({
     issuedAt: z.iso.datetime()
 });
 
-export const zCheckoutCourseRequest = z.object({
-    courseId: z.uuid(),
-    amount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
-    currency: z.string().length(3)
-});
-
 /**
  * Current status of a billing transaction
  */
@@ -161,15 +155,14 @@ export const zTransaction = z.object({
     userId: zId,
     courseId: z.uuid(),
     amount: z.number().gte(0),
-    currency: z.string().length(3),
     status: zTransactionStatus,
     createdAt: z.iso.datetime().readonly()
 });
 
-export const zTransactionCollection = z.object({
-    data: z.array(zTransaction),
-    pagination: zPagination
-});
+/**
+ * Email from Authentik
+ */
+export const zEmail = z.email().nullable();
 
 export const zReceipt = z.object({
     transaction: zTransaction,
@@ -177,14 +170,13 @@ export const zReceipt = z.object({
     issuedAt: z.iso.datetime(),
     billedTo: z.object({
         userId: zId,
-        email: z.email()
+        email: zEmail.optional()
     })
 });
 
 export const zRevenueAnalytics = z.object({
     from: z.iso.date(),
     to: z.iso.date(),
-    currency: z.string().length(3),
     totalRevenue: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
     completedTransactions: z.int().gte(0),
     failedTransactions: z.int().gte(0)
@@ -200,57 +192,13 @@ export const zPost = z.object({
     commentCount: z.int().gte(0).readonly()
 });
 
-export const zPostCollection = z.object({
-    data: z.array(zPost),
-    pagination: zPagination
-});
-
-export const zCreatePostRequest = z.object({
-    title: z.string(),
-    content: z.string().min(1),
-    tags: z.array(z.string())
-});
-
-export const zUpdatePostRequest = z.object({
-    title: z.string(),
-    content: z.string().min(1),
-    tags: z.array(z.string())
-});
-
-export const zReply = z.object({
-    id: z.uuid().readonly(),
-    authorId: zId,
-    content: z.string().min(1),
-    parentCommentId: z.uuid().readonly(),
-    createdAt: z.iso.datetime().readonly()
-});
-
 export const zComment = z.object({
     id: z.uuid().readonly(),
-    authorId: zId,
-    content: z.string().min(1),
-    createdAt: z.iso.datetime().readonly(),
-    replies: z.array(zReply)
-});
-
-export const zCommentCollection = z.object({
-    data: z.array(zComment)
-});
-
-export const zCreateCommentRequest = z.object({
-    content: z.string().min(1)
-});
-
-export const zCommentResponse = z.object({
-    id: z.uuid().readonly(),
+    postId: z.uuid().readonly(),
     authorId: zId,
     content: z.string().min(1),
     parentCommentId: z.uuid().readonly().nullable(),
     createdAt: z.iso.datetime().readonly()
-});
-
-export const zUpdateCommentRequest = z.object({
-    content: z.string().min(1)
 });
 
 export const zCourseWritable = z.object({
@@ -338,13 +286,7 @@ export const zTransactionWritable = z.object({
     userId: zId,
     courseId: z.uuid(),
     amount: z.number().gte(0),
-    currency: z.string().length(3),
     status: zTransactionStatus
-});
-
-export const zTransactionCollectionWritable = z.object({
-    data: z.array(zTransactionWritable),
-    pagination: zPagination
 });
 
 export const zReceiptWritable = z.object({
@@ -353,7 +295,7 @@ export const zReceiptWritable = z.object({
     issuedAt: z.iso.datetime(),
     billedTo: z.object({
         userId: zId,
-        email: z.email()
+        email: zEmail.optional()
     })
 });
 
@@ -364,27 +306,7 @@ export const zPostWritable = z.object({
     tags: z.array(z.string())
 });
 
-export const zPostCollectionWritable = z.object({
-    data: z.array(zPostWritable),
-    pagination: zPagination
-});
-
-export const zReplyWritable = z.object({
-    authorId: zId,
-    content: z.string().min(1)
-});
-
 export const zCommentWritable = z.object({
-    authorId: zId,
-    content: z.string().min(1),
-    replies: z.array(zReplyWritable)
-});
-
-export const zCommentCollectionWritable = z.object({
-    data: z.array(zCommentWritable)
-});
-
-export const zCommentResponseWritable = z.object({
     authorId: zId,
     content: z.string().min(1)
 });
@@ -930,7 +852,10 @@ export const zGetCertificateByIdResponse = z.object({
 });
 
 export const zCheckoutCourseData = z.object({
-    body: zCheckoutCourseRequest,
+    body: z.object({
+        courseId: z.uuid(),
+        amount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+    }),
     path: z.never().optional(),
     query: z.never().optional()
 });
@@ -953,7 +878,10 @@ export const zGetLearnerBillingHistoryData = z.object({
 /**
  * Learner billing history
  */
-export const zGetLearnerBillingHistoryResponse = zTransactionCollection;
+export const zGetLearnerBillingHistoryResponse = z.object({
+    data: z.array(zTransaction),
+    pagination: zPagination
+});
 
 export const zGetTransactionReceiptDetailData = z.object({
     body: z.never().optional(),
@@ -996,7 +924,10 @@ export const zGetPlatformTransactionHistoryData = z.object({
 /**
  * Platform transaction history
  */
-export const zGetPlatformTransactionHistoryResponse = zTransactionCollection;
+export const zGetPlatformTransactionHistoryResponse = z.object({
+    data: z.array(zTransaction),
+    pagination: zPagination
+});
 
 export const zSearchPostsData = z.object({
     body: z.never().optional(),
@@ -1013,10 +944,17 @@ export const zSearchPostsData = z.object({
 /**
  * Matched blog posts
  */
-export const zSearchPostsResponse = zPostCollection;
+export const zSearchPostsResponse = z.object({
+    data: z.array(zPost),
+    pagination: zPagination
+});
 
 export const zCreatePostData = z.object({
-    body: zCreatePostRequest,
+    body: z.object({
+        title: z.string(),
+        content: z.string().min(1),
+        tags: z.array(z.string())
+    }),
     path: z.never().optional(),
     query: z.never().optional()
 });
@@ -1053,7 +991,11 @@ export const zGetPostByIdData = z.object({
 export const zGetPostByIdResponse = zPost;
 
 export const zUpdatePostData = z.object({
-    body: zUpdatePostRequest,
+    body: z.object({
+        title: z.string(),
+        content: z.string().min(1),
+        tags: z.array(z.string())
+    }),
     path: z.object({
         postId: z.uuid()
     }),
@@ -1074,12 +1016,16 @@ export const zGetPostCommentsData = z.object({
 });
 
 /**
- * Post comments with replies
+ * Top-level comments for the post
  */
-export const zGetPostCommentsResponse = zCommentCollection;
+export const zGetPostCommentsResponse = z.object({
+    data: z.array(zComment)
+});
 
 export const zCommentOnPostData = z.object({
-    body: zCreateCommentRequest,
+    body: z.object({
+        content: z.string().min(1)
+    }),
     path: z.object({
         postId: z.uuid()
     }),
@@ -1089,7 +1035,7 @@ export const zCommentOnPostData = z.object({
 /**
  * Comment created
  */
-export const zCommentOnPostResponse = zCommentResponse;
+export const zCommentOnPostResponse = zComment;
 
 export const zDeleteCommentData = z.object({
     body: z.never().optional(),
@@ -1105,7 +1051,9 @@ export const zDeleteCommentData = z.object({
 export const zDeleteCommentResponse = z.void();
 
 export const zUpdateCommentData = z.object({
-    body: zUpdateCommentRequest,
+    body: z.object({
+        content: z.string().min(1)
+    }),
     path: z.object({
         commentId: z.uuid()
     }),
@@ -1115,10 +1063,12 @@ export const zUpdateCommentData = z.object({
 /**
  * Comment updated
  */
-export const zUpdateCommentResponse = zCommentResponse;
+export const zUpdateCommentResponse = zComment;
 
 export const zReplyCommentData = z.object({
-    body: zCreateCommentRequest,
+    body: z.object({
+        content: z.string().min(1)
+    }),
     path: z.object({
         commentId: z.uuid()
     }),
@@ -1128,4 +1078,4 @@ export const zReplyCommentData = z.object({
 /**
  * Reply created
  */
-export const zReplyCommentResponse = zReply;
+export const zReplyCommentResponse = zComment;

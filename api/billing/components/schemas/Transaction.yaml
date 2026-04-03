@@ -23,12 +23,6 @@ Transaction:
       minimum: 0
       example: 499000
 
-    currency:
-      type: string
-      minLength: 3
-      maxLength: 3
-      example: VND
-
     status:
       $ref: "#/TransactionStatus"
 
@@ -43,25 +37,8 @@ Transaction:
     - userId
     - courseId
     - amount
-    - currency
     - status
     - createdAt
-
-TransactionCollection:
-  type: object
-
-  properties:
-    data:
-      type: array
-      items:
-        $ref: "#/Transaction"
-
-    pagination:
-      $ref: ../../../common/components/schemas/Pagination.yaml
-
-  required:
-    - data
-    - pagination
 
 TransactionStatus:
   type: string

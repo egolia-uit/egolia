@@ -76,38 +76,12 @@ func (e SearchPostsParamsOrder) Valid() bool {
 // Comment defines model for Comment.
 type Comment struct {
 	// AuthorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	AuthorId  Id                  `json:"authorId"`
-	Content   string              `json:"content"`
-	CreatedAt *time.Time          `json:"createdAt,omitempty"`
-	Id        *openapi_types.UUID `json:"id,omitempty"`
-	Replies   []Reply             `json:"replies"`
-}
-
-// CommentCollection defines model for CommentCollection.
-type CommentCollection struct {
-	Data []Comment `json:"data"`
-}
-
-// CommentResponse defines model for CommentResponse.
-type CommentResponse struct {
-	// AuthorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	AuthorId        Id                  `json:"authorId"`
 	Content         string              `json:"content"`
 	CreatedAt       *time.Time          `json:"createdAt,omitempty"`
 	Id              *openapi_types.UUID `json:"id,omitempty"`
 	ParentCommentId *openapi_types.UUID `json:"parentCommentId,omitempty"`
-}
-
-// CreateCommentRequest defines model for CreateCommentRequest.
-type CreateCommentRequest struct {
-	Content string `json:"content"`
-}
-
-// CreatePostRequest defines model for CreatePostRequest.
-type CreatePostRequest struct {
-	Content string   `json:"content"`
-	Tags    []string `json:"tags"`
-	Title   string   `json:"title"`
+	PostId          *openapi_types.UUID `json:"postId,omitempty"`
 }
 
 // Error defines model for Error.
@@ -155,34 +129,6 @@ type Post struct {
 	Title        string              `json:"title"`
 }
 
-// PostCollection defines model for PostCollection.
-type PostCollection struct {
-	Data       []Post     `json:"data"`
-	Pagination Pagination `json:"pagination"`
-}
-
-// Reply defines model for Reply.
-type Reply struct {
-	// AuthorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	AuthorId        Id                  `json:"authorId"`
-	Content         string              `json:"content"`
-	CreatedAt       *time.Time          `json:"createdAt,omitempty"`
-	Id              *openapi_types.UUID `json:"id,omitempty"`
-	ParentCommentId *openapi_types.UUID `json:"parentCommentId,omitempty"`
-}
-
-// UpdateCommentRequest defines model for UpdateCommentRequest.
-type UpdateCommentRequest struct {
-	Content string `json:"content"`
-}
-
-// UpdatePostRequest defines model for UpdatePostRequest.
-type UpdatePostRequest struct {
-	Content string   `json:"content"`
-	Tags    []string `json:"tags"`
-	Title   string   `json:"title"`
-}
-
 // Id User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 type Id = string
 
@@ -228,6 +174,16 @@ type UnauthorizedError struct {
 // UnauthorizedErrorType The category of the error encountered during the middleware lifecycle.
 type UnauthorizedErrorType string
 
+// UpdateCommentJSONBody defines parameters for UpdateComment.
+type UpdateCommentJSONBody struct {
+	Content string `json:"content"`
+}
+
+// ReplyCommentJSONBody defines parameters for ReplyComment.
+type ReplyCommentJSONBody struct {
+	Content string `json:"content"`
+}
+
 // SearchPostsParams defines parameters for SearchPosts.
 type SearchPostsParams struct {
 	// Q Full-text keyword for post search
@@ -249,17 +205,36 @@ type SearchPostsParams struct {
 // SearchPostsParamsOrder defines parameters for SearchPosts.
 type SearchPostsParamsOrder string
 
+// CreatePostJSONBody defines parameters for CreatePost.
+type CreatePostJSONBody struct {
+	Content string   `json:"content"`
+	Tags    []string `json:"tags"`
+	Title   string   `json:"title"`
+}
+
+// UpdatePostJSONBody defines parameters for UpdatePost.
+type UpdatePostJSONBody struct {
+	Content string   `json:"content"`
+	Tags    []string `json:"tags"`
+	Title   string   `json:"title"`
+}
+
+// CommentOnPostJSONBody defines parameters for CommentOnPost.
+type CommentOnPostJSONBody struct {
+	Content string `json:"content"`
+}
+
 // UpdateCommentJSONRequestBody defines body for UpdateComment for application/json ContentType.
-type UpdateCommentJSONRequestBody = UpdateCommentRequest
+type UpdateCommentJSONRequestBody UpdateCommentJSONBody
 
 // ReplyCommentJSONRequestBody defines body for ReplyComment for application/json ContentType.
-type ReplyCommentJSONRequestBody = CreateCommentRequest
+type ReplyCommentJSONRequestBody ReplyCommentJSONBody
 
 // CreatePostJSONRequestBody defines body for CreatePost for application/json ContentType.
-type CreatePostJSONRequestBody = CreatePostRequest
+type CreatePostJSONRequestBody CreatePostJSONBody
 
 // UpdatePostJSONRequestBody defines body for UpdatePost for application/json ContentType.
-type UpdatePostJSONRequestBody = UpdatePostRequest
+type UpdatePostJSONRequestBody UpdatePostJSONBody
 
 // CommentOnPostJSONRequestBody defines body for CommentOnPost for application/json ContentType.
-type CommentOnPostJSONRequestBody = CreateCommentRequest
+type CommentOnPostJSONRequestBody CommentOnPostJSONBody

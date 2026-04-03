@@ -171,12 +171,6 @@ export type Certificate = {
     issuedAt: Date;
 };
 
-export type CheckoutCourseRequest = {
-    courseId: string;
-    amount: bigint;
-    currency: string;
-};
-
 /**
  * Current status of a billing transaction
  */
@@ -196,15 +190,14 @@ export type Transaction = {
     userId: Id;
     courseId: string;
     amount: number;
-    currency: string;
     status: TransactionStatus;
     readonly createdAt: Date;
 };
 
-export type TransactionCollection = {
-    data: Array<Transaction>;
-    pagination: Pagination;
-};
+/**
+ * Email from Authentik
+ */
+export type Email = string | null;
 
 export type Receipt = {
     transaction: Transaction;
@@ -212,14 +205,13 @@ export type Receipt = {
     issuedAt: Date;
     billedTo: {
         userId: Id;
-        email: string;
+        email?: Email;
     };
 };
 
 export type RevenueAnalytics = {
     from: Date;
     to: Date;
-    currency: string;
     totalRevenue: bigint;
     completedTransactions: number;
     failedTransactions: number;
@@ -235,57 +227,13 @@ export type Post = {
     readonly commentCount: number;
 };
 
-export type PostCollection = {
-    data: Array<Post>;
-    pagination: Pagination;
-};
-
-export type CreatePostRequest = {
-    title: string;
-    content: string;
-    tags: Array<string>;
-};
-
-export type UpdatePostRequest = {
-    title: string;
-    content: string;
-    tags: Array<string>;
-};
-
-export type Reply = {
-    readonly id: string;
-    authorId: Id;
-    content: string;
-    readonly parentCommentId: string;
-    readonly createdAt: Date;
-};
-
 export type Comment = {
     readonly id: string;
-    authorId: Id;
-    content: string;
-    readonly createdAt: Date;
-    replies: Array<Reply>;
-};
-
-export type CommentCollection = {
-    data: Array<Comment>;
-};
-
-export type CreateCommentRequest = {
-    content: string;
-};
-
-export type CommentResponse = {
-    readonly id: string;
+    readonly postId: string;
     authorId: Id;
     content: string;
     readonly parentCommentId: string | null;
     readonly createdAt: Date;
-};
-
-export type UpdateCommentRequest = {
-    content: string;
 };
 
 export type CourseWritable = {
@@ -370,13 +318,7 @@ export type TransactionWritable = {
     userId: Id;
     courseId: string;
     amount: number;
-    currency: string;
     status: TransactionStatus;
-};
-
-export type TransactionCollectionWritable = {
-    data: Array<TransactionWritable>;
-    pagination: Pagination;
 };
 
 export type ReceiptWritable = {
@@ -385,7 +327,7 @@ export type ReceiptWritable = {
     issuedAt: Date;
     billedTo: {
         userId: Id;
-        email: string;
+        email?: Email;
     };
 };
 
@@ -396,27 +338,7 @@ export type PostWritable = {
     tags: Array<string>;
 };
 
-export type PostCollectionWritable = {
-    data: Array<PostWritable>;
-    pagination: Pagination;
-};
-
-export type ReplyWritable = {
-    authorId: Id;
-    content: string;
-};
-
 export type CommentWritable = {
-    authorId: Id;
-    content: string;
-    replies: Array<ReplyWritable>;
-};
-
-export type CommentCollectionWritable = {
-    data: Array<CommentWritable>;
-};
-
-export type CommentResponseWritable = {
     authorId: Id;
     content: string;
 };
@@ -2516,7 +2438,10 @@ export type GetCertificateByIdResponses = {
 export type GetCertificateByIdResponse = GetCertificateByIdResponses[keyof GetCertificateByIdResponses];
 
 export type CheckoutCourseData = {
-    body: CheckoutCourseRequest;
+    body: {
+        courseId: string;
+        amount: bigint;
+    };
     path?: never;
     query?: never;
     url: '/billing/checkout';
@@ -2615,7 +2540,10 @@ export type GetLearnerBillingHistoryResponses = {
     /**
      * Learner billing history
      */
-    200: TransactionCollection;
+    200: {
+        data: Array<Transaction>;
+        pagination: Pagination;
+    };
 };
 
 export type GetLearnerBillingHistoryResponse = GetLearnerBillingHistoryResponses[keyof GetLearnerBillingHistoryResponses];
@@ -2778,7 +2706,10 @@ export type GetPlatformTransactionHistoryResponses = {
     /**
      * Platform transaction history
      */
-    200: TransactionCollection;
+    200: {
+        data: Array<Transaction>;
+        pagination: Pagination;
+    };
 };
 
 export type GetPlatformTransactionHistoryResponse = GetPlatformTransactionHistoryResponses[keyof GetPlatformTransactionHistoryResponses];
@@ -2841,13 +2772,20 @@ export type SearchPostsResponses = {
     /**
      * Matched blog posts
      */
-    200: PostCollection;
+    200: {
+        data: Array<Post>;
+        pagination: Pagination;
+    };
 };
 
 export type SearchPostsResponse = SearchPostsResponses[keyof SearchPostsResponses];
 
 export type CreatePostData = {
-    body: CreatePostRequest;
+    body: {
+        title: string;
+        content: string;
+        tags: Array<string>;
+    };
     path?: never;
     query?: never;
     url: '/blog/posts';
@@ -2999,7 +2937,11 @@ export type GetPostByIdResponses = {
 export type GetPostByIdResponse = GetPostByIdResponses[keyof GetPostByIdResponses];
 
 export type UpdatePostData = {
-    body: UpdatePostRequest;
+    body: {
+        title: string;
+        content: string;
+        tags: Array<string>;
+    };
     path: {
         /**
          * Unique identifier of the blog post
@@ -3101,15 +3043,19 @@ export type GetPostCommentsError = GetPostCommentsErrors[keyof GetPostCommentsEr
 
 export type GetPostCommentsResponses = {
     /**
-     * Post comments with replies
+     * Top-level comments for the post
      */
-    200: CommentCollection;
+    200: {
+        data: Array<Comment>;
+    };
 };
 
 export type GetPostCommentsResponse = GetPostCommentsResponses[keyof GetPostCommentsResponses];
 
 export type CommentOnPostData = {
-    body: CreateCommentRequest;
+    body: {
+        content: string;
+    };
     path: {
         /**
          * Unique identifier of the blog post
@@ -3158,7 +3104,7 @@ export type CommentOnPostResponses = {
     /**
      * Comment created
      */
-    201: CommentResponse;
+    201: Comment;
 };
 
 export type CommentOnPostResponse = CommentOnPostResponses[keyof CommentOnPostResponses];
@@ -3219,7 +3165,9 @@ export type DeleteCommentResponses = {
 export type DeleteCommentResponse = DeleteCommentResponses[keyof DeleteCommentResponses];
 
 export type UpdateCommentData = {
-    body: UpdateCommentRequest;
+    body: {
+        content: string;
+    };
     path: {
         /**
          * Unique identifier of the comment
@@ -3272,13 +3220,15 @@ export type UpdateCommentResponses = {
     /**
      * Comment updated
      */
-    200: CommentResponse;
+    200: Comment;
 };
 
 export type UpdateCommentResponse = UpdateCommentResponses[keyof UpdateCommentResponses];
 
 export type ReplyCommentData = {
-    body: CreateCommentRequest;
+    body: {
+        content: string;
+    };
     path: {
         /**
          * Unique identifier of the comment
@@ -3327,7 +3277,7 @@ export type ReplyCommentResponses = {
     /**
      * Reply created
      */
-    201: Reply;
+    201: Comment;
 };
 
 export type ReplyCommentResponse = ReplyCommentResponses[keyof ReplyCommentResponses];

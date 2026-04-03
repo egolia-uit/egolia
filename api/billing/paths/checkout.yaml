@@ -10,7 +10,20 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/CheckoutCourseRequest.yaml
+          type: object
+          properties:
+            courseId:
+              type: string
+              format: uuid
+              example: 0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc
+            amount:
+              type: integer
+              format: int64
+              minimum: 0
+              example: 499000
+          required:
+            - courseId
+            - amount
   responses:
     201:
       description: Checkout transaction created

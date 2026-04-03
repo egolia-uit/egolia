@@ -461,7 +461,7 @@ type UpdateCommentResponseObject interface {
 	VisitUpdateCommentResponse(w http.ResponseWriter) error
 }
 
-type UpdateComment200JSONResponse CommentResponse
+type UpdateComment200JSONResponse Comment
 
 func (response UpdateComment200JSONResponse) VisitUpdateCommentResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -526,7 +526,7 @@ type ReplyCommentResponseObject interface {
 	VisitReplyCommentResponse(w http.ResponseWriter) error
 }
 
-type ReplyComment201JSONResponse Reply
+type ReplyComment201JSONResponse Comment
 
 func (response ReplyComment201JSONResponse) VisitReplyCommentResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -581,7 +581,10 @@ type SearchPostsResponseObject interface {
 	VisitSearchPostsResponse(w http.ResponseWriter) error
 }
 
-type SearchPosts200JSONResponse PostCollection
+type SearchPosts200JSONResponse struct {
+	Data       []Post     `json:"data"`
+	Pagination Pagination `json:"pagination"`
+}
 
 func (response SearchPosts200JSONResponse) VisitSearchPostsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -829,7 +832,9 @@ type GetPostCommentsResponseObject interface {
 	VisitGetPostCommentsResponse(w http.ResponseWriter) error
 }
 
-type GetPostComments200JSONResponse CommentCollection
+type GetPostComments200JSONResponse struct {
+	Data []Comment `json:"data"`
+}
 
 func (response GetPostComments200JSONResponse) VisitGetPostCommentsResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -876,7 +881,7 @@ type CommentOnPostResponseObject interface {
 	VisitCommentOnPostResponse(w http.ResponseWriter) error
 }
 
-type CommentOnPost201JSONResponse CommentResponse
+type CommentOnPost201JSONResponse Comment
 
 func (response CommentOnPost201JSONResponse) VisitCommentOnPostResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
