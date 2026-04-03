@@ -468,7 +468,7 @@ export type CourseSectionIdPath = string;
 export type CourseLessonIdPath = string;
 
 /**
- * Unique identifier of the comment
+ * Unique identifier of the post comment
  */
 export type CourseCommentIdPath = string;
 
@@ -525,7 +525,7 @@ export type BlogOrderQuery = typeof BlogOrderQuery[keyof typeof BlogOrderQuery];
 export type BlogPostIdPath = string;
 
 /**
- * Unique identifier of the comment
+ * Unique identifier of the post comment
  */
 export type BlogCommentIdPath = string;
 
@@ -2403,7 +2403,7 @@ export type ReplyLessonCommentData = {
     };
     path: {
         /**
-         * Unique identifier of the comment
+         * Unique identifier of the post comment
          */
         commentId: string;
     };
@@ -3252,7 +3252,7 @@ export type DeleteCommentData = {
     body?: never;
     path: {
         /**
-         * Unique identifier of the comment
+         * Unique identifier of the post comment
          */
         commentId: string;
     };
@@ -3309,7 +3309,7 @@ export type UpdateCommentData = {
     };
     path: {
         /**
-         * Unique identifier of the comment
+         * Unique identifier of the post comment
          */
         commentId: string;
     };
@@ -3370,7 +3370,7 @@ export type ReplyCommentData = {
     };
     path: {
         /**
-         * Unique identifier of the comment
+         * Unique identifier of the post comment
          */
         commentId: string;
     };

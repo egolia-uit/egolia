@@ -377,7 +377,7 @@ export const zCourseSectionIdPath = z.uuid();
 export const zCourseLessonIdPath = z.uuid();
 
 /**
- * Unique identifier of the comment
+ * Unique identifier of the post comment
  */
 export const zCourseCommentIdPath = z.uuid();
 
@@ -424,7 +424,7 @@ export const zBlogOrderQuery = z.enum(['asc', 'desc']);
 export const zBlogPostIdPath = z.uuid();
 
 /**
- * Unique identifier of the comment
+ * Unique identifier of the post comment
  */
 export const zBlogCommentIdPath = z.uuid();
 
