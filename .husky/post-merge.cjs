@@ -2,5 +2,8 @@
 
 const { syncDeps } = require('../scripts/sync-deps');
 
-// post-merge hook arguments
-syncDeps('ORIG_HEAD', 'HEAD', 1);
+const prevHead = process.argv[2] || 'ORIG_HEAD';
+const newHead = process.argv[3] || 'HEAD';
+const isBranchCheckout = process.argv[4] !== undefined ? process.argv[4] : 1;
+
+syncDeps(prevHead, newHead, isBranchCheckout);

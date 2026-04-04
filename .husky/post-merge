@@ -1,3 +1,3 @@
 # vim:ft=sh:
 
-node .husky/post-merge.cjs
+node .husky/post-merge.cjs "ORIG_HEAD" "HEAD" "1"
