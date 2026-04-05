@@ -25,8 +25,12 @@ try {
 
   // Run pnpm nx affected
   execSync(
-    'CI=true pnpm nx affected --target typecheck --target lint --target format:check --tui false',
-    { stdio: 'inherit', shell: true }
+    'pnpm nx affected --target typecheck --target lint --target format:check --tui false',
+    {
+      stdio: 'inherit',
+      shell: true,
+      env: { ...process.env, CI: 'true' },
+    }
   );
 
   // Check file sizes and types
