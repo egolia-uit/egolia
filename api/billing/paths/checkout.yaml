@@ -2,7 +2,7 @@ post:
   security:
     - Oauth2: []
   tags:
-    - Checkout
+    - Billing
   summary: Checkout course
   operationId: checkoutCourse
   requestBody:

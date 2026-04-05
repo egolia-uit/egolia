@@ -25,7 +25,7 @@
       "description": "Blog post management"
     },
     {
-      "name": "Comment",
+      "name": "Discussion",
       "description": "Post comments and replies"
     }
   ],

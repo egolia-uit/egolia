@@ -41,18 +41,9 @@
       "x-displayName": "Lesson"
     },
     {
-      "name": "Checkout",
-      "description": "Checkout and payment creation",
-      "x-displayName": "Checkout"
-    },
-    {
-      "name": "Transaction",
-      "description": "Transaction",
-      "x-displayName": "Transaction"
-    },
-    {
-      "name": "Admin Billing",
-      "x-displayName": "Admin Billing"
+      "name": "Billing",
+      "description": "Billing related operations",
+      "x-displayName": "Billing"
     },
     {
       "name": "Post",
@@ -60,8 +51,12 @@
       "x-displayName": "Post"
     },
     {
-      "name": "Comment",
+      "name": "Discussion",
       "description": "Post comments and replies",
+      "x-displayName": "Discussion"
+    },
+    {
+      "name": "Comment",
       "x-displayName": "Comment"
     }
   ],
@@ -2120,7 +2115,7 @@
           }
         ],
         "tags": [
-          "Checkout"
+          "Billing"
         ],
         "summary": "Checkout course",
         "operationId": "checkoutCourse",
@@ -2168,7 +2163,7 @@
           }
         ],
         "tags": [
-          "Admin Billing"
+          "Billing"
         ],
         "summary": "Get platform revenue analytics",
         "operationId": "getPlatformRevenueAnalytics",
@@ -2225,7 +2220,7 @@
           }
         ],
         "tags": [
-          "Transaction"
+          "Billing"
         ],
         "summary": "Get transactions",
         "operationId": "getTransactions",
@@ -4363,10 +4358,9 @@
         "Certificate",
         "Section",
         "Lesson",
-        "Checkout",
-        "Transaction",
-        "Admin Billing",
+        "Billing",
         "Post",
+        "Discussion",
         "Comment"
       ]
     }

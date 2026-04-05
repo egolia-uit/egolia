@@ -2,7 +2,7 @@ get:
   security:
     - Oauth2: []
   tags:
-    - Transaction
+    - Billing
   summary: Get transactions
   operationId: getTransactions
   parameters:

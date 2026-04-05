@@ -2,7 +2,7 @@ get:
   security:
     - Oauth2: []
   tags:
-    - Receipt
+    - Billing
   summary: Get transaction receipt detail
   operationId: getTransactionReceiptDetail
   parameters:

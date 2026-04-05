@@ -21,12 +21,8 @@
   ],
   "tags": [
     {
-      "name": "Checkout",
-      "description": "Checkout and payment creation"
-    },
-    {
-      "name": "Transaction",
-      "description": "Transaction"
+      "name": "Billing",
+      "description": "Billing related operations"
     }
   ],
   "externalDocs": {
@@ -41,7 +37,7 @@
           }
         ],
         "tags": [
-          "Checkout"
+          "Billing"
         ],
         "summary": "Checkout course",
         "operationId": "checkoutCourse",
@@ -89,7 +85,7 @@
           }
         ],
         "tags": [
-          "Admin Billing"
+          "Billing"
         ],
         "summary": "Get platform revenue analytics",
         "operationId": "getPlatformRevenueAnalytics",
@@ -146,7 +142,7 @@
           }
         ],
         "tags": [
-          "Transaction"
+          "Billing"
         ],
         "summary": "Get transactions",
         "operationId": "getTransactions",

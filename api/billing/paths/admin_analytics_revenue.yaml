@@ -2,7 +2,7 @@ get:
   security:
     - Oauth2: []
   tags:
-    - Admin Billing
+    - Billing
   summary: Get platform revenue analytics
   operationId: getPlatformRevenueAnalytics
   parameters:
@@ -12,14 +12,14 @@ get:
       schema:
         type: string
         format: date
-      example: '2026-03-01'
+      example: "2026-03-01"
     - name: to
       in: query
       required: true
       schema:
         type: string
         format: date
-      example: '2026-03-31'
+      example: "2026-03-31"
   responses:
     200:
       description: Revenue analytics
