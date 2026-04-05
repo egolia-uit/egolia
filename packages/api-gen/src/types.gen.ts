@@ -162,6 +162,15 @@ export type CourseLessonProgress = {
     isCompleted: boolean;
 };
 
+export type CourseLessonComment = {
+    readonly id: string;
+    userId: CourseId;
+    lessonId: CourseLessonPropertiesId;
+    content: string;
+    createdAt: Date;
+    parentCommentId?: string | null;
+};
+
 export type CourseContent = string;
 
 export type CourseCertificate = {
@@ -402,6 +411,13 @@ export type CourseLessonDetailWritable = CourseVideoLessonWritable | CourseTestL
 export type CourseLessonProgressWritable = {
     userId: CourseId;
     isCompleted: boolean;
+};
+
+export type CourseLessonCommentWritable = {
+    userId: CourseId;
+    content: string;
+    createdAt: Date;
+    parentCommentId?: string | null;
 };
 
 export type CourseCertificateWritable = {
@@ -2321,6 +2337,60 @@ export type MarkLessonAsCompletedResponses = {
 };
 
 export type MarkLessonAsCompletedResponse = MarkLessonAsCompletedResponses[keyof MarkLessonAsCompletedResponses];
+
+export type GetLessonCommentsData = {
+    body?: never;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/comments';
+};
+
+export type GetLessonCommentsErrors = {
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetLessonCommentsError = GetLessonCommentsErrors[keyof GetLessonCommentsErrors];
+
+export type GetLessonCommentsResponses = {
+    /**
+     * Top-level comments for the lesson
+     */
+    200: {
+        data: Array<CourseLessonComment>;
+    };
+};
+
+export type GetLessonCommentsResponse = GetLessonCommentsResponses[keyof GetLessonCommentsResponses];
 
 export type CommentOnLessonData = {
     body: {

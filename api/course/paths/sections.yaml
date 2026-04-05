@@ -31,6 +31,13 @@ post:
   responses:
     201:
       description: Section created
+      headers:
+        Content-Location:
+          schema:
+            type: string
+            format: uri
+            example: http://api.egolia.localhost/course/sections/123e4567-e89b-12d3-a456-426614174000
+          required: true
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

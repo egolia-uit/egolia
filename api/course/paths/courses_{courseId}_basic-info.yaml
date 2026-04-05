@@ -31,7 +31,6 @@ patch:
               format: int64
               minimum: 0
               example: 119900
-          minProperties: 1
   responses:
     204:
       description: Course basic information updated

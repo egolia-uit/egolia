@@ -65,7 +65,17 @@
         },
         "responses": {
           "201": {
-            "description": "Course created"
+            "description": "Course created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -470,8 +480,7 @@
                     "minimum": 0,
                     "example": 119900
                   }
-                },
-                "minProperties": 1
+                }
               }
             }
           }
@@ -535,7 +544,17 @@
         },
         "responses": {
           "201": {
-            "description": "Course enrollment created"
+            "description": "Course enrollment created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/enroll"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -695,7 +714,17 @@
         },
         "responses": {
           "201": {
-            "description": "Course review created"
+            "description": "Course review created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/reviews/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -734,7 +763,17 @@
         ],
         "responses": {
           "201": {
-            "description": "Course bookmarked"
+            "description": "Course bookmarked",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/bookmark"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1172,7 +1211,17 @@
         },
         "responses": {
           "201": {
-            "description": "Section created"
+            "description": "Section created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/sections/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1263,7 +1312,17 @@
         },
         "responses": {
           "201": {
-            "description": "Lesson created"
+            "description": "Lesson created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1379,8 +1438,7 @@
                     "minimum": 1,
                     "example": 300
                   }
-                },
-                "minProperties": 1
+                }
               }
             }
           }
@@ -1543,7 +1601,17 @@
         },
         "responses": {
           "201": {
-            "description": "Test created"
+            "description": "Test created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/tests/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1649,8 +1717,7 @@
                     "type": "boolean",
                     "example": false
                   }
-                },
-                "minProperties": 1
+                }
               }
             }
           }
@@ -1717,6 +1784,58 @@
       }
     },
     "/course/lessons/{lessonId}/comments": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Get lesson comments",
+        "operationId": "getLessonComments",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Top-level comments for the lesson",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/LessonComment"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
       "post": {
         "security": [
           {
@@ -1753,7 +1872,17 @@
         },
         "responses": {
           "201": {
-            "description": "Lesson comment created"
+            "description": "Lesson comment created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/comments/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1810,7 +1939,17 @@
         },
         "responses": {
           "201": {
-            "description": "Lesson comment reply created"
+            "description": "Lesson comment reply created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/lesson-comments/123e4567-e89b-12d3-a456-426614174000/reply"
+                },
+                "required": true
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -2475,6 +2614,47 @@
           "userId",
           "lessonId",
           "isCompleted"
+        ]
+      },
+      "LessonComment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "1c948f26-c6db-4f20-b6ac-2d10164fb8c0",
+            "readOnly": true
+          },
+          "userId": {
+            "$ref": "#/components/schemas/id"
+          },
+          "lessonId": {
+            "$ref": "#/components/schemas/Lesson_properties-id"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "example": "This explanation of polymorphism is very clear."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-22T10:30:00Z"
+          },
+          "parentCommentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "example": "8fd4f406-583d-4cd5-9c24-23c490a06711"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "lessonId",
+          "content",
+          "createdAt"
         ]
       },
       "content": {

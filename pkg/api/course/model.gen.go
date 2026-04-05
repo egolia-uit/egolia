@@ -279,6 +279,18 @@ type Lesson struct {
 	Title    string              `json:"title"`
 }
 
+// LessonComment defines model for LessonComment.
+type LessonComment struct {
+	Content         string              `json:"content"`
+	CreatedAt       time.Time           `json:"createdAt"`
+	Id              *openapi_types.UUID `json:"id,omitempty"`
+	LessonId        *LessonPropertiesId `json:"lessonId,omitempty"`
+	ParentCommentId *openapi_types.UUID `json:"parentCommentId,omitempty"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId Id `json:"userId"`
+}
+
 // LessonDetail defines model for LessonDetail.
 type LessonDetail struct {
 	union json.RawMessage

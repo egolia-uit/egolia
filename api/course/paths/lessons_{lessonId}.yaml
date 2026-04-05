@@ -65,7 +65,6 @@ patch:
               format: int64
               minimum: 1
               example: 300
-          minProperties: 1
   responses:
     204:
       description: Lesson successfully updated

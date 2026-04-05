@@ -102,6 +102,9 @@ type ServerInterface interface {
 	// Edit lesson
 	// (PATCH /course/lessons/{lessonId})
 	EditLesson(c *gin.Context, lessonId LessonIdPath)
+	// Get lesson comments
+	// (GET /course/lessons/{lessonId}/comments)
+	GetLessonComments(c *gin.Context, lessonId LessonIdPath)
 	// Comment on lesson
 	// (POST /course/lessons/{lessonId}/comments)
 	CommentOnLesson(c *gin.Context, lessonId LessonIdPath)
@@ -956,6 +959,32 @@ func (siw *ServerInterfaceWrapper) EditLesson(c *gin.Context) {
 	siw.Handler.EditLesson(c, lessonId)
 }
 
+// GetLessonComments operation middleware
+func (siw *ServerInterfaceWrapper) GetLessonComments(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetLessonComments(c, lessonId)
+}
+
 // CommentOnLesson operation middleware
 func (siw *ServerInterfaceWrapper) CommentOnLesson(c *gin.Context) {
 
@@ -1208,6 +1237,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.DELETE(options.BaseURL+"/course/lessons/:lessonId", wrapper.DeleteLesson)
 	router.GET(options.BaseURL+"/course/lessons/:lessonId", wrapper.GetLessonDetail)
 	router.PATCH(options.BaseURL+"/course/lessons/:lessonId", wrapper.EditLesson)
+	router.GET(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.GetLessonComments)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.CommentOnLesson)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/mark-completed", wrapper.MarkLessonAsCompleted)
 	router.GET(options.BaseURL+"/course/lessons/:lessonId/progress", wrapper.GetLessonProgress)
@@ -1360,10 +1390,16 @@ type CreateCourseResponseObject interface {
 	VisitCreateCourseResponse(w http.ResponseWriter) error
 }
 
+type CreateCourse201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type CreateCourse201Response struct {
+	Headers CreateCourse201ResponseHeaders
 }
 
 func (response CreateCourse201Response) VisitCreateCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -1885,10 +1921,16 @@ type BookmarkCourseResponseObject interface {
 	VisitBookmarkCourseResponse(w http.ResponseWriter) error
 }
 
+type BookmarkCourse201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type BookmarkCourse201Response struct {
+	Headers BookmarkCourse201ResponseHeaders
 }
 
 func (response BookmarkCourse201Response) VisitBookmarkCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -2079,10 +2121,16 @@ type EnrollInCourseResponseObject interface {
 	VisitEnrollInCourseResponse(w http.ResponseWriter) error
 }
 
+type EnrollInCourse201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type EnrollInCourse201Response struct {
+	Headers EnrollInCourse201ResponseHeaders
 }
 
 func (response EnrollInCourse201Response) VisitEnrollInCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -2383,10 +2431,16 @@ type ReviewCourseResponseObject interface {
 	VisitReviewCourseResponse(w http.ResponseWriter) error
 }
 
+type ReviewCourse201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type ReviewCourse201Response struct {
+	Headers ReviewCourse201ResponseHeaders
 }
 
 func (response ReviewCourse201Response) VisitReviewCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -2637,10 +2691,16 @@ type ReplyLessonCommentResponseObject interface {
 	VisitReplyLessonCommentResponse(w http.ResponseWriter) error
 }
 
+type ReplyLessonComment201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type ReplyLessonComment201Response struct {
+	Headers ReplyLessonComment201ResponseHeaders
 }
 
 func (response ReplyLessonComment201Response) VisitReplyLessonCommentResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -2700,10 +2760,16 @@ type CreateLessonResponseObject interface {
 	VisitCreateLessonResponse(w http.ResponseWriter) error
 }
 
+type CreateLesson201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type CreateLesson201Response struct {
+	Headers CreateLesson201ResponseHeaders
 }
 
 func (response CreateLesson201Response) VisitCreateLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -2939,6 +3005,63 @@ func (response EditLesson500JSONResponse) VisitEditLessonResponse(w http.Respons
 	return json.NewEncoder(w).Encode(response)
 }
 
+type GetLessonCommentsRequestObject struct {
+	LessonId LessonIdPath `json:"lessonId"`
+}
+
+type GetLessonCommentsResponseObject interface {
+	VisitGetLessonCommentsResponse(w http.ResponseWriter) error
+}
+
+type GetLessonComments200JSONResponse struct {
+	Data []LessonComment `json:"data"`
+}
+
+func (response GetLessonComments200JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetLessonComments401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetLessonComments401JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetLessonComments403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response GetLessonComments403JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetLessonComments404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetLessonComments404JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetLessonComments500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetLessonComments500JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 type CommentOnLessonRequestObject struct {
 	LessonId LessonIdPath `json:"lessonId"`
 	Body     *CommentOnLessonJSONRequestBody
@@ -2948,10 +3071,16 @@ type CommentOnLessonResponseObject interface {
 	VisitCommentOnLessonResponse(w http.ResponseWriter) error
 }
 
+type CommentOnLesson201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type CommentOnLesson201Response struct {
+	Headers CommentOnLesson201ResponseHeaders
 }
 
 func (response CommentOnLesson201Response) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -3205,10 +3334,16 @@ type CreateTestResponseObject interface {
 	VisitCreateTestResponse(w http.ResponseWriter) error
 }
 
+type CreateTest201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type CreateTest201Response struct {
+	Headers CreateTest201ResponseHeaders
 }
 
 func (response CreateTest201Response) VisitCreateTestResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -3334,10 +3469,16 @@ type CreateSectionResponseObject interface {
 	VisitCreateSectionResponse(w http.ResponseWriter) error
 }
 
+type CreateSection201ResponseHeaders struct {
+	ContentLocation string
+}
+
 type CreateSection201Response struct {
+	Headers CreateSection201ResponseHeaders
 }
 
 func (response CreateSection201Response) VisitCreateSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
 	w.WriteHeader(201)
 	return nil
 }
@@ -3538,6 +3679,9 @@ type StrictServerInterface interface {
 	// Edit lesson
 	// (PATCH /course/lessons/{lessonId})
 	EditLesson(ctx context.Context, request EditLessonRequestObject) (EditLessonResponseObject, error)
+	// Get lesson comments
+	// (GET /course/lessons/{lessonId}/comments)
+	GetLessonComments(ctx context.Context, request GetLessonCommentsRequestObject) (GetLessonCommentsResponseObject, error)
 	// Comment on lesson
 	// (POST /course/lessons/{lessonId}/comments)
 	CommentOnLesson(ctx context.Context, request CommentOnLessonRequestObject) (CommentOnLessonResponseObject, error)
@@ -4403,6 +4547,33 @@ func (sh *strictHandler) EditLesson(ctx *gin.Context, lessonId LessonIdPath) {
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(EditLessonResponseObject); ok {
 		if err := validResponse.VisitEditLessonResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetLessonComments operation middleware
+func (sh *strictHandler) GetLessonComments(ctx *gin.Context, lessonId LessonIdPath) {
+	var request GetLessonCommentsRequestObject
+
+	request.LessonId = lessonId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetLessonComments(ctx, request.(GetLessonCommentsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetLessonComments")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetLessonCommentsResponseObject); ok {
+		if err := validResponse.VisitGetLessonCommentsResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

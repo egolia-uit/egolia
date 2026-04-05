@@ -132,6 +132,15 @@ export const zCourseLessonProgress = z.object({
     isCompleted: z.boolean()
 });
 
+export const zCourseLessonComment = z.object({
+    id: z.uuid().readonly(),
+    userId: zCourseId,
+    lessonId: zCourseLessonPropertiesId,
+    content: z.string().min(1).max(4000),
+    createdAt: z.iso.datetime(),
+    parentCommentId: z.uuid().nullish()
+});
+
 export const zCourseContent = z.string().min(1).max(4000);
 
 export const zCourseCertificate = z.object({
@@ -316,6 +325,13 @@ export const zCourseLessonDetailWritable = z.union([
 export const zCourseLessonProgressWritable = z.object({
     userId: zCourseId,
     isCompleted: z.boolean()
+});
+
+export const zCourseLessonCommentWritable = z.object({
+    userId: zCourseId,
+    content: z.string().min(1).max(4000),
+    createdAt: z.iso.datetime(),
+    parentCommentId: z.uuid().nullish()
 });
 
 export const zCourseCertificateWritable = z.object({
@@ -853,6 +869,21 @@ export const zMarkLessonAsCompletedData = z.object({
  * Lesson marked as completed
  */
 export const zMarkLessonAsCompletedResponse = z.void();
+
+export const zGetLessonCommentsData = z.object({
+    body: z.never().optional(),
+    path: z.object({
+        lessonId: z.uuid()
+    }),
+    query: z.never().optional()
+});
+
+/**
+ * Top-level comments for the lesson
+ */
+export const zGetLessonCommentsResponse = z.object({
+    data: z.array(zCourseLessonComment)
+});
 
 export const zCommentOnLessonData = z.object({
     body: z.object({

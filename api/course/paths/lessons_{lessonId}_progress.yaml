@@ -54,7 +54,6 @@ put:
             isCompleted:
               type: boolean
               example: false
-          minProperties: 1
   responses:
     204:
       description: Lesson progress saved

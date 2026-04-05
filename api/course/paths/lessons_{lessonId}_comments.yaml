@@ -1,3 +1,35 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Get lesson comments
+  operationId: getLessonComments
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  responses:
+    200:
+      description: Top-level comments for the lesson
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: ../components/schemas/LessonComment.yaml
+            required:
+              - data
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
 post:
   security:
     - Oauth2: []
@@ -21,6 +53,13 @@ post:
   responses:
     201:
       description: Lesson comment created
+      headers:
+        Content-Location:
+          schema:
+            type: string
+            format: uri
+            example: http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/comments/123e4567-e89b-12d3-a456-426614174000
+          required: true
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
