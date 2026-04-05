@@ -17,6 +17,6 @@
   "devDependencies": {
     "@hey-api/openapi-ts": "0.95.0",
     "@redocly/cli": "2.25.4",
-    "@scalar/cli": "1.7.9"
+    "@scalar/cli": "1.8.3"
   }
 }
