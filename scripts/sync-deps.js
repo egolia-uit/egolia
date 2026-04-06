@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { execSync, spawnSync } = require('child_process');
+import { execSync, spawnSync } from 'child_process';
 
 /**
  * Syncs dependencies based on changed files
@@ -66,10 +66,10 @@ function syncDeps(
 }
 
 // Export for use as a module
-module.exports = { syncDeps };
+export { syncDeps };
 
 // Run as CLI if executed directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   const args = process.argv.slice(2);
   const prevHead = args[0] || 'HEAD@{1}';
   const newHead = args[1] || 'HEAD';

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { execSync, spawnSync } = require('child_process');
-const fs = require('fs');
+import { execSync, spawnSync } from 'child_process';
+import fs from 'fs';
 
 const FILE_LIMIT_BYTES = 1000000; // 1MB
 

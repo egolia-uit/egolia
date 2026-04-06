@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { syncDeps } = require('../scripts/sync-deps');
+import { syncDeps } from '../scripts/sync-deps.js';
 
 const prevHead = process.argv[2] || 'ORIG_HEAD';
 const newHead = process.argv[3] || 'HEAD';
