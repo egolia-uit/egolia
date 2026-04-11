@@ -45,7 +45,7 @@
     "jiti": "2.6.1",
     "jsdom": "~28.1.0",
     "nx": "22.6.4",
-    "nx-github-pages": "1.2.0",
+    "nx-github-pages": "1.2.1",
     "prettier": "catalog:",
     "prettier-plugin-package": "2.0.0",
     "prettier-plugin-tailwindcss": "0.7.2",
