@@ -292,8 +292,8 @@ importers:
         specifier: 2.25.4
         version: 2.25.4(@opentelemetry/api@1.9.0)(core-js@3.48.0)(encoding@0.1.13)
       '@scalar/cli':
-        specifier: 1.8.3
-        version: 1.8.3(@types/node@25.3.5)(encoding@0.1.13)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.2)
+        specifier: 1.8.4
+        version: 1.8.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.3.5)(encoding@0.1.13)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.2)
 
   apps/api-web:
     dependencies:
@@ -1698,14 +1698,14 @@ packages:
   '@hey-api/types@0.1.4':
     resolution: {integrity: sha512-thWfawrDIP7wSI9ioT13I5soaaqB5vAPIiZmgD8PbeEVKNrkonc0N/Sjj97ezl7oQgusZmaNphGdMKipPO6IBg==}
 
-  '@hono/node-server@1.19.12':
-    resolution: {integrity: sha512-txsUW4SQ1iilgE0l9/e9VQWmELXifEFvmdA1j6WFh/aFPj99hIntrSsq/if0UWyGVkmrRPKA1wCeP+UCr1B9Uw==}
+  '@hono/node-server@1.19.10':
+    resolution: {integrity: sha512-hZ7nOssGqRgyV3FVVQdfi+U4q02uB23bpnYpdvNXkYTRRyWx84b7yf1ans+dnJ/7h41sGL3CeQTfO+ZGxuO+Iw==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
 
-  '@hono/node-server@1.19.7':
-    resolution: {integrity: sha512-vUcD0uauS7EU2caukW8z5lJKtoGMokxNbJtBiwHgpqxEXokaHCBkQUmCHhjFB1VUTWdqj25QoMkMKzgjq+uhrw==}
+  '@hono/node-server@1.19.12':
+    resolution: {integrity: sha512-txsUW4SQ1iilgE0l9/e9VQWmELXifEFvmdA1j6WFh/aFPj99hIntrSsq/if0UWyGVkmrRPKA1wCeP+UCr1B9Uw==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -3743,8 +3743,8 @@ packages:
     resolution: {integrity: sha512-CmyvtSM9YNTPit1ZxfYhfAp7MtE+KXUxOID4sIf8+Flfr5zFOHVAu1ww1WySszugWG/8xV4BCZuJZtHGwtQyHg==}
     engines: {node: '>=22'}
 
-  '@scalar/cli@1.8.3':
-    resolution: {integrity: sha512-w+JJKnQwb+XiH80mNI/UzRBGDdtVTidKk/C/sWrnnc4o3fQptlZUF8Qzh/5dhhEtHzRnFb71i3EfzW2omPxmSA==}
+  '@scalar/cli@1.8.4':
+    resolution: {integrity: sha512-cmWu1uyzQ92qrPNji+mbJsH1/Rmhw9l+Ub/28NdTkiL5vgctmshzn+UPU9JzJgRs+YZF/d9G8qaV1Ekoh1uEuA==}
     engines: {node: '>=24'}
     hasBin: true
 
@@ -3796,8 +3796,8 @@ packages:
     resolution: {integrity: sha512-MkGOjodEeQ7V7M78W6Oq+t3q1LaUR+SRLZLqFbU6s26Gc+12T+v89JXcHvd+3ug0xFVMg/kdczZ3O6miBhyNsA==}
     engines: {node: '>=22'}
 
-  '@scalar/mock-server@0.9.15':
-    resolution: {integrity: sha512-bH1CTMDNypaGHy+R2S1ar+elJIqx+aNbkWXsIxczeIvCTdlZcsi1X7q8LzwMcFaB5AwQ3tHqpSavxYwAG4YCog==}
+  '@scalar/mock-server@0.9.17':
+    resolution: {integrity: sha512-dazVH2MUqaZgc893Bck56P87oWHtCuU3f2MZyrhErW8jr6lgHR/4bgT8Ni22FTfwJQ06VbA3LV4/+53N5kupbw==}
     engines: {node: '>=22'}
 
   '@scalar/oas-utils@0.10.14':
@@ -3903,8 +3903,8 @@ packages:
     resolution: {integrity: sha512-4X/AP3JO23DuYxs1MMjn6IlT9gyrKPCuZj8ybTB9QIjC+3tSJLpQOwZg7HEyyz2HoVwOt9jdef2jO3RXW7DqTw==}
     engines: {node: '>=20'}
 
-  '@scalar/void-server@2.4.3':
-    resolution: {integrity: sha512-jwYgTF9BZ4kvr+nHMDuXigGALSex/98x4TFMl9MoxT09P89Q7TyFQN9rtZTKWWy96a6rZR6AP/tTEag+4M2x6g==}
+  '@scalar/void-server@2.4.4':
+    resolution: {integrity: sha512-2Cnqu+62yp7Hf02dojNMYsdkLz1c0Gh22tVYEopbPnbATGPT5BlISEVcr7cWf3sGpHYX6m3RYT9spGbmsM+sAQ==}
     engines: {node: '>=22'}
 
   '@scalar/workspace-store@0.42.0':
@@ -7632,6 +7632,10 @@ packages:
 
   hono@4.12.4:
     resolution: {integrity: sha512-ooiZW1Xy8rQ4oELQ++otI2T9DsKpV0M6c6cO6JGx4RTfav9poFFLlet9UMXHZnoM1yG0HWGlQLswBGX3RZmHtg==}
+    engines: {node: '>=16.9.0'}
+
+  hono@4.12.7:
+    resolution: {integrity: sha512-jq9l1DM0zVIvsm3lv9Nw9nlJnMNPOcAtsbsgiUhWcFzPE99Gvo6yRTlszSLLYacMeQ6quHD6hMfId8crVHvexw==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -13672,13 +13676,17 @@ snapshots:
 
   '@hey-api/types@0.1.4': {}
 
+  '@hono/node-server@1.19.10(hono@4.12.7)':
+    dependencies:
+      hono: 4.12.7
+
   '@hono/node-server@1.19.12(hono@4.12.4)':
     dependencies:
       hono: 4.12.4
 
-  '@hono/node-server@1.19.7(hono@4.12.4)':
+  '@hono/node-server@1.19.12(hono@4.12.7)':
     dependencies:
-      hono: 4.12.4
+      hono: 4.12.7
 
   '@humanfs/core@0.19.1': {}
 
@@ -15750,9 +15758,12 @@ snapshots:
       '@napi-rs/wasm-runtime': 1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
     optional: true
 
-  '@rolldown/binding-wasm32-wasi@1.0.0-rc.9':
+  '@rolldown/binding-wasm32-wasi@1.0.0-rc.9(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)':
     dependencies:
-      '@napi-rs/wasm-runtime': 1.1.1
+      '@napi-rs/wasm-runtime': 1.1.2(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.0.0-rc.13':
@@ -16151,20 +16162,20 @@ snapshots:
       - typescript
       - universal-cookie
 
-  '@scalar/cli@1.8.3(@types/node@25.3.5)(encoding@0.1.13)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.2)':
+  '@scalar/cli@1.8.4(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.3.5)(encoding@0.1.13)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.2)':
     dependencies:
       '@clack/prompts': 0.7.0
       '@fastify/static': 8.3.0
-      '@hono/node-server': 1.19.7(hono@4.12.4)
-      '@scalar/json-magic': 0.12.4
-      '@scalar/mock-server': 0.9.15(typescript@5.9.3)
-      '@scalar/oas-utils': 0.10.14(typescript@5.9.3)
-      '@scalar/openapi-parser': 0.25.7
+      '@hono/node-server': 1.19.10(hono@4.12.7)
+      '@scalar/json-magic': 0.12.5
+      '@scalar/mock-server': 0.9.17(typescript@5.9.3)
+      '@scalar/oas-utils': 0.10.16(typescript@5.9.3)
+      '@scalar/openapi-parser': 0.25.8
       '@scalar/openapi-to-markdown': 0.4.16(typescript@5.9.3)
-      '@scalar/openapi-types': 0.6.1
-      '@scalar/themes': 0.15.1
-      '@scalar/void-server': 2.4.3
-      '@scalar/workspace-store': 0.42.0(typescript@5.9.3)
+      '@scalar/openapi-types': 0.7.0
+      '@scalar/themes': 0.15.2
+      '@scalar/void-server': 2.4.4
+      '@scalar/workspace-store': 0.43.1(typescript@5.9.3)
       '@stoplight/spectral-core': 1.19.5(encoding@0.1.13)
       '@stoplight/spectral-ruleset-bundler': 1.6.2(encoding@0.1.13)
       '@stoplight/spectral-rulesets': 1.21.4(encoding@0.1.13)
@@ -16174,7 +16185,7 @@ snapshots:
       esbuild: 0.25.6
       fastify: 5.6.2
       get-port: 7.1.0
-      hono: 4.12.4
+      hono: 4.12.7
       ignore: 7.0.5
       jsonc-parser: 3.2.1
       nanoid: 5.0.9
@@ -16185,8 +16196,10 @@ snapshots:
       tailwindcss: 4.1.7
       tar-fs: 3.1.1
       undici: 7.16.0
-      vite: 8.0.0(@types/node@25.3.5)(esbuild@0.25.6)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(yaml@2.8.2)
+      vite: 8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.3.5)(esbuild@0.25.6)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(yaml@2.8.2)
     transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
       - '@types/node'
       - '@vitejs/devtools'
       - '@vue/composition-api'
@@ -16336,18 +16349,17 @@ snapshots:
       pathe: 2.0.3
       yaml: 2.8.2
 
-  '@scalar/mock-server@0.9.15(typescript@5.9.3)':
+  '@scalar/mock-server@0.9.17(typescript@5.9.3)':
     dependencies:
       '@faker-js/faker': 10.4.0
-      '@scalar/helpers': 0.4.2
-      '@scalar/json-magic': 0.12.4
-      '@scalar/oas-utils': 0.10.14(typescript@5.9.3)
-      '@scalar/openapi-parser': 0.25.7
-      '@scalar/openapi-types': 0.6.1
-      '@scalar/openapi-upgrader': 0.2.3
-      hono: 4.12.4
+      '@scalar/helpers': 0.4.3
+      '@scalar/json-magic': 0.12.5
+      '@scalar/oas-utils': 0.10.16(typescript@5.9.3)
+      '@scalar/openapi-parser': 0.25.8
+      '@scalar/openapi-types': 0.7.0
+      '@scalar/openapi-upgrader': 0.2.4
+      hono: 4.12.7
     transitivePeerDependencies:
-      - supports-color
       - typescript
 
   '@scalar/oas-utils@0.10.14(typescript@5.9.3)':
@@ -16573,11 +16585,11 @@ snapshots:
 
   '@scalar/validation@0.3.0': {}
 
-  '@scalar/void-server@2.4.3':
+  '@scalar/void-server@2.4.4':
     dependencies:
-      '@hono/node-server': 1.19.12(hono@4.12.4)
-      '@scalar/helpers': 0.4.2
-      hono: 4.12.4
+      '@hono/node-server': 1.19.12(hono@4.12.7)
+      '@scalar/helpers': 0.4.3
+      hono: 4.12.7
       js-base64: 3.7.8
 
   '@scalar/workspace-store@0.42.0(typescript@5.9.3)':
@@ -21059,6 +21071,8 @@ snapshots:
 
   hono@4.12.4: {}
 
+  hono@4.12.7: {}
+
   hookable@5.5.3: {}
 
   hookable@6.0.1: {}
@@ -24236,7 +24250,7 @@ snapshots:
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-rc.13
       '@rolldown/binding-win32-x64-msvc': 1.0.0-rc.13
 
-  rolldown@1.0.0-rc.9:
+  rolldown@1.0.0-rc.9(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1):
     dependencies:
       '@oxc-project/types': 0.115.0
       '@rolldown/pluginutils': 1.0.0-rc.9
@@ -24253,9 +24267,12 @@ snapshots:
       '@rolldown/binding-linux-x64-gnu': 1.0.0-rc.9
       '@rolldown/binding-linux-x64-musl': 1.0.0-rc.9
       '@rolldown/binding-openharmony-arm64': 1.0.0-rc.9
-      '@rolldown/binding-wasm32-wasi': 1.0.0-rc.9
+      '@rolldown/binding-wasm32-wasi': 1.0.0-rc.9(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-rc.9
       '@rolldown/binding-win32-x64-msvc': 1.0.0-rc.9
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
   rollup-plugin-typescript2@0.36.0(rollup@4.59.0)(typescript@5.9.3):
     dependencies:
@@ -25749,13 +25766,13 @@ snapshots:
       terser: 5.46.0
       yaml: 2.8.2
 
-  vite@8.0.0(@types/node@25.3.5)(esbuild@0.25.6)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(yaml@2.8.2):
+  vite@8.0.0(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.3.5)(esbuild@0.25.6)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(yaml@2.8.2):
     dependencies:
       '@oxc-project/runtime': 0.115.0
       lightningcss: 1.32.0
       picomatch: 4.0.4
       postcss: 8.5.8
-      rolldown: 1.0.0-rc.9
+      rolldown: 1.0.0-rc.9(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 25.3.5
@@ -25767,6 +25784,9 @@ snapshots:
       sass-embedded: 1.97.3
       terser: 5.46.0
       yaml: 2.8.2
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
   vite@8.0.7(@types/node@25.3.5)(esbuild@0.27.3)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(yaml@2.8.2):
     dependencies:
