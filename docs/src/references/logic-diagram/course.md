@@ -27,7 +27,6 @@ classDiagram
         <<AggregateRoot>>
         id uuid.UUID
         title string
-        slug string
         instructorID uuid.UUID
         status CourseStatus
         price float64
@@ -40,6 +39,7 @@ classDiagram
         courseID uuid.UUID
         title string
         order string
+        deletedAt *time.Time
     }
 
     class Lesson {
@@ -131,7 +131,7 @@ classDiagram
         content string
         createdAt time.Time
         parentCommentID *uuid.UUID
-        deetedAt *time.Time
+        deletedAt *time.Time
     }
 
     class Review {
@@ -491,7 +491,6 @@ erDiagram
 
     read_courses {
         UUID course_id PK
-        VARCHAR(255) slug UK "Đánh Unique Index để truy vấn Web"
         VARCHAR(255) title
         DECIMAL(12_2) price
         JSONB full_course_content "Denormalized: Gom sạch Section/Lesson vào 1 file JSON"
