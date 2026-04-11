@@ -67,8 +67,8 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "golangci-lint run ./...",
-        "cwd": "{projectRoot}"
+        "command": "golangci-lint run ./cmd/billing/... ./internal/billing/...",
+        "cwd": "{workspaceRoot}"
       },
       "cache": false,
       "parallelism": false
