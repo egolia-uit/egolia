@@ -25,6 +25,36 @@ type LessonProgressBase struct {
 
 var _ LessonProgress = (*LessonProgressBase)(nil)
 
+func NewLessonProgressBase(
+	id uuid.UUID,
+	enrollmentID uuid.UUID,
+	lessonID uuid.UUID,
+) *LessonProgressBase {
+	return &LessonProgressBase{
+		id:           id,
+		enrollmentID: enrollmentID,
+		lessonID:     lessonID,
+		isCompleted:  false,
+		deletedAt:    nil,
+	}
+}
+
+func UnmarshalLessonProgressBase(
+	id uuid.UUID,
+	enrollmentID uuid.UUID,
+	lessonID uuid.UUID,
+	isCompleted bool,
+	deletedAt *time.Time,
+) *LessonProgressBase {
+	return &LessonProgressBase{
+		id:           id,
+		enrollmentID: enrollmentID,
+		lessonID:     lessonID,
+		isCompleted:  isCompleted,
+		deletedAt:    deletedAt,
+	}
+}
+
 func (l *LessonProgressBase) isLessonProgress() {}
 
 func (l *LessonProgressBase) ID() uuid.UUID { return l.id }
@@ -36,3 +66,12 @@ func (l *LessonProgressBase) LessonID() uuid.UUID { return l.lessonID }
 func (l *LessonProgressBase) IsCompleted() bool { return l.isCompleted }
 
 func (l *LessonProgressBase) DeletedAt() *time.Time { return l.deletedAt }
+
+func (l *LessonProgressBase) Complete() {
+	l.isCompleted = true
+}
+
+func (l *LessonProgressBase) Delete() {
+	l.deletedAt = new(time.Time)
+	*l.deletedAt = time.Now()
+}

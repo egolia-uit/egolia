@@ -17,10 +17,44 @@ type LessonBase struct {
 
 var _ Lesson = (*LessonBase)(nil)
 
+func NewLessonBase(
+	id uuid.UUID,
+	sectionID uuid.UUID,
+	order string,
+) *LessonBase {
+	return &LessonBase{
+		id:        id,
+		sectionID: sectionID,
+		order:     order,
+	}
+}
+
+func UnmarshalLessonBase(
+	id uuid.UUID,
+	sectionID uuid.UUID,
+	order string,
+) *LessonBase {
+	return &LessonBase{
+		id:        id,
+		sectionID: sectionID,
+		order:     order,
+	}
+}
+
 func (l *LessonBase) isLesson() {}
 
-func (l *LessonBase) ID() uuid.UUID { return l.id }
+func (l *LessonBase) ID() uuid.UUID {
+	return l.id
+}
 
-func (l *LessonBase) SectionID() uuid.UUID { return l.sectionID }
+func (l *LessonBase) SectionID() uuid.UUID {
+	return l.sectionID
+}
 
-func (l *LessonBase) Order() string { return l.order }
+func (l *LessonBase) Order() string {
+	return l.order
+}
+
+func (l *LessonBase) SetOrder(order string) {
+	l.order = order
+}
