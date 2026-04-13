@@ -2143,7 +2143,8 @@
           },
           "instructorId": {
             "$ref": "#/components/schemas/id",
-            "example": "100"
+            "example": "100",
+            "readOnly": true
           },
           "status": {
             "$ref": "#/components/schemas/CourseStatus"

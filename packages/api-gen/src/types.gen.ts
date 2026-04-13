@@ -343,7 +343,6 @@ export type BlogComment = {
 export type CourseCourseWritable = {
     title: string;
     slug: string;
-    instructorId: CourseId;
     status: CourseCourseStatus;
     price: bigint;
 };
