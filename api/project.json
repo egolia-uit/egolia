@@ -2,15 +2,10 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "name": "api",
   "projectType": "library",
-  "tags": [
-    "scope:api",
-    "type:openapi"
-  ],
+  "tags": ["scope:api", "type:openapi"],
   "targets": {
     "bundle:json": {
-      "dependsOn": [
-        "^bundle:json"
-      ]
+      "dependsOn": ["^bundle:json"]
     },
     "join": {
       "inputs": [
@@ -19,17 +14,13 @@
         },
         "!{projectRoot}/bundled/openapi.json"
       ],
-      "outputs": [
-        "{projectRoot}/bundled/openapi.json"
-      ],
+      "outputs": ["{projectRoot}/bundled/openapi.json"],
       "executor": "nx:run-commands",
       "options": {
         "command": "pnpm run redocly:join",
         "cwd": "{projectRoot}"
       },
-      "dependsOn": [
-        "^bundle:json"
-      ],
+      "dependsOn": ["^bundle:json"],
       "cache": true
     },
     "watch-join": {
@@ -42,14 +33,10 @@
       "continuous": true
     },
     "bundle": {
-      "dependsOn": [
-        "join"
-      ]
+      "dependsOn": ["join"]
     },
     "watch-bundle:json": {
-      "dependsOn": [
-        "^watch-bundle:json"
-      ]
+      "dependsOn": ["^watch-bundle:json"]
     },
     "dev": {
       "executor": "nx:run-commands",
@@ -59,37 +46,22 @@
         "cwd": "{projectRoot}"
       },
       "continuous": true,
-      "dependsOn": [
-        "join",
-        "watch-join"
-      ]
+      "dependsOn": ["join", "watch-join"]
     },
     "lint": {
       "executor": "nx:noop",
-      "dependsOn": [
-        "^lint"
-      ]
+      "dependsOn": ["^lint"]
     },
     "mock": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "scalar document mock -w ./bundled/openapi.json --port 8080",
-        "cwd": "{projectRoot}"
-      },
+      "executor": "nx:noop",
       "continuous": true,
-      "dependsOn": [
-        "join"
-      ]
+      "dependsOn": ["^mock"]
     },
     "gen:go": {
-      "dependsOn": [
-        "^gen:go"
-      ]
+      "dependsOn": ["^gen:go"]
     },
     "gen:hey-api": {
-      "outputs": [
-        "{workspaceRoot}/packages/api-gen/src/"
-      ],
+      "outputs": ["{workspaceRoot}/packages/api-gen/src/"],
       "inputs": [
         {
           "dependentTasksOutputFiles": "api/bundled/openapi.json",
@@ -102,20 +74,11 @@
         "command": "pnpm exec openapi-ts",
         "cwd": "{projectRoot}"
       },
-      "dependsOn": [
-        "join"
-      ]
+      "dependsOn": ["join"]
     },
     "gen": {
-      "dependsOn": [
-        "^gen:go",
-        "gen:hey-api"
-      ]
+      "dependsOn": ["^gen:go", "gen:hey-api"]
     }
   },
-  "implicitDependencies": [
-    "api/course",
-    "api/billing",
-    "api/blog"
-  ]
+  "implicitDependencies": ["api/course", "api/billing", "api/blog"]
 }

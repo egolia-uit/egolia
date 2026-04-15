@@ -12,7 +12,7 @@ export const zCourseCourseStatus = z.enum([
     'approved',
     'published',
     'archived'
-]);
+]).default('draft');
 
 export const zCourseCourse = z.object({
     id: z.uuid().readonly(),
@@ -367,7 +367,7 @@ export const zCourseLimitQuery = z.int().gte(1).lte(100).default(20);
 /**
  * Sort order
  */
-export const zCourseOrderQuery = z.enum(['asc', 'desc']);
+export const zCourseOrderQuery = z.enum(['asc', 'desc']).default('desc');
 
 export const zCourseInstructorIdPath = z.uuid();
 
@@ -397,7 +397,7 @@ export const zBillingLimitQuery = z.int().gte(1).lte(100).default(20);
 /**
  * Sort order
  */
-export const zBillingOrderQuery = z.enum(['asc', 'desc']);
+export const zBillingOrderQuery = z.enum(['asc', 'desc']).default('desc');
 
 /**
  * Page number for pagination
@@ -412,7 +412,7 @@ export const zBlogLimitQuery = z.int().gte(1).lte(100).default(20);
 /**
  * Sort order
  */
-export const zBlogOrderQuery = z.enum(['asc', 'desc']);
+export const zBlogOrderQuery = z.enum(['asc', 'desc']).default('desc');
 
 /**
  * Unique identifier of the blog post
@@ -430,7 +430,7 @@ export const zGetSystemCoursesQuery = z.object({
     status: zCourseCourseStatus.optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
@@ -444,7 +444,7 @@ export const zGetSystemCoursesResponse = z.object({
 export const zGetPublishedCoursesQuery = z.object({
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
@@ -463,7 +463,7 @@ export const zGetInstructorCoursesQuery = z.object({
     status: zCourseCourseStatus.optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
@@ -638,7 +638,7 @@ export const zUnhideCourseResponse = z.void();
 export const zGetMyEnrolledCoursesQuery = z.object({
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
@@ -789,7 +789,7 @@ export const zReplyLessonCommentPath = z.object({
 export const zGetMyCertificatesQuery = z.object({
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
@@ -831,7 +831,7 @@ export const zGetPlatformRevenueAnalyticsResponse = zBillingRevenueAnalytics;
 export const zGetTransactionsQuery = z.object({
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional(),
+    order: z.enum(['asc', 'desc']).optional().default('desc'),
     courseId: z.uuid().optional(),
     learnerId: zBillingId.optional()
 });
@@ -849,7 +849,7 @@ export const zSearchPostsQuery = z.object({
     tag: z.string().optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
