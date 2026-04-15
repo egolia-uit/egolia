@@ -1833,6 +1833,89 @@
         }
       }
     },
+    "/course/lessons/{lessonId}/move": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Move lesson",
+        "operationId": "moveLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "$ref": "#/components/schemas/course_LessonType"
+                  },
+                  "sectionId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                  },
+                  "afterLesson": {
+                    "x-go-type-name": "moveAfterLesson",
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0"
+                      },
+                      "type": {
+                        "$ref": "#/components/schemas/course_LessonType"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "type"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "sectionId",
+                  "afterLesson"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lesson moved successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
     "/course/lessons/{lessonId}/comments": {
       "get": {
         "security": [
@@ -3370,6 +3453,14 @@
           "lessonId",
           "isCompleted"
         ]
+      },
+      "course_LessonType": {
+        "type": "string",
+        "enum": [
+          "VideoLesson",
+          "TestLesson"
+        ],
+        "example": "Lesson"
       },
       "course_LessonComment": {
         "type": "object",

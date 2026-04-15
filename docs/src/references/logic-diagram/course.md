@@ -163,19 +163,17 @@ classDiagram
     CourseStatus -- Course
     Course "1" *.. "0..*" Section : has
     Section "1" *.. "0..*" Lesson : has
-    TestLesson --|> Lesson
-    VideoLesson --|> Lesson
+    LessonBase --|> Lesson
     TestLesson --* LessonBase
     VideoLesson --* LessonBase
     TestLesson -- TestLessonType
     TestQuestion "1..*" --* "1" TestLesson
     TestAnswer "1..*" --* "1" TestQuestion
     Enrollment "0..*" .. "1" Course : enrolls
-    LessonProgressVideo --|> LessonProgress
     LessonProgressVideo --* LessonProgressBase
-    LessonProgressTest --|> LessonProgress
     LessonProgressTest --* LessonProgressBase
-    LessonProgressBase "0..*" ..* "1" Lesson : tracks
+    LessonProgressBase --|> LessonProgress
+    LessonProgress "0..*" ..* "1" Lesson : tracks
     LessonProgress "0..*" ..* "1" Enrollment : belongs to
     Review "0..*" ..* "1" Course : reviews
     LessonComment "0..*" ..* "1" Lesson : comments

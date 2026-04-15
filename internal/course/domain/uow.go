@@ -12,11 +12,10 @@ type RepoRegistry interface {
 	LessonComment() LessonCommentRepo
 	// LessonProgressTest() LessonProgressTestRepo
 	// LessonProgressVideo() LessonProgressVideoRepo
-	Lesson() LessonRepo
 	Review() ReviewRepo
-	SectionRepo() SectionRepo
-	TestLessonRepo() TestLessonRepo
-	VideoLessonRepo() VideoLessonRepo
+	Section() SectionRepo
+	TestLesson() TestLessonRepo
+	VideoLesson() VideoLessonRepo
 }
 
 type UnitOfWork interface {

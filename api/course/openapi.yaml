@@ -86,6 +86,8 @@ paths:
     $ref: ./paths/lessons_{lessonId}_progress.yaml
   /course/lessons/{lessonId}/mark-completed:
     $ref: ./paths/lessons_{lessonId}_mark-completed.yaml
+  /course/lessons/{lessonId}/move:
+    $ref: ./paths/lessons_{lessonId}_move.yaml
   /course/lessons/{lessonId}/comments:
     $ref: ./paths/lessons_{lessonId}_comments.yaml
 

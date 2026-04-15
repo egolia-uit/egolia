@@ -7,11 +7,21 @@ import (
 )
 
 type TestLessonRepo interface {
-	Get(ctx context.Context, params *TestLessonRepoGet) (*TestLesson, error)
+	Get(ctx context.Context, params *TestLessonRepoGet, forUpdate bool) (*TestLesson, error)
+	GetByPrevious(ctx context.Context, params *TestLessonRepoGetByPrevious, forUpdate bool) (*TestLesson, error)
+	GetNextByID(ctx context.Context, params *TestLessonRepoGetNextByID, forUpdate bool) (*TestLesson, error)
 	Save(ctx context.Context, lesson *TestLesson) error
 }
 
 type TestLessonRepoGet struct {
 	ID        uuid.UUID
 	ForUpdate bool
+}
+
+type TestLessonRepoGetByPrevious struct {
+	Previous *TestLesson
+}
+
+type TestLessonRepoGetNextByID struct {
+	ID uuid.UUID
 }

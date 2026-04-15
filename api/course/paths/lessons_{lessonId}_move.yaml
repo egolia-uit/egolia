@@ -1,0 +1,58 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Lesson
+  summary: Move lesson
+  operationId: moveLesson
+  parameters:
+    - $ref: ../components/parameters/lessonIdPath.yaml
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            type:
+              $ref: ../components/schemas/LessonType.yaml
+
+            sectionId:
+              type: string
+              format: uuid
+              example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
+
+            afterLesson:
+              x-go-type-name: moveAfterLesson
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  example: 2926aa3f-29ad-449b-9556-c44d4fc676a0
+                type:
+                  $ref: ../components/schemas/LessonType.yaml
+              required:
+                - id
+                - type
+
+          required:
+            - type
+            - sectionId
+            - afterLesson
+
+  responses:
+    201:
+      description: Lesson moved successfully
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

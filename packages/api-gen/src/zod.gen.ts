@@ -119,6 +119,8 @@ export const zCourseLessonProgress = z.object({
     isCompleted: z.boolean()
 });
 
+export const zCourseLessonType = z.enum(['VideoLesson', 'TestLesson']);
+
 export const zCourseLessonComment = z.object({
     id: z.uuid().readonly(),
     userId: zCourseId,
@@ -746,6 +748,19 @@ export const zMarkLessonAsCompletedPath = z.object({
  * Lesson marked as completed
  */
 export const zMarkLessonAsCompletedResponse = z.void();
+
+export const zMoveLessonBody = z.object({
+    type: zCourseLessonType,
+    sectionId: z.uuid(),
+    afterLesson: z.object({
+        id: z.uuid(),
+        type: zCourseLessonType
+    }).nullable()
+});
+
+export const zMoveLessonPath = z.object({
+    lessonId: z.uuid()
+});
 
 export const zGetLessonCommentsPath = z.object({
     lessonId: z.uuid()

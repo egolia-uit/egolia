@@ -112,6 +112,9 @@ type ServerInterface interface {
 	// Mark lesson as completed
 	// (POST /course/lessons/{lessonId}/mark-completed)
 	MarkLessonAsCompleted(c *gin.Context, lessonId LessonIdPath)
+	// Move lesson
+	// (POST /course/lessons/{lessonId}/move)
+	MoveLesson(c *gin.Context, lessonId LessonIdPath)
 	// Get lesson progress
 	// (GET /course/lessons/{lessonId}/progress)
 	GetLessonProgress(c *gin.Context, lessonId LessonIdPath)
@@ -1080,6 +1083,32 @@ func (siw *ServerInterfaceWrapper) MarkLessonAsCompleted(c *gin.Context) {
 	siw.Handler.MarkLessonAsCompleted(c, lessonId)
 }
 
+// MoveLesson operation middleware
+func (siw *ServerInterfaceWrapper) MoveLesson(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.MoveLesson(c, lessonId)
+}
+
 // GetLessonProgress operation middleware
 func (siw *ServerInterfaceWrapper) GetLessonProgress(c *gin.Context) {
 
@@ -1283,6 +1312,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.GetLessonComments)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.CommentOnLesson)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/mark-completed", wrapper.MarkLessonAsCompleted)
+	router.POST(options.BaseURL+"/course/lessons/:lessonId/move", wrapper.MoveLesson)
 	router.GET(options.BaseURL+"/course/lessons/:lessonId/progress", wrapper.GetLessonProgress)
 	router.PUT(options.BaseURL+"/course/lessons/:lessonId/progress", wrapper.SaveLessonProgress)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/tests", wrapper.CreateTest)
@@ -3229,6 +3259,70 @@ func (response MarkLessonAsCompleted500JSONResponse) VisitMarkLessonAsCompletedR
 	return json.NewEncoder(w).Encode(response)
 }
 
+type MoveLessonRequestObject struct {
+	LessonId LessonIdPath `json:"lessonId"`
+	Body     *MoveLessonJSONRequestBody
+}
+
+type MoveLessonResponseObject interface {
+	VisitMoveLessonResponse(w http.ResponseWriter) error
+}
+
+type MoveLesson201Response struct {
+}
+
+func (response MoveLesson201Response) VisitMoveLessonResponse(w http.ResponseWriter) error {
+	w.WriteHeader(201)
+	return nil
+}
+
+type MoveLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response MoveLesson400JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response MoveLesson401JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response MoveLesson403JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response MoveLesson404JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response MoveLesson500JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 type GetLessonProgressRequestObject struct {
 	LessonId LessonIdPath `json:"lessonId"`
 }
@@ -3724,6 +3818,9 @@ type StrictServerInterface interface {
 	// Mark lesson as completed
 	// (POST /course/lessons/{lessonId}/mark-completed)
 	MarkLessonAsCompleted(ctx context.Context, request MarkLessonAsCompletedRequestObject) (MarkLessonAsCompletedResponseObject, error)
+	// Move lesson
+	// (POST /course/lessons/{lessonId}/move)
+	MoveLesson(ctx context.Context, request MoveLessonRequestObject) (MoveLessonResponseObject, error)
 	// Get lesson progress
 	// (GET /course/lessons/{lessonId}/progress)
 	GetLessonProgress(ctx context.Context, request GetLessonProgressRequestObject) (GetLessonProgressResponseObject, error)
@@ -4661,6 +4758,41 @@ func (sh *strictHandler) MarkLessonAsCompleted(ctx *gin.Context, lessonId Lesson
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(MarkLessonAsCompletedResponseObject); ok {
 		if err := validResponse.VisitMarkLessonAsCompletedResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MoveLesson operation middleware
+func (sh *strictHandler) MoveLesson(ctx *gin.Context, lessonId LessonIdPath) {
+	var request MoveLessonRequestObject
+
+	request.LessonId = lessonId
+
+	var body MoveLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.MoveLesson(ctx, request.(MoveLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MoveLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(MoveLessonResponseObject); ok {
+		if err := validResponse.VisitMoveLessonResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

@@ -57,6 +57,24 @@ func (e LessonLessonType) Valid() bool {
 	}
 }
 
+// Defines values for LessonType.
+const (
+	LessonTypeTestLesson  LessonType = "TestLesson"
+	LessonTypeVideoLesson LessonType = "VideoLesson"
+)
+
+// Valid indicates whether the value is a known member of the LessonType enum.
+func (e LessonType) Valid() bool {
+	switch e {
+	case LessonTypeTestLesson:
+		return true
+	case LessonTypeVideoLesson:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TestLessonLessonType.
 const (
 	TestLessonLessonTypeTest  TestLessonLessonType = "test"
@@ -376,6 +394,9 @@ type LessonProgress struct {
 	UserId Id `json:"userId"`
 }
 
+// LessonType defines model for LessonType.
+type LessonType string
+
 // LessonPropertiesId defines model for Lesson_properties-id.
 type LessonPropertiesId = openapi_types.UUID
 
@@ -665,6 +686,19 @@ type CommentOnLessonJSONBody struct {
 	Content Content `json:"content"`
 }
 
+// MoveLessonJSONBody defines parameters for MoveLesson.
+type MoveLessonJSONBody struct {
+	AfterLesson *moveAfterLesson   `json:"afterLesson"`
+	SectionId   openapi_types.UUID `json:"sectionId"`
+	Type        LessonType         `json:"type"`
+}
+
+// moveAfterLesson defines parameters for MoveLesson.
+type moveAfterLesson struct {
+	Id   openapi_types.UUID `json:"id"`
+	Type LessonType         `json:"type"`
+}
+
 // SaveLessonProgressJSONBody defines parameters for SaveLessonProgress.
 type SaveLessonProgressJSONBody struct {
 	IsCompleted    *bool    `json:"isCompleted,omitempty"`
@@ -710,6 +744,9 @@ type EditLessonJSONRequestBody EditLessonJSONBody
 
 // CommentOnLessonJSONRequestBody defines body for CommentOnLesson for application/json ContentType.
 type CommentOnLessonJSONRequestBody CommentOnLessonJSONBody
+
+// MoveLessonJSONRequestBody defines body for MoveLesson for application/json ContentType.
+type MoveLessonJSONRequestBody MoveLessonJSONBody
 
 // SaveLessonProgressJSONRequestBody defines body for SaveLessonProgress for application/json ContentType.
 type SaveLessonProgressJSONRequestBody SaveLessonProgressJSONBody

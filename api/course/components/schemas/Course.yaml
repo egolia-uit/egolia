@@ -11,10 +11,6 @@ properties:
     type: string
     example: Introduction to Programming
 
-  slug:
-    type: string
-    example: introduction-to-programming
-
   instructorId:
     $ref: ../../../common/components/schemas/User.yaml#/properties/id
     example: '100'
@@ -31,7 +27,6 @@ properties:
 required:
   - id
   - title
-  - slug
   - instructorId
   - status
   - price
