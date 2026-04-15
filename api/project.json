@@ -53,9 +53,18 @@
       "dependsOn": ["^lint"]
     },
     "mock": {
-      "executor": "nx:noop",
+      "executor": "nx:run-commands",
       "continuous": true,
-      "dependsOn": ["^mock"]
+      "options": {
+        "command": "nx run-many --target=mock --projects=api/* --parallel"
+      }
+    },
+    "mock:watch": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "nx run-many --target=mock:watch --projects=api/* --parallel"
+      }
     },
     "gen:go": {
       "dependsOn": ["^gen:go"]
