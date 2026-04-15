@@ -14,8 +14,7 @@ type TestLessonRepo interface {
 }
 
 type TestLessonRepoGet struct {
-	ID        uuid.UUID
-	ForUpdate bool
+	ID uuid.UUID
 }
 
 type TestLessonRepoGetByPrevious struct {

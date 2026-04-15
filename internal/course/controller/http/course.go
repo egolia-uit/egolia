@@ -113,7 +113,20 @@ func (h *StrictHandler) DeleteLesson(ctx context.Context, request course.DeleteL
 }
 
 func (h *StrictHandler) GetLessonDetail(ctx context.Context, request course.GetLessonDetailRequestObject) (course.GetLessonDetailResponseObject, error) {
-	return nil, errs.Unimplemented
+	query := &app.GetLessonDetail{
+		LessonID: request.LessonId,
+	}
+	result, err := h.App.Queries.GetLessonDetail.Handle(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	lessonDetail, err := lessonDetailToDTO(result)
+	if err != nil {
+		return nil, err
+	}
+	return &course.GetLessonDetail200JSONResponse{
+		Data: *lessonDetail,
+	}, nil
 }
 
 func (h *StrictHandler) EditLesson(ctx context.Context, request course.EditLessonRequestObject) (course.EditLessonResponseObject, error) {
@@ -164,7 +177,7 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 	if err != nil {
 		return nil, err
 	}
-	return nil, errs.Unimplemented
+	return &course.MoveLesson201Response{}, errs.Unimplemented
 }
 
 func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.GetLessonProgressRequestObject) (course.GetLessonProgressResponseObject, error) {

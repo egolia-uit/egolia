@@ -48,6 +48,10 @@ const (
 
 type Lesson interface {
 	isLesson()
+	GetID() uuid.UUID
+	GetCourseID() uuid.UUID
+	GetTitle() string
+	GetLessonType() LessonType
 }
 
 type LessonBase struct {
@@ -59,7 +63,23 @@ type LessonBase struct {
 
 var _ Lesson = (*VideoLesson)(nil)
 
-func (v VideoLesson) isLesson() {}
+func (l *LessonBase) isLesson() {}
+
+func (l *LessonBase) GetID() uuid.UUID {
+	return l.ID
+}
+
+func (l *LessonBase) GetCourseID() uuid.UUID {
+	return l.CourseID
+}
+
+func (l *LessonBase) GetTitle() string {
+	return l.Title
+}
+
+func (l *LessonBase) GetLessonType() LessonType {
+	return l.LessonType
+}
 
 type VideoLesson struct {
 	LessonBase
@@ -79,9 +99,17 @@ type TestQuestion struct {
 	Answers  []TestAnwser
 }
 
+type TestLessonType string
+
+const (
+	TestLessonTypeMultipleChoice TestLessonType = "multipleChoice"
+	TestLessonTypeSingleChoice   TestLessonType = "singleChoice"
+)
+
 type TestLesson struct {
 	LessonBase
-	Questions []TestQuestion
+	TestLessonType TestLessonType
+	Questions      []TestQuestion
 }
 
 type CourseDetailSectionItem struct {
