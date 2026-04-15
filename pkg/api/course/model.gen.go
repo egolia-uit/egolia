@@ -296,7 +296,6 @@ type Course struct {
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	InstructorId Id           `json:"instructorId"`
 	Price        int64        `json:"price"`
-	Slug         string       `json:"slug"`
 	Status       CourseStatus `json:"status"`
 	Title        string       `json:"title"`
 }

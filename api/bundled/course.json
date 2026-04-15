@@ -2247,10 +2247,6 @@
             "type": "string",
             "example": "Introduction to Programming"
           },
-          "slug": {
-            "type": "string",
-            "example": "introduction-to-programming"
-          },
           "instructorId": {
             "$ref": "#/components/schemas/id",
             "example": "100",
@@ -2268,7 +2264,6 @@
         "required": [
           "id",
           "title",
-          "slug",
           "instructorId",
           "status",
           "price"
@@ -2702,7 +2697,7 @@
           "VideoLesson",
           "TestLesson"
         ],
-        "example": "Lesson"
+        "example": "VideoLesson"
       },
       "LessonComment": {
         "type": "object",

@@ -21,7 +21,6 @@ export type CourseId = string;
 export type CourseCourse = {
     readonly id: string;
     title: string;
-    slug: string;
     instructorId: CourseId;
     status: CourseCourseStatus;
     price: bigint;
@@ -333,7 +332,6 @@ export type BlogComment = {
 
 export type CourseCourseWritable = {
     title: string;
-    slug: string;
     status: CourseCourseStatus;
     price: bigint;
 };

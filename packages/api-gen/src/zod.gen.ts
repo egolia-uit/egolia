@@ -17,7 +17,6 @@ export const zCourseId = z.string();
 export const zCourseCourse = z.object({
     id: z.uuid().readonly(),
     title: z.string(),
-    slug: z.string(),
     instructorId: zCourseId,
     status: zCourseCourseStatus,
     price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
@@ -242,7 +241,6 @@ export const zBlogComment = z.object({
 
 export const zCourseCourseWritable = z.object({
     title: z.string(),
-    slug: z.string(),
     status: zCourseCourseStatus,
     price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 });
