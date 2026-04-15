@@ -90,6 +90,95 @@
             "$ref": "#/components/responses/InternalServerError"
           }
         }
+      },
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Search courses",
+        "operationId": "searchCourses",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Search term for course title or description",
+            "schema": {
+              "type": "string",
+              "example": "golang"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/statusQuery"
+          },
+          {
+            "name": "instructorId",
+            "in": "query",
+            "description": "Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results for courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
       }
     },
     "/course/courses-system": {
@@ -291,58 +380,6 @@
       }
     },
     "/course/courses/{courseId}": {
-      "get": {
-        "security": [
-          {
-            "Oauth2": []
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get course",
-        "operationId": "getCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Course detail",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "delete": {
         "security": [
           {
@@ -391,7 +428,7 @@
         "tags": [
           "Course"
         ],
-        "summary": "Get full course detail",
+        "summary": "Get course detail",
         "operationId": "getCourseDetail",
         "parameters": [
           {
@@ -445,8 +482,8 @@
         "tags": [
           "Course"
         ],
-        "summary": "Update course basic information",
-        "operationId": "changeBasicCourseInfo",
+        "summary": "Update course",
+        "operationId": "updatedCourse",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -524,24 +561,6 @@
             "$ref": "#/components/parameters/courseIdPath"
           }
         ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "referredByUserId": {
-                    "type": "string",
-                    "format": "number",
-                    "nullable": true,
-                    "example": "100"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "201": {
             "description": "Course enrollment created",
@@ -638,7 +657,7 @@
         "tags": [
           "Course"
         ],
-        "summary": "Finish course and issue certificate",
+        "summary": "Finish course",
         "operationId": "finishCourse",
         "parameters": [
           {
@@ -1431,12 +1450,6 @@
                     "type": "string",
                     "format": "uri",
                     "example": "https://cdn.egolia.localhost/videos/lesson-1.mp4"
-                  },
-                  "duration": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1,
-                    "example": 300
                   }
                 }
               }
@@ -2107,12 +2120,6 @@
       }
     },
     "schemas": {
-      "id": {
-        "type": "string",
-        "format": "number",
-        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
-        "example": "100"
-      },
       "CourseStatus": {
         "type": "string",
         "enum": [
@@ -2123,6 +2130,12 @@
         ],
         "default": "draft",
         "example": "draft"
+      },
+      "id": {
+        "type": "string",
+        "format": "number",
+        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
+        "example": "100"
       },
       "Course": {
         "type": "object",
@@ -2162,30 +2175,6 @@
           "instructorId",
           "status",
           "price"
-        ]
-      },
-      "Error": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "description": "Error code",
-            "example": "EXAMPLE_CODE"
-          },
-          "message": {
-            "type": "string",
-            "description": "Human-readable error message",
-            "example": "Example error"
-          },
-          "more_info": {
-            "type": "string",
-            "description": "URL with more information about the error",
-            "example": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
-          }
-        },
-        "required": [
-          "code",
-          "message"
         ]
       },
       "Pagination": {
@@ -2236,6 +2225,30 @@
           "hasPrev"
         ]
       },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "EXAMPLE_CODE"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Example error"
+          },
+          "more_info": {
+            "type": "string",
+            "description": "URL with more information about the error",
+            "example": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
       "properties-id": {
         "type": "string",
         "format": "uuid",
@@ -2267,24 +2280,63 @@
           "title"
         ]
       },
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+            "readOnly": true
+          },
+          "courseId": {
+            "$ref": "#/components/schemas/properties-id"
+          },
+          "title": {
+            "type": "string",
+            "example": "Introduction to Python"
+          },
+          "lessonType": {
+            "type": "string",
+            "enum": [
+              "video",
+              "test"
+            ],
+            "example": "video"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "courseId",
+          "lessonType"
+        ]
+      },
       "CourseDetailSectionItem": {
         "type": "object",
         "properties": {
           "section": {
-            "$ref": "#/components/schemas/Section"
-          },
-          "lessonIds": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "uuid"
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Section"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "lessons": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Lesson"
+                    }
+                  }
+                },
+                "required": [
+                  "lessons"
+                ]
+              }
+            ]
           }
-        },
-        "required": [
-          "section",
-          "lessonIds"
-        ]
+        }
       },
       "CourseDetail": {
         "type": "object",
@@ -2347,87 +2399,35 @@
           "isCompleted"
         ]
       },
-      "title": {
-        "type": "string",
-        "example": "Introduction to Programming"
-      },
-      "slug": {
-        "type": "string",
-        "example": "introduction-to-programming"
-      },
       "CourseLandingPage": {
         "type": "object",
         "properties": {
           "course": {
+            "$ref": "#/components/schemas/CourseDetail"
+          },
+          "overview": {
+            "type": "string",
+            "example": "Learn practical Go backend concepts in this beginner-friendly course."
+          },
+          "introduction": {
             "type": "object",
-            "x-go-type-name": "CourseLandingPageCourse",
+            "x-go-type-name": "CourseLandingPageIntroduction",
             "properties": {
-              "id": {
-                "$ref": "#/components/schemas/properties-id"
-              },
-              "title": {
-                "$ref": "#/components/schemas/title"
-              },
-              "slug": {
-                "$ref": "#/components/schemas/slug"
-              },
-              "instructorId": {
-                "$ref": "#/components/schemas/id"
-              },
-              "overview": {
+              "videoUrl": {
                 "type": "string",
-                "example": "Learn practical Go backend concepts in this beginner-friendly course."
-              },
-              "introduction": {
-                "type": "object",
-                "x-go-type-name": "CourseLandingPageIntroduction",
-                "properties": {
-                  "videoUrl": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
-                  }
-                },
-                "required": [
-                  "videoUrl"
-                ]
+                "format": "uri",
+                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
               }
             },
             "required": [
-              "id",
-              "title",
-              "slug",
-              "instructorId",
-              "overview",
-              "introduction"
+              "videoUrl"
             ]
           }
         },
         "required": [
-          "course"
-        ]
-      },
-      "Lesson": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
-            "readOnly": true
-          },
-          "courseId": {
-            "$ref": "#/components/schemas/properties-id"
-          },
-          "title": {
-            "type": "string",
-            "example": "Introduction to Python"
-          }
-        },
-        "required": [
-          "id",
-          "title",
-          "courseId"
+          "course",
+          "overview",
+          "introduction"
         ]
       },
       "VideoLesson": {
@@ -2693,6 +2693,112 @@
         ]
       }
     },
+    "parameters": {
+      "statusQuery": {
+        "name": "status",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/CourseStatus"
+        }
+      },
+      "pageQuery": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "example": 1
+      },
+      "limitQuery": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "example": 20
+      },
+      "orderQuery": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "example": "desc"
+        }
+      },
+      "instructorIdPath": {
+        "name": "instructorId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        }
+      },
+      "courseIdPath": {
+        "name": "courseId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/properties-id"
+        }
+      },
+      "sectionIdPath": {
+        "name": "sectionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
+      },
+      "lessonIdPath": {
+        "name": "lessonId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
+      },
+      "commentIdPath": {
+        "name": "commentId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the post comment",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
+      },
+      "certificateIdPath": {
+        "name": "certificateId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
+        }
+      }
+    },
     "responses": {
       "BadRequestError": {
         "description": "Bad Request Error response",
@@ -2799,112 +2905,6 @@
               "more_info": "https://api.egolia.com/docs/errors/NOT_FOUND"
             }
           }
-        }
-      }
-    },
-    "parameters": {
-      "statusQuery": {
-        "name": "status",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/CourseStatus"
-        }
-      },
-      "pageQuery": {
-        "name": "page",
-        "in": "query",
-        "description": "Page number for pagination",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1
-        },
-        "example": 1
-      },
-      "limitQuery": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 20
-        },
-        "example": 20
-      },
-      "orderQuery": {
-        "name": "order",
-        "in": "query",
-        "description": "Sort order",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc",
-          "example": "desc"
-        }
-      },
-      "instructorIdPath": {
-        "name": "instructorId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "123e4567-e89b-12d3-a456-426614174000"
-        }
-      },
-      "courseIdPath": {
-        "name": "courseId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "$ref": "#/components/schemas/properties-id"
-        }
-      },
-      "sectionIdPath": {
-        "name": "sectionId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
-        }
-      },
-      "lessonIdPath": {
-        "name": "lessonId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
-        }
-      },
-      "commentIdPath": {
-        "name": "commentId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the post comment",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
-      },
-      "certificateIdPath": {
-        "name": "certificateId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
         }
       }
     }

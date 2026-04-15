@@ -1,0 +1,43 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Search instructors
+  operationId: searchInstructors
+  parameters:
+    - name: q
+      in: query
+      required: false
+      description: Search term for instructor name or username
+      schema:
+        type: string
+        example: Be
+    - $ref: ../../common/components/parameters/pageQuery.yaml
+    - $ref: ../../common/components/parameters/limitQuery.yaml
+    - $ref: ../../common/components/parameters/orderQuery.yaml
+  responses:
+    200:
+      description: Search results for instructors
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: ../../common/components/schemas/User.yaml
+              pagination:
+                $ref: ../../common/components/schemas/Pagination.yaml
+            required:
+              - data
+              - pagination
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

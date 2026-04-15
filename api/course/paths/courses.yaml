@@ -29,3 +29,58 @@ post:
       $ref: ../../common/components/responses/ForbiddenError.yaml
     500:
       $ref: ../../common/components/responses/InternalServerError.yaml
+
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Course
+  summary: Search courses
+  operationId: searchCourses
+  parameters:
+    - name: q
+      in: query
+      required: false
+      description: Search term for course title or description
+      schema:
+        type: string
+        example: golang
+    - $ref: ../components/parameters/statusQuery.yaml
+    - name: instructorId
+      in: query
+      description: Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+          format: uuid
+    - $ref: ../../common/components/parameters/pageQuery.yaml
+    - $ref: ../../common/components/parameters/limitQuery.yaml
+    - $ref: ../../common/components/parameters/orderQuery.yaml
+  responses:
+    200:
+      description: Search results for courses
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: ../components/schemas/Course.yaml
+              pagination:
+                $ref: ../../common/components/schemas/Pagination.yaml
+            required:
+              - data
+              - pagination
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

@@ -3,25 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { approveCourse, bookmarkCourse, changeBasicCourseInfo, checkoutCourse, commentOnLesson, commentOnPost, createCourse, createLesson, createPost, createSection, createTest, declineCourse, deleteComment, deleteCourse, deleteLesson, deletePost, deleteSection, editLesson, enrollInCourse, finishCourse, getCertificateById, getCourse, getCourseDetail, getCourseLandingPage, getCourseProgress, getInstructorCourses, getLessonComments, getLessonDetail, getLessonProgress, getMyCertificates, getMyEnrolledCourses, getPlatformRevenueAnalytics, getPostById, getPostComments, getPublishedCourses, getSystemCourses, getTransactions, getUploadVideoLessonUrl, hideCourse, markLessonAsCompleted, type Options, replyComment, replyLessonComment, reviewCourse, saveLessonProgress, searchPosts, triggerLearningReminder, unbookmarkCourse, unhideCourse, updateComment, updatePost } from '../sdk.gen';
-import type { ApproveCourseData, ApproveCourseError, ApproveCourseResponse, BookmarkCourseData, BookmarkCourseError, ChangeBasicCourseInfoData, ChangeBasicCourseInfoError, ChangeBasicCourseInfoResponse, CheckoutCourseData, CheckoutCourseError, CheckoutCourseResponse, CommentOnLessonData, CommentOnLessonError, CommentOnPostData, CommentOnPostError, CommentOnPostResponse, CreateCourseData, CreateCourseError, CreateLessonData, CreateLessonError, CreatePostData, CreatePostError, CreatePostResponse, CreateSectionData, CreateSectionError, CreateTestData, CreateTestError, DeclineCourseData, DeclineCourseError, DeclineCourseResponse, DeleteCommentData, DeleteCommentError, DeleteCommentResponse, DeleteCourseData, DeleteCourseError, DeleteCourseResponse, DeleteLessonData, DeleteLessonError, DeleteLessonResponse, DeletePostData, DeletePostError, DeletePostResponse, DeleteSectionData, DeleteSectionError, DeleteSectionResponse, EditLessonData, EditLessonError, EditLessonResponse, EnrollInCourseData, EnrollInCourseError, FinishCourseData, FinishCourseError, FinishCourseResponse, GetCertificateByIdData, GetCertificateByIdError, GetCertificateByIdResponse, GetCourseData, GetCourseDetailData, GetCourseDetailError, GetCourseDetailResponse, GetCourseError, GetCourseLandingPageData, GetCourseLandingPageError, GetCourseLandingPageResponse, GetCourseProgressData, GetCourseProgressError, GetCourseProgressResponse, GetCourseResponse, GetInstructorCoursesData, GetInstructorCoursesError, GetInstructorCoursesResponse, GetLessonCommentsData, GetLessonCommentsError, GetLessonCommentsResponse, GetLessonDetailData, GetLessonDetailError, GetLessonDetailResponse, GetLessonProgressData, GetLessonProgressError, GetLessonProgressResponse, GetMyCertificatesData, GetMyCertificatesError, GetMyCertificatesResponse, GetMyEnrolledCoursesData, GetMyEnrolledCoursesError, GetMyEnrolledCoursesResponse, GetPlatformRevenueAnalyticsData, GetPlatformRevenueAnalyticsError, GetPlatformRevenueAnalyticsResponse, GetPostByIdData, GetPostByIdError, GetPostByIdResponse, GetPostCommentsData, GetPostCommentsError, GetPostCommentsResponse, GetPublishedCoursesData, GetPublishedCoursesError, GetPublishedCoursesResponse, GetSystemCoursesData, GetSystemCoursesError, GetSystemCoursesResponse, GetTransactionsData, GetTransactionsError, GetTransactionsResponse, GetUploadVideoLessonUrlData, GetUploadVideoLessonUrlError, GetUploadVideoLessonUrlResponse, HideCourseData, HideCourseError, HideCourseResponse, MarkLessonAsCompletedData, MarkLessonAsCompletedError, MarkLessonAsCompletedResponse, ReplyCommentData, ReplyCommentError, ReplyCommentResponse, ReplyLessonCommentData, ReplyLessonCommentError, ReviewCourseData, ReviewCourseError, SaveLessonProgressData, SaveLessonProgressError, SaveLessonProgressResponse, SearchPostsData, SearchPostsError, SearchPostsResponse, TriggerLearningReminderData, TriggerLearningReminderError, TriggerLearningReminderResponse, UnbookmarkCourseData, UnbookmarkCourseError, UnbookmarkCourseResponse, UnhideCourseData, UnhideCourseError, UnhideCourseResponse, UpdateCommentData, UpdateCommentError, UpdateCommentResponse, UpdatePostData, UpdatePostError, UpdatePostResponse } from '../types.gen';
-
-/**
- * Create course
- */
-export const createCourseMutation = (options?: Partial<Options<CreateCourseData>>): UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> => {
-    const mutationOptions: UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await createCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
+import { approveCourse, bookmarkCourse, checkoutCourse, commentOnLesson, commentOnPost, createCourse, createLesson, createPost, createSection, createTest, declineCourse, deleteComment, deleteCourse, deleteLesson, deletePost, deleteSection, editLesson, enrollInCourse, finishCourse, getCertificateById, getCourseDetail, getCourseLandingPage, getCourseProgress, getInstructorCourses, getLessonComments, getLessonDetail, getLessonProgress, getMyCertificates, getMyEnrolledCourses, getPlatformRevenueAnalytics, getPostById, getPostComments, getPublishedCourses, getSystemCourses, getTransactions, getUploadVideoLessonUrl, hideCourse, markLessonAsCompleted, type Options, replyComment, replyLessonComment, reviewCourse, saveLessonProgress, searchCourses, searchPosts, triggerLearningReminder, unbookmarkCourse, unhideCourse, updateComment, updatedCourse, updatePost } from '../sdk.gen';
+import type { ApproveCourseData, ApproveCourseError, ApproveCourseResponse, BookmarkCourseData, BookmarkCourseError, CheckoutCourseData, CheckoutCourseError, CheckoutCourseResponse, CommentOnLessonData, CommentOnLessonError, CommentOnPostData, CommentOnPostError, CommentOnPostResponse, CreateCourseData, CreateCourseError, CreateLessonData, CreateLessonError, CreatePostData, CreatePostError, CreatePostResponse, CreateSectionData, CreateSectionError, CreateTestData, CreateTestError, DeclineCourseData, DeclineCourseError, DeclineCourseResponse, DeleteCommentData, DeleteCommentError, DeleteCommentResponse, DeleteCourseData, DeleteCourseError, DeleteCourseResponse, DeleteLessonData, DeleteLessonError, DeleteLessonResponse, DeletePostData, DeletePostError, DeletePostResponse, DeleteSectionData, DeleteSectionError, DeleteSectionResponse, EditLessonData, EditLessonError, EditLessonResponse, EnrollInCourseData, EnrollInCourseError, FinishCourseData, FinishCourseError, FinishCourseResponse, GetCertificateByIdData, GetCertificateByIdError, GetCertificateByIdResponse, GetCourseDetailData, GetCourseDetailError, GetCourseDetailResponse, GetCourseLandingPageData, GetCourseLandingPageError, GetCourseLandingPageResponse, GetCourseProgressData, GetCourseProgressError, GetCourseProgressResponse, GetInstructorCoursesData, GetInstructorCoursesError, GetInstructorCoursesResponse, GetLessonCommentsData, GetLessonCommentsError, GetLessonCommentsResponse, GetLessonDetailData, GetLessonDetailError, GetLessonDetailResponse, GetLessonProgressData, GetLessonProgressError, GetLessonProgressResponse, GetMyCertificatesData, GetMyCertificatesError, GetMyCertificatesResponse, GetMyEnrolledCoursesData, GetMyEnrolledCoursesError, GetMyEnrolledCoursesResponse, GetPlatformRevenueAnalyticsData, GetPlatformRevenueAnalyticsError, GetPlatformRevenueAnalyticsResponse, GetPostByIdData, GetPostByIdError, GetPostByIdResponse, GetPostCommentsData, GetPostCommentsError, GetPostCommentsResponse, GetPublishedCoursesData, GetPublishedCoursesError, GetPublishedCoursesResponse, GetSystemCoursesData, GetSystemCoursesError, GetSystemCoursesResponse, GetTransactionsData, GetTransactionsError, GetTransactionsResponse, GetUploadVideoLessonUrlData, GetUploadVideoLessonUrlError, GetUploadVideoLessonUrlResponse, HideCourseData, HideCourseError, HideCourseResponse, MarkLessonAsCompletedData, MarkLessonAsCompletedError, MarkLessonAsCompletedResponse, ReplyCommentData, ReplyCommentError, ReplyCommentResponse, ReplyLessonCommentData, ReplyLessonCommentError, ReviewCourseData, ReviewCourseError, SaveLessonProgressData, SaveLessonProgressError, SaveLessonProgressResponse, SearchCoursesData, SearchCoursesError, SearchCoursesResponse, SearchPostsData, SearchPostsError, SearchPostsResponse, TriggerLearningReminderData, TriggerLearningReminderError, TriggerLearningReminderResponse, UnbookmarkCourseData, UnbookmarkCourseError, UnbookmarkCourseResponse, UnhideCourseData, UnhideCourseError, UnhideCourseResponse, UpdateCommentData, UpdateCommentError, UpdateCommentResponse, UpdatedCourseData, UpdatedCourseError, UpdatedCourseResponse, UpdatePostData, UpdatePostError, UpdatePostResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -56,14 +39,14 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
-export const getSystemCoursesQueryKey = (options?: Options<GetSystemCoursesData>) => createQueryKey('getSystemCourses', options);
+export const searchCoursesQueryKey = (options?: Options<SearchCoursesData>) => createQueryKey('searchCourses', options);
 
 /**
- * Get system courses
+ * Search courses
  */
-export const getSystemCoursesOptions = (options?: Options<GetSystemCoursesData>) => queryOptions<GetSystemCoursesResponse, GetSystemCoursesError, GetSystemCoursesResponse, ReturnType<typeof getSystemCoursesQueryKey>>({
+export const searchCoursesOptions = (options?: Options<SearchCoursesData>) => queryOptions<SearchCoursesResponse, SearchCoursesError, SearchCoursesResponse, ReturnType<typeof searchCoursesQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getSystemCourses({
+        const { data } = await searchCourses({
             ...options,
             ...queryKey[0],
             signal,
@@ -71,7 +54,7 @@ export const getSystemCoursesOptions = (options?: Options<GetSystemCoursesData>)
         });
         return data;
     },
-    queryKey: getSystemCoursesQueryKey(options)
+    queryKey: searchCoursesQueryKey(options)
 });
 
 const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>>(queryKey: QueryKey<Options>, page: K) => {
@@ -102,6 +85,68 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
     }
     return params as unknown as typeof page;
 };
+
+export const searchCoursesInfiniteQueryKey = (options?: Options<SearchCoursesData>): QueryKey<Options<SearchCoursesData>> => createQueryKey('searchCourses', options, true);
+
+/**
+ * Search courses
+ */
+export const searchCoursesInfiniteOptions = (options?: Options<SearchCoursesData>) => infiniteQueryOptions<SearchCoursesResponse, SearchCoursesError, InfiniteData<SearchCoursesResponse>, QueryKey<Options<SearchCoursesData>>, number | Pick<QueryKey<Options<SearchCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<SearchCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await searchCourses({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchCoursesInfiniteQueryKey(options)
+});
+
+/**
+ * Create course
+ */
+export const createCourseMutation = (options?: Partial<Options<CreateCourseData>>): UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> => {
+    const mutationOptions: UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getSystemCoursesQueryKey = (options?: Options<GetSystemCoursesData>) => createQueryKey('getSystemCourses', options);
+
+/**
+ * Get system courses
+ */
+export const getSystemCoursesOptions = (options?: Options<GetSystemCoursesData>) => queryOptions<GetSystemCoursesResponse, GetSystemCoursesError, GetSystemCoursesResponse, ReturnType<typeof getSystemCoursesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSystemCourses({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSystemCoursesQueryKey(options)
+});
 
 export const getSystemCoursesInfiniteQueryKey = (options?: Options<GetSystemCoursesData>): QueryKey<Options<GetSystemCoursesData>> => createQueryKey('getSystemCourses', options, true);
 
@@ -237,28 +282,10 @@ export const deleteCourseMutation = (options?: Partial<Options<DeleteCourseData>
     return mutationOptions;
 };
 
-export const getCourseQueryKey = (options: Options<GetCourseData>) => createQueryKey('getCourse', options);
-
-/**
- * Get course
- */
-export const getCourseOptions = (options: Options<GetCourseData>) => queryOptions<GetCourseResponse, GetCourseError, GetCourseResponse, ReturnType<typeof getCourseQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getCourse({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCourseQueryKey(options)
-});
-
 export const getCourseDetailQueryKey = (options: Options<GetCourseDetailData>) => createQueryKey('getCourseDetail', options);
 
 /**
- * Get full course detail
+ * Get course detail
  */
 export const getCourseDetailOptions = (options: Options<GetCourseDetailData>) => queryOptions<GetCourseDetailResponse, GetCourseDetailError, GetCourseDetailResponse, ReturnType<typeof getCourseDetailQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -274,12 +301,12 @@ export const getCourseDetailOptions = (options: Options<GetCourseDetailData>) =>
 });
 
 /**
- * Update course basic information
+ * Update course
  */
-export const changeBasicCourseInfoMutation = (options?: Partial<Options<ChangeBasicCourseInfoData>>): UseMutationOptions<ChangeBasicCourseInfoResponse, ChangeBasicCourseInfoError, Options<ChangeBasicCourseInfoData>> => {
-    const mutationOptions: UseMutationOptions<ChangeBasicCourseInfoResponse, ChangeBasicCourseInfoError, Options<ChangeBasicCourseInfoData>> = {
+export const updatedCourseMutation = (options?: Partial<Options<UpdatedCourseData>>): UseMutationOptions<UpdatedCourseResponse, UpdatedCourseError, Options<UpdatedCourseData>> => {
+    const mutationOptions: UseMutationOptions<UpdatedCourseResponse, UpdatedCourseError, Options<UpdatedCourseData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await changeBasicCourseInfo({
+            const { data } = await updatedCourse({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -326,7 +353,7 @@ export const getCourseProgressOptions = (options: Options<GetCourseProgressData>
 });
 
 /**
- * Finish course and issue certificate
+ * Finish course
  */
 export const finishCourseMutation = (options?: Partial<Options<FinishCourseData>>): UseMutationOptions<FinishCourseResponse, FinishCourseError, Options<FinishCourseData>> => {
     const mutationOptions: UseMutationOptions<FinishCourseResponse, FinishCourseError, Options<FinishCourseData>> = {

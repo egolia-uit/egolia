@@ -14,7 +14,15 @@ properties:
     type: string
     example: Introduction to Python
 
+  lessonType:
+    type: string
+    enum:
+      - video
+      - test
+    example: video
+
 required:
   - id
   - title
   - courseId
+  - lessonType

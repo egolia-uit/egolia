@@ -60,11 +60,6 @@ patch:
               type: string
               format: uri
               example: https://cdn.egolia.localhost/videos/lesson-1.mp4
-            duration:
-              type: integer
-              format: int64
-              minimum: 1
-              example: 300
   responses:
     204:
       description: Lesson successfully updated

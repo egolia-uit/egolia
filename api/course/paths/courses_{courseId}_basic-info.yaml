@@ -3,8 +3,8 @@ patch:
     - Oauth2: []
   tags:
     - Course
-  summary: Update course basic information
-  operationId: changeBasicCourseInfo
+  summary: Update course
+  operationId: updatedCourse
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:

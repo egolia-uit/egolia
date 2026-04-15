@@ -3,7 +3,7 @@ post:
     - Oauth2: []
   tags:
     - Course
-  summary: Finish course and issue certificate
+  summary: Finish course
   operationId: finishCourse
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml

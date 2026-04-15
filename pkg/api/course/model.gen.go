@@ -39,6 +39,42 @@ func (e CourseStatus) Valid() bool {
 	}
 }
 
+// Defines values for LessonLessonType.
+const (
+	LessonLessonTypeTest  LessonLessonType = "test"
+	LessonLessonTypeVideo LessonLessonType = "video"
+)
+
+// Valid indicates whether the value is a known member of the LessonLessonType enum.
+func (e LessonLessonType) Valid() bool {
+	switch e {
+	case LessonLessonTypeTest:
+		return true
+	case LessonLessonTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for TestLessonLessonType.
+const (
+	TestLessonLessonTypeTest  TestLessonLessonType = "test"
+	TestLessonLessonTypeVideo TestLessonLessonType = "video"
+)
+
+// Valid indicates whether the value is a known member of the TestLessonLessonType enum.
+func (e TestLessonLessonType) Valid() bool {
+	switch e {
+	case TestLessonLessonTypeTest:
+		return true
+	case TestLessonLessonTypeVideo:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TestLessonType.
 const (
 	TestLessonTypeMultipleChoice TestLessonType = "multipleChoice"
@@ -51,6 +87,24 @@ func (e TestLessonType) Valid() bool {
 	case TestLessonTypeMultipleChoice:
 		return true
 	case TestLessonTypeSingleChoice:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for VideoLessonLessonType.
+const (
+	VideoLessonLessonTypeTest  VideoLessonLessonType = "test"
+	VideoLessonLessonTypeVideo VideoLessonLessonType = "video"
+)
+
+// Valid indicates whether the value is a known member of the VideoLessonLessonType enum.
+func (e VideoLessonLessonType) Valid() bool {
+	switch e {
+	case VideoLessonLessonTypeTest:
+		return true
+	case VideoLessonLessonTypeVideo:
 		return true
 	default:
 		return false
@@ -111,6 +165,24 @@ func (e GetMyCertificatesParamsOrder) Valid() bool {
 	case GetMyCertificatesParamsOrderAsc:
 		return true
 	case GetMyCertificatesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for SearchCoursesParamsOrder.
+const (
+	SearchCoursesParamsOrderAsc  SearchCoursesParamsOrder = "asc"
+	SearchCoursesParamsOrderDesc SearchCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the SearchCoursesParamsOrder enum.
+func (e SearchCoursesParamsOrder) Valid() bool {
+	switch e {
+	case SearchCoursesParamsOrderAsc:
+		return true
+	case SearchCoursesParamsOrderDesc:
 		return true
 	default:
 		return false
@@ -219,30 +291,24 @@ type CourseDetail struct {
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
 type CourseDetailSectionItem struct {
-	LessonIds []openapi_types.UUID `json:"lessonIds"`
-	Section   Section              `json:"section"`
+	Section *struct {
+		CourseId *PropertiesId       `json:"courseId,omitempty"`
+		Id       *openapi_types.UUID `json:"id,omitempty"`
+		Lessons  []Lesson            `json:"lessons"`
+		Title    string              `json:"title"`
+	} `json:"section,omitempty"`
 }
 
 // CourseLandingPage defines model for CourseLandingPage.
 type CourseLandingPage struct {
-	Course CourseLandingPageCourse `json:"course"`
+	Course       CourseDetail                  `json:"course"`
+	Introduction CourseLandingPageIntroduction `json:"introduction"`
+	Overview     string                        `json:"overview"`
 }
 
 // CourseLandingPageIntroduction defines model for .
 type CourseLandingPageIntroduction struct {
 	VideoUrl string `json:"videoUrl"`
-}
-
-// CourseLandingPageCourse defines model for .
-type CourseLandingPageCourse struct {
-	Id *PropertiesId `json:"id,omitempty"`
-
-	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	InstructorId Id                            `json:"instructorId"`
-	Introduction CourseLandingPageIntroduction `json:"introduction"`
-	Overview     string                        `json:"overview"`
-	Slug         Slug                          `json:"slug"`
-	Title        Title                         `json:"title"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -274,10 +340,14 @@ type Error struct {
 
 // Lesson defines model for Lesson.
 type Lesson struct {
-	CourseId *PropertiesId       `json:"courseId,omitempty"`
-	Id       *openapi_types.UUID `json:"id,omitempty"`
-	Title    string              `json:"title"`
+	CourseId   *PropertiesId       `json:"courseId,omitempty"`
+	Id         *openapi_types.UUID `json:"id,omitempty"`
+	LessonType LessonLessonType    `json:"lessonType"`
+	Title      string              `json:"title"`
 }
+
+// LessonLessonType defines model for Lesson.LessonType.
+type LessonLessonType string
 
 // LessonComment defines model for LessonComment.
 type LessonComment struct {
@@ -346,12 +416,16 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	CourseId  *PropertiesId       `json:"courseId,omitempty"`
-	Id        *openapi_types.UUID `json:"id,omitempty"`
-	Questions []TestQuestion      `json:"questions"`
-	Title     string              `json:"title"`
-	Type      TestLessonType      `json:"type"`
+	CourseId   *PropertiesId        `json:"courseId,omitempty"`
+	Id         *openapi_types.UUID  `json:"id,omitempty"`
+	LessonType TestLessonLessonType `json:"lessonType"`
+	Questions  []TestQuestion       `json:"questions"`
+	Title      string               `json:"title"`
+	Type       TestLessonType       `json:"type"`
 }
+
+// TestLessonLessonType defines model for TestLesson.LessonType.
+type TestLessonLessonType string
 
 // TestLessonType defines model for TestLesson.Type.
 type TestLessonType string
@@ -372,12 +446,16 @@ type UploadVideoUrlResponse struct {
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	CourseId *PropertiesId       `json:"courseId,omitempty"`
-	Duration int64               `json:"duration"`
-	Id       *openapi_types.UUID `json:"id,omitempty"`
-	Title    string              `json:"title"`
-	VideoUrl string              `json:"videoUrl"`
+	CourseId   *PropertiesId         `json:"courseId,omitempty"`
+	Duration   int64                 `json:"duration"`
+	Id         *openapi_types.UUID   `json:"id,omitempty"`
+	LessonType VideoLessonLessonType `json:"lessonType"`
+	Title      string                `json:"title"`
+	VideoUrl   string                `json:"videoUrl"`
 }
+
+// VideoLessonLessonType defines model for VideoLesson.LessonType.
+type VideoLessonLessonType string
 
 // Content defines model for content.
 type Content = string
@@ -387,12 +465,6 @@ type Id = string
 
 // PropertiesId defines model for properties-id.
 type PropertiesId = openapi_types.UUID
-
-// Slug defines model for slug.
-type Slug = string
-
-// Title defines model for title.
-type Title = string
 
 // CertificateIdPath defines model for certificateIdPath.
 type CertificateIdPath = openapi_types.UUID
@@ -466,6 +538,28 @@ type GetMyCertificatesParams struct {
 // GetMyCertificatesParamsOrder defines parameters for GetMyCertificates.
 type GetMyCertificatesParamsOrder string
 
+// SearchCoursesParams defines parameters for SearchCourses.
+type SearchCoursesParams struct {
+	// Q Search term for course title or description
+	Q      *string      `form:"q,omitempty" json:"q,omitempty"`
+	Status *StatusQuery `form:"status,omitempty" json:"status,omitempty"`
+
+	// InstructorId Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
+	InstructorId *[]openapi_types.UUID `form:"instructorId,omitempty" json:"instructorId,omitempty"`
+
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *SearchCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// SearchCoursesParamsOrder defines parameters for SearchCourses.
+type SearchCoursesParamsOrder string
+
 // GetInstructorCoursesParams defines parameters for GetInstructorCourses.
 type GetInstructorCoursesParams struct {
 	Status *StatusQuery `form:"status,omitempty" json:"status,omitempty"`
@@ -530,8 +624,8 @@ type GetMyEnrolledCoursesParams struct {
 // GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParamsOrder string
 
-// ChangeBasicCourseInfoJSONBody defines parameters for ChangeBasicCourseInfo.
-type ChangeBasicCourseInfoJSONBody struct {
+// UpdatedCourseJSONBody defines parameters for UpdatedCourse.
+type UpdatedCourseJSONBody struct {
 	Price  *int64        `json:"price,omitempty"`
 	Slug   *string       `json:"slug,omitempty"`
 	Status *CourseStatus `json:"status,omitempty"`
@@ -541,11 +635,6 @@ type ChangeBasicCourseInfoJSONBody struct {
 // DeclineCourseJSONBody defines parameters for DeclineCourse.
 type DeclineCourseJSONBody struct {
 	Reason *string `json:"reason,omitempty"`
-}
-
-// EnrollInCourseJSONBody defines parameters for EnrollInCourse.
-type EnrollInCourseJSONBody struct {
-	ReferredByUserId *string `json:"referredByUserId,omitempty"`
 }
 
 // ReviewCourseJSONBody defines parameters for ReviewCourse.
@@ -572,7 +661,6 @@ type CreateLessonJSONBody struct {
 
 // EditLessonJSONBody defines parameters for EditLesson.
 type EditLessonJSONBody struct {
-	Duration         *int64              `json:"duration,omitempty"`
 	PreviousLessonId *openapi_types.UUID `json:"previousLessonId,omitempty"`
 	Title            *string             `json:"title,omitempty"`
 	VideoUrl         *string             `json:"videoUrl,omitempty"`
@@ -605,14 +693,11 @@ type CreateSectionJSONBody struct {
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course
 
-// ChangeBasicCourseInfoJSONRequestBody defines body for ChangeBasicCourseInfo for application/json ContentType.
-type ChangeBasicCourseInfoJSONRequestBody ChangeBasicCourseInfoJSONBody
+// UpdatedCourseJSONRequestBody defines body for UpdatedCourse for application/json ContentType.
+type UpdatedCourseJSONRequestBody UpdatedCourseJSONBody
 
 // DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
 type DeclineCourseJSONRequestBody DeclineCourseJSONBody
-
-// EnrollInCourseJSONRequestBody defines body for EnrollInCourse for application/json ContentType.
-type EnrollInCourseJSONRequestBody EnrollInCourseJSONBody
 
 // ReviewCourseJSONRequestBody defines body for ReviewCourse for application/json ContentType.
 type ReviewCourseJSONRequestBody ReviewCourseJSONBody

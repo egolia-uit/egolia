@@ -7,18 +7,6 @@ post:
   operationId: enrollInCourse
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
-  requestBody:
-    required: false
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            referredByUserId:
-              type: string
-              format: number
-              nullable: true
-              example: '100'
   responses:
     201:
       description: Course enrollment created

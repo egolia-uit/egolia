@@ -4,11 +4,6 @@ export type ClientOptions = {
     baseUrl: 'http://api.egolia.localhost' | (string & {});
 };
 
-/**
- * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
- */
-export type CourseId = string;
-
 export const CourseCourseStatus = {
     DRAFT: 'draft',
     APPROVED: 'approved',
@@ -18,6 +13,11 @@ export const CourseCourseStatus = {
 
 export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
 
+/**
+ * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+ */
+export type CourseId = string;
+
 export type CourseCourse = {
     readonly id: string;
     title: string;
@@ -25,21 +25,6 @@ export type CourseCourse = {
     instructorId: CourseId;
     status: CourseCourseStatus;
     price: bigint;
-};
-
-export type CourseError = {
-    /**
-     * Error code
-     */
-    code: string;
-    /**
-     * Human-readable error message
-     */
-    message: string;
-    /**
-     * URL with more information about the error
-     */
-    more_info?: string;
 };
 
 export type CoursePagination = {
@@ -69,6 +54,21 @@ export type CoursePagination = {
     hasPrev: boolean;
 };
 
+export type CourseError = {
+    /**
+     * Error code
+     */
+    code: string;
+    /**
+     * Human-readable error message
+     */
+    message: string;
+    /**
+     * URL with more information about the error
+     */
+    more_info?: string;
+};
+
 export type CoursePropertiesId = string;
 
 export type CourseSection = {
@@ -77,9 +77,17 @@ export type CourseSection = {
     title: string;
 };
 
+export type CourseLesson = {
+    readonly id: string;
+    courseId: CoursePropertiesId;
+    title: string;
+    lessonType: 'video' | 'test';
+};
+
 export type CourseCourseDetailSectionItem = {
-    section: CourseSection;
-    lessonIds: Array<string>;
+    section?: CourseSection & {
+        lessons: Array<CourseLesson>;
+    };
 };
 
 export type CourseCourseDetail = {
@@ -96,27 +104,12 @@ export type CourseCourseProgress = {
     isCompleted: boolean;
 };
 
-export type CourseTitle = string;
-
-export type CourseSlug = string;
-
 export type CourseCourseLandingPage = {
-    course: {
-        id: CoursePropertiesId;
-        title: CourseTitle;
-        slug: CourseSlug;
-        instructorId: CourseId;
-        overview: string;
-        introduction: {
-            videoUrl: string;
-        };
+    course: CourseCourseDetail;
+    overview: string;
+    introduction: {
+        videoUrl: string;
     };
-};
-
-export type CourseLesson = {
-    readonly id: string;
-    courseId: CoursePropertiesId;
-    title: string;
 };
 
 export type CourseVideoLesson = CourseLesson & {
@@ -351,9 +344,15 @@ export type CourseSectionWritable = {
     title: string;
 };
 
+export type CourseLessonWritable = {
+    title: string;
+    lessonType: 'video' | 'test';
+};
+
 export type CourseCourseDetailSectionItemWritable = {
-    section: CourseSectionWritable;
-    lessonIds: Array<string>;
+    section?: CourseSectionWritable & {
+        lessons: Array<CourseLessonWritable>;
+    };
 };
 
 export type CourseCourseDetailWritable = {
@@ -370,19 +369,11 @@ export type CourseCourseProgressWritable = {
 };
 
 export type CourseCourseLandingPageWritable = {
-    course: {
-        title: CourseTitle;
-        slug: CourseSlug;
-        instructorId: CourseId;
-        overview: string;
-        introduction: {
-            videoUrl: string;
-        };
+    course: CourseCourseDetailWritable;
+    overview: string;
+    introduction: {
+        videoUrl: string;
     };
-};
-
-export type CourseLessonWritable = {
-    title: string;
 };
 
 export type CourseVideoLessonWritable = CourseLessonWritable & {
@@ -524,6 +515,81 @@ export type BlogPostIdPath = string;
  * Unique identifier of the post comment
  */
 export type BlogCommentIdPath = string;
+
+export type SearchCoursesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Search term for course title or description
+         */
+        q?: string;
+        status?: CourseCourseStatus;
+        /**
+         * Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
+         */
+        instructorId?: Array<string>;
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/courses';
+};
+
+export type SearchCoursesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type SearchCoursesError = SearchCoursesErrors[keyof SearchCoursesErrors];
+
+export type SearchCoursesResponses = {
+    /**
+     * Search results for courses
+     */
+    200: {
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
+    };
+};
+
+export type SearchCoursesResponse = SearchCoursesResponses[keyof SearchCoursesResponses];
 
 export type CreateCourseData = {
     body: CourseCourseWritable;
@@ -814,64 +880,6 @@ export type DeleteCourseResponses = {
 
 export type DeleteCourseResponse = DeleteCourseResponses[keyof DeleteCourseResponses];
 
-export type GetCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}';
-};
-
-export type GetCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * The error response body returned when JWT validation or OPA authorization fails.
-     */
-    401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
-
-export type GetCourseResponses = {
-    /**
-     * Course detail
-     */
-    200: {
-        data: CourseCourse;
-    };
-};
-
-export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
-
 export type GetCourseDetailData = {
     body?: never;
     path: {
@@ -930,7 +938,7 @@ export type GetCourseDetailResponses = {
 
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
 
-export type ChangeBasicCourseInfoData = {
+export type UpdatedCourseData = {
     body: {
         title?: string;
         slug?: string;
@@ -944,7 +952,7 @@ export type ChangeBasicCourseInfoData = {
     url: '/course/courses/{courseId}/basic-info';
 };
 
-export type ChangeBasicCourseInfoErrors = {
+export type UpdatedCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -980,21 +988,19 @@ export type ChangeBasicCourseInfoErrors = {
     500: CourseError;
 };
 
-export type ChangeBasicCourseInfoError = ChangeBasicCourseInfoErrors[keyof ChangeBasicCourseInfoErrors];
+export type UpdatedCourseError = UpdatedCourseErrors[keyof UpdatedCourseErrors];
 
-export type ChangeBasicCourseInfoResponses = {
+export type UpdatedCourseResponses = {
     /**
      * Course basic information updated
      */
     204: void;
 };
 
-export type ChangeBasicCourseInfoResponse = ChangeBasicCourseInfoResponses[keyof ChangeBasicCourseInfoResponses];
+export type UpdatedCourseResponse = UpdatedCourseResponses[keyof UpdatedCourseResponses];
 
 export type EnrollInCourseData = {
-    body?: {
-        referredByUserId?: string | null;
-    };
+    body?: never;
     path: {
         courseId: CoursePropertiesId;
     };
@@ -1993,7 +1999,6 @@ export type EditLessonData = {
         title?: string;
         previousLessonId?: string | null;
         videoUrl?: string;
-        duration?: bigint;
     };
     path: {
         lessonId: string;

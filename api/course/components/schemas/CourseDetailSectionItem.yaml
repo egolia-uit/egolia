@@ -1,12 +1,13 @@
 type: object
 properties:
   section:
-    $ref: ./Section.yaml
-  lessonIds:
-    type: array
-    items:
-      type: string
-      format: uuid
-required:
-  - section
-  - lessonIds
+    allOf:
+      - $ref: ./Section.yaml
+      - type: object
+        properties:
+          lessons:
+            type: array
+            items:
+              $ref: ./Lesson.yaml
+        required:
+          - lessons

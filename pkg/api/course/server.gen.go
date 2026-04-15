@@ -24,6 +24,9 @@ type ServerInterface interface {
 	// Get certificate by id
 	// (GET /course/certificates/{certificateId})
 	GetCertificateById(c *gin.Context, certificateId CertificateIdPath)
+	// Search courses
+	// (GET /course/courses)
+	SearchCourses(c *gin.Context, params SearchCoursesParams)
 	// Create course
 	// (POST /course/courses)
 	CreateCourse(c *gin.Context)
@@ -42,28 +45,25 @@ type ServerInterface interface {
 	// Delete course
 	// (DELETE /course/courses/{courseId})
 	DeleteCourse(c *gin.Context, courseId CourseIdPath)
-	// Get course
-	// (GET /course/courses/{courseId})
-	GetCourse(c *gin.Context, courseId CourseIdPath)
 	// Approve course
 	// (POST /course/courses/{courseId}/approve)
 	ApproveCourse(c *gin.Context, courseId CourseIdPath)
-	// Update course basic information
+	// Update course
 	// (PATCH /course/courses/{courseId}/basic-info)
-	ChangeBasicCourseInfo(c *gin.Context, courseId CourseIdPath)
+	UpdatedCourse(c *gin.Context, courseId CourseIdPath)
 	// Bookmark course
 	// (POST /course/courses/{courseId}/bookmark)
 	BookmarkCourse(c *gin.Context, courseId CourseIdPath)
 	// Decline course
 	// (POST /course/courses/{courseId}/decline)
 	DeclineCourse(c *gin.Context, courseId CourseIdPath)
-	// Get full course detail
+	// Get course detail
 	// (GET /course/courses/{courseId}/detail)
 	GetCourseDetail(c *gin.Context, courseId CourseIdPath)
 	// Enroll in course
 	// (POST /course/courses/{courseId}/enroll)
 	EnrollInCourse(c *gin.Context, courseId CourseIdPath)
-	// Finish course and issue certificate
+	// Finish course
 	// (POST /course/courses/{courseId}/finish)
 	FinishCourse(c *gin.Context, courseId CourseIdPath)
 	// Hide course
@@ -208,6 +208,74 @@ func (siw *ServerInterfaceWrapper) GetCertificateById(c *gin.Context) {
 	}
 
 	siw.Handler.GetCertificateById(c, certificateId)
+}
+
+// SearchCourses operation middleware
+func (siw *ServerInterfaceWrapper) SearchCourses(c *gin.Context) {
+
+	var err error
+
+	c.Set(Oauth2Scopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params SearchCoursesParams
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "q", c.Request.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter q: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "status" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", c.Request.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter status: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "instructorId" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "instructorId", c.Request.URL.Query(), &params.InstructorId, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter instructorId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "order" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.SearchCourses(c, params)
 }
 
 // CreateCourse operation middleware
@@ -452,32 +520,6 @@ func (siw *ServerInterfaceWrapper) DeleteCourse(c *gin.Context) {
 	siw.Handler.DeleteCourse(c, courseId)
 }
 
-// GetCourse operation middleware
-func (siw *ServerInterfaceWrapper) GetCourse(c *gin.Context) {
-
-	var err error
-
-	// ------------- Path parameter "courseId" -------------
-	var courseId CourseIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(Oauth2Scopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetCourse(c, courseId)
-}
-
 // ApproveCourse operation middleware
 func (siw *ServerInterfaceWrapper) ApproveCourse(c *gin.Context) {
 
@@ -504,8 +546,8 @@ func (siw *ServerInterfaceWrapper) ApproveCourse(c *gin.Context) {
 	siw.Handler.ApproveCourse(c, courseId)
 }
 
-// ChangeBasicCourseInfo operation middleware
-func (siw *ServerInterfaceWrapper) ChangeBasicCourseInfo(c *gin.Context) {
+// UpdatedCourse operation middleware
+func (siw *ServerInterfaceWrapper) UpdatedCourse(c *gin.Context) {
 
 	var err error
 
@@ -527,7 +569,7 @@ func (siw *ServerInterfaceWrapper) ChangeBasicCourseInfo(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.ChangeBasicCourseInfo(c, courseId)
+	siw.Handler.UpdatedCourse(c, courseId)
 }
 
 // BookmarkCourse operation middleware
@@ -1211,15 +1253,15 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 
 	router.GET(options.BaseURL+"/course/certificates/me", wrapper.GetMyCertificates)
 	router.GET(options.BaseURL+"/course/certificates/:certificateId", wrapper.GetCertificateById)
+	router.GET(options.BaseURL+"/course/courses", wrapper.SearchCourses)
 	router.POST(options.BaseURL+"/course/courses", wrapper.CreateCourse)
 	router.GET(options.BaseURL+"/course/courses-by-instructor/:instructorId", wrapper.GetInstructorCourses)
 	router.GET(options.BaseURL+"/course/courses-published", wrapper.GetPublishedCourses)
 	router.GET(options.BaseURL+"/course/courses-system", wrapper.GetSystemCourses)
 	router.GET(options.BaseURL+"/course/courses/me/enrolled", wrapper.GetMyEnrolledCourses)
 	router.DELETE(options.BaseURL+"/course/courses/:courseId", wrapper.DeleteCourse)
-	router.GET(options.BaseURL+"/course/courses/:courseId", wrapper.GetCourse)
 	router.POST(options.BaseURL+"/course/courses/:courseId/approve", wrapper.ApproveCourse)
-	router.PATCH(options.BaseURL+"/course/courses/:courseId/basic-info", wrapper.ChangeBasicCourseInfo)
+	router.PATCH(options.BaseURL+"/course/courses/:courseId/basic-info", wrapper.UpdatedCourse)
 	router.POST(options.BaseURL+"/course/courses/:courseId/bookmark", wrapper.BookmarkCourse)
 	router.POST(options.BaseURL+"/course/courses/:courseId/decline", wrapper.DeclineCourse)
 	router.GET(options.BaseURL+"/course/courses/:courseId/detail", wrapper.GetCourseDetail)
@@ -1376,6 +1418,64 @@ type GetCertificateById500JSONResponse struct {
 }
 
 func (response GetCertificateById500JSONResponse) VisitGetCertificateByIdResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchCoursesRequestObject struct {
+	Params SearchCoursesParams
+}
+
+type SearchCoursesResponseObject interface {
+	VisitSearchCoursesResponse(w http.ResponseWriter) error
+}
+
+type SearchCourses200JSONResponse struct {
+	Data       []Course   `json:"data"`
+	Pagination Pagination `json:"pagination"`
+}
+
+func (response SearchCourses200JSONResponse) VisitSearchCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchCourses400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response SearchCourses400JSONResponse) VisitSearchCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchCourses401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response SearchCourses401JSONResponse) VisitSearchCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchCourses403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response SearchCourses403JSONResponse) VisitSearchCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SearchCourses500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response SearchCourses500JSONResponse) VisitSearchCoursesResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -1720,72 +1820,6 @@ func (response DeleteCourse500JSONResponse) VisitDeleteCourseResponse(w http.Res
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetCourseRequestObject struct {
-	CourseId CourseIdPath `json:"courseId"`
-}
-
-type GetCourseResponseObject interface {
-	VisitGetCourseResponse(w http.ResponseWriter) error
-}
-
-type GetCourse200JSONResponse struct {
-	Data Course `json:"data"`
-}
-
-func (response GetCourse200JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetCourse400JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetCourse401JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response GetCourse403JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response GetCourse404JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetCourse500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetCourse500JSONResponse) VisitGetCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
 type ApproveCourseRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
 }
@@ -1849,64 +1883,64 @@ func (response ApproveCourse500JSONResponse) VisitApproveCourseResponse(w http.R
 	return json.NewEncoder(w).Encode(response)
 }
 
-type ChangeBasicCourseInfoRequestObject struct {
+type UpdatedCourseRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
-	Body     *ChangeBasicCourseInfoJSONRequestBody
+	Body     *UpdatedCourseJSONRequestBody
 }
 
-type ChangeBasicCourseInfoResponseObject interface {
-	VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error
+type UpdatedCourseResponseObject interface {
+	VisitUpdatedCourseResponse(w http.ResponseWriter) error
 }
 
-type ChangeBasicCourseInfo204Response struct {
+type UpdatedCourse204Response struct {
 }
 
-func (response ChangeBasicCourseInfo204Response) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
+func (response UpdatedCourse204Response) VisitUpdatedCourseResponse(w http.ResponseWriter) error {
 	w.WriteHeader(204)
 	return nil
 }
 
-type ChangeBasicCourseInfo400JSONResponse struct{ BadRequestErrorJSONResponse }
+type UpdatedCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
 
-func (response ChangeBasicCourseInfo400JSONResponse) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
+func (response UpdatedCourse400JSONResponse) VisitUpdatedCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type ChangeBasicCourseInfo401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+type UpdatedCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
 
-func (response ChangeBasicCourseInfo401JSONResponse) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
+func (response UpdatedCourse401JSONResponse) VisitUpdatedCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(401)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type ChangeBasicCourseInfo403JSONResponse struct{ ForbiddenErrorJSONResponse }
+type UpdatedCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
 
-func (response ChangeBasicCourseInfo403JSONResponse) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
+func (response UpdatedCourse403JSONResponse) VisitUpdatedCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(403)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type ChangeBasicCourseInfo404JSONResponse struct{ NotFoundErrorJSONResponse }
+type UpdatedCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
 
-func (response ChangeBasicCourseInfo404JSONResponse) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
+func (response UpdatedCourse404JSONResponse) VisitUpdatedCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(404)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type ChangeBasicCourseInfo500JSONResponse struct {
+type UpdatedCourse500JSONResponse struct {
 	InternalServerErrorJSONResponse
 }
 
-func (response ChangeBasicCourseInfo500JSONResponse) VisitChangeBasicCourseInfoResponse(w http.ResponseWriter) error {
+func (response UpdatedCourse500JSONResponse) VisitUpdatedCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -2114,7 +2148,6 @@ func (response GetCourseDetail500JSONResponse) VisitGetCourseDetailResponse(w ht
 
 type EnrollInCourseRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
-	Body     *EnrollInCourseJSONRequestBody
 }
 
 type EnrollInCourseResponseObject interface {
@@ -3601,6 +3634,9 @@ type StrictServerInterface interface {
 	// Get certificate by id
 	// (GET /course/certificates/{certificateId})
 	GetCertificateById(ctx context.Context, request GetCertificateByIdRequestObject) (GetCertificateByIdResponseObject, error)
+	// Search courses
+	// (GET /course/courses)
+	SearchCourses(ctx context.Context, request SearchCoursesRequestObject) (SearchCoursesResponseObject, error)
 	// Create course
 	// (POST /course/courses)
 	CreateCourse(ctx context.Context, request CreateCourseRequestObject) (CreateCourseResponseObject, error)
@@ -3619,28 +3655,25 @@ type StrictServerInterface interface {
 	// Delete course
 	// (DELETE /course/courses/{courseId})
 	DeleteCourse(ctx context.Context, request DeleteCourseRequestObject) (DeleteCourseResponseObject, error)
-	// Get course
-	// (GET /course/courses/{courseId})
-	GetCourse(ctx context.Context, request GetCourseRequestObject) (GetCourseResponseObject, error)
 	// Approve course
 	// (POST /course/courses/{courseId}/approve)
 	ApproveCourse(ctx context.Context, request ApproveCourseRequestObject) (ApproveCourseResponseObject, error)
-	// Update course basic information
+	// Update course
 	// (PATCH /course/courses/{courseId}/basic-info)
-	ChangeBasicCourseInfo(ctx context.Context, request ChangeBasicCourseInfoRequestObject) (ChangeBasicCourseInfoResponseObject, error)
+	UpdatedCourse(ctx context.Context, request UpdatedCourseRequestObject) (UpdatedCourseResponseObject, error)
 	// Bookmark course
 	// (POST /course/courses/{courseId}/bookmark)
 	BookmarkCourse(ctx context.Context, request BookmarkCourseRequestObject) (BookmarkCourseResponseObject, error)
 	// Decline course
 	// (POST /course/courses/{courseId}/decline)
 	DeclineCourse(ctx context.Context, request DeclineCourseRequestObject) (DeclineCourseResponseObject, error)
-	// Get full course detail
+	// Get course detail
 	// (GET /course/courses/{courseId}/detail)
 	GetCourseDetail(ctx context.Context, request GetCourseDetailRequestObject) (GetCourseDetailResponseObject, error)
 	// Enroll in course
 	// (POST /course/courses/{courseId}/enroll)
 	EnrollInCourse(ctx context.Context, request EnrollInCourseRequestObject) (EnrollInCourseResponseObject, error)
-	// Finish course and issue certificate
+	// Finish course
 	// (POST /course/courses/{courseId}/finish)
 	FinishCourse(ctx context.Context, request FinishCourseRequestObject) (FinishCourseResponseObject, error)
 	// Hide course
@@ -3767,6 +3800,33 @@ func (sh *strictHandler) GetCertificateById(ctx *gin.Context, certificateId Cert
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(GetCertificateByIdResponseObject); ok {
 		if err := validResponse.VisitGetCertificateByIdResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SearchCourses operation middleware
+func (sh *strictHandler) SearchCourses(ctx *gin.Context, params SearchCoursesParams) {
+	var request SearchCoursesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.SearchCourses(ctx, request.(SearchCoursesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SearchCourses")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(SearchCoursesResponseObject); ok {
+		if err := validResponse.VisitSearchCoursesResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {
@@ -3943,33 +4003,6 @@ func (sh *strictHandler) DeleteCourse(ctx *gin.Context, courseId CourseIdPath) {
 	}
 }
 
-// GetCourse operation middleware
-func (sh *strictHandler) GetCourse(ctx *gin.Context, courseId CourseIdPath) {
-	var request GetCourseRequestObject
-
-	request.CourseId = courseId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetCourse(ctx, request.(GetCourseRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetCourse")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetCourseResponseObject); ok {
-		if err := validResponse.VisitGetCourseResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // ApproveCourse operation middleware
 func (sh *strictHandler) ApproveCourse(ctx *gin.Context, courseId CourseIdPath) {
 	var request ApproveCourseRequestObject
@@ -3997,13 +4030,13 @@ func (sh *strictHandler) ApproveCourse(ctx *gin.Context, courseId CourseIdPath) 
 	}
 }
 
-// ChangeBasicCourseInfo operation middleware
-func (sh *strictHandler) ChangeBasicCourseInfo(ctx *gin.Context, courseId CourseIdPath) {
-	var request ChangeBasicCourseInfoRequestObject
+// UpdatedCourse operation middleware
+func (sh *strictHandler) UpdatedCourse(ctx *gin.Context, courseId CourseIdPath) {
+	var request UpdatedCourseRequestObject
 
 	request.CourseId = courseId
 
-	var body ChangeBasicCourseInfoJSONRequestBody
+	var body UpdatedCourseJSONRequestBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.Status(http.StatusBadRequest)
 		ctx.Error(err)
@@ -4012,10 +4045,10 @@ func (sh *strictHandler) ChangeBasicCourseInfo(ctx *gin.Context, courseId Course
 	request.Body = &body
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.ChangeBasicCourseInfo(ctx, request.(ChangeBasicCourseInfoRequestObject))
+		return sh.ssi.UpdatedCourse(ctx, request.(UpdatedCourseRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ChangeBasicCourseInfo")
+		handler = middleware(handler, "UpdatedCourse")
 	}
 
 	response, err := handler(ctx, request)
@@ -4023,8 +4056,8 @@ func (sh *strictHandler) ChangeBasicCourseInfo(ctx *gin.Context, courseId Course
 	if err != nil {
 		ctx.Error(err)
 		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(ChangeBasicCourseInfoResponseObject); ok {
-		if err := validResponse.VisitChangeBasicCourseInfoResponse(ctx.Writer); err != nil {
+	} else if validResponse, ok := response.(UpdatedCourseResponseObject); ok {
+		if err := validResponse.VisitUpdatedCourseResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {
@@ -4129,17 +4162,6 @@ func (sh *strictHandler) EnrollInCourse(ctx *gin.Context, courseId CourseIdPath)
 	var request EnrollInCourseRequestObject
 
 	request.CourseId = courseId
-
-	var body EnrollInCourseJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		if !errors.Is(err, io.EOF) {
-			ctx.Status(http.StatusBadRequest)
-			ctx.Error(err)
-			return
-		}
-	} else {
-		request.Body = &body
-	}
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.EnrollInCourse(ctx, request.(EnrollInCourseRequestObject))

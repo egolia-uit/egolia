@@ -3,7 +3,7 @@ get:
     - Oauth2: []
   tags:
     - Course
-  summary: Get full course detail
+  summary: Get course detail
   operationId: getCourseDetail
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
