@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"
@@ -3437,7 +3438,9 @@ type GetUploadVideoLessonUrlResponseObject interface {
 }
 
 type GetUploadVideoLessonUrl200JSONResponse struct {
-	Data UploadVideoUrlResponse `json:"data"`
+	ExpiresAt time.Time `json:"expiresAt"`
+	UploadUrl string    `json:"uploadUrl"`
+	VideoKey  string    `json:"videoKey"`
 }
 
 func (response GetUploadVideoLessonUrl200JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {

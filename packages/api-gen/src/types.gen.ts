@@ -113,7 +113,7 @@ export type CourseCourseLandingPage = {
 };
 
 export type CourseVideoLesson = CourseLesson & {
-    videoUrl: string;
+    readonly videoUrl: string;
     duration: bigint;
 };
 
@@ -135,12 +135,6 @@ export type CourseTestLesson = CourseLesson & {
 };
 
 export type CourseLessonDetail = CourseVideoLesson | CourseTestLesson;
-
-export type CourseUploadVideoUrlResponse = {
-    uploadUrl: string;
-    objectKey: string;
-    expiresAt: Date;
-};
 
 export const CourseTestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
 
@@ -377,7 +371,7 @@ export type CourseCourseLandingPageWritable = {
 };
 
 export type CourseVideoLessonWritable = CourseLessonWritable & {
-    videoUrl: string;
+    videoKey?: string;
     duration: bigint;
 };
 
@@ -2106,7 +2100,9 @@ export type GetUploadVideoLessonUrlResponses = {
      * Upload URL generated
      */
     200: {
-        data: CourseUploadVideoUrlResponse;
+        uploadUrl: string;
+        videoKey: string;
+        expiresAt: Date;
     };
 };
 

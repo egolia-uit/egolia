@@ -224,6 +224,8 @@ export const getInstructorCoursesQueryKey = (options: Options<GetInstructorCours
 
 /**
  * Get instructor courses
+ *
+ * Maybe removed or used in the future
  */
 export const getInstructorCoursesOptions = (options: Options<GetInstructorCoursesData>) => queryOptions<GetInstructorCoursesResponse, GetInstructorCoursesError, GetInstructorCoursesResponse, ReturnType<typeof getInstructorCoursesQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -242,6 +244,8 @@ export const getInstructorCoursesInfiniteQueryKey = (options: Options<GetInstruc
 
 /**
  * Get instructor courses
+ *
+ * Maybe removed or used in the future
  */
 export const getInstructorCoursesInfiniteOptions = (options: Options<GetInstructorCoursesData>) => infiniteQueryOptions<GetInstructorCoursesResponse, GetInstructorCoursesError, InfiniteData<GetInstructorCoursesResponse>, QueryKey<Options<GetInstructorCoursesData>>, number | Pick<QueryKey<Options<GetInstructorCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
 // @ts-ignore

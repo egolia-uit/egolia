@@ -90,6 +90,8 @@ export const getPublishedCourses = <ThrowOnError extends boolean = false>(option
 
 /**
  * Get instructor courses
+ *
+ * Maybe removed or used in the future
  */
 export const getInstructorCourses = <ThrowOnError extends boolean = false>(options: Options<GetInstructorCoursesData, ThrowOnError>) => (options.client ?? client).get<GetInstructorCoursesResponses, GetInstructorCoursesErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({

@@ -5,6 +5,7 @@ get:
     - Course
   summary: Get instructor courses
   operationId: getInstructorCourses
+  description: Maybe removed or used in the future
   parameters:
     - $ref: ../components/parameters/instructorIdPath.yaml
     - $ref: ../components/parameters/statusQuery.yaml

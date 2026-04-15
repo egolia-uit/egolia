@@ -52,13 +52,8 @@ export const getMyEnrolledCoursesResponseTransformer = async (data: any): Promis
     return data;
 };
 
-const courseUploadVideoUrlResponseSchemaResponseTransformer = (data: any) => {
-    data.expiresAt = new Date(data.expiresAt);
-    return data;
-};
-
 export const getUploadVideoLessonUrlResponseTransformer = async (data: any): Promise<GetUploadVideoLessonUrlResponse> => {
-    data.data = courseUploadVideoUrlResponseSchemaResponseTransformer(data.data);
+    data.expiresAt = new Date(data.expiresAt);
     return data;
 };
 

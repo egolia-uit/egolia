@@ -437,13 +437,6 @@ type TestQuestion struct {
 	Question string              `json:"question"`
 }
 
-// UploadVideoUrlResponse defines model for UploadVideoUrlResponse.
-type UploadVideoUrlResponse struct {
-	ExpiresAt time.Time `json:"expiresAt"`
-	ObjectKey string    `json:"objectKey"`
-	UploadUrl string    `json:"uploadUrl"`
-}
-
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
 	CourseId   *PropertiesId         `json:"courseId,omitempty"`
@@ -451,7 +444,8 @@ type VideoLesson struct {
 	Id         *openapi_types.UUID   `json:"id,omitempty"`
 	LessonType VideoLessonLessonType `json:"lessonType"`
 	Title      string                `json:"title"`
-	VideoUrl   string                `json:"videoUrl"`
+	VideoKey   *string               `json:"videoKey,omitempty"`
+	VideoUrl   *string               `json:"videoUrl,omitempty"`
 }
 
 // VideoLessonLessonType defines model for VideoLesson.LessonType.

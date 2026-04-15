@@ -559,8 +559,8 @@
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize",
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token",
+            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
             "scopes": {
               "openid": "Required for OIDC",
               "profile": "Access to user profile"

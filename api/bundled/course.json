@@ -318,6 +318,7 @@
         ],
         "summary": "Get instructor courses",
         "operationId": "getInstructorCourses",
+        "description": "Maybe removed or used in the future",
         "parameters": [
           {
             "$ref": "#/components/parameters/instructorIdPath"
@@ -1540,12 +1541,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/UploadVideoUrlResponse"
+                    "uploadUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://storage.egolia.localhost/upload/signed-url-token"
+                    },
+                    "videoKey": {
+                      "type": "string",
+                      "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
+                    },
+                    "expiresAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-03-22T10:30:00Z"
                     }
                   },
                   "required": [
-                    "data"
+                    "uploadUrl",
+                    "videoKey",
+                    "expiresAt"
                   ]
                 }
               }
@@ -2105,8 +2119,8 @@
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize",
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token",
+            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
             "scopes": {
               "openid": "Required for OIDC",
               "profile": "Access to user profile"
@@ -2438,10 +2452,16 @@
           {
             "type": "object",
             "properties": {
+              "videoKey": {
+                "type": "string",
+                "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4",
+                "writeOnly": true
+              },
               "videoUrl": {
                 "type": "string",
                 "format": "uri",
-                "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "readOnly": true
               },
               "duration": {
                 "type": "integer",
@@ -2550,30 +2570,6 @@
           {
             "$ref": "#/components/schemas/TestLesson"
           }
-        ]
-      },
-      "UploadVideoUrlResponse": {
-        "type": "object",
-        "properties": {
-          "uploadUrl": {
-            "type": "string",
-            "format": "uri",
-            "example": "https://storage.egolia.localhost/upload/signed-url-token"
-          },
-          "objectKey": {
-            "type": "string",
-            "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
-          },
-          "expiresAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-22T10:30:00Z"
-          }
-        },
-        "required": [
-          "uploadUrl",
-          "objectKey",
-          "expiresAt"
         ]
       },
       "TestLessonType": {

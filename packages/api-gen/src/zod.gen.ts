@@ -82,7 +82,7 @@ export const zCourseCourseLandingPage = z.object({
 });
 
 export const zCourseVideoLesson = zCourseLesson.and(z.object({
-    videoUrl: z.url(),
+    videoUrl: z.url().readonly(),
     duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 }));
 
@@ -107,12 +107,6 @@ export const zCourseLessonDetail = z.union([
     zCourseVideoLesson,
     zCourseTestLesson
 ]);
-
-export const zCourseUploadVideoUrlResponse = z.object({
-    uploadUrl: z.url(),
-    objectKey: z.string(),
-    expiresAt: z.iso.datetime()
-});
 
 export const zCourseTestLessonType = z.enum(['multipleChoice', 'singleChoice']);
 
@@ -288,7 +282,7 @@ export const zCourseCourseLandingPageWritable = z.object({
 });
 
 export const zCourseVideoLessonWritable = zCourseLessonWritable.and(z.object({
-    videoUrl: z.url(),
+    videoKey: z.string().optional(),
     duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 }));
 
@@ -421,7 +415,7 @@ export const zSearchCoursesQuery = z.object({
     instructorId: z.array(z.uuid()).optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
@@ -705,7 +699,9 @@ export const zGetUploadVideoLessonUrlPath = z.object({
  * Upload URL generated
  */
 export const zGetUploadVideoLessonUrlResponse = z.object({
-    data: zCourseUploadVideoUrlResponse
+    uploadUrl: z.url(),
+    videoKey: z.string(),
+    expiresAt: z.iso.datetime()
 });
 
 export const zCreateTestBody = z.object({
