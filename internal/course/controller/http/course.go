@@ -177,7 +177,7 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 	if err != nil {
 		return nil, err
 	}
-	return &course.MoveLesson201Response{}, errs.Unimplemented
+	return &course.MoveLesson201Response{}, nil
 }
 
 func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.GetLessonProgressRequestObject) (course.GetLessonProgressResponseObject, error) {

@@ -1,6 +1,10 @@
 package app
 
-import "github.com/google/uuid"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 type GetUploadVideoLessonURL struct {
 	LessonID uuid.UUID
@@ -14,6 +18,6 @@ func NewGetUploadVideoLessonURLHandler(objectStorageSvc ObjectStorageSvc) *GetUp
 	return &GetUploadVideoLessonURLHandler{objectStorageSvc: objectStorageSvc}
 }
 
-func (h *GetUploadVideoLessonURLHandler) Handle(cmd GetUploadVideoLessonURL) (*VideoLessonObject, error) {
-	return h.objectStorageSvc.GetUploadVideoLessonURL(cmd.LessonID)
+func (h *GetUploadVideoLessonURLHandler) Handle(ctx context.Context, cmd GetUploadVideoLessonURL) (*VideoLessonObject, error) {
+	return h.objectStorageSvc.GetUploadVideoLessonURL(ctx, cmd.LessonID)
 }

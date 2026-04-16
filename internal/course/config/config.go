@@ -31,15 +31,14 @@ func New(
 	validate *validator.Validate,
 	viper *viper.Viper,
 ) (*Config, error) {
-	viper.SetEnvPrefix("notopia_note")
+	viper.SetEnvPrefix("egolia_course")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	viper.SetConfigName("note.notopia.config")
+	viper.SetConfigName("course.egolia.config")
 	viper.AddConfigPath(".")
 
 	viper.SetDefault("server.http.port", 8081)
 	viper.SetDefault("server.grpc.port", 18081)
-	viper.SetDefault("server.health.port", 28081)
 	commonconfig.LogViperSetDefault(viper, "log")
 	commonconfig.SQLViperSetDefault(viper, "database")
 	commonconfig.GeneralViperSetDefault(viper, "general")

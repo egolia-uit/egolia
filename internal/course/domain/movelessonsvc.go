@@ -28,7 +28,7 @@ func (s *MoveLessonSvc) Handle(params *MoveLesson) error {
 	if params.NextLesson != nil {
 		nextOrder = params.NextLesson.Order()
 	}
-	order, err := fracdex.KeyBetween(nextOrder, prevOrder)
+	order, err := fracdex.KeyBetween(prevOrder, nextOrder)
 	if err != nil {
 		return errs.NewLessonGenerateOrderFailed(prevOrder, nextOrder, err)
 	}

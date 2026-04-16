@@ -80,12 +80,12 @@ func RegisterRoutes(
 	{
 		api.Use(commonhttp.GatewayUserAuth())
 		api.Use(validateHandler)
+		api.Use(StrictHandlerErrorMiddleware())
 		//exhaustruct:ignore
 		options := course.GinServerOptions{
 			ErrorHandler: serverErrorHandler,
 		}
 		course.RegisterHandlersWithOptions(api, handler, options)
-		api.Use(StrictHandlerErrorMiddleware())
 	}
 	e.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")

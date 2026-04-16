@@ -6,11 +6,11 @@ import (
 	"github.com/egolia-uit/egolia/pkg/api/course"
 )
 
-func lessonDetailToDTO(appLesson app.Lesson) (*course.LessonDetail, error) {
+func lessonDetailToDTO(l app.Lesson) (*course.LessonDetail, error) {
 	detail := course.LessonDetail{}
 	var err error
 
-	switch v := appLesson.(type) {
+	switch v := l.(type) {
 	case *app.VideoLesson:
 		err = detail.FromVideoLesson(videoLessonToDTO(v))
 	case *app.TestLesson:
@@ -24,29 +24,29 @@ func lessonDetailToDTO(appLesson app.Lesson) (*course.LessonDetail, error) {
 	return &detail, nil
 }
 
-func videoLessonToDTO(appLesson *app.VideoLesson) course.VideoLesson {
+func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 	return course.VideoLesson{
-		Id:         new(appLesson.GetID()),
-		Title:      appLesson.GetTitle(),
+		Id:         new(vl.GetID()),
+		Title:      vl.GetTitle(),
 		LessonType: course.VideoLessonLessonTypeVideo,
-		CourseId:   new(appLesson.GetCourseID()),
-		VideoUrl:   &appLesson.VideoURL,
-		Duration:   int64(appLesson.Duration.Seconds()),
+		CourseId:   new(vl.GetCourseID()),
+		VideoUrl:   &vl.VideoURL,
+		Duration:   int64(vl.Duration.Seconds()),
 		VideoKey:   nil,
 	}
 }
 
-func testLessonToDTO(appTest *app.TestLesson) course.TestLesson {
-	questions := make([]course.TestQuestion, 0, len(appTest.Questions))
-	for _, q := range appTest.Questions {
+func testLessonToDTO(t *app.TestLesson) course.TestLesson {
+	questions := make([]course.TestQuestion, 0, len(t.Questions))
+	for _, q := range t.Questions {
 		questions = append(questions, testQuestionToDTO(&q))
 	}
 	return course.TestLesson{
-		Id:         new(appTest.GetID()),
-		Title:      appTest.GetTitle(),
+		Id:         new(t.GetID()),
+		Title:      t.GetTitle(),
 		LessonType: course.TestLessonLessonTypeTest,
-		Type:       testLessonTypeToDTO(appTest.TestLessonType),
-		CourseId:   new(appTest.GetCourseID()),
+		Type:       testLessonTypeToDTO(t.TestLessonType),
+		CourseId:   new(t.GetCourseID()),
 		Questions:  questions,
 	}
 }
@@ -63,7 +63,7 @@ func testQuestionToDTO(q *app.TestQuestion) course.TestQuestion {
 	}
 }
 
-func testAnswerToDTO(a *app.TestAnwser) course.TestAnswer {
+func testAnswerToDTO(a *app.TestAnswer) course.TestAnswer {
 	return course.TestAnswer{
 		Id:        &a.ID,
 		Content:   a.Content,
@@ -71,8 +71,8 @@ func testAnswerToDTO(a *app.TestAnwser) course.TestAnswer {
 	}
 }
 
-func lessonTypeToDTO(lessonType app.LessonType) course.LessonLessonType {
-	switch lessonType {
+func lessonTypeToDTO(lt app.LessonType) course.LessonLessonType {
+	switch lt {
 	case app.LessonTypeVideo:
 		return course.LessonLessonTypeVideo
 	case app.LessonTypeTest:
@@ -81,8 +81,8 @@ func lessonTypeToDTO(lessonType app.LessonType) course.LessonLessonType {
 	panic("invalid lesson type")
 }
 
-func testLessonTypeToDTO(lessonType app.TestLessonType) course.TestLessonType {
-	switch lessonType {
+func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
+	switch lt {
 	case app.TestLessonTypeMultipleChoice:
 		return course.TestLessonTypeMultipleChoice
 	case app.TestLessonTypeSingleChoice:

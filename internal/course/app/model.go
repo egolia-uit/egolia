@@ -87,7 +87,7 @@ type VideoLesson struct {
 	Duration time.Duration
 }
 
-type TestAnwser struct {
+type TestAnswer struct {
 	ID        uuid.UUID
 	Content   string
 	IsCorrect bool
@@ -96,7 +96,7 @@ type TestAnwser struct {
 type TestQuestion struct {
 	ID       uuid.UUID
 	Question string
-	Answers  []TestAnwser
+	Answers  []TestAnswer
 }
 
 type TestLessonType string

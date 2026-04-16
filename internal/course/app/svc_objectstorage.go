@@ -1,7 +1,11 @@
 package app
 
-import "github.com/google/uuid"
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
 
 type ObjectStorageSvc interface {
-	GetUploadVideoLessonURL(lessonID uuid.UUID) (*VideoLessonObject, error)
+	GetUploadVideoLessonURL(ctx context.Context, lessonID uuid.UUID) (*VideoLessonObject, error)
 }

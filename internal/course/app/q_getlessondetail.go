@@ -32,13 +32,10 @@ func (h *GetLessonDetailHandler) Handle(ctx context.Context, params *GetLessonDe
 	if err == nil {
 		return videoLesson, nil
 	}
-	if !errors.As(err,
-		//exhaustruct:ignore
-		&errs.LessonNotFound{},
-	) {
+	var lessonNotFound *errs.LessonNotFound
+	if !errors.As(err, &lessonNotFound) {
 		return nil, err
 	}
-
 	testLesson, err := h.readModel.GetTestLessonDetail(ctx, params)
 	return testLesson, err
 }

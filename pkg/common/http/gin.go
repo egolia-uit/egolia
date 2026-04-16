@@ -3,10 +3,10 @@ package commonhttp
 import (
 	"log/slog"
 
-	ginslog "github.com/gin-contrib/slog"
-	"github.com/gin-gonic/gin"
 	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
 	"github.com/egolia-uit/egolia/pkg/metadata"
+	ginslog "github.com/gin-contrib/slog"
+	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
@@ -19,7 +19,7 @@ func NewGinSlogHandler(
 	return GinSlogHandlerFunc(ginslog.SetLogger(
 		ginslog.WithLogger(
 			func(c *gin.Context, _ *slog.Logger) *slog.Logger {
-				return logger.With("user_id", c.GetString("X-Forwarded-ID"))
+				return logger.With("user_id", c.GetHeader("X-Forwarded-ID"))
 			},
 		), ginslog.WithSkipper(func(c *gin.Context) bool {
 			switch logCfg.GetSlogLevel() {
