@@ -16,12 +16,12 @@ func NewVideoLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
 	order string,
-	videoURL string,
+	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
 		LessonBase: *NewLessonBase(id, sectionID, order),
-		VideoKey:   videoURL,
+		VideoKey:   videoKey,
 		Duration:   duration,
 	}
 }

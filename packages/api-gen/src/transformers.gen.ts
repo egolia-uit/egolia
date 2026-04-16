@@ -83,10 +83,8 @@ export const getCertificateByIdResponseTransformer = async (data: any): Promise<
 };
 
 const billingTransactionSchemaResponseTransformer = (data: any) => {
+    data.amount = BigInt(data.amount.toString());
     data.createdAt = new Date(data.createdAt);
-    if (data.issuedAt) {
-        data.issuedAt = new Date(data.issuedAt);
-    }
     return data;
 };
 

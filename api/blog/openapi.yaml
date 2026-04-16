@@ -21,8 +21,6 @@ info:
 tags:
   - name: Post
     description: Blog post management
-  - name: Discussion
-    description: Post comments and replies
 
 paths:
   /blog/posts:

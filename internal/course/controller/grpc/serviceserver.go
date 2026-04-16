@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/egolia-uit/egolia/internal/course/app"
+	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/pb"
 )
 
@@ -24,17 +25,17 @@ func NewServiceServer(app *app.App) *ServiceServer {
 var ProvideServiceServer = NewServiceServer
 
 func (ss *ServiceServer) GetCourseTitlesByIds(ctx context.Context, params *pb.GetCourseTitlesByIdsRequest) (*pb.GetCourseTitlesByIdsResponse, error) {
-	return nil, nil
+	return nil, errs.Unimplemented
 }
 
-func (ss *ServiceServer) GetCourseMetadata(ctx context.Context, params *pb.GetCourseMetadataRequest) (*pb.GetCourseMetadataResponse, error) {
-	course, err := ss.app.Queries.GetCourseMetadata.Handle(ctx, app.GetCourseMetadata{
+func (ss *ServiceServer) GetCourse(ctx context.Context, params *pb.GetCourseRequest) (*pb.GetCourseResponse, error) {
+	course, err := ss.app.Queries.GetCourse.Handle(ctx, app.GetCourse{
 		CourseID: params.Id,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetCourseMetadataResponse{
+	return &pb.GetCourseResponse{
 		Course: courseToPb(course),
 	}, nil
 }

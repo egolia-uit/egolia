@@ -9,7 +9,7 @@ var ProviderSetCmds = wire.NewSet(
 
 var ProviderSetQueries = wire.NewSet(
 	NewGetCourseDetailHandler,
-	NewGetCourseMetadataHandler,
+	NewGetCourseHandler,
 	NewGetLessonDetailHandler,
 	NewGetUploadVideoLessonURLHandler,
 	NewSearchCoursesHandler,

@@ -329,8 +329,8 @@
             "readOnly": true
           },
           "amount": {
-            "type": "number",
-            "format": "double",
+            "type": "integer",
+            "format": "int64",
             "minimum": 0,
             "example": 499000,
             "readOnly": true
@@ -344,13 +344,6 @@
             "format": "date-time",
             "example": "2026-03-25T08:30:00Z",
             "readOnly": true
-          },
-          "issuedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": null,
-            "nullable": true,
-            "readOnly": true
           }
         },
         "required": [
@@ -361,8 +354,7 @@
           "courseId",
           "amount",
           "status",
-          "createdAt",
-          "issuedAt"
+          "createdAt"
         ]
       },
       "Error": {

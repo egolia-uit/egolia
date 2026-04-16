@@ -138,12 +138,11 @@ type RevenueAnalytics struct {
 
 // Transaction defines model for Transaction.
 type Transaction struct {
-	Amount      *float64            `json:"amount,omitempty"`
+	Amount      *int64              `json:"amount,omitempty"`
 	CourseId    openapi_types.UUID  `json:"courseId"`
 	CourseTitle *Title              `json:"courseTitle,omitempty"`
 	CreatedAt   *time.Time          `json:"createdAt,omitempty"`
 	Id          *openapi_types.UUID `json:"id,omitempty"`
-	IssuedAt    *time.Time          `json:"issuedAt,omitempty"`
 
 	// Status Current status of a billing transaction
 	Status TransactionStatus `json:"status"`

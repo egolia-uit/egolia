@@ -208,10 +208,9 @@ export type BillingTransaction = {
     userEmail: BillingEmail;
     courseId: string;
     courseTitle?: BillingTitle;
-    readonly amount: number;
+    readonly amount: bigint;
     status: BillingTransactionStatus;
     readonly createdAt: Date;
-    readonly issuedAt: Date | null;
 };
 
 export type BillingError = {

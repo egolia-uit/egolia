@@ -171,10 +171,9 @@ export const zBillingTransaction = z.object({
     userEmail: zBillingEmail,
     courseId: z.uuid(),
     courseTitle: zBillingTitle.optional(),
-    amount: z.number().gte(0).readonly(),
+    amount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly(),
     status: zBillingTransactionStatus,
-    createdAt: z.iso.datetime().readonly(),
-    issuedAt: z.iso.datetime().readonly().nullable()
+    createdAt: z.iso.datetime().readonly()
 });
 
 export const zBillingError = z.object({

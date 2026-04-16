@@ -10,7 +10,8 @@ func courseToPb(course *app.Course) *pb.Course {
 		Id:           course.ID.String(),
 		Title:        course.Title,
 		InstructorId: course.InstructorID,
-		Status:       pb.CourseStatus_COURSE_STATUS_ARCHIVED,
-		Price:        course.Price,
+		// TODO: map to the right status!
+		Status: pb.CourseStatus_COURSE_STATUS_ARCHIVED,
+		Price:  course.Price,
 	}
 }

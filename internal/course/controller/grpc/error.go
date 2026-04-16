@@ -32,7 +32,7 @@ func toGRPCError(err error) error {
 			return status.Error(codes.FailedPrecondition, cerr.Error())
 
 		case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson:
-			return status.Error(codes.FailedPrecondition, cerr.Error())
+			return status.Error(codes.Internal, cerr.Error())
 
 		default:
 			return status.Error(codes.Unknown, cerr.Error())

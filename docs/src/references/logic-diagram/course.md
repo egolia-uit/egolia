@@ -437,7 +437,7 @@ erDiagram
 
     video_lessons {
         UUID lesson_id PK, FK
-        VARCHAR(1024) video_url
+        VARCHAR(1024) video_key
         INT duration_seconds
     }
 

@@ -7,7 +7,7 @@ import "buf/validate/validate.proto";
 service CourseService {
   // NOTE: wtf? where is it used?
   rpc GetCourseTitlesByIds(GetCourseTitlesByIdsRequest) returns (GetCourseTitlesByIdsResponse);
-  rpc GetCourseMetadata(GetCourseMetadataRequest) returns (GetCourseMetadataResponse);
+  rpc GetCourse(GetCourseRequest) returns (GetCourseResponse);
 }
 
 // TODO: Check again how many
@@ -42,7 +42,7 @@ message GetCourseTitlesByIdsResponse {
   ];
 }
 
-message GetCourseMetadataRequest {
+message GetCourseRequest {
   string id = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.uuid = true
@@ -63,6 +63,6 @@ message Course {
   ];
 }
 
-message GetCourseMetadataResponse {
+message GetCourseResponse {
   Course course = 1 [(buf.validate.field).required = true];
 }

@@ -163,27 +163,27 @@ func (x *GetCourseTitlesByIdsResponse) GetTitles() []string {
 	return nil
 }
 
-type GetCourseMetadataRequest struct {
+type GetCourseRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetCourseMetadataRequest) Reset() {
-	*x = GetCourseMetadataRequest{}
+func (x *GetCourseRequest) Reset() {
+	*x = GetCourseRequest{}
 	mi := &file_course_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetCourseMetadataRequest) String() string {
+func (x *GetCourseRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetCourseMetadataRequest) ProtoMessage() {}
+func (*GetCourseRequest) ProtoMessage() {}
 
-func (x *GetCourseMetadataRequest) ProtoReflect() protoreflect.Message {
+func (x *GetCourseRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_course_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -195,12 +195,12 @@ func (x *GetCourseMetadataRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetCourseMetadataRequest.ProtoReflect.Descriptor instead.
-func (*GetCourseMetadataRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetCourseRequest.ProtoReflect.Descriptor instead.
+func (*GetCourseRequest) Descriptor() ([]byte, []int) {
 	return file_course_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetCourseMetadataRequest) GetId() string {
+func (x *GetCourseRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -283,27 +283,27 @@ func (x *Course) GetPrice() int64 {
 	return 0
 }
 
-type GetCourseMetadataResponse struct {
+type GetCourseResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Course        *Course                `protobuf:"bytes,1,opt,name=course,proto3" json:"course,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetCourseMetadataResponse) Reset() {
-	*x = GetCourseMetadataResponse{}
+func (x *GetCourseResponse) Reset() {
+	*x = GetCourseResponse{}
 	mi := &file_course_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetCourseMetadataResponse) String() string {
+func (x *GetCourseResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetCourseMetadataResponse) ProtoMessage() {}
+func (*GetCourseResponse) ProtoMessage() {}
 
-func (x *GetCourseMetadataResponse) ProtoReflect() protoreflect.Message {
+func (x *GetCourseResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_course_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -315,12 +315,12 @@ func (x *GetCourseMetadataResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetCourseMetadataResponse.ProtoReflect.Descriptor instead.
-func (*GetCourseMetadataResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetCourseResponse.ProtoReflect.Descriptor instead.
+func (*GetCourseResponse) Descriptor() ([]byte, []int) {
 	return file_course_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *GetCourseMetadataResponse) GetCourse() *Course {
+func (x *GetCourseResponse) GetCourse() *Course {
 	if x != nil {
 		return x.Course
 	}
@@ -335,8 +335,8 @@ const file_course_proto_rawDesc = "" +
 	"\x1bGetCourseTitlesByIdsRequest\x12$\n" +
 	"\x03ids\x18\x01 \x03(\tB\x12\xbaH\x0f\xc8\x01\x01\x92\x01\t\b\x01\"\x05r\x03\xb0\x01\x01R\x03ids\"J\n" +
 	"\x1cGetCourseTitlesByIdsResponse\x12*\n" +
-	"\x06titles\x18\x01 \x03(\tB\x12\xbaH\x0f\xc8\x01\x01\x92\x01\t\b\x01\"\x05r\x03\xb0\x01\x01R\x06titles\"7\n" +
-	"\x18GetCourseMetadataRequest\x12\x1b\n" +
+	"\x06titles\x18\x01 \x03(\tB\x12\xbaH\x0f\xc8\x01\x01\x92\x01\t\b\x01\"\x05r\x03\xb0\x01\x01R\x06titles\"/\n" +
+	"\x10GetCourseRequest\x12\x1b\n" +
 	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\xb0\x01\x01R\x02id\"\xc8\x01\n" +
 	"\x06Course\x12\x1b\n" +
 	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\xb0\x01\x01R\x02id\x12\x1c\n" +
@@ -344,17 +344,17 @@ const file_course_proto_rawDesc = "" +
 	"\rinstructor_id\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\finstructorId\x124\n" +
 	"\x06status\x18\x04 \x01(\x0e2\x14.course.CourseStatusB\x06\xbaH\x03\xc8\x01\x01R\x06status\x12 \n" +
 	"\x05price\x18\x05 \x01(\x03B\n" +
-	"\xbaH\a\xc8\x01\x01\"\x02 \x00R\x05price\"K\n" +
-	"\x19GetCourseMetadataResponse\x12.\n" +
+	"\xbaH\a\xc8\x01\x01\"\x02 \x00R\x05price\"C\n" +
+	"\x11GetCourseResponse\x12.\n" +
 	"\x06course\x18\x01 \x01(\v2\x0e.course.CourseB\x06\xbaH\x03\xc8\x01\x01R\x06course*\x7f\n" +
 	"\fCourseStatus\x12\x1d\n" +
 	"\x19COURSE_STATUS_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13COURSE_STATUS_DRAFT\x10\x01\x12\x1b\n" +
 	"\x17COURSE_STATUS_PUBLISHED\x10\x02\x12\x1a\n" +
-	"\x16COURSE_STATUS_ARCHIVED\x10\x032\xcc\x01\n" +
+	"\x16COURSE_STATUS_ARCHIVED\x10\x032\xb4\x01\n" +
 	"\rCourseService\x12a\n" +
-	"\x14GetCourseTitlesByIds\x12#.course.GetCourseTitlesByIdsRequest\x1a$.course.GetCourseTitlesByIdsResponse\x12X\n" +
-	"\x11GetCourseMetadata\x12 .course.GetCourseMetadataRequest\x1a!.course.GetCourseMetadataResponseBv\n" +
+	"\x14GetCourseTitlesByIds\x12#.course.GetCourseTitlesByIdsRequest\x1a$.course.GetCourseTitlesByIdsResponse\x12@\n" +
+	"\tGetCourse\x12\x18.course.GetCourseRequest\x1a\x19.course.GetCourseResponseBv\n" +
 	"\n" +
 	"com.courseB\vCourseProtoP\x01Z#github.com/egolia-uit/egolia/pkg/pb\xa2\x02\x03CXX\xaa\x02\x06Course\xca\x02\x06Course\xe2\x02\x12Course\\GPBMetadata\xea\x02\x06Courseb\x06proto3"
 
@@ -376,17 +376,17 @@ var file_course_proto_goTypes = []any{
 	(CourseStatus)(0),                    // 0: course.CourseStatus
 	(*GetCourseTitlesByIdsRequest)(nil),  // 1: course.GetCourseTitlesByIdsRequest
 	(*GetCourseTitlesByIdsResponse)(nil), // 2: course.GetCourseTitlesByIdsResponse
-	(*GetCourseMetadataRequest)(nil),     // 3: course.GetCourseMetadataRequest
+	(*GetCourseRequest)(nil),             // 3: course.GetCourseRequest
 	(*Course)(nil),                       // 4: course.Course
-	(*GetCourseMetadataResponse)(nil),    // 5: course.GetCourseMetadataResponse
+	(*GetCourseResponse)(nil),            // 5: course.GetCourseResponse
 }
 var file_course_proto_depIdxs = []int32{
 	0, // 0: course.Course.status:type_name -> course.CourseStatus
-	4, // 1: course.GetCourseMetadataResponse.course:type_name -> course.Course
+	4, // 1: course.GetCourseResponse.course:type_name -> course.Course
 	1, // 2: course.CourseService.GetCourseTitlesByIds:input_type -> course.GetCourseTitlesByIdsRequest
-	3, // 3: course.CourseService.GetCourseMetadata:input_type -> course.GetCourseMetadataRequest
+	3, // 3: course.CourseService.GetCourse:input_type -> course.GetCourseRequest
 	2, // 4: course.CourseService.GetCourseTitlesByIds:output_type -> course.GetCourseTitlesByIdsResponse
-	5, // 5: course.CourseService.GetCourseMetadata:output_type -> course.GetCourseMetadataResponse
+	5, // 5: course.CourseService.GetCourse:output_type -> course.GetCourseResponse
 	4, // [4:6] is the sub-list for method output_type
 	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name

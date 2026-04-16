@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	CourseService_GetCourseTitlesByIds_FullMethodName = "/course.CourseService/GetCourseTitlesByIds"
-	CourseService_GetCourseMetadata_FullMethodName    = "/course.CourseService/GetCourseMetadata"
+	CourseService_GetCourse_FullMethodName            = "/course.CourseService/GetCourse"
 )
 
 // CourseServiceClient is the client API for CourseService service.
@@ -29,7 +29,7 @@ const (
 type CourseServiceClient interface {
 	// NOTE: wtf? where is it used?
 	GetCourseTitlesByIds(ctx context.Context, in *GetCourseTitlesByIdsRequest, opts ...grpc.CallOption) (*GetCourseTitlesByIdsResponse, error)
-	GetCourseMetadata(ctx context.Context, in *GetCourseMetadataRequest, opts ...grpc.CallOption) (*GetCourseMetadataResponse, error)
+	GetCourse(ctx context.Context, in *GetCourseRequest, opts ...grpc.CallOption) (*GetCourseResponse, error)
 }
 
 type courseServiceClient struct {
@@ -50,10 +50,10 @@ func (c *courseServiceClient) GetCourseTitlesByIds(ctx context.Context, in *GetC
 	return out, nil
 }
 
-func (c *courseServiceClient) GetCourseMetadata(ctx context.Context, in *GetCourseMetadataRequest, opts ...grpc.CallOption) (*GetCourseMetadataResponse, error) {
+func (c *courseServiceClient) GetCourse(ctx context.Context, in *GetCourseRequest, opts ...grpc.CallOption) (*GetCourseResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetCourseMetadataResponse)
-	err := c.cc.Invoke(ctx, CourseService_GetCourseMetadata_FullMethodName, in, out, cOpts...)
+	out := new(GetCourseResponse)
+	err := c.cc.Invoke(ctx, CourseService_GetCourse_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *courseServiceClient) GetCourseMetadata(ctx context.Context, in *GetCour
 type CourseServiceServer interface {
 	// NOTE: wtf? where is it used?
 	GetCourseTitlesByIds(context.Context, *GetCourseTitlesByIdsRequest) (*GetCourseTitlesByIdsResponse, error)
-	GetCourseMetadata(context.Context, *GetCourseMetadataRequest) (*GetCourseMetadataResponse, error)
+	GetCourse(context.Context, *GetCourseRequest) (*GetCourseResponse, error)
 	mustEmbedUnimplementedCourseServiceServer()
 }
 
@@ -80,8 +80,8 @@ type UnimplementedCourseServiceServer struct{}
 func (UnimplementedCourseServiceServer) GetCourseTitlesByIds(context.Context, *GetCourseTitlesByIdsRequest) (*GetCourseTitlesByIdsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetCourseTitlesByIds not implemented")
 }
-func (UnimplementedCourseServiceServer) GetCourseMetadata(context.Context, *GetCourseMetadataRequest) (*GetCourseMetadataResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetCourseMetadata not implemented")
+func (UnimplementedCourseServiceServer) GetCourse(context.Context, *GetCourseRequest) (*GetCourseResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCourse not implemented")
 }
 func (UnimplementedCourseServiceServer) mustEmbedUnimplementedCourseServiceServer() {}
 func (UnimplementedCourseServiceServer) testEmbeddedByValue()                       {}
@@ -122,20 +122,20 @@ func _CourseService_GetCourseTitlesByIds_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _CourseService_GetCourseMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCourseMetadataRequest)
+func _CourseService_GetCourse_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCourseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CourseServiceServer).GetCourseMetadata(ctx, in)
+		return srv.(CourseServiceServer).GetCourse(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CourseService_GetCourseMetadata_FullMethodName,
+		FullMethod: CourseService_GetCourse_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CourseServiceServer).GetCourseMetadata(ctx, req.(*GetCourseMetadataRequest))
+		return srv.(CourseServiceServer).GetCourse(ctx, req.(*GetCourseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -152,8 +152,8 @@ var CourseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _CourseService_GetCourseTitlesByIds_Handler,
 		},
 		{
-			MethodName: "GetCourseMetadata",
-			Handler:    _CourseService_GetCourseMetadata_Handler,
+			MethodName: "GetCourse",
+			Handler:    _CourseService_GetCourse_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

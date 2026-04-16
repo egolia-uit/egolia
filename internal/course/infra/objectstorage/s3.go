@@ -1,4 +1,4 @@
-package persistence
+package objectstorage
 
 import (
 	"context"
@@ -20,6 +20,7 @@ type S3 struct {
 	S3Client          *s3.Client
 	S3PresignClient   *s3.PresignClient
 	presignExpiration time.Duration
+	bucket            string
 }
 
 func NewS3(
@@ -32,7 +33,7 @@ func NewS3(
 			credentials.NewStaticCredentialsProvider(cfg.AccessKey, cfg.SecretKey, ""),
 		), config.WithRegion(cfg.RegionName))
 	if err != nil {
-		return nil, fmt.Errorf("unable to load AWS SDK config: %v", err)
+		return nil, fmt.Errorf("unable to load AWS SDK config: %w", err)
 	}
 	client := s3.NewFromConfig(c, func(o *s3.Options) {
 		o.UsePathStyle = true
@@ -43,6 +44,7 @@ func NewS3(
 		S3Client:          client,
 		S3PresignClient:   s3.NewPresignClient(client),
 		presignExpiration: 15 * time.Minute,
+		bucket:            cfg.Bucket,
 	}, nil
 }
 
@@ -53,13 +55,15 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, lessonID uuid.UUID) (*
 	if err != nil {
 		return nil, errs.NewInternalGenerateID(err)
 	}
+	// TODO: Please check the key if it is right
 	key := fmt.Sprintf("video-lessons/%s/%s.mp4", lessonID.String(), id.String())
 	presignParams := &s3.PutObjectInput{
-		Bucket: new("egolia-course"),
+		Bucket: &s.bucket,
 		Key:    new(key),
 	}
+	expiration := time.Now().Add(s.presignExpiration)
 	url, err := s.S3PresignClient.PresignPutObject(ctx, presignParams,
-		s3.WithPresignExpires(10*time.Minute),
+		s3.WithPresignExpires(s.presignExpiration),
 	)
 	if err != nil {
 		return nil, errs.NewObjectStorageFailToRetrieveUploadURLForVideoLesson(lessonID, err)
@@ -67,6 +71,6 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, lessonID uuid.UUID) (*
 	return &app.VideoLessonObject{
 		UploadURL: url.URL,
 		VideoKey:  key,
-		ExpiresAt: time.Now().Add(10 * time.Minute),
-	}, errs.Unimplemented
+		ExpiresAt: expiration,
+	}, nil
 }
