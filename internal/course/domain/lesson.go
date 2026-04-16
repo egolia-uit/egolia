@@ -6,7 +6,9 @@ type Lesson interface {
 	isLesson()
 	ID() uuid.UUID
 	SectionID() uuid.UUID
+	SetSectionID(sectionID uuid.UUID)
 	Order() string
+	SetOrder(order string)
 }
 
 type LessonBase struct {
@@ -49,6 +51,10 @@ func (l *LessonBase) ID() uuid.UUID {
 
 func (l *LessonBase) SectionID() uuid.UUID {
 	return l.sectionID
+}
+
+func (l *LessonBase) SetSectionID(sectionID uuid.UUID) {
+	l.sectionID = sectionID
 }
 
 func (l *LessonBase) Order() string {

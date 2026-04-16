@@ -7,11 +7,10 @@ import (
 )
 
 type CertificateRepo interface {
-	Get(ctx context.Context, params CertificateRepoGet) (*Certificate, error)
+	Get(ctx context.Context, params CertificateRepoGet, forUpdate bool) (*Certificate, error)
 	Save(certificate *Certificate) error
 }
 
 type CertificateRepoGet struct {
-	ID        uuid.UUID
-	ForUpdate bool
+	ID uuid.UUID
 }

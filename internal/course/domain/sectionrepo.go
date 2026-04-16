@@ -7,11 +7,10 @@ import (
 )
 
 type SectionRepo interface {
-	Get(ctx context.Context, params SectionRepoGet) (*Section, error)
+	Get(ctx context.Context, params SectionRepoGet, forUpdate bool) (*Section, error)
 	Save(ctx context.Context, section *Section) error
 }
 
 type SectionRepoGet struct {
-	ID        uuid.UUID
-	ForUpdate bool
+	ID uuid.UUID
 }

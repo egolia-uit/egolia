@@ -21,7 +21,6 @@ export type CourseId = string;
 export type CourseCourse = {
     readonly id: string;
     title: string;
-    slug: string;
     instructorId: CourseId;
     status: CourseCourseStatus;
     price: bigint;
@@ -148,6 +147,10 @@ export type CourseLessonProgress = {
     lessonId: CourseLessonPropertiesId;
     isCompleted: boolean;
 };
+
+export const CourseLessonType = { VIDEO_LESSON: 'VideoLesson', TEST_LESSON: 'TestLesson' } as const;
+
+export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
 
 export type CourseLessonComment = {
     readonly id: string;
@@ -329,7 +332,6 @@ export type BlogComment = {
 
 export type CourseCourseWritable = {
     title: string;
-    slug: string;
     status: CourseCourseStatus;
     price: bigint;
 };
@@ -2337,6 +2339,67 @@ export type MarkLessonAsCompletedResponses = {
 };
 
 export type MarkLessonAsCompletedResponse = MarkLessonAsCompletedResponses[keyof MarkLessonAsCompletedResponses];
+
+export type MoveLessonData = {
+    body: {
+        type: CourseLessonType;
+        sectionId: string;
+        afterLesson: {
+            id: string;
+            type: CourseLessonType;
+        } | null;
+    };
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/move';
+};
+
+export type MoveLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type MoveLessonError = MoveLessonErrors[keyof MoveLessonErrors];
+
+export type MoveLessonResponses = {
+    /**
+     * Lesson moved successfully
+     */
+    201: unknown;
+};
 
 export type GetLessonCommentsData = {
     body?: never;

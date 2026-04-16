@@ -1,5 +1,11 @@
 package domain
 
+import (
+	"github.com/egolia-uit/egolia/internal/course/errs"
+	"github.com/google/uuid"
+	"roci.dev/fracdex"
+)
+
 type MoveLessonSvc struct{}
 
 func NewMoveLessonSvc() *MoveLessonSvc {
@@ -7,10 +13,26 @@ func NewMoveLessonSvc() *MoveLessonSvc {
 }
 
 type MoveLesson struct {
-	PreviousLesson *Lesson
-	NextLesson     *Lesson
-	Target         *Lesson
+	PrevLesson Lesson
+	NextLesson Lesson
+	Target     Lesson
+	SectionID  uuid.UUID
 }
 
-func (s *MoveLessonSvc) Handle(params *MoveLesson) {
+func (s *MoveLessonSvc) Handle(params *MoveLesson) error {
+	var prevOrder string
+	if params.PrevLesson != nil {
+		prevOrder = params.PrevLesson.Order()
+	}
+	var nextOrder string
+	if params.NextLesson != nil {
+		nextOrder = params.NextLesson.Order()
+	}
+	order, err := fracdex.KeyBetween(prevOrder, nextOrder)
+	if err != nil {
+		return errs.NewLessonGenerateOrderFailed(prevOrder, nextOrder, err)
+	}
+	params.Target.SetOrder(order)
+	params.Target.SetSectionID(params.SectionID)
+	return nil
 }

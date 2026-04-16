@@ -7,11 +7,10 @@ import (
 )
 
 type BookmarkRepo interface {
-	Get(ctx context.Context, params BookmarkRepoGet) (*Bookmark, error)
+	Get(ctx context.Context, params BookmarkRepoGet, forUpdate bool) (*Bookmark, error)
 	Save(ctx context.Context, bookmark *Bookmark) error
 }
 
 type BookmarkRepoGet struct {
-	ID        uuid.UUID
-	ForUpdate bool
+	ID uuid.UUID
 }
