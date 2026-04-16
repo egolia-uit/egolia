@@ -9,8 +9,10 @@ var ProviderSetCmds = wire.NewSet(
 
 var ProviderSetQueries = wire.NewSet(
 	NewGetCourseDetailHandler,
+	NewGetCourseMetadataHandler,
 	NewGetLessonDetailHandler,
 	NewGetUploadVideoLessonURLHandler,
+	NewSearchCoursesHandler,
 	wire.Struct(new(Queries), "*"),
 )
 

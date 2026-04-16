@@ -35,6 +35,9 @@ func strictServerToHTTPErr(err *errs.Err) (
 		statusCode = 500
 	case errs.CodeLessonNotFound:
 		statusCode = 404
+
+	case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson:
+		statusCode = 500
 	}
 	return
 }

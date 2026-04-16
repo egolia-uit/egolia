@@ -18,6 +18,6 @@ func NewGetUploadVideoLessonURLHandler(objectStorageSvc ObjectStorageSvc) *GetUp
 	return &GetUploadVideoLessonURLHandler{objectStorageSvc: objectStorageSvc}
 }
 
-func (h *GetUploadVideoLessonURLHandler) Handle(ctx context.Context, cmd GetUploadVideoLessonURL) (*VideoLessonObject, error) {
+func (h *GetUploadVideoLessonURLHandler) Handle(ctx context.Context, cmd *GetUploadVideoLessonURL) (*VideoLessonObject, error) {
 	return h.objectStorageSvc.GetUploadVideoLessonURL(ctx, cmd.LessonID)
 }

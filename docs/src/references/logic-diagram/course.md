@@ -85,7 +85,7 @@ classDiagram
     class VideoLesson {
         <<AggregateRoot>>
         LessonBase
-        videoURL string
+        videoKey string
         duration time.Duration
     }
 
@@ -249,7 +249,7 @@ classDiagram
 
     class VideoLesson {
         LessonBase [gorm:embedded]
-        VideoURL string [gorm:not_null]
+        VideoKey string [gorm:not_null]
         Duration time.Duration
     }
 

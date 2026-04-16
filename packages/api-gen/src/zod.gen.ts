@@ -385,6 +385,11 @@ export const zBillingLimitQuery = z.int().gte(1).lte(100).default(20);
 export const zBillingOrderQuery = z.enum(['asc', 'desc']).default('desc');
 
 /**
+ * Unique identifier of the billing transaction
+ */
+export const zBillingTransactionIdPath = z.uuid();
+
+/**
  * Page number for pagination
  */
 export const zBlogPageQuery = z.int().gte(1).default(1);
@@ -844,6 +849,15 @@ export const zGetTransactionsResponse = z.object({
     data: z.array(zBillingTransaction),
     pagination: zBillingPagination
 });
+
+export const zCompleteTransactionPath = z.object({
+    transactionId: z.uuid()
+});
+
+/**
+ * Transaction completed successfully
+ */
+export const zCompleteTransactionResponse = z.void();
 
 export const zSearchPostsQuery = z.object({
     q: z.string().optional(),

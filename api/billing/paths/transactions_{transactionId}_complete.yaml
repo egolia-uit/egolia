@@ -1,0 +1,18 @@
+get:
+  security:
+    - Oauth2: []
+  tags:
+    - Billing
+  summary: Complete transaction
+  operationId: completeTransaction
+  parameters:
+    - $ref: ../components/parameters/transactionIdPath.yaml
+  responses:
+    204:
+      description: Transaction completed successfully
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

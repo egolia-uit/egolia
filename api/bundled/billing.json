@@ -209,6 +209,39 @@
           }
         }
       }
+    },
+    "/billing/transactions/{transactionId}/complete": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Complete transaction",
+        "operationId": "completeTransaction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/transactionIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Transaction completed successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -574,6 +607,17 @@
           "default": "desc",
           "example": "desc"
         }
+      },
+      "transactionIdPath": {
+        "name": "transactionId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the billing transaction",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
       }
     }
   }

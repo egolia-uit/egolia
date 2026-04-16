@@ -25,6 +25,9 @@ type ServerInterface interface {
 	// Get transactions
 	// (GET /billing/transactions)
 	GetTransactions(c *gin.Context, params GetTransactionsParams)
+	// Complete transaction
+	// (GET /billing/transactions/{transactionId}/complete)
+	CompleteTransaction(c *gin.Context, transactionId TransactionIdPath)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -161,6 +164,32 @@ func (siw *ServerInterfaceWrapper) GetTransactions(c *gin.Context) {
 	siw.Handler.GetTransactions(c, params)
 }
 
+// CompleteTransaction operation middleware
+func (siw *ServerInterfaceWrapper) CompleteTransaction(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "transactionId" -------------
+	var transactionId TransactionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "transactionId", c.Param("transactionId"), &transactionId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter transactionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CompleteTransaction(c, transactionId)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -191,6 +220,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/billing/admin/analytics/revenue", wrapper.GetPlatformRevenueAnalytics)
 	router.POST(options.BaseURL+"/billing/checkout", wrapper.CheckoutCourse)
 	router.GET(options.BaseURL+"/billing/transactions", wrapper.GetTransactions)
+	router.GET(options.BaseURL+"/billing/transactions/:transactionId/complete", wrapper.CompleteTransaction)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -351,6 +381,51 @@ func (response GetTransactions500JSONResponse) VisitGetTransactionsResponse(w ht
 	return json.NewEncoder(w).Encode(response)
 }
 
+type CompleteTransactionRequestObject struct {
+	TransactionId TransactionIdPath `json:"transactionId"`
+}
+
+type CompleteTransactionResponseObject interface {
+	VisitCompleteTransactionResponse(w http.ResponseWriter) error
+}
+
+type CompleteTransaction204Response struct {
+}
+
+func (response CompleteTransaction204Response) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type CompleteTransaction400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CompleteTransaction400JSONResponse) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CompleteTransaction401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CompleteTransaction401JSONResponse) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type CompleteTransaction500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CompleteTransaction500JSONResponse) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Get platform revenue analytics
@@ -362,6 +437,9 @@ type StrictServerInterface interface {
 	// Get transactions
 	// (GET /billing/transactions)
 	GetTransactions(ctx context.Context, request GetTransactionsRequestObject) (GetTransactionsResponseObject, error)
+	// Complete transaction
+	// (GET /billing/transactions/{transactionId}/complete)
+	CompleteTransaction(ctx context.Context, request CompleteTransactionRequestObject) (CompleteTransactionResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -456,6 +534,33 @@ func (sh *strictHandler) GetTransactions(ctx *gin.Context, params GetTransaction
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(GetTransactionsResponseObject); ok {
 		if err := validResponse.VisitGetTransactionsResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CompleteTransaction operation middleware
+func (sh *strictHandler) CompleteTransaction(ctx *gin.Context, transactionId TransactionIdPath) {
+	var request CompleteTransactionRequestObject
+
+	request.TransactionId = transactionId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CompleteTransaction(ctx, request.(CompleteTransactionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CompleteTransaction")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(CompleteTransactionResponseObject); ok {
+		if err := validResponse.VisitCompleteTransactionResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

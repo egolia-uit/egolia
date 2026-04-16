@@ -8,7 +8,7 @@ import (
 
 type VideoLesson struct {
 	LessonBase
-	VideoURL string
+	VideoKey string
 	Duration time.Duration
 }
 
@@ -21,7 +21,7 @@ func NewVideoLesson(
 ) *VideoLesson {
 	return &VideoLesson{
 		LessonBase: *NewLessonBase(id, sectionID, order),
-		VideoURL:   videoURL,
+		VideoKey:   videoURL,
 		Duration:   duration,
 	}
 }
@@ -35,17 +35,17 @@ func UnmarshalVideoLesson(
 ) *VideoLesson {
 	return &VideoLesson{
 		LessonBase: *UnmarshalLessonBase(id, sectionID, order),
-		VideoURL:   videoURL,
+		VideoKey:   videoURL,
 		Duration:   duration,
 	}
 }
 
-func (vl *VideoLesson) GetVideoURL() string {
-	return vl.VideoURL
+func (vl *VideoLesson) GetVideoKey() string {
+	return vl.VideoKey
 }
 
-func (vl *VideoLesson) SetVideoURL(videoURL string) {
-	vl.VideoURL = videoURL
+func (vl *VideoLesson) SetVideoKey(videoKey string) {
+	vl.VideoKey = videoKey
 }
 
 func (vl *VideoLesson) GetDuration() time.Duration {

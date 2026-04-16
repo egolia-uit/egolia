@@ -5,8 +5,9 @@ package course;
 import "buf/validate/validate.proto";
 
 service CourseService {
+  // NOTE: wtf? where is it used?
   rpc GetCourseTitlesByIds(GetCourseTitlesByIdsRequest) returns (GetCourseTitlesByIdsResponse);
-  rpc GetCourseById(GetCourseByIdRequest) returns (GetCourseByIdResponse);
+  rpc GetCourseMetadata(GetCourseMetadataRequest) returns (GetCourseMetadataResponse);
 }
 
 // TODO: Check again how many
@@ -41,24 +42,27 @@ message GetCourseTitlesByIdsResponse {
   ];
 }
 
-message GetCourseByIdRequest {
+message GetCourseMetadataRequest {
   string id = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.uuid = true
   ];
 }
 
-message GetCourseByIdResponse {
+message Course {
   string id = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.uuid = true
   ];
   string title = 2 [(buf.validate.field).required = true];
-  string slug = 3 [(buf.validate.field).required = true];
-  string instructor_id = 4 [(buf.validate.field).required = true];
-  CourseStatus status = 5 [(buf.validate.field).required = true];
-  int64 price = 6 [
+  string instructor_id = 3 [(buf.validate.field).required = true];
+  CourseStatus status = 4 [(buf.validate.field).required = true];
+  int64 price = 5 [
     (buf.validate.field).required = true,
     (buf.validate.field).int64.gt = 0
   ];
+}
+
+message GetCourseMetadataResponse {
+  Course course = 1 [(buf.validate.field).required = true];
 }

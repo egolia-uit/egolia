@@ -193,7 +193,18 @@ func (h *StrictHandler) CreateTest(ctx context.Context, request course.CreateTes
 }
 
 func (h *StrictHandler) GetUploadVideoLessonUrl(ctx context.Context, request course.GetUploadVideoLessonUrlRequestObject) (course.GetUploadVideoLessonUrlResponseObject, error) {
-	return nil, errs.Unimplemented
+	cmd := &app.GetUploadVideoLessonURL{
+		LessonID: request.LessonId,
+	}
+	result, err := h.App.Cmds.GetUploadVideoLessonURL.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return &course.GetUploadVideoLessonUrl200JSONResponse{
+		VideoKey:  result.VideoKey,
+		UploadUrl: result.UploadURL,
+		ExpiresAt: result.ExpiresAt,
+	}, nil
 }
 
 func (h *StrictHandler) CreateSection(ctx context.Context, request course.CreateSectionRequestObject) (course.CreateSectionResponseObject, error) {

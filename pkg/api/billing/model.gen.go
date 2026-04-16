@@ -182,6 +182,9 @@ type OrderQuery string
 // PageQuery defines model for pageQuery.
 type PageQuery = int
 
+// TransactionIdPath defines model for transactionIdPath.
+type TransactionIdPath = openapi_types.UUID
+
 // BadRequestError defines model for BadRequestError.
 type BadRequestError = Error
 

@@ -131,6 +131,6 @@ type User struct {
 
 type VideoLessonObject struct {
 	UploadURL string
-	videoKey  string
-	expiredAt int64
+	VideoKey  string
+	ExpiresAt time.Time
 }
