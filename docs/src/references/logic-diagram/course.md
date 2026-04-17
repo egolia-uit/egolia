@@ -85,7 +85,7 @@ classDiagram
     class VideoLesson {
         <<AggregateRoot>>
         LessonBase
-        videoURL string
+        videoKey string
         duration time.Duration
     }
 
@@ -249,7 +249,7 @@ classDiagram
 
     class VideoLesson {
         LessonBase [gorm:embedded]
-        VideoURL string [gorm:not_null]
+        VideoKey string [gorm:not_null]
         Duration time.Duration
     }
 
@@ -437,7 +437,7 @@ erDiagram
 
     video_lessons {
         UUID lesson_id PK, FK
-        VARCHAR(1024) video_url
+        VARCHAR(1024) video_key
         INT duration_seconds
     }
 

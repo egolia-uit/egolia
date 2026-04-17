@@ -171,10 +171,9 @@ export const zBillingTransaction = z.object({
     userEmail: zBillingEmail,
     courseId: z.uuid(),
     courseTitle: zBillingTitle.optional(),
-    amount: z.number().gte(0).readonly(),
+    amount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly(),
     status: zBillingTransactionStatus,
-    createdAt: z.iso.datetime().readonly(),
-    issuedAt: z.iso.datetime().readonly().nullable()
+    createdAt: z.iso.datetime().readonly()
 });
 
 export const zBillingError = z.object({
@@ -383,6 +382,11 @@ export const zBillingLimitQuery = z.int().gte(1).lte(100).default(20);
  * Sort order
  */
 export const zBillingOrderQuery = z.enum(['asc', 'desc']).default('desc');
+
+/**
+ * Unique identifier of the billing transaction
+ */
+export const zBillingTransactionIdPath = z.uuid();
 
 /**
  * Page number for pagination
@@ -844,6 +848,15 @@ export const zGetTransactionsResponse = z.object({
     data: z.array(zBillingTransaction),
     pagination: zBillingPagination
 });
+
+export const zCompleteTransactionPath = z.object({
+    transactionId: z.uuid()
+});
+
+/**
+ * Transaction completed successfully
+ */
+export const zCompleteTransactionResponse = z.void();
 
 export const zSearchPostsQuery = z.object({
     q: z.string().optional(),

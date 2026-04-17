@@ -2398,6 +2398,39 @@
         }
       }
     },
+    "/billing/transactions/{transactionId}/complete": {
+      "get": {
+        "security": [
+          {
+            "billing_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Complete transaction",
+        "operationId": "completeTransaction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/billing_transactionIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Transaction completed successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/billing_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/billing_UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/billing_InternalServerError"
+          }
+        }
+      }
+    },
     "/blog/posts": {
       "get": {
         "security": [
@@ -3595,8 +3628,8 @@
             "readOnly": true
           },
           "amount": {
-            "type": "number",
-            "format": "double",
+            "type": "integer",
+            "format": "int64",
             "minimum": 0,
             "example": 499000,
             "readOnly": true
@@ -3610,13 +3643,6 @@
             "format": "date-time",
             "example": "2026-03-25T08:30:00Z",
             "readOnly": true
-          },
-          "issuedAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": null,
-            "nullable": true,
-            "readOnly": true
           }
         },
         "required": [
@@ -3627,8 +3653,7 @@
           "courseId",
           "amount",
           "status",
-          "createdAt",
-          "issuedAt"
+          "createdAt"
         ]
       },
       "billing_Error": {
@@ -4063,6 +4088,17 @@
           "default": "desc",
           "example": "desc"
         }
+      },
+      "billing_transactionIdPath": {
+        "name": "transactionId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the billing transaction",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
       },
       "blog_pageQuery": {
         "name": "page",

@@ -24,6 +24,7 @@ type Config struct {
 	Server    Server                 `json:"server"    mapstructure:"server"    validate:"required"  yaml:"server"`
 	Database  commonconfig.SQL       `json:"database"  mapstructure:"database"  validate:"required"  yaml:"database"`
 	Authentik commonconfig.Authentik `json:"authentik" mapstructure:"authentik" validate:"required"  yaml:"authentik"`
+	S3        commonconfig.S3        `json:"s3"        mapstructure:"s3"        validate:"required"  yaml:"s3"`
 	Services  Services               `json:"services"  mapstructure:"services"  validate:"required"  yaml:"services"`
 }
 

@@ -18,11 +18,6 @@ info:
     email: egolia@googlegroups.com
   x-apiName: billing
 
-# tags:
-#   - name: Checkout
-#     description: Checkout and payment creation
-#   - name: Transaction
-#     description: Transaction
 tags:
   - name: Billing
     description: Billing related operations
@@ -34,6 +29,8 @@ paths:
     $ref: ./paths/admin_analytics_revenue.yaml
   /billing/transactions:
     $ref: ./paths/transactions.yaml
+  /billing/transactions/{transactionId}/complete:
+    $ref: ./paths/transactions_{transactionId}_complete.yaml
 
 components:
   securitySchemes:

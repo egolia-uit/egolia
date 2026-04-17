@@ -208,10 +208,9 @@ export type BillingTransaction = {
     userEmail: BillingEmail;
     courseId: string;
     courseTitle?: BillingTitle;
-    readonly amount: number;
+    readonly amount: bigint;
     status: BillingTransactionStatus;
     readonly createdAt: Date;
-    readonly issuedAt: Date | null;
 };
 
 export type BillingError = {
@@ -481,6 +480,11 @@ export const BillingOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
  * Sort order
  */
 export type BillingOrderQuery = typeof BillingOrderQuery[keyof typeof BillingOrderQuery];
+
+/**
+ * Unique identifier of the billing transaction
+ */
+export type BillingTransactionIdPath = string;
 
 /**
  * Page number for pagination
@@ -2851,6 +2855,57 @@ export type GetTransactionsResponses = {
 };
 
 export type GetTransactionsResponse = GetTransactionsResponses[keyof GetTransactionsResponses];
+
+export type CompleteTransactionData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the billing transaction
+         */
+        transactionId: string;
+    };
+    query?: never;
+    url: '/billing/transactions/{transactionId}/complete';
+};
+
+export type CompleteTransactionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: BillingError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Internal Server Error response
+     */
+    500: BillingError;
+};
+
+export type CompleteTransactionError = CompleteTransactionErrors[keyof CompleteTransactionErrors];
+
+export type CompleteTransactionResponses = {
+    /**
+     * Transaction completed successfully
+     */
+    204: void;
+};
+
+export type CompleteTransactionResponse = CompleteTransactionResponses[keyof CompleteTransactionResponses];
 
 export type SearchPostsData = {
     body?: never;
