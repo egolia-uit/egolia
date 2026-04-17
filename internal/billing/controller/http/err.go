@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/egolia-uit/egolia/internal/course/errs"
+	"github.com/egolia-uit/egolia/internal/billing/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
 	"github.com/gin-gonic/gin"
 	ginmiddleware "github.com/oapi-codegen/gin-middleware"
@@ -31,12 +31,9 @@ func strictServerToHTTPErr(err *errs.Err) (
 		errs.CodeInternalGenerateID:
 		statusCode = 500
 
-	case errs.CodeLessonGenerateOrderFailed:
-		statusCode = 500
-	case errs.CodeLessonNotFound:
+	case errs.CodeCourseNotFound:
 		statusCode = 404
-
-	case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson:
+	case errs.CodeCourseSvcInternal:
 		statusCode = 500
 	}
 	return

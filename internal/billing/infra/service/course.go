@@ -43,7 +43,7 @@ func NewCourse(
 
 	cleanup := func() {
 		if err := conn.Close(); err != nil {
-			slog.Error("failed to close authorization service connection", "error", err)
+			slog.Error("failed to close course service connection", "error", err)
 		}
 	}
 	return &Course{
@@ -58,6 +58,9 @@ func (c *Course) GetCourse(ctx context.Context, id uuid.UUID) (*core.Course, err
 		Id: id.String(),
 	})
 	if err != nil {
+		if st, ok := status.FromError(err); ok && st.Code() == codes.NotFound {
+			return nil, errs.NewCourseNotFoundErr(id)
+		}
 		return nil, err
 	}
 	return toCouse(coursePb.Course), nil
