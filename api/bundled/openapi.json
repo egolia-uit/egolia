@@ -51,11 +51,6 @@
       "x-displayName": "Post"
     },
     {
-      "name": "Discussion",
-      "description": "Post comments and replies",
-      "x-displayName": "Discussion"
-    },
-    {
       "name": "Comment",
       "x-displayName": "Comment"
     }
@@ -4479,7 +4474,6 @@
         "Lesson",
         "Billing",
         "Post",
-        "Discussion",
         "Comment"
       ]
     }
