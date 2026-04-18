@@ -3,9 +3,10 @@ module github.com/egolia-uit/egolia
 go 1.26.1
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260209202127-80ab13bee0bf.1
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.11-20260415201107-50325440f8f2.1
 	buf.build/go/protovalidate v1.1.3
 	github.com/IBM/sarama v1.47.0
+	github.com/ThreeDotsLabs/watermill v1.5.1
 	github.com/ThreeDotsLabs/watermill-kafka/v3 v3.1.2
 	github.com/aws/aws-sdk-go-v2 v1.41.5
 	github.com/aws/aws-sdk-go-v2/config v1.32.14
@@ -43,7 +44,6 @@ require (
 
 require (
 	cel.dev/expr v0.25.1 // indirect
-	github.com/ThreeDotsLabs/watermill v1.5.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.8 // indirect
