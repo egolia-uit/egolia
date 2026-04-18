@@ -1,0 +1,24 @@
+# vim:ft=yaml.docker-compose:
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
+services:
+  billing_postgresql:
+    container_name: egolia-billing_postgresql
+    image: postgres:18.3-alpine3.23
+    environment:
+      POSTGRES_DB: ${billing_POSTGRESQL_DB:-billing}
+      POSTGRES_USER: ${billing_POSTGRESQL_USER:-egoliauit}
+      POSTGRES_PASSWORD: ${billing_POSTGRESQL_PASSWORD:-egoliauit}
+    ports:
+      - ${billing_POSTGRESQL_PORT:-5432}:5432
+    volumes:
+      - billing_postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      start_period: 10s
+      start_interval: 1s
+    restart: unless-stopped
+
+volumes:
+  billing_postgresql_data:

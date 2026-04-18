@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://www.schemastore.org/traefik-v3-file-provider.json
+http:
+  middlewares:
+    jwt:
+      plugin:
+        jwt:
+          Keys:
+            - http://authentik.egolia.localhost/application/o/api-web/jwks/
+            - http://authentik.egolia.localhost/application/o/app-web/jwks/
+          Required: true
+          PayloadFields:
+            - exp
+            - sub
+          JwtHeaders:
+            X-Forwarded-ID: sub
+            X-Forwarded-Email: email
+            X-Forwarded-Groups: groups
+            X-Forwarded-Roles: roles
+          JwtSources:
+            - type: bearer
+              key: Authorization

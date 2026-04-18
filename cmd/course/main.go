@@ -7,17 +7,21 @@ import (
 )
 
 func main() {
-	if err := logging.FirstStart(); err != nil {
-		slog.Error("failed to set up logger", slog.String("error", err.Error()))
+	if err := logging.FirstStart("EGOLIA_COURSE_LOG_LEVEL"); err != nil {
+		slog.Error("failed to set up logger", slog.Any("error", err))
 		return
 	}
 	// ctx := context.Background()
 	// server, cleanup, err := InitializeServer(ctx)
-	// defer cleanup()
 	// if err != nil {
-	// 	slog.Error("failed to initialize server", slog.String("error", err.Error()))
+	// 	slog.Error("failed to initialize server", slog.Any("error", err))
+	// 	if cleanup != nil {
+	// 		cleanup()
+	// 	}
+	// 	return
 	// }
+	// defer cleanup()
 	// if err := server.Run(ctx); err != nil {
-	// 	slog.Error("server encountered an error", slog.String("error", err.Error()))
+	// 	slog.Error("server encountered an error", slog.Any("error", err))
 	// }
 }

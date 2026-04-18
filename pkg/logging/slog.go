@@ -4,14 +4,15 @@ import (
 	"context"
 	"log/slog"
 
+	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
 	"github.com/egolia-uit/egolia/pkg/otel"
 	slogmulti "github.com/samber/slog-multi"
 )
 
-func New(
+func NewSlog(
 	stdoutHandler StdoutHandler,
 	otelHandler otel.SlogHandler,
-	cfg *Config,
+	cfg *commonconfig.Log,
 ) *slog.Logger {
 	minLevel := cfg.GetSlogLevel()
 	middleware := slogmulti.NewEnabledInlineMiddleware(func(ctx context.Context, level slog.Level, next func(context.Context, slog.Level) bool) bool {
@@ -27,4 +28,4 @@ func New(
 	)
 }
 
-var Provide = New
+var ProvideSlog = NewSlog

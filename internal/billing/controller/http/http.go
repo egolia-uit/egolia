@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -55,14 +56,15 @@ var ProvideHandler = NewHandler
 func ValidateHandler() (gin.HandlerFunc, error) {
 	spec, err := api.GetSpec(nil, api.BillingSpec)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to load OpenAPI spec: %w", err)
 	}
 	spec.Servers = nil
 	spec.Security = nil
 	opts := &ginmiddleware.Options{
 		ErrorHandler: ginMiddlewareErrorHandler,
 		Options: openapi3filter.Options{
-			MultiError: true,
+			MultiError:         true,
+			AuthenticationFunc: openapi3filter.NoopAuthenticationFunc,
 		},
 	}
 	return ginmiddleware.OapiRequestValidatorWithOptions(spec, opts), nil
@@ -74,7 +76,7 @@ func RegisterRoutes(
 ) error {
 	validateHandler, err := ValidateHandler()
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create request validator: %w", err)
 	}
 	api := e.Group("/")
 	{
@@ -87,7 +89,7 @@ func RegisterRoutes(
 		}
 		billing.RegisterHandlersWithOptions(api, handler, options)
 	}
-	e.GET("/ping", func(c *gin.Context) {
+	e.GET("/billing/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 	return nil

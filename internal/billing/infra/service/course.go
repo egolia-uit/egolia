@@ -86,6 +86,9 @@ func courseUnaryClientErrorInterceptor() grpc.UnaryClientInterceptor {
 	) error {
 		err := invoker(ctx, method, req, reply, cc, opts...)
 		if err != nil {
+			if method == "/grpc.health.v1.Health/Check" {
+				return err
+			}
 			return mapGrpcError(err)
 		}
 		return nil
@@ -101,8 +104,6 @@ func mapGrpcError(err error) error {
 
 	//exhaustive:ignore
 	switch st.Code() {
-	case codes.NotFound:
-		return errs.NewCourseNotFoundErr(uuid.Nil) // TODO: parse ID from error message or context
 	case codes.Internal, codes.Unknown:
 		return errs.NewCourseSvcInternalErr(err)
 	case codes.InvalidArgument:

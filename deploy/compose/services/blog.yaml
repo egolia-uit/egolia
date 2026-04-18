@@ -1,0 +1,24 @@
+# vim:ft=yaml.docker-compose:
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
+services:
+  blog_postgresql:
+    container_name: egolia-blog_postgresql
+    image: postgres:18.3-alpine3.23
+    environment:
+      POSTGRES_DB: ${blog_POSTGRESQL_DB:-blog}
+      POSTGRES_USER: ${blog_POSTGRESQL_USER:-egoliauit}
+      POSTGRES_PASSWORD: ${blog_POSTGRESQL_PASSWORD:-egoliauit}
+    ports:
+      - ${blog_POSTGRESQL_PORT:-5433}:5432
+    volumes:
+      - blog_postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      start_period: 10s
+      start_interval: 1s
+    restart: unless-stopped
+
+volumes:
+  blog_postgresql_data:

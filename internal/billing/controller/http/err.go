@@ -10,7 +10,7 @@ import (
 	ginmiddleware "github.com/oapi-codegen/gin-middleware"
 )
 
-func strictServerToHTTPErr(err *errs.Err) (
+func strictServerToHTTPErr(err errs.Error) (
 	message string,
 	code string,
 	statusCode int,
@@ -101,7 +101,7 @@ func StrictHandlerErrorMiddleware() gin.HandlerFunc {
 
 		message := err.Error()
 		code := ""
-		if cerr, ok := errors.AsType[*errs.Err](err); ok {
+		if cerr, ok := errors.AsType[errs.Error](err); ok {
 			message, code, statusCode = strictServerToHTTPErr(cerr)
 		}
 

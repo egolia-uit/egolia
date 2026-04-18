@@ -1,0 +1,42 @@
+# vim:ft=yaml.docker-compose:
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
+services:
+  traefik:
+    container_name: egolia-traefik
+    image: traefik:v3.6.13
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=egolia_default
+      - --providers.file.directory=/etc/traefik/dynamic
+      - --api.dashboard=true
+      - --entrypoints.web.address=:80
+      - --log.level=INFO
+      # - --accesslog=true
+      - --tracing=true
+      # - --tracing.samplerate=1.0
+      # - --tracing.otlp.grpc=true
+      # - --tracing.otlp.grpc.endpoint=http://alloy:4317/v1/traces
+      - --experimental.plugins.jwt.moduleName=github.com/traefik-plugins/traefik-jwt-plugin
+      - --experimental.plugins.jwt.version=v0.10.0
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      # OTEL_PROPAGATORS: tracecontext,baggage
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/:/etc/traefik/dynamic:ro
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.traefik.rule: Host(`traefik.egolia.localhost`)
+      traefik.http.routers.traefik.entrypoints: web
+      traefik.http.routers.traefik.service: api@internal
+    extra_hosts:
+      - host.docker.internal:host-gateway
+      - authentik.egolia.localhost:host-gateway
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true

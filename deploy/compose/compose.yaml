@@ -1,0 +1,17 @@
+# vim:ft=yaml.docker-compose:
+name: egolia
+
+include:
+  - ./infrastructure/authentik.yaml
+  - ./infrastructure/dbgate.yaml
+  - ./infrastructure/traefik.yaml
+
+  - ./monitoring/alloy.yaml
+  - ./monitoring/grafana.yaml
+  - ./monitoring/loki.yaml
+  - ./monitoring/prometheus.yaml
+  - ./monitoring/tempo.yaml
+
+  - ./services/billing.yaml
+  - ./services/blog.yaml
+  - ./services/course.yaml

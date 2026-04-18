@@ -1,0 +1,35 @@
+# vim:ft=yaml.docker-compose:
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
+services:
+  dbgate:
+    image: dbgate/dbgate:7.1.8-alpine
+    container_name: dbgate
+    environment:
+      SKIP_ALL_AUTH: true
+
+      CONNECTIONS: course_postgresql,billing_postgresql,blog_postgresql
+
+      LABEL_course_postgresql: Course PostgreSQL
+      ENGINE_course_postgresql: postgres@dbgate-plugin-postgres
+      URL_course_postgresql: postgres://${COURSE_POSTGRESQL_USER:-egoliauit}:${COURSE_POSTGRESQL_PASSWORD:-egoliauit}@course_postgresql:5432/${COURSE_POSTGRESQL_DB:-course}
+
+      LABEL_billing_postgresql: Billing PostgreSQL
+      ENGINE_billing_postgresql: postgres@dbgate-plugin-postgres
+      URL_billing_postgresql: postgres://${BILLING_POSTGRESQL_USER:-egoliauit}:${BILLING_POSTGRESQL_PASSWORD:-egoliauit}@billing_postgresql:5432/${BILLING_POSTGRESQL_DB:-billing}
+
+      LABEL_blog_postgresql: Blog PostgreSQL
+      ENGINE_blog_postgresql: postgres@dbgate-plugin-postgres
+      URL_blog_postgresql: postgres://${BLOG_POSTGRESQL_USER:-egoliauit}:${BLOG_POSTGRESQL_PASSWORD:-egoliauit}@blog_postgresql:5432/${BLOG_POSTGRESQL_DB:-blog}
+    volumes:
+      - dbgate_data:/root/.dbgate
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.dbgate.rule: Host(`dbgate.egolia.localhost`)
+      traefik.http.routers.dbgate.entrypoints: web
+      traefik.http.services.dbgate.loadbalancer.server.port: '3000'
+    profiles:
+      - dev-ui
+    restart: unless-stopped
+
+volumes:
+  dbgate_data:

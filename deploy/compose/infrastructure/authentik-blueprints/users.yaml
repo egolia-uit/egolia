@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: Egolia - Users
+  labels:
+    blueprint-group: egolia
+    blueprints.goauthentik.io/description: |
+      User list
+entries:
+  - model: authentik_core.user
+    identifiers:
+      username: egoliauit
+    attrs:
+      name: Egolia Admin
+      email: egoliauit@egolia.com
+      groups:
+        - !Find [authentik_core.group, [name, authentik Admins]]
+      password: egoliauit
+
+  - model: authentik_core.user
+    identifiers:
+      pk: 110
+    attrs:
+      username: learner
+      name: Learner
+      email: learner@egolia.com
+      password: learner
+
+  - model: authentik_core.user
+    identifiers:
+      pk: 120
+    attrs:
+      username: instructor
+      name: Instructor
+      email: instructor@egolia.com
+      password: instructor
+
+  - model: authentik_core.user
+    id: billing-service
+    identifiers:
+      pk: 1002
+    attrs:
+      username: billing-service
+      name: billing Service
+      type: service_account
+      path: goauthentik.io/service-accounts
+      password: egoliauit
+      groups:
+        - !Find [authentik_core.group, [name, authentik Read-only]]
+      attributes:
+        goauthentik.io/user/token-expires: false
+
+  - model: authentik_core.token
+    identifiers:
+      identifier: service-account-billing-service-password
+    attrs:
+      description: Token for billing Service
+      expires: 9999-12-31T23:59:59Z
+      expiring: false
+      key: egoliauit
+      managed: null
+      intent: api
+      user: !KeyOf billing-service

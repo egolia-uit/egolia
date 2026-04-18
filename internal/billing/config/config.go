@@ -11,8 +11,9 @@ import (
 )
 
 type Server struct {
-	HTTP commonconfig.ServerAddress `json:"http" mapstructure:"http" validate:"required" yaml:"http"`
-	GRPC commonconfig.ServerAddress `json:"grpc" mapstructure:"grpc" validate:"required" yaml:"grpc"`
+	HTTP   commonconfig.ServerAddress `json:"http"   mapstructure:"http"   validate:"required" yaml:"http"`
+	GRPC   commonconfig.ServerAddress `json:"grpc"   mapstructure:"grpc"   validate:"required" yaml:"grpc"`
+	Health commonconfig.ServerAddress `json:"health" mapstructure:"health" validate:"required" yaml:"health"`
 }
 
 type Services struct {
@@ -38,11 +39,13 @@ func New(
 	viper.SetConfigName("billing.egolia.config")
 	viper.AddConfigPath(".")
 
-	viper.SetDefault("server.http.port", 8082)
-	viper.SetDefault("server.grpc.port", 18082)
+	commonconfig.ServerAddressViperSetDefault(viper, "server.http", 8082)
+	commonconfig.ServerAddressViperSetDefault(viper, "server.grpc", 18082)
+	commonconfig.ServerAddressViperSetDefault(viper, "server.health", 28082)
 	commonconfig.LogViperSetDefault(viper, "log")
 	commonconfig.SQLViperSetDefault(viper, "database")
 	commonconfig.GeneralViperSetDefault(viper, "general")
+	commonconfig.AuthentikViperSetDefault(viper, "authentik")
 
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err == nil {
@@ -52,6 +55,10 @@ func New(
 	var cfg Config
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, fmt.Errorf("cannot unmarshal config from env or config file: %w", err)
+	}
+
+	if err := cfg.Authentik.Init(); err != nil {
+		return nil, fmt.Errorf("failed to initialize Authentik config: %w", err)
 	}
 
 	slog.Info("configuration", slog.Any("config", cfg))

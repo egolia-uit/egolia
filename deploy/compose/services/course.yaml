@@ -1,0 +1,28 @@
+# vim:ft=yaml.docker-compose:
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
+services:
+  course_postgresql:
+    container_name: egolia-course_postgresql
+    image: postgres:18.3-alpine3.23
+    environment:
+      POSTGRES_DB: ${course_POSTGRESQL_DB:-course}
+      POSTGRES_USER: ${course_POSTGRESQL_USER:-egoliauit}
+      POSTGRES_PASSWORD: ${course_POSTGRESQL_PASSWORD:-egoliauit}
+    ports:
+      - ${course_POSTGRESQL_PORT:-5431}:5432
+    volumes:
+      - course_postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+    restart: unless-stopped
+
+  course_redis:
+    container_name: egolia-course_redis
+    image: redis:8.4.2-alpine3.22
+    ports:
+      - 6373:6379
+
+volumes:
+  course_postgresql_data:

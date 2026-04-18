@@ -3,11 +3,13 @@ package logging
 import (
 	"log/slog"
 	"os"
+
+	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
 )
 
 type StdoutHandler slog.Handler
 
-func NewStdoutHandler(cfg *Config) StdoutHandler {
+func NewStdoutHandler(cfg *commonconfig.Log) StdoutHandler {
 	if !cfg.Enabled {
 		return slog.DiscardHandler
 	}

@@ -1,0 +1,24 @@
+# vim:ft=yaml.docker-compose:
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
+services:
+  tempo:
+    container_name: egolia-tempo
+    image: grafana/tempo:latest
+    command:
+      - -config.file=/etc/tempo/config.yaml
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - ./tempo/config.yaml:/etc/tempo/config.yaml:ro
+      - tempo_data:/var/tempo
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.tempo.rule: Host(`tempo.egolia.localhost`)
+      traefik.http.routers.tempo.entrypoints: web
+      traefik.http.services.tempo.loadbalancer.server.port: '3200'
+    profiles:
+      - monitoring
+    restart: unless-stopped
+
+volumes:
+  tempo_data:

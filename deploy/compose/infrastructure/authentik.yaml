@@ -1,0 +1,72 @@
+# vim:ft=yaml.docker-compose:
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
+services:
+  authentik_server:
+    container_name: egolia-authentik_server
+    image: ghcr.io/goauthentik/server:2026.2.2
+    command: server
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik_postgresql
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_POSTGRESQL__NAME:-authentik}
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_POSTGRESQL__USER:-egoliauit}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_POSTGRESQL__PASSWORD:-egoliauit}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:-egoliauit}
+    volumes:
+      - authentik_data:/data
+      # - ./custom-templates:/templates
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.authentik.rule: Host(`authentik.egolia.localhost`)
+      traefik.http.routers.authentik.entrypoints: web
+      traefik.http.services.authentik.loadbalancer.server.port: '9000'
+    depends_on:
+      authentik_postgresql:
+        condition: service_healthy
+      authentik_worker:
+        condition: service_started
+    restart: unless-stopped
+
+  authentik_worker:
+    container_name: egolia-authentik_worker
+    image: ghcr.io/goauthentik/server:2026.2.2
+    command: worker
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik_postgresql
+      AUTHENTIK_POSTGRESQL__NAME: ${AUTHENTIK_POSTGRESQL__NAME:-authentik}
+      AUTHENTIK_POSTGRESQL__USER: ${AUTHENTIK_POSTGRESQL__USER:-egoliauit}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_POSTGRESQL__PASSWORD:-egoliauit}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:-egoliauit}
+      AUTHENTIK_BOOTSTRAP_PASSWORD: ${AUTHENTIK_BOOTSTRAP_PASSWORD:-egoliauit}
+      AUTHENTIK_BOOTSTRAP_TOKEN: ${AUTHENTIK_BOOTSTRAP_TOKEN:-egoliauit}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - authentik_data:/data
+      # - ./certs:/certs
+      # - ./custom-templates:/templates
+      - ./authentik-blueprints/:/blueprints/egolia:ro
+    depends_on:
+      authentik_postgresql:
+        condition: service_healthy
+    restart: unless-stopped
+    user: root
+
+  authentik_postgresql:
+    container_name: egolia-authentik_postgresql
+    image: postgres:18.3-alpine3.23
+    environment:
+      POSTGRES_DB: ${AUTHENTIK_POSTGRESQL__NAME:-authentik}
+      POSTGRES_PASSWORD: ${AUTHENTIK_POSTGRESQL__PASSWORD:-egoliauit}
+      POSTGRES_USER: ${AUTHENTIK_POSTGRESQL__USER:-egoliauit}
+    volumes:
+      - authentik_postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      start_period: 10s
+      start_interval: 1s
+    restart: unless-stopped
+
+volumes:
+  authentik_data:
+  authentik_postgresql_data:
