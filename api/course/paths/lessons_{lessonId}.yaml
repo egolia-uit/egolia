@@ -30,50 +30,6 @@ get:
     500:
       $ref: ../../common/components/responses/InternalServerError.yaml
 
-patch:
-  security:
-    - Oauth2: []
-  tags:
-    - Lesson
-  summary: Edit lesson
-  operationId: editLesson
-  parameters:
-    - $ref: ../components/parameters/lessonIdPath.yaml
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            title:
-              type: string
-              minLength: 1
-              maxLength: 255
-              example: Encapsulation Deep Dive
-            previousLessonId:
-              type: string
-              format: uuid
-              nullable: true
-              example: ed405041-986f-4750-92e6-617dd9337a78
-            videoUrl:
-              type: string
-              format: uri
-              example: https://cdn.egolia.localhost/videos/lesson-1.mp4
-  responses:
-    204:
-      description: Lesson successfully updated
-    400:
-      $ref: ../../common/components/responses/BadRequestError.yaml
-    401:
-      $ref: ../../common/components/responses/UnauthorizedError.yaml
-    403:
-      $ref: ../../common/components/responses/ForbiddenError.yaml
-    404:
-      $ref: ../../common/components/responses/NotFoundError.yaml
-    500:
-      $ref: ../../common/components/responses/InternalServerError.yaml
-
 delete:
   security:
     - Oauth2: []

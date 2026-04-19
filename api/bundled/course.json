@@ -1412,72 +1412,6 @@
           }
         }
       },
-      "patch": {
-        "security": [
-          {
-            "Oauth2": []
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Edit lesson",
-        "operationId": "editLesson",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/lessonIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "Encapsulation Deep Dive"
-                  },
-                  "previousLessonId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "nullable": true,
-                    "example": "ed405041-986f-4750-92e6-617dd9337a78"
-                  },
-                  "videoUrl": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://cdn.egolia.localhost/videos/lesson-1.mp4"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Lesson successfully updated"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
       "delete": {
         "security": [
           {
@@ -1497,6 +1431,104 @@
         "responses": {
           "204": {
             "description": "Lesson successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/video": {
+      "patch": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Edit video lesson",
+        "operationId": "editVideoLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoLesson"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Video lesson successfully updated"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/test": {
+      "patch": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Edit test lesson",
+        "operationId": "editTestLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestLesson"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Test lesson successfully updated"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1684,7 +1716,14 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/LessonProgress"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/VideoLessonProgress"
+                        },
+                        {
+                          "$ref": "#/components/schemas/TestLessonProgress"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -1710,7 +1749,9 @@
             "$ref": "#/components/responses/InternalServerError"
           }
         }
-      },
+      }
+    },
+    "/course/lessons/{lessonId}/video-progress": {
       "put": {
         "security": [
           {
@@ -1720,8 +1761,8 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Save lesson progress",
-        "operationId": "saveLessonProgress",
+        "summary": "Save video lesson progress",
+        "operationId": "saveVideoLessonProgress",
         "parameters": [
           {
             "$ref": "#/components/parameters/lessonIdPath"
@@ -1732,26 +1773,78 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "watchedSeconds": {
-                    "type": "number",
-                    "format": "float",
-                    "minimum": 0,
-                    "example": 245.5
-                  },
-                  "isCompleted": {
-                    "type": "boolean",
-                    "example": false
-                  }
-                }
+                "$ref": "#/components/schemas/VideoLessonProgress"
               }
             }
           }
         },
         "responses": {
           "204": {
-            "description": "Lesson progress saved"
+            "description": "Video lesson progress saved"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/test-progress": {
+      "put": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Save test lesson progress",
+        "operationId": "saveTestLessonProgress",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestLessonProgress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test lesson progress saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TestLessonProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -2372,6 +2465,14 @@
           "title"
         ]
       },
+      "LessonType": {
+        "type": "string",
+        "enum": [
+          "video",
+          "test"
+        ],
+        "example": "video"
+      },
       "Lesson": {
         "type": "object",
         "properties": {
@@ -2389,12 +2490,8 @@
             "example": "Introduction to Python"
           },
           "lessonType": {
-            "type": "string",
-            "enum": [
-              "video",
-              "test"
-            ],
-            "example": "video"
+            "$ref": "#/components/schemas/LessonType",
+            "readOnly": true
           }
         },
         "required": [
@@ -2674,7 +2771,8 @@
             "readOnly": true
           },
           "userId": {
-            "$ref": "#/components/schemas/id"
+            "$ref": "#/components/schemas/id",
+            "readOnly": true
           },
           "lessonId": {
             "$ref": "#/components/schemas/Lesson_properties-id"
@@ -2691,13 +2789,48 @@
           "isCompleted"
         ]
       },
-      "LessonType": {
-        "type": "string",
-        "enum": [
-          "VideoLesson",
-          "TestLesson"
-        ],
-        "example": "VideoLesson"
+      "VideoLessonProgress": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LessonProgress"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "watchedSeconds": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "example": 245.5
+              }
+            },
+            "required": [
+              "watchedSeconds"
+            ]
+          }
+        ]
+      },
+      "TestLessonProgress": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LessonProgress"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 85
+              }
+            },
+            "required": [
+              "score"
+            ]
+          }
+        ]
       },
       "LessonComment": {
         "type": "object",

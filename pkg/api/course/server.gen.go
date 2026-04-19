@@ -100,9 +100,6 @@ type ServerInterface interface {
 	// Get lesson detail
 	// (GET /course/lessons/{lessonId})
 	GetLessonDetail(c *gin.Context, lessonId LessonIdPath)
-	// Edit lesson
-	// (PATCH /course/lessons/{lessonId})
-	EditLesson(c *gin.Context, lessonId LessonIdPath)
 	// Get lesson comments
 	// (GET /course/lessons/{lessonId}/comments)
 	GetLessonComments(c *gin.Context, lessonId LessonIdPath)
@@ -118,15 +115,24 @@ type ServerInterface interface {
 	// Get lesson progress
 	// (GET /course/lessons/{lessonId}/progress)
 	GetLessonProgress(c *gin.Context, lessonId LessonIdPath)
-	// Save lesson progress
-	// (PUT /course/lessons/{lessonId}/progress)
-	SaveLessonProgress(c *gin.Context, lessonId LessonIdPath)
+	// Edit test lesson
+	// (PATCH /course/lessons/{lessonId}/test)
+	EditTestLesson(c *gin.Context, lessonId LessonIdPath)
+	// Save test lesson progress
+	// (PUT /course/lessons/{lessonId}/test-progress)
+	SaveTestLessonProgress(c *gin.Context, lessonId LessonIdPath)
 	// Create test
 	// (POST /course/lessons/{lessonId}/tests)
 	CreateTest(c *gin.Context, lessonId LessonIdPath)
 	// Get upload video lesson URL
 	// (GET /course/lessons/{lessonId}/upload-video-url)
 	GetUploadVideoLessonUrl(c *gin.Context, lessonId LessonIdPath)
+	// Edit video lesson
+	// (PATCH /course/lessons/{lessonId}/video)
+	EditVideoLesson(c *gin.Context, lessonId LessonIdPath)
+	// Save video lesson progress
+	// (PUT /course/lessons/{lessonId}/video-progress)
+	SaveVideoLessonProgress(c *gin.Context, lessonId LessonIdPath)
 	// Create section
 	// (POST /course/sections)
 	CreateSection(c *gin.Context)
@@ -979,32 +985,6 @@ func (siw *ServerInterfaceWrapper) GetLessonDetail(c *gin.Context) {
 	siw.Handler.GetLessonDetail(c, lessonId)
 }
 
-// EditLesson operation middleware
-func (siw *ServerInterfaceWrapper) EditLesson(c *gin.Context) {
-
-	var err error
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(Oauth2Scopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.EditLesson(c, lessonId)
-}
-
 // GetLessonComments operation middleware
 func (siw *ServerInterfaceWrapper) GetLessonComments(c *gin.Context) {
 
@@ -1135,8 +1115,8 @@ func (siw *ServerInterfaceWrapper) GetLessonProgress(c *gin.Context) {
 	siw.Handler.GetLessonProgress(c, lessonId)
 }
 
-// SaveLessonProgress operation middleware
-func (siw *ServerInterfaceWrapper) SaveLessonProgress(c *gin.Context) {
+// EditTestLesson operation middleware
+func (siw *ServerInterfaceWrapper) EditTestLesson(c *gin.Context) {
 
 	var err error
 
@@ -1158,7 +1138,33 @@ func (siw *ServerInterfaceWrapper) SaveLessonProgress(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.SaveLessonProgress(c, lessonId)
+	siw.Handler.EditTestLesson(c, lessonId)
+}
+
+// SaveTestLessonProgress operation middleware
+func (siw *ServerInterfaceWrapper) SaveTestLessonProgress(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.SaveTestLessonProgress(c, lessonId)
 }
 
 // CreateTest operation middleware
@@ -1211,6 +1217,58 @@ func (siw *ServerInterfaceWrapper) GetUploadVideoLessonUrl(c *gin.Context) {
 	}
 
 	siw.Handler.GetUploadVideoLessonUrl(c, lessonId)
+}
+
+// EditVideoLesson operation middleware
+func (siw *ServerInterfaceWrapper) EditVideoLesson(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.EditVideoLesson(c, lessonId)
+}
+
+// SaveVideoLessonProgress operation middleware
+func (siw *ServerInterfaceWrapper) SaveVideoLessonProgress(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.SaveVideoLessonProgress(c, lessonId)
 }
 
 // CreateSection operation middleware
@@ -1308,15 +1366,17 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/course/lessons", wrapper.CreateLesson)
 	router.DELETE(options.BaseURL+"/course/lessons/:lessonId", wrapper.DeleteLesson)
 	router.GET(options.BaseURL+"/course/lessons/:lessonId", wrapper.GetLessonDetail)
-	router.PATCH(options.BaseURL+"/course/lessons/:lessonId", wrapper.EditLesson)
 	router.GET(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.GetLessonComments)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.CommentOnLesson)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/mark-completed", wrapper.MarkLessonAsCompleted)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/move", wrapper.MoveLesson)
 	router.GET(options.BaseURL+"/course/lessons/:lessonId/progress", wrapper.GetLessonProgress)
-	router.PUT(options.BaseURL+"/course/lessons/:lessonId/progress", wrapper.SaveLessonProgress)
+	router.PATCH(options.BaseURL+"/course/lessons/:lessonId/test", wrapper.EditTestLesson)
+	router.PUT(options.BaseURL+"/course/lessons/:lessonId/test-progress", wrapper.SaveTestLessonProgress)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/tests", wrapper.CreateTest)
 	router.GET(options.BaseURL+"/course/lessons/:lessonId/upload-video-url", wrapper.GetUploadVideoLessonUrl)
+	router.PATCH(options.BaseURL+"/course/lessons/:lessonId/video", wrapper.EditVideoLesson)
+	router.PUT(options.BaseURL+"/course/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
 	router.POST(options.BaseURL+"/course/sections", wrapper.CreateSection)
 	router.DELETE(options.BaseURL+"/course/sections/:sectionId", wrapper.DeleteSection)
 }
@@ -3005,70 +3065,6 @@ func (response GetLessonDetail500JSONResponse) VisitGetLessonDetailResponse(w ht
 	return json.NewEncoder(w).Encode(response)
 }
 
-type EditLessonRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *EditLessonJSONRequestBody
-}
-
-type EditLessonResponseObject interface {
-	VisitEditLessonResponse(w http.ResponseWriter) error
-}
-
-type EditLesson204Response struct {
-}
-
-func (response EditLesson204Response) VisitEditLessonResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type EditLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response EditLesson400JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type EditLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response EditLesson401JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type EditLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response EditLesson403JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type EditLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response EditLesson404JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type EditLesson500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response EditLesson500JSONResponse) VisitEditLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
 type GetLessonCommentsRequestObject struct {
 	LessonId LessonIdPath `json:"lessonId"`
 }
@@ -3332,7 +3328,7 @@ type GetLessonProgressResponseObject interface {
 }
 
 type GetLessonProgress200JSONResponse struct {
-	Data LessonProgress `json:"data"`
+	Data GetLessonProgress200JSONResponse_Data `json:"data"`
 }
 
 func (response GetLessonProgress200JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
@@ -3389,64 +3385,131 @@ func (response GetLessonProgress500JSONResponse) VisitGetLessonProgressResponse(
 	return json.NewEncoder(w).Encode(response)
 }
 
-type SaveLessonProgressRequestObject struct {
+type EditTestLessonRequestObject struct {
 	LessonId LessonIdPath `json:"lessonId"`
-	Body     *SaveLessonProgressJSONRequestBody
+	Body     *EditTestLessonJSONRequestBody
 }
 
-type SaveLessonProgressResponseObject interface {
-	VisitSaveLessonProgressResponse(w http.ResponseWriter) error
+type EditTestLessonResponseObject interface {
+	VisitEditTestLessonResponse(w http.ResponseWriter) error
 }
 
-type SaveLessonProgress204Response struct {
+type EditTestLesson204Response struct {
 }
 
-func (response SaveLessonProgress204Response) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
+func (response EditTestLesson204Response) VisitEditTestLessonResponse(w http.ResponseWriter) error {
 	w.WriteHeader(204)
 	return nil
 }
 
-type SaveLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
+type EditTestLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
 
-func (response SaveLessonProgress400JSONResponse) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
+func (response EditTestLesson400JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type SaveLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+type EditTestLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
 
-func (response SaveLessonProgress401JSONResponse) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
+func (response EditTestLesson401JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(401)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type SaveLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
+type EditTestLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
 
-func (response SaveLessonProgress403JSONResponse) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
+func (response EditTestLesson403JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(403)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type SaveLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
+type EditTestLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
 
-func (response SaveLessonProgress404JSONResponse) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
+func (response EditTestLesson404JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(404)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type SaveLessonProgress500JSONResponse struct {
+type EditTestLesson500JSONResponse struct {
 	InternalServerErrorJSONResponse
 }
 
-func (response SaveLessonProgress500JSONResponse) VisitSaveLessonProgressResponse(w http.ResponseWriter) error {
+func (response EditTestLesson500JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveTestLessonProgressRequestObject struct {
+	LessonId LessonIdPath `json:"lessonId"`
+	Body     *SaveTestLessonProgressJSONRequestBody
+}
+
+type SaveTestLessonProgressResponseObject interface {
+	VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error
+}
+
+type SaveTestLessonProgress200JSONResponse struct {
+	Data TestLessonProgress `json:"data"`
+}
+
+func (response SaveTestLessonProgress200JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveTestLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response SaveTestLessonProgress400JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveTestLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response SaveTestLessonProgress401JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveTestLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response SaveTestLessonProgress403JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveTestLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response SaveTestLessonProgress404JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveTestLessonProgress500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response SaveTestLessonProgress500JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -3585,6 +3648,134 @@ type GetUploadVideoLessonUrl500JSONResponse struct {
 }
 
 func (response GetUploadVideoLessonUrl500JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type EditVideoLessonRequestObject struct {
+	LessonId LessonIdPath `json:"lessonId"`
+	Body     *EditVideoLessonJSONRequestBody
+}
+
+type EditVideoLessonResponseObject interface {
+	VisitEditVideoLessonResponse(w http.ResponseWriter) error
+}
+
+type EditVideoLesson204Response struct {
+}
+
+func (response EditVideoLesson204Response) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type EditVideoLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response EditVideoLesson400JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type EditVideoLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response EditVideoLesson401JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type EditVideoLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response EditVideoLesson403JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type EditVideoLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response EditVideoLesson404JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type EditVideoLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response EditVideoLesson500JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveVideoLessonProgressRequestObject struct {
+	LessonId LessonIdPath `json:"lessonId"`
+	Body     *SaveVideoLessonProgressJSONRequestBody
+}
+
+type SaveVideoLessonProgressResponseObject interface {
+	VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error
+}
+
+type SaveVideoLessonProgress204Response struct {
+}
+
+func (response SaveVideoLessonProgress204Response) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type SaveVideoLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response SaveVideoLessonProgress400JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveVideoLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response SaveVideoLessonProgress401JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveVideoLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response SaveVideoLessonProgress403JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveVideoLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response SaveVideoLessonProgress404JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type SaveVideoLessonProgress500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response SaveVideoLessonProgress500JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -3806,9 +3997,6 @@ type StrictServerInterface interface {
 	// Get lesson detail
 	// (GET /course/lessons/{lessonId})
 	GetLessonDetail(ctx context.Context, request GetLessonDetailRequestObject) (GetLessonDetailResponseObject, error)
-	// Edit lesson
-	// (PATCH /course/lessons/{lessonId})
-	EditLesson(ctx context.Context, request EditLessonRequestObject) (EditLessonResponseObject, error)
 	// Get lesson comments
 	// (GET /course/lessons/{lessonId}/comments)
 	GetLessonComments(ctx context.Context, request GetLessonCommentsRequestObject) (GetLessonCommentsResponseObject, error)
@@ -3824,15 +4012,24 @@ type StrictServerInterface interface {
 	// Get lesson progress
 	// (GET /course/lessons/{lessonId}/progress)
 	GetLessonProgress(ctx context.Context, request GetLessonProgressRequestObject) (GetLessonProgressResponseObject, error)
-	// Save lesson progress
-	// (PUT /course/lessons/{lessonId}/progress)
-	SaveLessonProgress(ctx context.Context, request SaveLessonProgressRequestObject) (SaveLessonProgressResponseObject, error)
+	// Edit test lesson
+	// (PATCH /course/lessons/{lessonId}/test)
+	EditTestLesson(ctx context.Context, request EditTestLessonRequestObject) (EditTestLessonResponseObject, error)
+	// Save test lesson progress
+	// (PUT /course/lessons/{lessonId}/test-progress)
+	SaveTestLessonProgress(ctx context.Context, request SaveTestLessonProgressRequestObject) (SaveTestLessonProgressResponseObject, error)
 	// Create test
 	// (POST /course/lessons/{lessonId}/tests)
 	CreateTest(ctx context.Context, request CreateTestRequestObject) (CreateTestResponseObject, error)
 	// Get upload video lesson URL
 	// (GET /course/lessons/{lessonId}/upload-video-url)
 	GetUploadVideoLessonUrl(ctx context.Context, request GetUploadVideoLessonUrlRequestObject) (GetUploadVideoLessonUrlResponseObject, error)
+	// Edit video lesson
+	// (PATCH /course/lessons/{lessonId}/video)
+	EditVideoLesson(ctx context.Context, request EditVideoLessonRequestObject) (EditVideoLessonResponseObject, error)
+	// Save video lesson progress
+	// (PUT /course/lessons/{lessonId}/video-progress)
+	SaveVideoLessonProgress(ctx context.Context, request SaveVideoLessonProgressRequestObject) (SaveVideoLessonProgressResponseObject, error)
 	// Create section
 	// (POST /course/sections)
 	CreateSection(ctx context.Context, request CreateSectionRequestObject) (CreateSectionResponseObject, error)
@@ -4641,41 +4838,6 @@ func (sh *strictHandler) GetLessonDetail(ctx *gin.Context, lessonId LessonIdPath
 	}
 }
 
-// EditLesson operation middleware
-func (sh *strictHandler) EditLesson(ctx *gin.Context, lessonId LessonIdPath) {
-	var request EditLessonRequestObject
-
-	request.LessonId = lessonId
-
-	var body EditLessonJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.Status(http.StatusBadRequest)
-		ctx.Error(err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.EditLesson(ctx, request.(EditLessonRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "EditLesson")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(EditLessonResponseObject); ok {
-		if err := validResponse.VisitEditLessonResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // GetLessonComments operation middleware
 func (sh *strictHandler) GetLessonComments(ctx *gin.Context, lessonId LessonIdPath) {
 	var request GetLessonCommentsRequestObject
@@ -4827,13 +4989,13 @@ func (sh *strictHandler) GetLessonProgress(ctx *gin.Context, lessonId LessonIdPa
 	}
 }
 
-// SaveLessonProgress operation middleware
-func (sh *strictHandler) SaveLessonProgress(ctx *gin.Context, lessonId LessonIdPath) {
-	var request SaveLessonProgressRequestObject
+// EditTestLesson operation middleware
+func (sh *strictHandler) EditTestLesson(ctx *gin.Context, lessonId LessonIdPath) {
+	var request EditTestLessonRequestObject
 
 	request.LessonId = lessonId
 
-	var body SaveLessonProgressJSONRequestBody
+	var body EditTestLessonJSONRequestBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.Status(http.StatusBadRequest)
 		ctx.Error(err)
@@ -4842,10 +5004,10 @@ func (sh *strictHandler) SaveLessonProgress(ctx *gin.Context, lessonId LessonIdP
 	request.Body = &body
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.SaveLessonProgress(ctx, request.(SaveLessonProgressRequestObject))
+		return sh.ssi.EditTestLesson(ctx, request.(EditTestLessonRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SaveLessonProgress")
+		handler = middleware(handler, "EditTestLesson")
 	}
 
 	response, err := handler(ctx, request)
@@ -4853,8 +5015,43 @@ func (sh *strictHandler) SaveLessonProgress(ctx *gin.Context, lessonId LessonIdP
 	if err != nil {
 		ctx.Error(err)
 		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(SaveLessonProgressResponseObject); ok {
-		if err := validResponse.VisitSaveLessonProgressResponse(ctx.Writer); err != nil {
+	} else if validResponse, ok := response.(EditTestLessonResponseObject); ok {
+		if err := validResponse.VisitEditTestLessonResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SaveTestLessonProgress operation middleware
+func (sh *strictHandler) SaveTestLessonProgress(ctx *gin.Context, lessonId LessonIdPath) {
+	var request SaveTestLessonProgressRequestObject
+
+	request.LessonId = lessonId
+
+	var body SaveTestLessonProgressJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.SaveTestLessonProgress(ctx, request.(SaveTestLessonProgressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SaveTestLessonProgress")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(SaveTestLessonProgressResponseObject); ok {
+		if err := validResponse.VisitSaveTestLessonProgressResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {
@@ -4917,6 +5114,76 @@ func (sh *strictHandler) GetUploadVideoLessonUrl(ctx *gin.Context, lessonId Less
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(GetUploadVideoLessonUrlResponseObject); ok {
 		if err := validResponse.VisitGetUploadVideoLessonUrlResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// EditVideoLesson operation middleware
+func (sh *strictHandler) EditVideoLesson(ctx *gin.Context, lessonId LessonIdPath) {
+	var request EditVideoLessonRequestObject
+
+	request.LessonId = lessonId
+
+	var body EditVideoLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.EditVideoLesson(ctx, request.(EditVideoLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "EditVideoLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(EditVideoLessonResponseObject); ok {
+		if err := validResponse.VisitEditVideoLessonResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SaveVideoLessonProgress operation middleware
+func (sh *strictHandler) SaveVideoLessonProgress(ctx *gin.Context, lessonId LessonIdPath) {
+	var request SaveVideoLessonProgressRequestObject
+
+	request.LessonId = lessonId
+
+	var body SaveVideoLessonProgressJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.SaveVideoLessonProgress(ctx, request.(SaveVideoLessonProgressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SaveVideoLessonProgress")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(SaveVideoLessonProgressResponseObject); ok {
+		if err := validResponse.VisitSaveVideoLessonProgressResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

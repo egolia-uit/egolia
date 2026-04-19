@@ -1,0 +1,12 @@
+allOf:
+  - $ref: ./LessonProgress.yaml
+  - type: object
+    properties:
+      score:
+        type: number
+        format: float
+        minimum: 0
+        maximum: 100
+        example: 85
+    required:
+      - score

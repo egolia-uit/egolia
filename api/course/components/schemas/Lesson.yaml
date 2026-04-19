@@ -15,11 +15,8 @@ properties:
     example: Introduction to Python
 
   lessonType:
-    type: string
-    enum:
-      - video
-      - test
-    example: video
+    $ref: ./LessonType.yaml
+    readOnly: true
 
 required:
   - id

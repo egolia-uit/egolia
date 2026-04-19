@@ -76,11 +76,15 @@ export type CourseSection = {
     title: string;
 };
 
+export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
+
+export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
+
 export type CourseLesson = {
     readonly id: string;
     courseId: CoursePropertiesId;
     title: string;
-    lessonType: 'video' | 'test';
+    lessonType: CourseLessonType;
 };
 
 export type CourseCourseDetailSectionItem = {
@@ -148,9 +152,13 @@ export type CourseLessonProgress = {
     isCompleted: boolean;
 };
 
-export const CourseLessonType = { VIDEO_LESSON: 'VideoLesson', TEST_LESSON: 'TestLesson' } as const;
+export type CourseVideoLessonProgress = CourseLessonProgress & {
+    watchedSeconds: number;
+};
 
-export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
+export type CourseTestLessonProgress = CourseLessonProgress & {
+    score: number;
+};
 
 export type CourseLessonComment = {
     readonly id: string;
@@ -341,7 +349,6 @@ export type CourseSectionWritable = {
 
 export type CourseLessonWritable = {
     title: string;
-    lessonType: 'video' | 'test';
 };
 
 export type CourseCourseDetailSectionItemWritable = {
@@ -394,8 +401,15 @@ export type CourseTestLessonWritable = CourseLessonWritable & {
 export type CourseLessonDetailWritable = CourseVideoLessonWritable | CourseTestLessonWritable;
 
 export type CourseLessonProgressWritable = {
-    userId: CourseId;
     isCompleted: boolean;
+};
+
+export type CourseVideoLessonProgressWritable = CourseLessonProgressWritable & {
+    watchedSeconds: number;
+};
+
+export type CourseTestLessonProgressWritable = CourseLessonProgressWritable & {
+    score: number;
 };
 
 export type CourseLessonCommentWritable = {
@@ -1994,20 +2008,16 @@ export type GetLessonDetailResponses = {
 
 export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
 
-export type EditLessonData = {
-    body: {
-        title?: string;
-        previousLessonId?: string | null;
-        videoUrl?: string;
-    };
+export type EditVideoLessonData = {
+    body: CourseVideoLessonWritable;
     path: {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}';
+    url: '/course/lessons/{lessonId}/video';
 };
 
-export type EditLessonErrors = {
+export type EditVideoLessonErrors = {
     /**
      * Bad Request Error response
      */
@@ -2043,16 +2053,72 @@ export type EditLessonErrors = {
     500: CourseError;
 };
 
-export type EditLessonError = EditLessonErrors[keyof EditLessonErrors];
+export type EditVideoLessonError = EditVideoLessonErrors[keyof EditVideoLessonErrors];
 
-export type EditLessonResponses = {
+export type EditVideoLessonResponses = {
     /**
-     * Lesson successfully updated
+     * Video lesson successfully updated
      */
     204: void;
 };
 
-export type EditLessonResponse = EditLessonResponses[keyof EditLessonResponses];
+export type EditVideoLessonResponse = EditVideoLessonResponses[keyof EditVideoLessonResponses];
+
+export type EditTestLessonData = {
+    body: CourseTestLessonWritable;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/test';
+};
+
+export type EditTestLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type EditTestLessonError = EditTestLessonErrors[keyof EditTestLessonErrors];
+
+export type EditTestLessonResponses = {
+    /**
+     * Test lesson successfully updated
+     */
+    204: void;
+};
+
+export type EditTestLessonResponse = EditTestLessonResponses[keyof EditTestLessonResponses];
 
 export type GetUploadVideoLessonUrlData = {
     body?: never;
@@ -2223,25 +2289,22 @@ export type GetLessonProgressResponses = {
      * Lesson progress
      */
     200: {
-        data: CourseLessonProgress;
+        data: CourseVideoLessonProgress | CourseTestLessonProgress;
     };
 };
 
 export type GetLessonProgressResponse = GetLessonProgressResponses[keyof GetLessonProgressResponses];
 
-export type SaveLessonProgressData = {
-    body: {
-        watchedSeconds?: number;
-        isCompleted?: boolean;
-    };
+export type SaveVideoLessonProgressData = {
+    body: CourseVideoLessonProgressWritable;
     path: {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/progress';
+    url: '/course/lessons/{lessonId}/video-progress';
 };
 
-export type SaveLessonProgressErrors = {
+export type SaveVideoLessonProgressErrors = {
     /**
      * Bad Request Error response
      */
@@ -2277,16 +2340,74 @@ export type SaveLessonProgressErrors = {
     500: CourseError;
 };
 
-export type SaveLessonProgressError = SaveLessonProgressErrors[keyof SaveLessonProgressErrors];
+export type SaveVideoLessonProgressError = SaveVideoLessonProgressErrors[keyof SaveVideoLessonProgressErrors];
 
-export type SaveLessonProgressResponses = {
+export type SaveVideoLessonProgressResponses = {
     /**
-     * Lesson progress saved
+     * Video lesson progress saved
      */
     204: void;
 };
 
-export type SaveLessonProgressResponse = SaveLessonProgressResponses[keyof SaveLessonProgressResponses];
+export type SaveVideoLessonProgressResponse = SaveVideoLessonProgressResponses[keyof SaveVideoLessonProgressResponses];
+
+export type SaveTestLessonProgressData = {
+    body: CourseTestLessonProgressWritable;
+    path: {
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/lessons/{lessonId}/test-progress';
+};
+
+export type SaveTestLessonProgressErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type SaveTestLessonProgressError = SaveTestLessonProgressErrors[keyof SaveTestLessonProgressErrors];
+
+export type SaveTestLessonProgressResponses = {
+    /**
+     * Test lesson progress saved
+     */
+    200: {
+        data: CourseTestLessonProgress;
+    };
+};
+
+export type SaveTestLessonProgressResponse = SaveTestLessonProgressResponses[keyof SaveTestLessonProgressResponses];
 
 export type MarkLessonAsCompletedData = {
     body?: never;

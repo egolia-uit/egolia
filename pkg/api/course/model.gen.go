@@ -39,54 +39,18 @@ func (e CourseStatus) Valid() bool {
 	}
 }
 
-// Defines values for LessonLessonType.
-const (
-	LessonLessonTypeTest  LessonLessonType = "test"
-	LessonLessonTypeVideo LessonLessonType = "video"
-)
-
-// Valid indicates whether the value is a known member of the LessonLessonType enum.
-func (e LessonLessonType) Valid() bool {
-	switch e {
-	case LessonLessonTypeTest:
-		return true
-	case LessonLessonTypeVideo:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for LessonType.
 const (
-	LessonTypeTestLesson  LessonType = "TestLesson"
-	LessonTypeVideoLesson LessonType = "VideoLesson"
+	LessonTypeTest  LessonType = "test"
+	LessonTypeVideo LessonType = "video"
 )
 
 // Valid indicates whether the value is a known member of the LessonType enum.
 func (e LessonType) Valid() bool {
 	switch e {
-	case LessonTypeTestLesson:
+	case LessonTypeTest:
 		return true
-	case LessonTypeVideoLesson:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for TestLessonLessonType.
-const (
-	TestLessonLessonTypeTest  TestLessonLessonType = "test"
-	TestLessonLessonTypeVideo TestLessonLessonType = "video"
-)
-
-// Valid indicates whether the value is a known member of the TestLessonLessonType enum.
-func (e TestLessonLessonType) Valid() bool {
-	switch e {
-	case TestLessonLessonTypeTest:
-		return true
-	case TestLessonLessonTypeVideo:
+	case LessonTypeVideo:
 		return true
 	default:
 		return false
@@ -105,24 +69,6 @@ func (e TestLessonType) Valid() bool {
 	case TestLessonTypeMultipleChoice:
 		return true
 	case TestLessonTypeSingleChoice:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for VideoLessonLessonType.
-const (
-	VideoLessonLessonTypeTest  VideoLessonLessonType = "test"
-	VideoLessonLessonTypeVideo VideoLessonLessonType = "video"
-)
-
-// Valid indicates whether the value is a known member of the VideoLessonLessonType enum.
-func (e VideoLessonLessonType) Valid() bool {
-	switch e {
-	case VideoLessonLessonTypeTest:
-		return true
-	case VideoLessonLessonTypeVideo:
 		return true
 	default:
 		return false
@@ -359,12 +305,9 @@ type Error struct {
 type Lesson struct {
 	CourseId   *PropertiesId       `json:"courseId,omitempty"`
 	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonLessonType    `json:"lessonType"`
+	LessonType LessonType          `json:"lessonType"`
 	Title      string              `json:"title"`
 }
-
-// LessonLessonType defines model for Lesson.LessonType.
-type LessonLessonType string
 
 // LessonComment defines model for LessonComment.
 type LessonComment struct {
@@ -436,19 +379,27 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	CourseId   *PropertiesId        `json:"courseId,omitempty"`
-	Id         *openapi_types.UUID  `json:"id,omitempty"`
-	LessonType TestLessonLessonType `json:"lessonType"`
-	Questions  []TestQuestion       `json:"questions"`
-	Title      string               `json:"title"`
-	Type       TestLessonType       `json:"type"`
+	CourseId   *PropertiesId       `json:"courseId,omitempty"`
+	Id         *openapi_types.UUID `json:"id,omitempty"`
+	LessonType LessonType          `json:"lessonType"`
+	Questions  []TestQuestion      `json:"questions"`
+	Title      string              `json:"title"`
+	Type       TestLessonType      `json:"type"`
 }
-
-// TestLessonLessonType defines model for TestLesson.LessonType.
-type TestLessonLessonType string
 
 // TestLessonType defines model for TestLesson.Type.
 type TestLessonType string
+
+// TestLessonProgress defines model for TestLessonProgress.
+type TestLessonProgress struct {
+	Id          *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted bool                `json:"isCompleted"`
+	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
+	Score       float32             `json:"score"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId Id `json:"userId"`
+}
 
 // TestQuestion defines model for TestQuestion.
 type TestQuestion struct {
@@ -459,17 +410,25 @@ type TestQuestion struct {
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	CourseId   *PropertiesId         `json:"courseId,omitempty"`
-	Duration   int64                 `json:"duration"`
-	Id         *openapi_types.UUID   `json:"id,omitempty"`
-	LessonType VideoLessonLessonType `json:"lessonType"`
-	Title      string                `json:"title"`
-	VideoKey   *string               `json:"videoKey,omitempty"`
-	VideoUrl   *string               `json:"videoUrl,omitempty"`
+	CourseId   *PropertiesId       `json:"courseId,omitempty"`
+	Duration   int64               `json:"duration"`
+	Id         *openapi_types.UUID `json:"id,omitempty"`
+	LessonType LessonType          `json:"lessonType"`
+	Title      string              `json:"title"`
+	VideoKey   *string             `json:"videoKey,omitempty"`
+	VideoUrl   *string             `json:"videoUrl,omitempty"`
 }
 
-// VideoLessonLessonType defines model for VideoLesson.LessonType.
-type VideoLessonLessonType string
+// VideoLessonProgress defines model for VideoLessonProgress.
+type VideoLessonProgress struct {
+	Id          *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted bool                `json:"isCompleted"`
+	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId         Id      `json:"userId"`
+	WatchedSeconds float32 `json:"watchedSeconds"`
+}
 
 // Content defines model for content.
 type Content = string
@@ -673,13 +632,6 @@ type CreateLessonJSONBody struct {
 	Video *VideoLesson `json:"video,omitempty"`
 }
 
-// EditLessonJSONBody defines parameters for EditLesson.
-type EditLessonJSONBody struct {
-	PreviousLessonId *openapi_types.UUID `json:"previousLessonId,omitempty"`
-	Title            *string             `json:"title,omitempty"`
-	VideoUrl         *string             `json:"videoUrl,omitempty"`
-}
-
 // CommentOnLessonJSONBody defines parameters for CommentOnLesson.
 type CommentOnLessonJSONBody struct {
 	Content Content `json:"content"`
@@ -696,12 +648,6 @@ type MoveLessonJSONBody struct {
 type moveAfterLesson struct {
 	Id   openapi_types.UUID `json:"id"`
 	Type LessonType         `json:"type"`
-}
-
-// SaveLessonProgressJSONBody defines parameters for SaveLessonProgress.
-type SaveLessonProgressJSONBody struct {
-	IsCompleted    *bool    `json:"isCompleted,omitempty"`
-	WatchedSeconds *float32 `json:"watchedSeconds,omitempty"`
 }
 
 // CreateTestJSONBody defines parameters for CreateTest.
@@ -738,20 +684,26 @@ type ReplyLessonCommentJSONRequestBody ReplyLessonCommentJSONBody
 // CreateLessonJSONRequestBody defines body for CreateLesson for application/json ContentType.
 type CreateLessonJSONRequestBody CreateLessonJSONBody
 
-// EditLessonJSONRequestBody defines body for EditLesson for application/json ContentType.
-type EditLessonJSONRequestBody EditLessonJSONBody
-
 // CommentOnLessonJSONRequestBody defines body for CommentOnLesson for application/json ContentType.
 type CommentOnLessonJSONRequestBody CommentOnLessonJSONBody
 
 // MoveLessonJSONRequestBody defines body for MoveLesson for application/json ContentType.
 type MoveLessonJSONRequestBody MoveLessonJSONBody
 
-// SaveLessonProgressJSONRequestBody defines body for SaveLessonProgress for application/json ContentType.
-type SaveLessonProgressJSONRequestBody SaveLessonProgressJSONBody
+// EditTestLessonJSONRequestBody defines body for EditTestLesson for application/json ContentType.
+type EditTestLessonJSONRequestBody = TestLesson
+
+// SaveTestLessonProgressJSONRequestBody defines body for SaveTestLessonProgress for application/json ContentType.
+type SaveTestLessonProgressJSONRequestBody = TestLessonProgress
 
 // CreateTestJSONRequestBody defines body for CreateTest for application/json ContentType.
 type CreateTestJSONRequestBody CreateTestJSONBody
+
+// EditVideoLessonJSONRequestBody defines body for EditVideoLesson for application/json ContentType.
+type EditVideoLessonJSONRequestBody = VideoLesson
+
+// SaveVideoLessonProgressJSONRequestBody defines body for SaveVideoLessonProgress for application/json ContentType.
+type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
 
 // CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
 type CreateSectionJSONRequestBody CreateSectionJSONBody

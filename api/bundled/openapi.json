@@ -1430,72 +1430,6 @@
           }
         }
       },
-      "patch": {
-        "security": [
-          {
-            "course_Oauth2": []
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Edit lesson",
-        "operationId": "editLesson",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_lessonIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "Encapsulation Deep Dive"
-                  },
-                  "previousLessonId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "nullable": true,
-                    "example": "ed405041-986f-4750-92e6-617dd9337a78"
-                  },
-                  "videoUrl": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://cdn.egolia.localhost/videos/lesson-1.mp4"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Lesson successfully updated"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      },
       "delete": {
         "security": [
           {
@@ -1515,6 +1449,104 @@
         "responses": {
           "204": {
             "description": "Lesson successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/video": {
+      "patch": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Edit video lesson",
+        "operationId": "editVideoLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/course_VideoLesson"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Video lesson successfully updated"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/test": {
+      "patch": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Edit test lesson",
+        "operationId": "editTestLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/course_TestLesson"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Test lesson successfully updated"
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"
@@ -1702,7 +1734,14 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/course_LessonProgress"
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/course_VideoLessonProgress"
+                        },
+                        {
+                          "$ref": "#/components/schemas/course_TestLessonProgress"
+                        }
+                      ]
                     }
                   },
                   "required": [
@@ -1728,7 +1767,9 @@
             "$ref": "#/components/responses/course_InternalServerError"
           }
         }
-      },
+      }
+    },
+    "/course/lessons/{lessonId}/video-progress": {
       "put": {
         "security": [
           {
@@ -1738,8 +1779,8 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Save lesson progress",
-        "operationId": "saveLessonProgress",
+        "summary": "Save video lesson progress",
+        "operationId": "saveVideoLessonProgress",
         "parameters": [
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
@@ -1750,26 +1791,78 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "watchedSeconds": {
-                    "type": "number",
-                    "format": "float",
-                    "minimum": 0,
-                    "example": 245.5
-                  },
-                  "isCompleted": {
-                    "type": "boolean",
-                    "example": false
-                  }
-                }
+                "$ref": "#/components/schemas/course_VideoLessonProgress"
               }
             }
           }
         },
         "responses": {
           "204": {
-            "description": "Lesson progress saved"
+            "description": "Video lesson progress saved"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/lessons/{lessonId}/test-progress": {
+      "put": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Save test lesson progress",
+        "operationId": "saveTestLessonProgress",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/course_TestLessonProgress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Test lesson progress saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_TestLessonProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"
@@ -3158,6 +3251,14 @@
           "title"
         ]
       },
+      "course_LessonType": {
+        "type": "string",
+        "enum": [
+          "video",
+          "test"
+        ],
+        "example": "video"
+      },
       "course_Lesson": {
         "type": "object",
         "properties": {
@@ -3175,12 +3276,8 @@
             "example": "Introduction to Python"
           },
           "lessonType": {
-            "type": "string",
-            "enum": [
-              "video",
-              "test"
-            ],
-            "example": "video"
+            "$ref": "#/components/schemas/course_LessonType",
+            "readOnly": true
           }
         },
         "required": [
@@ -3460,7 +3557,8 @@
             "readOnly": true
           },
           "userId": {
-            "$ref": "#/components/schemas/course_id"
+            "$ref": "#/components/schemas/course_id",
+            "readOnly": true
           },
           "lessonId": {
             "$ref": "#/components/schemas/course_Lesson_properties-id"
@@ -3477,13 +3575,48 @@
           "isCompleted"
         ]
       },
-      "course_LessonType": {
-        "type": "string",
-        "enum": [
-          "VideoLesson",
-          "TestLesson"
-        ],
-        "example": "VideoLesson"
+      "course_VideoLessonProgress": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/course_LessonProgress"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "watchedSeconds": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "example": 245.5
+              }
+            },
+            "required": [
+              "watchedSeconds"
+            ]
+          }
+        ]
+      },
+      "course_TestLessonProgress": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/course_LessonProgress"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": "number",
+                "format": "float",
+                "minimum": 0,
+                "maximum": 100,
+                "example": 85
+              }
+            },
+            "required": [
+              "score"
+            ]
+          }
+        ]
       },
       "course_LessonComment": {
         "type": "object",
