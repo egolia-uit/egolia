@@ -160,6 +160,8 @@ export type CourseTestLessonProgress = CourseLessonProgress & {
     score: number;
 };
 
+export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseTestLessonProgress;
+
 export type CourseLessonComment = {
     readonly id: string;
     userId: CourseId;
@@ -411,6 +413,8 @@ export type CourseVideoLessonProgressWritable = CourseLessonProgressWritable & {
 export type CourseTestLessonProgressWritable = CourseLessonProgressWritable & {
     score: number;
 };
+
+export type CourseLessonProgressDetailWritable = CourseVideoLessonProgressWritable | CourseTestLessonProgressWritable;
 
 export type CourseLessonCommentWritable = {
     userId: CourseId;
@@ -2289,7 +2293,7 @@ export type GetLessonProgressResponses = {
      * Lesson progress
      */
     200: {
-        data: CourseVideoLessonProgress | CourseTestLessonProgress;
+        data: CourseLessonProgressDetail;
     };
 };
 

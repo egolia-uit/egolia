@@ -16,9 +16,7 @@ get:
             type: object
             properties:
               data:
-                oneOf:
-                  - $ref: ../components/schemas/VideoLessonProgress.yaml
-                  - $ref: ../components/schemas/TestLessonProgress.yaml
+                $ref: ../components/schemas/LessonProgressDetail.yaml
             required:
               - data
     400:

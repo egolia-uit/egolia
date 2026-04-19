@@ -336,6 +336,11 @@ type LessonProgress struct {
 	UserId Id `json:"userId"`
 }
 
+// LessonProgressDetail defines model for LessonProgressDetail.
+type LessonProgressDetail struct {
+	union json.RawMessage
+}
+
 // LessonType defines model for LessonType.
 type LessonType string
 
@@ -766,6 +771,68 @@ func (t LessonDetail) MarshalJSON() ([]byte, error) {
 }
 
 func (t *LessonDetail) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsVideoLessonProgress returns the union data inside the LessonProgressDetail as a VideoLessonProgress
+func (t LessonProgressDetail) AsVideoLessonProgress() (VideoLessonProgress, error) {
+	var body VideoLessonProgress
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromVideoLessonProgress overwrites any union data inside the LessonProgressDetail as the provided VideoLessonProgress
+func (t *LessonProgressDetail) FromVideoLessonProgress(v VideoLessonProgress) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeVideoLessonProgress performs a merge with any union data inside the LessonProgressDetail, using the provided VideoLessonProgress
+func (t *LessonProgressDetail) MergeVideoLessonProgress(v VideoLessonProgress) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsTestLessonProgress returns the union data inside the LessonProgressDetail as a TestLessonProgress
+func (t LessonProgressDetail) AsTestLessonProgress() (TestLessonProgress, error) {
+	var body TestLessonProgress
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTestLessonProgress overwrites any union data inside the LessonProgressDetail as the provided TestLessonProgress
+func (t *LessonProgressDetail) FromTestLessonProgress(v TestLessonProgress) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTestLessonProgress performs a merge with any union data inside the LessonProgressDetail, using the provided TestLessonProgress
+func (t *LessonProgressDetail) MergeTestLessonProgress(v TestLessonProgress) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t LessonProgressDetail) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *LessonProgressDetail) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }

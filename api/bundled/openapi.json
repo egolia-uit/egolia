@@ -1734,14 +1734,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/course_VideoLessonProgress"
-                        },
-                        {
-                          "$ref": "#/components/schemas/course_TestLessonProgress"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/course_LessonProgressDetail"
                     }
                   },
                   "required": [
@@ -3615,6 +3608,16 @@
             "required": [
               "score"
             ]
+          }
+        ]
+      },
+      "course_LessonProgressDetail": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/course_VideoLessonProgress"
+          },
+          {
+            "$ref": "#/components/schemas/course_TestLessonProgress"
           }
         ]
       },

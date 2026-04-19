@@ -3328,7 +3328,7 @@ type GetLessonProgressResponseObject interface {
 }
 
 type GetLessonProgress200JSONResponse struct {
-	Data GetLessonProgress200JSONResponse_Data `json:"data"`
+	Data LessonProgressDetail `json:"data"`
 }
 
 func (response GetLessonProgress200JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {

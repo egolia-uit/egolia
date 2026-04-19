@@ -128,6 +128,11 @@ export const zCourseTestLessonProgress = zCourseLessonProgress.and(z.object({
     score: z.number().gte(0).lte(100)
 }));
 
+export const zCourseLessonProgressDetail = z.union([
+    zCourseVideoLessonProgress,
+    zCourseTestLessonProgress
+]);
+
 export const zCourseLessonComment = z.object({
     id: z.uuid().readonly(),
     userId: zCourseId,
@@ -323,6 +328,11 @@ export const zCourseVideoLessonProgressWritable = zCourseLessonProgressWritable.
 export const zCourseTestLessonProgressWritable = zCourseLessonProgressWritable.and(z.object({
     score: z.number().gte(0).lte(100)
 }));
+
+export const zCourseLessonProgressDetailWritable = z.union([
+    zCourseVideoLessonProgressWritable,
+    zCourseTestLessonProgressWritable
+]);
 
 export const zCourseLessonCommentWritable = z.object({
     userId: zCourseId,
@@ -746,10 +756,7 @@ export const zGetLessonProgressPath = z.object({
  * Lesson progress
  */
 export const zGetLessonProgressResponse = z.object({
-    data: z.union([
-        zCourseVideoLessonProgress,
-        zCourseTestLessonProgress
-    ])
+    data: zCourseLessonProgressDetail
 });
 
 export const zSaveVideoLessonProgressBody = zCourseVideoLessonProgressWritable;

@@ -1716,14 +1716,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "oneOf": [
-                        {
-                          "$ref": "#/components/schemas/VideoLessonProgress"
-                        },
-                        {
-                          "$ref": "#/components/schemas/TestLessonProgress"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/LessonProgressDetail"
                     }
                   },
                   "required": [
@@ -2829,6 +2822,16 @@
             "required": [
               "score"
             ]
+          }
+        ]
+      },
+      "LessonProgressDetail": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/VideoLessonProgress"
+          },
+          {
+            "$ref": "#/components/schemas/TestLessonProgress"
           }
         ]
       },

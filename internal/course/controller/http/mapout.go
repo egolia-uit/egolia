@@ -28,7 +28,7 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 	return course.VideoLesson{
 		Id:         new(vl.GetID()),
 		Title:      vl.GetTitle(),
-		LessonType: course.VideoLessonLessonTypeVideo,
+		LessonType: course.LessonTypeVideo,
 		CourseId:   new(vl.GetCourseID()),
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
@@ -44,7 +44,7 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 	return course.TestLesson{
 		Id:         new(t.GetID()),
 		Title:      t.GetTitle(),
-		LessonType: course.TestLessonLessonTypeTest,
+		LessonType: course.LessonTypeTest,
 		Type:       testLessonTypeToDTO(t.TestLessonType),
 		CourseId:   new(t.GetCourseID()),
 		Questions:  questions,
@@ -71,12 +71,12 @@ func testAnswerToDTO(a *app.TestAnswer) course.TestAnswer {
 	}
 }
 
-func lessonTypeToDTO(lt app.LessonType) course.LessonLessonType {
+func lessonTypeToDTO(lt app.LessonType) course.LessonType {
 	switch lt {
 	case app.LessonTypeVideo:
-		return course.LessonLessonTypeVideo
+		return course.LessonTypeVideo
 	case app.LessonTypeTest:
-		return course.LessonLessonTypeTest
+		return course.LessonTypeTest
 	}
 	panic("invalid lesson type")
 }

@@ -129,7 +129,11 @@ func (h *StrictHandler) GetLessonDetail(ctx context.Context, request course.GetL
 	}, nil
 }
 
-func (h *StrictHandler) EditLesson(ctx context.Context, request course.EditLessonRequestObject) (course.EditLessonResponseObject, error) {
+func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.EditVideoLessonRequestObject) (course.EditVideoLessonResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -150,9 +154,9 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 	if request.Body.AfterLesson != nil {
 		var t app.LessonType
 		switch request.Body.AfterLesson.Type {
-		case course.LessonTypeTestLesson:
+		case course.LessonTypeTest:
 			t = app.LessonTypeTest
-		case course.LessonTypeVideoLesson:
+		case course.LessonTypeVideo:
 			t = app.LessonTypeVideo
 		}
 		afterLesson = &app.MoveLessonAfterLesson{
@@ -162,9 +166,9 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 	}
 	var lessonType app.LessonType
 	switch request.Body.Type {
-	case course.LessonTypeTestLesson:
+	case course.LessonTypeTest:
 		lessonType = app.LessonTypeTest
-	case course.LessonTypeVideoLesson:
+	case course.LessonTypeVideo:
 		lessonType = app.LessonTypeVideo
 	}
 	cmd := &app.MoveLesson{
@@ -184,7 +188,11 @@ func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.Ge
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) SaveLessonProgress(ctx context.Context, request course.SaveLessonProgressRequestObject) (course.SaveLessonProgressResponseObject, error) {
+func (h *StrictHandler) SaveTestLessonProgress(ctx context.Context, request course.SaveTestLessonProgressRequestObject) (course.SaveTestLessonProgressResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
