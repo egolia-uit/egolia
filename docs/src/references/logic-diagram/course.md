@@ -15,30 +15,33 @@ order: 3
 
 ```mermaid
 classDiagram
-    class CourseStatus {
-        <<Enum>>
-        draft
-        approved
-        published
-        archived
-     }
-
     class Course {
         <<AggregateRoot>>
         id uuid.UUID
         title string
         instructorID uuid.UUID
-        status CourseStatus
-        price float64
+        archived bool
         deletedAt *time.Time
     }
 
-    class Section {
+    class CourseSnapshot {
         <<AggregateRoot>>
         id uuid.UUID
         courseID uuid.UUID
+        price float64
+        published bool
+        approvalPending bool
+        sections []*Section
+
+        CreateDraft() *Course
+    }
+
+    class Section {
+        <<Entity>>
+        id uuid.UUID
         title string
         order string
+        lessons []Lesson
         deletedAt *time.Time
     }
 
@@ -49,7 +52,6 @@ classDiagram
     class LessonBase {
         <<AbstractStruct>>
         id uuid.UUID
-        sectionID uuid.UUID
         title string
         order string
         deletedAt *time.Time
@@ -62,7 +64,7 @@ classDiagram
     }
 
     class TestLesson {
-        <<AggregateRoot>>
+        <<Entity>>
         LessonBase
         type TestLessonType
         questions []*TestQuestion
@@ -83,7 +85,7 @@ classDiagram
     }
 
     class VideoLesson {
-        <<AggregateRoot>>
+        <<Entity>>
         LessonBase
         videoKey string
         duration time.Duration
@@ -161,7 +163,8 @@ classDiagram
     }
 
     CourseStatus -- Course
-    Course "1" *.. "0..*" Section : has
+    Course "1" *-- "0..1" CourseSnapshot : has
+    CourseSnapshot "1" *.. "0..*" Section : has
     Section "1" *.. "0..*" Lesson : has
     LessonBase --|> Lesson
     TestLesson --* LessonBase
