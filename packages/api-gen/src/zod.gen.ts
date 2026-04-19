@@ -45,11 +45,13 @@ export const zCourseSection = z.object({
     title: z.string().min(1).max(255)
 });
 
+export const zCourseLessonType = z.enum(['video', 'test']);
+
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
     courseId: zCoursePropertiesId,
     title: z.string(),
-    lessonType: z.enum(['video', 'test'])
+    lessonType: zCourseLessonType
 });
 
 export const zCourseCourseDetailSectionItem = z.object({
@@ -118,7 +120,18 @@ export const zCourseLessonProgress = z.object({
     isCompleted: z.boolean()
 });
 
-export const zCourseLessonType = z.enum(['VideoLesson', 'TestLesson']);
+export const zCourseVideoLessonProgress = zCourseLessonProgress.and(z.object({
+    watchedSeconds: z.number().gte(0)
+}));
+
+export const zCourseTestLessonProgress = zCourseLessonProgress.and(z.object({
+    score: z.number().gte(0).lte(100)
+}));
+
+export const zCourseLessonProgressDetail = z.union([
+    zCourseVideoLessonProgress,
+    zCourseTestLessonProgress
+]);
 
 export const zCourseLessonComment = z.object({
     id: z.uuid().readonly(),
@@ -249,8 +262,7 @@ export const zCourseSectionWritable = z.object({
 });
 
 export const zCourseLessonWritable = z.object({
-    title: z.string(),
-    lessonType: z.enum(['video', 'test'])
+    title: z.string()
 });
 
 export const zCourseCourseDetailSectionItemWritable = z.object({
@@ -306,9 +318,21 @@ export const zCourseLessonDetailWritable = z.union([
 ]);
 
 export const zCourseLessonProgressWritable = z.object({
-    userId: zCourseId,
     isCompleted: z.boolean()
 });
+
+export const zCourseVideoLessonProgressWritable = zCourseLessonProgressWritable.and(z.object({
+    watchedSeconds: z.number().gte(0)
+}));
+
+export const zCourseTestLessonProgressWritable = zCourseLessonProgressWritable.and(z.object({
+    score: z.number().gte(0).lte(100)
+}));
+
+export const zCourseLessonProgressDetailWritable = z.union([
+    zCourseVideoLessonProgressWritable,
+    zCourseTestLessonProgressWritable
+]);
 
 export const zCourseLessonCommentWritable = z.object({
     userId: zCourseId,
@@ -680,20 +704,27 @@ export const zGetLessonDetailResponse = z.object({
     data: zCourseLessonDetail
 });
 
-export const zEditLessonBody = z.object({
-    title: z.string().min(1).max(255).optional(),
-    previousLessonId: z.uuid().nullish(),
-    videoUrl: z.url().optional()
-});
+export const zEditVideoLessonBody = zCourseVideoLessonWritable;
 
-export const zEditLessonPath = z.object({
+export const zEditVideoLessonPath = z.object({
     lessonId: z.uuid()
 });
 
 /**
- * Lesson successfully updated
+ * Video lesson successfully updated
  */
-export const zEditLessonResponse = z.void();
+export const zEditVideoLessonResponse = z.void();
+
+export const zEditTestLessonBody = zCourseTestLessonWritable;
+
+export const zEditTestLessonPath = z.object({
+    lessonId: z.uuid()
+});
+
+/**
+ * Test lesson successfully updated
+ */
+export const zEditTestLessonResponse = z.void();
 
 export const zGetUploadVideoLessonUrlPath = z.object({
     lessonId: z.uuid()
@@ -725,22 +756,32 @@ export const zGetLessonProgressPath = z.object({
  * Lesson progress
  */
 export const zGetLessonProgressResponse = z.object({
-    data: zCourseLessonProgress
+    data: zCourseLessonProgressDetail
 });
 
-export const zSaveLessonProgressBody = z.object({
-    watchedSeconds: z.number().gte(0).optional(),
-    isCompleted: z.boolean().optional()
-});
+export const zSaveVideoLessonProgressBody = zCourseVideoLessonProgressWritable;
 
-export const zSaveLessonProgressPath = z.object({
+export const zSaveVideoLessonProgressPath = z.object({
     lessonId: z.uuid()
 });
 
 /**
- * Lesson progress saved
+ * Video lesson progress saved
  */
-export const zSaveLessonProgressResponse = z.void();
+export const zSaveVideoLessonProgressResponse = z.void();
+
+export const zSaveTestLessonProgressBody = zCourseTestLessonProgressWritable;
+
+export const zSaveTestLessonProgressPath = z.object({
+    lessonId: z.uuid()
+});
+
+/**
+ * Test lesson progress saved
+ */
+export const zSaveTestLessonProgressResponse = z.object({
+    data: zCourseTestLessonProgress
+});
 
 export const zMarkLessonAsCompletedPath = z.object({
     lessonId: z.uuid()

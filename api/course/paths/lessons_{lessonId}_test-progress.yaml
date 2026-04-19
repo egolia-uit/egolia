@@ -1,22 +1,28 @@
-get:
+put:
   security:
     - Oauth2: []
   tags:
     - Lesson
-  summary: Get lesson progress
-  operationId: getLessonProgress
+  summary: Save test lesson progress
+  operationId: saveTestLessonProgress
   parameters:
     - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/TestLessonProgress.yaml
   responses:
     200:
-      description: Lesson progress
+      description: Test lesson progress saved
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: ../components/schemas/LessonProgressDetail.yaml
+                $ref: ../components/schemas/TestLessonProgress.yaml
             required:
               - data
     400:

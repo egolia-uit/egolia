@@ -1,5 +1,5 @@
 type: string
 enum:
-  - VideoLesson
-  - TestLesson
-example: VideoLesson
+  - video
+  - test
+example: video

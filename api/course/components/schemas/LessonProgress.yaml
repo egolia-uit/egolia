@@ -9,6 +9,7 @@ properties:
 
   userId:
     $ref: ../../../common/components/schemas/User.yaml#/properties/id
+    readOnly: true
 
   lessonId:
     $ref: ./Lesson.yaml#/properties/id

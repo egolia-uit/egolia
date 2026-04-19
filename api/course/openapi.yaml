@@ -78,12 +78,20 @@ paths:
     $ref: ./paths/lessons.yaml
   /course/lessons/{lessonId}:
     $ref: ./paths/lessons_{lessonId}.yaml
+  /course/lessons/{lessonId}/video:
+    $ref: ./paths/lessons_{lessonId}_video.yaml
+  /course/lessons/{lessonId}/test:
+    $ref: ./paths/lessons_{lessonId}_test.yaml
   /course/lessons/{lessonId}/upload-video-url:
     $ref: ./paths/lessons_{lessonId}_upload-video-url.yaml
   /course/lessons/{lessonId}/tests:
     $ref: ./paths/lessons_{lessonId}_tests.yaml
   /course/lessons/{lessonId}/progress:
     $ref: ./paths/lessons_{lessonId}_progress.yaml
+  /course/lessons/{lessonId}/video-progress:
+    $ref: ./paths/lessons_{lessonId}_video-progress.yaml
+  /course/lessons/{lessonId}/test-progress:
+    $ref: ./paths/lessons_{lessonId}_test-progress.yaml
   /course/lessons/{lessonId}/mark-completed:
     $ref: ./paths/lessons_{lessonId}_mark-completed.yaml
   /course/lessons/{lessonId}/move:

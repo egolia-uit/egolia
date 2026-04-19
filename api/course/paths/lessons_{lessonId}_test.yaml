@@ -1,24 +1,21 @@
-get:
+patch:
   security:
     - Oauth2: []
   tags:
     - Lesson
-  summary: Get lesson progress
-  operationId: getLessonProgress
+  summary: Edit test lesson
+  operationId: editTestLesson
   parameters:
     - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/TestLesson.yaml
   responses:
-    200:
-      description: Lesson progress
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                $ref: ../components/schemas/LessonProgressDetail.yaml
-            required:
-              - data
+    204:
+      description: Test lesson successfully updated
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:
