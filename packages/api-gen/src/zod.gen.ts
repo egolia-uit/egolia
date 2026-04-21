@@ -4,9 +4,8 @@ import * as z from 'zod';
 
 export const zCourseCourseStatus = z.enum([
     'draft',
-    'approved',
-    'published',
-    'archived'
+    'pending',
+    'approved'
 ]).default('draft');
 
 /**
@@ -14,12 +13,26 @@ export const zCourseCourseStatus = z.enum([
  */
 export const zCourseId = z.string();
 
+/**
+ * Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+ */
+export const zCourseStructure = z.array(z.object({
+    sectionId: z.uuid().optional(),
+    lessonIds: z.array(z.uuid()).optional()
+})).readonly();
+
 export const zCourseCourse = z.object({
-    id: z.uuid().readonly(),
+    id: z.uuid().readonly().optional(),
     title: z.string(),
-    instructorId: zCourseId,
-    status: zCourseCourseStatus,
-    price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+    price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+    hidden: z.boolean().readonly().optional().default(true),
+    instructorId: zCourseId.optional(),
+    status: zCourseCourseStatus.optional(),
+    overview: z.string().optional(),
+    introduction: z.object({
+        videoUrl: z.url()
+    }).optional(),
+    structure: zCourseStructure.optional()
 });
 
 export const zCoursePagination = z.object({
@@ -41,8 +54,8 @@ export const zCoursePropertiesId = z.uuid().readonly();
 
 export const zCourseSection = z.object({
     id: z.uuid().readonly(),
-    courseId: zCoursePropertiesId,
-    title: z.string().min(1).max(255)
+    title: z.string().min(1).max(255),
+    courseId: zCoursePropertiesId
 });
 
 export const zCourseLessonType = z.enum(['video', 'test']);
@@ -54,16 +67,13 @@ export const zCourseLesson = z.object({
     lessonType: zCourseLessonType
 });
 
-export const zCourseCourseDetailSectionItem = z.object({
-    section: zCourseSection.and(z.object({
-        lessons: z.array(zCourseLesson)
-    })).optional()
-});
+export const zCourseCourseDetailSectionItem = zCourseSection.and(z.object({
+    lessons: z.array(zCourseLesson)
+}));
 
-export const zCourseCourseDetail = z.object({
-    course: zCourseCourse,
+export const zCourseCourseDetail = zCourseCourse.and(z.object({
     sections: z.array(zCourseCourseDetailSectionItem)
-});
+}));
 
 export const zCourseCourseProgress = z.object({
     courseId: zCoursePropertiesId,
@@ -253,8 +263,11 @@ export const zBlogComment = z.object({
 
 export const zCourseCourseWritable = z.object({
     title: z.string(),
-    status: zCourseCourseStatus,
-    price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+    price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+    overview: z.string().optional(),
+    introduction: z.object({
+        videoUrl: z.url()
+    }).optional()
 });
 
 export const zCourseSectionWritable = z.object({
@@ -265,16 +278,13 @@ export const zCourseLessonWritable = z.object({
     title: z.string()
 });
 
-export const zCourseCourseDetailSectionItemWritable = z.object({
-    section: zCourseSectionWritable.and(z.object({
-        lessons: z.array(zCourseLessonWritable)
-    })).optional()
-});
+export const zCourseCourseDetailSectionItemWritable = zCourseSectionWritable.and(z.object({
+    lessons: z.array(zCourseLessonWritable)
+}));
 
-export const zCourseCourseDetailWritable = z.object({
-    course: zCourseCourseWritable,
+export const zCourseCourseDetailWritable = zCourseCourseWritable.and(z.object({
     sections: z.array(zCourseCourseDetailSectionItemWritable)
-});
+}));
 
 export const zCourseCourseProgressWritable = z.object({
     userId: zCourseId,
@@ -524,12 +534,7 @@ export const zGetCourseDetailResponse = z.object({
     data: zCourseCourseDetail
 });
 
-export const zUpdatedCourseBody = z.object({
-    title: z.string().min(1).max(255).optional(),
-    slug: z.string().min(1).max(255).optional(),
-    status: zCourseCourseStatus.optional(),
-    price: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
-});
+export const zUpdatedCourseBody = zCourseCourseWritable;
 
 export const zUpdatedCoursePath = z.object({
     courseId: zCoursePropertiesId

@@ -17,10 +17,9 @@ const (
 
 // Defines values for CourseStatus.
 const (
-	CourseStatusApproved  CourseStatus = "approved"
-	CourseStatusArchived  CourseStatus = "archived"
-	CourseStatusDraft     CourseStatus = "draft"
-	CourseStatusPublished CourseStatus = "published"
+	CourseStatusApproved CourseStatus = "approved"
+	CourseStatusDraft    CourseStatus = "draft"
+	CourseStatusPending  CourseStatus = "pending"
 )
 
 // Valid indicates whether the value is a known member of the CourseStatus enum.
@@ -28,11 +27,9 @@ func (e CourseStatus) Valid() bool {
 	switch e {
 	case CourseStatusApproved:
 		return true
-	case CourseStatusArchived:
-		return true
 	case CourseStatusDraft:
 		return true
-	case CourseStatusPublished:
+	case CourseStatusPending:
 		return true
 	default:
 		return false
@@ -237,29 +234,50 @@ type Certificate struct {
 
 // Course defines model for Course.
 type Course struct {
-	Id *openapi_types.UUID `json:"id,omitempty"`
+	Hidden *bool               `json:"hidden,omitempty"`
+	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	InstructorId Id           `json:"instructorId"`
-	Price        int64        `json:"price"`
-	Status       CourseStatus `json:"status"`
-	Title        string       `json:"title"`
+	InstructorId *Id                            `json:"instructorId,omitempty"`
+	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
+	Overview     *string                        `json:"overview,omitempty"`
+	Price        int64                          `json:"price"`
+	Status       *CourseStatus                  `json:"status,omitempty"`
+
+	// Structure Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+	Structure *Structure `json:"structure,omitempty"`
+	Title     string     `json:"title"`
+}
+
+// CourseLandingPageIntroduction defines model for .
+type CourseLandingPageIntroduction struct {
+	VideoUrl string `json:"videoUrl"`
 }
 
 // CourseDetail defines model for CourseDetail.
 type CourseDetail struct {
-	Course   Course                    `json:"course"`
-	Sections []CourseDetailSectionItem `json:"sections"`
+	Hidden *bool               `json:"hidden,omitempty"`
+	Id     *openapi_types.UUID `json:"id,omitempty"`
+
+	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	InstructorId *Id                            `json:"instructorId,omitempty"`
+	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
+	Overview     *string                        `json:"overview,omitempty"`
+	Price        int64                          `json:"price"`
+	Sections     []CourseDetailSectionItem      `json:"sections"`
+	Status       *CourseStatus                  `json:"status,omitempty"`
+
+	// Structure Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+	Structure *Structure `json:"structure,omitempty"`
+	Title     string     `json:"title"`
 }
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
 type CourseDetailSectionItem struct {
-	Section *struct {
-		CourseId *PropertiesId       `json:"courseId,omitempty"`
-		Id       *openapi_types.UUID `json:"id,omitempty"`
-		Lessons  []Lesson            `json:"lessons"`
-		Title    string              `json:"title"`
-	} `json:"section,omitempty"`
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Lessons  []Lesson            `json:"lessons"`
+	Title    string              `json:"title"`
 }
 
 // CourseLandingPage defines model for CourseLandingPage.
@@ -267,11 +285,6 @@ type CourseLandingPage struct {
 	Course       CourseDetail                  `json:"course"`
 	Introduction CourseLandingPageIntroduction `json:"introduction"`
 	Overview     string                        `json:"overview"`
-}
-
-// CourseLandingPageIntroduction defines model for .
-type CourseLandingPageIntroduction struct {
-	VideoUrl string `json:"videoUrl"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -373,6 +386,12 @@ type Section struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Title    string              `json:"title"`
+}
+
+// Structure Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+type Structure = []struct {
+	LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
+	SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
 }
 
 // TestAnswer defines model for TestAnswer.
@@ -602,14 +621,6 @@ type GetMyEnrolledCoursesParams struct {
 // GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParamsOrder string
 
-// UpdatedCourseJSONBody defines parameters for UpdatedCourse.
-type UpdatedCourseJSONBody struct {
-	Price  *int64        `json:"price,omitempty"`
-	Slug   *string       `json:"slug,omitempty"`
-	Status *CourseStatus `json:"status,omitempty"`
-	Title  *string       `json:"title,omitempty"`
-}
-
 // DeclineCourseJSONBody defines parameters for DeclineCourse.
 type DeclineCourseJSONBody struct {
 	Reason *string `json:"reason,omitempty"`
@@ -672,7 +683,7 @@ type CreateSectionJSONBody struct {
 type CreateCourseJSONRequestBody = Course
 
 // UpdatedCourseJSONRequestBody defines body for UpdatedCourse for application/json ContentType.
-type UpdatedCourseJSONRequestBody UpdatedCourseJSONBody
+type UpdatedCourseJSONRequestBody = Course
 
 // DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
 type DeclineCourseJSONRequestBody DeclineCourseJSONBody

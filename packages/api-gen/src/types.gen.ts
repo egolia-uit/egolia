@@ -6,9 +6,8 @@ export type ClientOptions = {
 
 export const CourseCourseStatus = {
     DRAFT: 'draft',
-    APPROVED: 'approved',
-    PUBLISHED: 'published',
-    ARCHIVED: 'archived'
+    PENDING: 'pending',
+    APPROVED: 'approved'
 } as const;
 
 export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
@@ -18,12 +17,26 @@ export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCo
  */
 export type CourseId = string;
 
+/**
+ * Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+ */
+export type CourseStructure = Array<{
+    sectionId?: string;
+    lessonIds?: Array<string>;
+}>;
+
 export type CourseCourse = {
-    readonly id: string;
+    readonly id?: string;
     title: string;
-    instructorId: CourseId;
-    status: CourseCourseStatus;
     price: bigint;
+    readonly hidden?: boolean;
+    instructorId?: CourseId;
+    status?: CourseCourseStatus;
+    overview?: string;
+    introduction?: {
+        videoUrl: string;
+    };
+    structure?: CourseStructure;
 };
 
 export type CoursePagination = {
@@ -72,8 +85,8 @@ export type CoursePropertiesId = string;
 
 export type CourseSection = {
     readonly id: string;
-    courseId: CoursePropertiesId;
     title: string;
+    courseId: CoursePropertiesId;
 };
 
 export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
@@ -87,14 +100,11 @@ export type CourseLesson = {
     lessonType: CourseLessonType;
 };
 
-export type CourseCourseDetailSectionItem = {
-    section?: CourseSection & {
-        lessons: Array<CourseLesson>;
-    };
+export type CourseCourseDetailSectionItem = CourseSection & {
+    lessons: Array<CourseLesson>;
 };
 
-export type CourseCourseDetail = {
-    course: CourseCourse;
+export type CourseCourseDetail = CourseCourse & {
     sections: Array<CourseCourseDetailSectionItem>;
 };
 
@@ -341,8 +351,11 @@ export type BlogComment = {
 
 export type CourseCourseWritable = {
     title: string;
-    status: CourseCourseStatus;
     price: bigint;
+    overview?: string;
+    introduction?: {
+        videoUrl: string;
+    };
 };
 
 export type CourseSectionWritable = {
@@ -353,14 +366,11 @@ export type CourseLessonWritable = {
     title: string;
 };
 
-export type CourseCourseDetailSectionItemWritable = {
-    section?: CourseSectionWritable & {
-        lessons: Array<CourseLessonWritable>;
-    };
+export type CourseCourseDetailSectionItemWritable = CourseSectionWritable & {
+    lessons: Array<CourseLessonWritable>;
 };
 
-export type CourseCourseDetailWritable = {
-    course: CourseCourseWritable;
+export type CourseCourseDetailWritable = CourseCourseWritable & {
     sections: Array<CourseCourseDetailSectionItemWritable>;
 };
 
@@ -957,12 +967,7 @@ export type GetCourseDetailResponses = {
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
 
 export type UpdatedCourseData = {
-    body: {
-        title?: string;
-        slug?: string;
-        status?: CourseCourseStatus;
-        price?: bigint;
-    };
+    body: CourseCourseWritable;
     path: {
         courseId: CoursePropertiesId;
     };

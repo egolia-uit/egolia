@@ -513,30 +513,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "OOP A-Z Updated"
-                  },
-                  "slug": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "oop-a-z-updated"
-                  },
-                  "status": {
-                    "$ref": "#/components/schemas/course_CourseStatus"
-                  },
-                  "price": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 0,
-                    "example": 119900
-                  }
-                }
+                "$ref": "#/components/schemas/course_Course"
               }
             }
           }
@@ -3093,9 +3070,8 @@
         "type": "string",
         "enum": [
           "draft",
-          "approved",
-          "published",
-          "archived"
+          "pending",
+          "approved"
         ],
         "default": "draft",
         "example": "draft"
@@ -3105,6 +3081,32 @@
         "format": "number",
         "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
         "example": "100"
+      },
+      "course_Structure": {
+        "type": "array",
+        "readOnly": true,
+        "description": "Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)",
+        "items": {
+          "type": "object",
+          "properties": {
+            "sectionId": {
+              "type": "string",
+              "format": "uuid",
+              "example": "sec-550e8400-e29b-41d4"
+            },
+            "lessonIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": [
+                "les-11111111-1111-1111",
+                "les-22222222-2222-2222"
+              ]
+            }
+          }
+        }
       },
       "course_Course": {
         "type": "object",
@@ -3119,25 +3121,51 @@
             "type": "string",
             "example": "Introduction to Programming"
           },
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1000000
+          },
+          "hidden": {
+            "type": "boolean",
+            "default": true,
+            "example": true,
+            "readOnly": true
+          },
           "instructorId": {
             "$ref": "#/components/schemas/course_id",
             "example": "100",
             "readOnly": true
           },
           "status": {
-            "$ref": "#/components/schemas/course_CourseStatus"
+            "$ref": "#/components/schemas/course_CourseStatus",
+            "readOnly": true
           },
-          "price": {
-            "type": "integer",
-            "format": "int64",
-            "example": 1000000
+          "overview": {
+            "type": "string",
+            "example": "Learn practical Go backend concepts in this beginner-friendly course."
+          },
+          "introduction": {
+            "type": "object",
+            "x-go-type-name": "CourseLandingPageIntroduction",
+            "properties": {
+              "videoUrl": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
+              }
+            },
+            "required": [
+              "videoUrl"
+            ]
+          },
+          "structure": {
+            "$ref": "#/components/schemas/course_Structure",
+            "readOnly": true
           }
         },
         "required": [
-          "id",
           "title",
-          "instructorId",
-          "status",
           "price"
         ]
       },
@@ -3228,14 +3256,14 @@
             "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
             "readOnly": true
           },
-          "courseId": {
-            "$ref": "#/components/schemas/course_properties-id"
-          },
           "title": {
             "type": "string",
             "minLength": 1,
             "maxLength": 255,
             "example": "OOP Fundamentals"
+          },
+          "courseId": {
+            "$ref": "#/components/schemas/course_properties-id"
           }
         },
         "required": [
@@ -3282,46 +3310,46 @@
       },
       "course_CourseDetailSectionItem": {
         "type": "object",
-        "properties": {
-          "section": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/course_Section"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "lessons": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/course_Lesson"
-                    }
-                  }
-                },
-                "required": [
-                  "lessons"
-                ]
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/course_Section"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lessons": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/course_Lesson"
+                }
               }
+            },
+            "required": [
+              "lessons"
             ]
           }
-        }
+        ]
       },
       "course_CourseDetail": {
         "type": "object",
-        "properties": {
-          "course": {
+        "allOf": [
+          {
             "$ref": "#/components/schemas/course_Course"
           },
-          "sections": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/course_CourseDetailSectionItem"
-            }
+          {
+            "type": "object",
+            "properties": {
+              "sections": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/course_CourseDetailSectionItem"
+                }
+              }
+            },
+            "required": [
+              "sections"
+            ]
           }
-        },
-        "required": [
-          "course",
-          "sections"
         ]
       },
       "course_CourseProgress": {

@@ -28,7 +28,7 @@ export const getInstructorCoursesResponseTransformer = async (data: any): Promis
 };
 
 const courseCourseDetailSchemaResponseTransformer = (data: any) => {
-    data.course = courseCourseSchemaResponseTransformer(data.course);
+    data = courseCourseSchemaResponseTransformer(data);
     return data;
 };
 
