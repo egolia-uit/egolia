@@ -73,6 +73,8 @@ paths:
     $ref: ./paths/sections.yaml
   /course/sections/{sectionId}:
     $ref: ./paths/sections_{sectionId}.yaml
+  /course/sections/{sectionId}/move:
+    $ref: ./paths/sections_{sectionId}_move.yaml
 
   /course/lessons:
     $ref: ./paths/lessons.yaml

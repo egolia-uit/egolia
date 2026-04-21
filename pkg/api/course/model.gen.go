@@ -244,7 +244,7 @@ type Course struct {
 	Price        int64                          `json:"price"`
 	Status       *CourseStatus                  `json:"status,omitempty"`
 
-	// Structure Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
 	Structure *Structure `json:"structure,omitempty"`
 	Title     string     `json:"title"`
 }
@@ -267,7 +267,7 @@ type CourseDetail struct {
 	Sections     []CourseDetailSectionItem      `json:"sections"`
 	Status       *CourseStatus                  `json:"status,omitempty"`
 
-	// Structure Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
 	Structure *Structure `json:"structure,omitempty"`
 	Title     string     `json:"title"`
 }
@@ -278,13 +278,6 @@ type CourseDetailSectionItem struct {
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Lessons  []Lesson            `json:"lessons"`
 	Title    string              `json:"title"`
-}
-
-// CourseLandingPage defines model for CourseLandingPage.
-type CourseLandingPage struct {
-	Course       CourseDetail                  `json:"course"`
-	Introduction CourseLandingPageIntroduction `json:"introduction"`
-	Overview     string                        `json:"overview"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -388,7 +381,7 @@ type Section struct {
 	Title    string              `json:"title"`
 }
 
-// Structure Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
 type Structure = []struct {
 	LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
 	SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
@@ -674,9 +667,20 @@ type CreateTestJSONBody struct {
 
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
-	CourseId          *PropertiesId       `json:"courseId,omitempty"`
-	PreviousSectionId *openapi_types.UUID `json:"previousSectionId"`
-	Title             string              `json:"title"`
+	CourseId    *PropertiesId `json:"courseId,omitempty"`
+	TargetIndex int32         `json:"targetIndex"`
+	Title       string        `json:"title"`
+}
+
+// MoveSectionJSONBody defines parameters for MoveSection.
+type MoveSectionJSONBody struct {
+	CourseId *PropertiesId `json:"courseId,omitempty"`
+
+	// SectionId ID của Chương cần di chuyển
+	SectionId openapi_types.UUID `json:"sectionId"`
+
+	// TargetIndex Vị trí mới (index) của chương trong mảng cấu trúc khóa học
+	TargetIndex int32 `json:"targetIndex"`
 }
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
@@ -723,6 +727,9 @@ type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
 
 // CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
 type CreateSectionJSONRequestBody CreateSectionJSONBody
+
+// MoveSectionJSONRequestBody defines body for MoveSection for application/json ContentType.
+type MoveSectionJSONRequestBody MoveSectionJSONBody
 
 // AsVideoLesson returns the union data inside the LessonDetail as a VideoLesson
 func (t LessonDetail) AsVideoLesson() (VideoLesson, error) {

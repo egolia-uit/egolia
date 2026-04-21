@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // ServerInterface represents all server handlers.
@@ -139,6 +140,9 @@ type ServerInterface interface {
 	// Delete section
 	// (DELETE /course/sections/{sectionId})
 	DeleteSection(c *gin.Context, sectionId SectionIdPath)
+	// Move section
+	// (POST /course/sections/{sectionId}/move)
+	MoveSection(c *gin.Context, sectionId SectionIdPath)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -1312,6 +1316,32 @@ func (siw *ServerInterfaceWrapper) DeleteSection(c *gin.Context) {
 	siw.Handler.DeleteSection(c, sectionId)
 }
 
+// MoveSection operation middleware
+func (siw *ServerInterfaceWrapper) MoveSection(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.MoveSection(c, sectionId)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -1379,6 +1409,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.PUT(options.BaseURL+"/course/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
 	router.POST(options.BaseURL+"/course/sections", wrapper.CreateSection)
 	router.DELETE(options.BaseURL+"/course/sections/:sectionId", wrapper.DeleteSection)
+	router.POST(options.BaseURL+"/course/sections/:sectionId/move", wrapper.MoveSection)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -2441,7 +2472,7 @@ type GetCourseLandingPageResponseObject interface {
 }
 
 type GetCourseLandingPage200JSONResponse struct {
-	Data CourseLandingPage `json:"data"`
+	Data Course `json:"data"`
 }
 
 func (response GetCourseLandingPage200JSONResponse) VisitGetCourseLandingPageResponse(w http.ResponseWriter) error {
@@ -3914,6 +3945,79 @@ func (response DeleteSection500JSONResponse) VisitDeleteSectionResponse(w http.R
 	return json.NewEncoder(w).Encode(response)
 }
 
+type MoveSectionRequestObject struct {
+	SectionId SectionIdPath `json:"sectionId"`
+	Body      *MoveSectionJSONRequestBody
+}
+
+type MoveSectionResponseObject interface {
+	VisitMoveSectionResponse(w http.ResponseWriter) error
+}
+
+type MoveSection200JSONResponse struct {
+	Data *struct {
+		// Structure Trả về chuỗi cấu trúc mới nhất để Frontend tự động cập nhật UI
+		Structure *[]struct {
+			LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
+			SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
+		} `json:"structure,omitempty"`
+	} `json:"data,omitempty"`
+}
+
+func (response MoveSection200JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveSection400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response MoveSection400JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveSection401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response MoveSection401JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveSection403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response MoveSection403JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveSection404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response MoveSection404JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type MoveSection500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response MoveSection500JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Get my certificates
@@ -4036,6 +4140,9 @@ type StrictServerInterface interface {
 	// Delete section
 	// (DELETE /course/sections/{sectionId})
 	DeleteSection(ctx context.Context, request DeleteSectionRequestObject) (DeleteSectionResponseObject, error)
+	// Move section
+	// (POST /course/sections/{sectionId}/move)
+	MoveSection(ctx context.Context, request MoveSectionRequestObject) (MoveSectionResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -5244,6 +5351,41 @@ func (sh *strictHandler) DeleteSection(ctx *gin.Context, sectionId SectionIdPath
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(DeleteSectionResponseObject); ok {
 		if err := validResponse.VisitDeleteSectionResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MoveSection operation middleware
+func (sh *strictHandler) MoveSection(ctx *gin.Context, sectionId SectionIdPath) {
+	var request MoveSectionRequestObject
+
+	request.SectionId = sectionId
+
+	var body MoveSectionJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.MoveSection(ctx, request.(MoveSectionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MoveSection")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(MoveSectionResponseObject); ok {
+		if err := validResponse.VisitMoveSectionResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

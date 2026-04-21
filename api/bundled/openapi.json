@@ -924,7 +924,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/course_CourseLandingPage"
+                      "$ref": "#/components/schemas/course_Course"
                     }
                   },
                   "required": [
@@ -1201,7 +1201,7 @@
                 "required": [
                   "courseId",
                   "title",
-                  "previousSectionId"
+                  "targetIndex"
                 ],
                 "properties": {
                   "courseId": {
@@ -1213,11 +1213,11 @@
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
                   },
-                  "previousSectionId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "nullable": true,
-                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                  "targetIndex": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "example": 1
                   }
                 }
               }
@@ -1276,6 +1276,112 @@
         "responses": {
           "204": {
             "description": "Section successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/sections/{sectionId}/move": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Move section",
+        "operationId": "moveSection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseId": {
+                    "$ref": "#/components/schemas/course_properties-id"
+                  },
+                  "sectionId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "ID của Chương cần di chuyển",
+                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                  },
+                  "targetIndex": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "description": "Vị trí mới (index) của chương trong mảng cấu trúc khóa học",
+                    "example": 2
+                  }
+                },
+                "required": [
+                  "courseId",
+                  "sectionId",
+                  "targetIndex"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Section moved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "structure": {
+                          "type": "array",
+                          "description": "Trả về chuỗi cấu trúc mới nhất để Frontend tự động cập nhật UI",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sectionId": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "lessonIds": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"
@@ -3085,14 +3191,14 @@
       "course_Structure": {
         "type": "array",
         "readOnly": true,
-        "description": "Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)",
+        "description": "Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.",
         "items": {
           "type": "object",
           "properties": {
             "sectionId": {
               "type": "string",
               "format": "uuid",
-              "example": "sec-550e8400-e29b-41d4"
+              "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
             },
             "lessonIds": {
               "type": "array",
@@ -3101,8 +3207,8 @@
                 "format": "uuid"
               },
               "example": [
-                "les-11111111-1111-1111",
-                "les-22222222-2222-2222"
+                "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+                "2b3c4d5e-6789-0abc-def1-234567890abc"
               ]
             }
           }
@@ -3393,37 +3499,6 @@
           "completedLessons",
           "progressPercent",
           "isCompleted"
-        ]
-      },
-      "course_CourseLandingPage": {
-        "type": "object",
-        "properties": {
-          "course": {
-            "$ref": "#/components/schemas/course_CourseDetail"
-          },
-          "overview": {
-            "type": "string",
-            "example": "Learn practical Go backend concepts in this beginner-friendly course."
-          },
-          "introduction": {
-            "type": "object",
-            "x-go-type-name": "CourseLandingPageIntroduction",
-            "properties": {
-              "videoUrl": {
-                "type": "string",
-                "format": "uri",
-                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
-              }
-            },
-            "required": [
-              "videoUrl"
-            ]
-          }
-        },
-        "required": [
-          "course",
-          "overview",
-          "introduction"
         ]
       },
       "course_VideoLesson": {

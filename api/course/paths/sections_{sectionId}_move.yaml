@@ -1,0 +1,72 @@
+post:
+  security:
+    - Oauth2: []
+  tags:
+    - Section
+  summary: Move section
+  operationId: moveSection
+  parameters:
+    - $ref: ../components/parameters/sectionIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            courseId:
+              $ref: ../components/schemas/Course.yaml#/properties/id
+            sectionId:
+              type: string
+              format: uuid
+              description: ID of the section to move (must match the sectionId path parameter)
+              example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
+            targetIndex:
+              type: integer
+              format: int32
+              minimum: 0
+              description: New index for the section within the course (0-based). For example,
+                if targetIndex is 0, the section will be moved to the beginning
+                of the course. If targetIndex is equal to the number of sections
+                - 1, it will be moved to the end.
+              example: 2
+          required:
+            - courseId
+            - sectionId
+            - targetIndex
+  responses:
+    200:
+      description: Section moved successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  structure:
+                    type: array
+                    description: Resulting course structure after moving the section, including all
+                      sections and their lessons
+                    items:
+                      type: object
+                      properties:
+                        sectionId:
+                          type: string
+                          format: uuid
+                        lessonIds:
+                          type: array
+                          items:
+                            type: string
+                            format: uuid
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

@@ -18,7 +18,7 @@ export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCo
 export type CourseId = string;
 
 /**
- * Khung xương cấu trúc khóa học (chỉ trả về, không nhận từ FE)
+ * Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
  */
 export type CourseStructure = Array<{
     sectionId?: string;
@@ -115,14 +115,6 @@ export type CourseCourseProgress = {
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
-};
-
-export type CourseCourseLandingPage = {
-    course: CourseCourseDetail;
-    overview: string;
-    introduction: {
-        videoUrl: string;
-    };
 };
 
 export type CourseVideoLesson = CourseLesson & {
@@ -380,14 +372,6 @@ export type CourseCourseProgressWritable = {
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
-};
-
-export type CourseCourseLandingPageWritable = {
-    course: CourseCourseDetailWritable;
-    overview: string;
-    introduction: {
-        videoUrl: string;
-    };
 };
 
 export type CourseVideoLessonWritable = CourseLessonWritable & {
@@ -1446,7 +1430,7 @@ export type GetCourseLandingPageResponses = {
      * Course landing page data
      */
     200: {
-        data: CourseCourseLandingPage;
+        data: CourseCourse;
     };
 };
 
@@ -1744,7 +1728,7 @@ export type CreateSectionData = {
     body: {
         courseId: CoursePropertiesId;
         title: string;
-        previousSectionId: string | null;
+        targetIndex: number;
     };
     path?: never;
     query?: never;
@@ -1851,6 +1835,82 @@ export type DeleteSectionResponses = {
 };
 
 export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionResponses];
+
+export type MoveSectionData = {
+    body: {
+        courseId: CoursePropertiesId;
+        /**
+         * ID của Chương cần di chuyển
+         */
+        sectionId: string;
+        /**
+         * Vị trí mới (index) của chương trong mảng cấu trúc khóa học
+         */
+        targetIndex: number;
+    };
+    path: {
+        sectionId: string;
+    };
+    query?: never;
+    url: '/course/sections/{sectionId}/move';
+};
+
+export type MoveSectionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type MoveSectionError = MoveSectionErrors[keyof MoveSectionErrors];
+
+export type MoveSectionResponses = {
+    /**
+     * Section moved successfully
+     */
+    200: {
+        data?: {
+            /**
+             * Trả về chuỗi cấu trúc mới nhất để Frontend tự động cập nhật UI
+             */
+            structure?: Array<{
+                sectionId?: string;
+                lessonIds?: Array<string>;
+            }>;
+        };
+    };
+};
+
+export type MoveSectionResponse = MoveSectionResponses[keyof MoveSectionResponses];
 
 export type CreateLessonData = {
     body: {
