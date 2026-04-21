@@ -15,7 +15,7 @@ import (
 	commonhttp "github.com/egolia-uit/egolia/pkg/common/http"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/gin-gonic/gin"
-	"github.com/oapi-codegen/gin-middleware"
+	ginmiddleware "github.com/oapi-codegen/gin-middleware"
 )
 
 type (

@@ -1840,11 +1840,11 @@ export type MoveSectionData = {
     body: {
         courseId: CoursePropertiesId;
         /**
-         * ID của Chương cần di chuyển
+         * ID of the section to move (must match the sectionId path parameter)
          */
         sectionId: string;
         /**
-         * Vị trí mới (index) của chương trong mảng cấu trúc khóa học
+         * New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.
          */
         targetIndex: number;
     };
@@ -1900,7 +1900,7 @@ export type MoveSectionResponses = {
     200: {
         data?: {
             /**
-             * Trả về chuỗi cấu trúc mới nhất để Frontend tự động cập nhật UI
+             * Resulting course structure after moving the section, including all sections and their lessons
              */
             structure?: Array<{
                 sectionId?: string;

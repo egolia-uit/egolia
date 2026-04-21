@@ -3956,7 +3956,7 @@ type MoveSectionResponseObject interface {
 
 type MoveSection200JSONResponse struct {
 	Data *struct {
-		// Structure Trả về chuỗi cấu trúc mới nhất để Frontend tự động cập nhật UI
+		// Structure Resulting course structure after moving the section, including all sections and their lessons
 		Structure *[]struct {
 			LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
 			SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
