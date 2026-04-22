@@ -46,7 +46,7 @@ entries:
       username: learner
       name: Learner
       email: learner@egolia.com
-      password: notopiauit
+      password: egoliauit
 
   - model: authentik_core.user
     id: user-instructor
@@ -56,7 +56,7 @@ entries:
       username: instructor
       name: Instructor
       email: instructor@egolia.com
-      password: notopiauit
+      password: egoliauit
       groups:
         - !KeyOf egolia-instructor
 
@@ -68,7 +68,7 @@ entries:
       username: admin
       name: Admin
       email: admin@egolia.com
-      password: notopiauit
+      password: egoliauit
       groups:
         - !KeyOf egolia-admin
 
