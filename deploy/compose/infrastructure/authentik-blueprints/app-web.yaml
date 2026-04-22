@@ -37,13 +37,54 @@ entries:
         - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
         - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+        - !Find [
+            authentik_providers_oauth2.scopemapping,
+            [scope_name, entitlements],
+          ]
       redirect_uris:
         - url: http://web.egolia.localhost/api/auth/oauth2/callback/authentik
           matching_mode: strict
 
   - model: authentik_core.application
+    id: app
     identifiers:
       slug: app-web
     attrs:
       name: App Web
       provider: !KeyOf provider
+
+  - model: authentik_core.applicationentitlement
+    id: instructor-entitlement
+    identifiers:
+      name: instructor
+    attrs:
+      app: !KeyOf app
+
+  - model: authentik_core.applicationentitlement
+    id: admin-entitlement
+    identifiers:
+      name: admin
+    attrs:
+      app: !KeyOf app
+
+  - model: authentik_core.group
+    id: egolia-instructor
+    state: created
+    identifiers:
+      name: Egolia Instructor
+
+  - model: authentik_core.group
+    id: egolia-admin
+    state: created
+    identifiers:
+      name: Egolia Admin
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf admin-entitlement
+      group: !KeyOf egolia-admin
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf instructor-entitlement
+      group: !KeyOf egolia-instructor

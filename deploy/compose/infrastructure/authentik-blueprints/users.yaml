@@ -11,29 +11,66 @@ entries:
     identifiers:
       username: egoliauit
     attrs:
-      name: Egolia Admin
+      name: EgoliaUIT
       email: egoliauit@egolia.com
       groups:
         - !Find [authentik_core.group, [name, authentik Admins]]
       password: egoliauit
 
+  - model: authentik_core.group
+    identifiers:
+      name: Egolia
+    id: egolia-group
+
+  - model: authentik_core.group
+    id: egolia-instructor
+    identifiers:
+      name: Egolia Instructor
+    attrs:
+      parents:
+        - !KeyOf egolia-group
+
+  - model: authentik_core.group
+    id: egolia-admin
+    identifiers:
+      name: Egolia Admin
+    attrs:
+      parents:
+        - !KeyOf egolia-group
+
   - model: authentik_core.user
+    id: user-learner
     identifiers:
       pk: 110
     attrs:
       username: learner
       name: Learner
       email: learner@egolia.com
-      password: learner
+      password: notopiauit
 
   - model: authentik_core.user
+    id: user-instructor
     identifiers:
       pk: 120
     attrs:
       username: instructor
       name: Instructor
       email: instructor@egolia.com
-      password: instructor
+      password: notopiauit
+      groups:
+        - !KeyOf egolia-instructor
+
+  - model: authentik_core.user
+    id: user-admin
+    identifiers:
+      pk: 130
+    attrs:
+      username: admin
+      name: Admin
+      email: admin@egolia.com
+      password: notopiauit
+      groups:
+        - !KeyOf egolia-admin
 
   - model: authentik_core.user
     id: billing-service

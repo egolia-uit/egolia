@@ -7,7 +7,7 @@ services:
     environment:
       SKIP_ALL_AUTH: true
 
-      CONNECTIONS: course_postgresql,billing_postgresql,blog_postgresql
+      CONNECTIONS: course_postgresql,billing_postgresql,blog_postgresql,authentik_postgresql
 
       LABEL_course_postgresql: Course PostgreSQL
       ENGINE_course_postgresql: postgres@dbgate-plugin-postgres
@@ -20,6 +20,10 @@ services:
       LABEL_blog_postgresql: Blog PostgreSQL
       ENGINE_blog_postgresql: postgres@dbgate-plugin-postgres
       URL_blog_postgresql: postgres://${BLOG_POSTGRESQL_USER:-egoliauit}:${BLOG_POSTGRESQL_PASSWORD:-egoliauit}@blog_postgresql:5432/${BLOG_POSTGRESQL_DB:-blog}
+
+      LABEL_authentik_postgresql: Authentik PostgreSQL
+      ENGINE_authentik_postgresql: postgres@dbgate-plugin-postgres
+      URL_authentik_postgresql: postgres://${AUTHENTIK_POSTGRESQL__USER:-egoliauit}:${AUTHENTIK_POSTGRESQL__PASSWORD:-egoliauit}@authentik_postgresql:5432/${AUTHENTIK_POSTGRESQL__NAME:-authentik}
     volumes:
       - dbgate_data:/root/.dbgate
     labels:

@@ -11,12 +11,13 @@ http:
     course-public:
       entryPoints:
         - web
-      rule: >-
-        Host(`api.egolia.localhost`) && (
-          PathPrefix(`/course/courses-published`) ||
-          PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}/detail`)
-          PathPrefix(`/course/certificates/{certificateId:[a-zA-Z0-9-]+}`)
-        )
+      rule: "
+        Host(`api.egolia.localhost`) && ( \
+        PathPrefix(`/course/courses-published`) || \
+        PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}/detail`) || \
+        PathPrefix(`/course/certificates/{certificateId:[a-zA-Z0-9-]+}`) \
+        ) \
+        "
       service: course
     course-health:
       entryPoints:
