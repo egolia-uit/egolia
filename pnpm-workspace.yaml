@@ -10,7 +10,7 @@ packages:
 autoInstallPeers: true
 
 catalog:
-  '@hey-api/openapi-ts': '0.96.0'
+  '@hey-api/openapi-ts': '0.96.1'
   '@redocly/cli': '2.25.4'
   '@scalar/cli': '1.8.6'
   '@bufbuild/buf': 1.64.0
