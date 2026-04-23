@@ -14,7 +14,7 @@ post:
           required:
             - courseId
             - title
-            - previousSectionId
+            - targetIndex
           properties:
             courseId:
               $ref: ../components/schemas/Course.yaml#/properties/id
@@ -23,11 +23,11 @@ post:
               minLength: 1
               maxLength: 255
               example: OOP Fundamentals
-            previousSectionId:
-              type: string
-              format: uuid
-              nullable: true
-              example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
+            targetIndex:
+              type: integer
+              format: int32
+              minimum: 0
+              example: 1
   responses:
     201:
       description: Section created

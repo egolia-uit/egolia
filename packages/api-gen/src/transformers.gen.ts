@@ -28,7 +28,7 @@ export const getInstructorCoursesResponseTransformer = async (data: any): Promis
 };
 
 const courseCourseDetailSchemaResponseTransformer = (data: any) => {
-    data.course = courseCourseSchemaResponseTransformer(data.course);
+    data = courseCourseSchemaResponseTransformer(data);
     return data;
 };
 
@@ -37,13 +37,8 @@ export const getCourseDetailResponseTransformer = async (data: any): Promise<Get
     return data;
 };
 
-const courseCourseLandingPageSchemaResponseTransformer = (data: any) => {
-    data.course = courseCourseDetailSchemaResponseTransformer(data.course);
-    return data;
-};
-
 export const getCourseLandingPageResponseTransformer = async (data: any): Promise<GetCourseLandingPageResponse> => {
-    data.data = courseCourseLandingPageSchemaResponseTransformer(data.data);
+    data.data = courseCourseSchemaResponseTransformer(data.data);
     return data;
 };
 

@@ -12,25 +12,7 @@ patch:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            title:
-              type: string
-              minLength: 1
-              maxLength: 255
-              example: OOP A-Z Updated
-            slug:
-              type: string
-              minLength: 1
-              maxLength: 255
-              example: oop-a-z-updated
-            status:
-              $ref: ../components/schemas/CourseStatus.yaml
-            price:
-              type: integer
-              format: int64
-              minimum: 0
-              example: 119900
+          $ref: ../components/schemas/Course.yaml
   responses:
     204:
       description: Course basic information updated

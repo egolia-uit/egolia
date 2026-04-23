@@ -15,7 +15,7 @@ get:
             type: object
             properties:
               data:
-                $ref: ../components/schemas/CourseLandingPage.yaml
+                $ref: ../components/schemas/Course.yaml
             required:
               - data
     400:

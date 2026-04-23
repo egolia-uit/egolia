@@ -1,9 +1,8 @@
 type: string
 enum:
   - draft
+  - pending
   - approved
-  - published
   # - declined
-  - archived
 default: draft
 example: draft

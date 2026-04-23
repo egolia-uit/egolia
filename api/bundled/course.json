@@ -495,30 +495,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "OOP A-Z Updated"
-                  },
-                  "slug": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "oop-a-z-updated"
-                  },
-                  "status": {
-                    "$ref": "#/components/schemas/CourseStatus"
-                  },
-                  "price": {
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 0,
-                    "example": 119900
-                  }
-                }
+                "$ref": "#/components/schemas/Course"
               }
             }
           }
@@ -929,7 +906,7 @@
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/CourseLandingPage"
+                      "$ref": "#/components/schemas/Course"
                     }
                   },
                   "required": [
@@ -1206,7 +1183,7 @@
                 "required": [
                   "courseId",
                   "title",
-                  "previousSectionId"
+                  "targetIndex"
                 ],
                 "properties": {
                   "courseId": {
@@ -1218,11 +1195,11 @@
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
                   },
-                  "previousSectionId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "nullable": true,
-                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                  "targetIndex": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "example": 1
                   }
                 }
               }
@@ -1281,6 +1258,113 @@
         "responses": {
           "204": {
             "description": "Section successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/sections/{sectionId}/move": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Move section",
+        "operationId": "moveSection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/sectionIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseId": {
+                    "$ref": "#/components/schemas/properties-id"
+                  },
+                  "sectionId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the section to move (must match the sectionId path parameter)",
+                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                  },
+                  "targetIndex": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0,
+                    "description": "New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.",
+                    "example": 2
+                  }
+                },
+                "required": [
+                  "courseId",
+                  "sectionId",
+                  "targetIndex"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Section moved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "structure": {
+                          "type": "array",
+                          "description": "Resulting course structure after moving the section, including all sections and their lessons",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sectionId": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                              },
+                              "lessonIds": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -2307,9 +2391,8 @@
         "type": "string",
         "enum": [
           "draft",
-          "approved",
-          "published",
-          "archived"
+          "pending",
+          "approved"
         ],
         "default": "draft",
         "example": "draft"
@@ -2319,6 +2402,32 @@
         "format": "number",
         "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
         "example": "100"
+      },
+      "Structure": {
+        "type": "array",
+        "readOnly": true,
+        "description": "Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "sectionId": {
+              "type": "string",
+              "format": "uuid",
+              "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+            },
+            "lessonIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": [
+                "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+                "2b3c4d5e-6789-0abc-def1-234567890abc"
+              ]
+            }
+          }
+        }
       },
       "Course": {
         "type": "object",
@@ -2333,25 +2442,51 @@
             "type": "string",
             "example": "Introduction to Programming"
           },
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1000000
+          },
+          "hidden": {
+            "type": "boolean",
+            "default": true,
+            "example": true,
+            "readOnly": true
+          },
           "instructorId": {
             "$ref": "#/components/schemas/id",
             "example": "100",
             "readOnly": true
           },
           "status": {
-            "$ref": "#/components/schemas/CourseStatus"
+            "$ref": "#/components/schemas/CourseStatus",
+            "readOnly": true
           },
-          "price": {
-            "type": "integer",
-            "format": "int64",
-            "example": 1000000
+          "overview": {
+            "type": "string",
+            "example": "Learn practical Go backend concepts in this beginner-friendly course."
+          },
+          "introduction": {
+            "type": "object",
+            "x-go-type-name": "CourseLandingPageIntroduction",
+            "properties": {
+              "videoUrl": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
+              }
+            },
+            "required": [
+              "videoUrl"
+            ]
+          },
+          "structure": {
+            "$ref": "#/components/schemas/Structure",
+            "readOnly": true
           }
         },
         "required": [
-          "id",
           "title",
-          "instructorId",
-          "status",
           "price"
         ]
       },
@@ -2442,14 +2577,14 @@
             "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
             "readOnly": true
           },
-          "courseId": {
-            "$ref": "#/components/schemas/properties-id"
-          },
           "title": {
             "type": "string",
             "minLength": 1,
             "maxLength": 255,
             "example": "OOP Fundamentals"
+          },
+          "courseId": {
+            "$ref": "#/components/schemas/properties-id"
           }
         },
         "required": [
@@ -2496,46 +2631,46 @@
       },
       "CourseDetailSectionItem": {
         "type": "object",
-        "properties": {
-          "section": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Section"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "lessons": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Lesson"
-                    }
-                  }
-                },
-                "required": [
-                  "lessons"
-                ]
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Section"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lessons": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Lesson"
+                }
               }
+            },
+            "required": [
+              "lessons"
             ]
           }
-        }
+        ]
       },
       "CourseDetail": {
         "type": "object",
-        "properties": {
-          "course": {
+        "allOf": [
+          {
             "$ref": "#/components/schemas/Course"
           },
-          "sections": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CourseDetailSectionItem"
-            }
+          {
+            "type": "object",
+            "properties": {
+              "sections": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CourseDetailSectionItem"
+                }
+              }
+            },
+            "required": [
+              "sections"
+            ]
           }
-        },
-        "required": [
-          "course",
-          "sections"
         ]
       },
       "CourseProgress": {
@@ -2579,37 +2714,6 @@
           "completedLessons",
           "progressPercent",
           "isCompleted"
-        ]
-      },
-      "CourseLandingPage": {
-        "type": "object",
-        "properties": {
-          "course": {
-            "$ref": "#/components/schemas/CourseDetail"
-          },
-          "overview": {
-            "type": "string",
-            "example": "Learn practical Go backend concepts in this beginner-friendly course."
-          },
-          "introduction": {
-            "type": "object",
-            "x-go-type-name": "CourseLandingPageIntroduction",
-            "properties": {
-              "videoUrl": {
-                "type": "string",
-                "format": "uri",
-                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
-              }
-            },
-            "required": [
-              "videoUrl"
-            ]
-          }
-        },
-        "required": [
-          "course",
-          "overview",
-          "introduction"
         ]
       },
       "VideoLesson": {

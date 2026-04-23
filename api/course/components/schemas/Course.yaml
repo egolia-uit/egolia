@@ -11,22 +11,45 @@ properties:
     type: string
     example: Introduction to Programming
 
-  instructorId:
-    $ref: ../../../common/components/schemas/User.yaml#/properties/id
-    example: '100'
-    readOnly: true
-
-  status:
-    $ref: ./CourseStatus.yaml
-
   price:
     type: integer
     format: int64
     example: 1000000
 
+  hidden:
+    type: boolean
+    default: true
+    example: true
+    readOnly: true
+
+  instructorId:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/id
+    example: "100"
+    readOnly: true
+
+  status:
+    $ref: ./CourseStatus.yaml
+    readOnly: true
+
+  overview:
+    type: string
+    example: Learn practical Go backend concepts in this beginner-friendly course.
+
+  introduction:
+    type: object
+    x-go-type-name: CourseLandingPageIntroduction
+    properties:
+      videoUrl:
+        type: string
+        format: uri
+        example: https://cdn.egolia.localhost/videos/course-intro.mp4
+    required:
+      - videoUrl
+
+  # import structure từ file Structure.yaml để trả về cấu trúc khóa học
+  structure:
+    $ref: ./Structure.yaml
+    readOnly: true
 required:
-  - id
   - title
-  - instructorId
-  - status
   - price

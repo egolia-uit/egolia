@@ -1,0 +1,22 @@
+type: array
+readOnly: true
+description: Course structure with sections and their corresponding lessons.
+  This is a read-only field that provides the organization of the course
+  content.
+items:
+  type: object
+  properties:
+    sectionId:
+      type: string
+      format: uuid
+      example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
+    lessonIds:
+      type: array
+      items:
+        type: string
+        format: uuid
+      example:
+        [
+          "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+          "2b3c4d5e-6789-0abc-def1-234567890abc",
+        ]

@@ -149,6 +149,10 @@ func (h *StrictHandler) MarkLessonAsCompleted(ctx context.Context, request cours
 	return nil, errs.Unimplemented
 }
 
+func (h *StrictHandler) MoveSection(ctx context.Context, request course.MoveSectionRequestObject) (course.MoveSectionResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
 func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLessonRequestObject) (course.MoveLessonResponseObject, error) {
 	var afterLesson *app.MoveLessonAfterLesson
 	if request.Body.AfterLesson != nil {

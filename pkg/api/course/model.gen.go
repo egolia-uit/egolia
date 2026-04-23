@@ -17,10 +17,9 @@ const (
 
 // Defines values for CourseStatus.
 const (
-	CourseStatusApproved  CourseStatus = "approved"
-	CourseStatusArchived  CourseStatus = "archived"
-	CourseStatusDraft     CourseStatus = "draft"
-	CourseStatusPublished CourseStatus = "published"
+	CourseStatusApproved CourseStatus = "approved"
+	CourseStatusDraft    CourseStatus = "draft"
+	CourseStatusPending  CourseStatus = "pending"
 )
 
 // Valid indicates whether the value is a known member of the CourseStatus enum.
@@ -28,11 +27,9 @@ func (e CourseStatus) Valid() bool {
 	switch e {
 	case CourseStatusApproved:
 		return true
-	case CourseStatusArchived:
-		return true
 	case CourseStatusDraft:
 		return true
-	case CourseStatusPublished:
+	case CourseStatusPending:
 		return true
 	default:
 		return false
@@ -237,41 +234,50 @@ type Certificate struct {
 
 // Course defines model for Course.
 type Course struct {
-	Id *openapi_types.UUID `json:"id,omitempty"`
+	Hidden *bool               `json:"hidden,omitempty"`
+	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	InstructorId Id           `json:"instructorId"`
-	Price        int64        `json:"price"`
-	Status       CourseStatus `json:"status"`
-	Title        string       `json:"title"`
-}
+	InstructorId *Id                            `json:"instructorId,omitempty"`
+	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
+	Overview     *string                        `json:"overview,omitempty"`
+	Price        int64                          `json:"price"`
+	Status       *CourseStatus                  `json:"status,omitempty"`
 
-// CourseDetail defines model for CourseDetail.
-type CourseDetail struct {
-	Course   Course                    `json:"course"`
-	Sections []CourseDetailSectionItem `json:"sections"`
-}
-
-// CourseDetailSectionItem defines model for CourseDetailSectionItem.
-type CourseDetailSectionItem struct {
-	Section *struct {
-		CourseId *PropertiesId       `json:"courseId,omitempty"`
-		Id       *openapi_types.UUID `json:"id,omitempty"`
-		Lessons  []Lesson            `json:"lessons"`
-		Title    string              `json:"title"`
-	} `json:"section,omitempty"`
-}
-
-// CourseLandingPage defines model for CourseLandingPage.
-type CourseLandingPage struct {
-	Course       CourseDetail                  `json:"course"`
-	Introduction CourseLandingPageIntroduction `json:"introduction"`
-	Overview     string                        `json:"overview"`
+	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
+	Structure *Structure `json:"structure,omitempty"`
+	Title     string     `json:"title"`
 }
 
 // CourseLandingPageIntroduction defines model for .
 type CourseLandingPageIntroduction struct {
 	VideoUrl string `json:"videoUrl"`
+}
+
+// CourseDetail defines model for CourseDetail.
+type CourseDetail struct {
+	Hidden *bool               `json:"hidden,omitempty"`
+	Id     *openapi_types.UUID `json:"id,omitempty"`
+
+	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	InstructorId *Id                            `json:"instructorId,omitempty"`
+	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
+	Overview     *string                        `json:"overview,omitempty"`
+	Price        int64                          `json:"price"`
+	Sections     []CourseDetailSectionItem      `json:"sections"`
+	Status       *CourseStatus                  `json:"status,omitempty"`
+
+	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
+	Structure *Structure `json:"structure,omitempty"`
+	Title     string     `json:"title"`
+}
+
+// CourseDetailSectionItem defines model for CourseDetailSectionItem.
+type CourseDetailSectionItem struct {
+	CourseId *PropertiesId       `json:"courseId,omitempty"`
+	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Lessons  []Lesson            `json:"lessons"`
+	Title    string              `json:"title"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -373,6 +379,12 @@ type Section struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Title    string              `json:"title"`
+}
+
+// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
+type Structure = []struct {
+	LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
+	SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
 }
 
 // TestAnswer defines model for TestAnswer.
@@ -602,14 +614,6 @@ type GetMyEnrolledCoursesParams struct {
 // GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParamsOrder string
 
-// UpdatedCourseJSONBody defines parameters for UpdatedCourse.
-type UpdatedCourseJSONBody struct {
-	Price  *int64        `json:"price,omitempty"`
-	Slug   *string       `json:"slug,omitempty"`
-	Status *CourseStatus `json:"status,omitempty"`
-	Title  *string       `json:"title,omitempty"`
-}
-
 // DeclineCourseJSONBody defines parameters for DeclineCourse.
 type DeclineCourseJSONBody struct {
 	Reason *string `json:"reason,omitempty"`
@@ -663,16 +667,27 @@ type CreateTestJSONBody struct {
 
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
-	CourseId          *PropertiesId       `json:"courseId,omitempty"`
-	PreviousSectionId *openapi_types.UUID `json:"previousSectionId"`
-	Title             string              `json:"title"`
+	CourseId    *PropertiesId `json:"courseId,omitempty"`
+	TargetIndex int32         `json:"targetIndex"`
+	Title       string        `json:"title"`
+}
+
+// MoveSectionJSONBody defines parameters for MoveSection.
+type MoveSectionJSONBody struct {
+	CourseId *PropertiesId `json:"courseId,omitempty"`
+
+	// SectionId ID của Chương cần di chuyển
+	SectionId openapi_types.UUID `json:"sectionId"`
+
+	// TargetIndex Vị trí mới (index) của chương trong mảng cấu trúc khóa học
+	TargetIndex int32 `json:"targetIndex"`
 }
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course
 
 // UpdatedCourseJSONRequestBody defines body for UpdatedCourse for application/json ContentType.
-type UpdatedCourseJSONRequestBody UpdatedCourseJSONBody
+type UpdatedCourseJSONRequestBody = Course
 
 // DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
 type DeclineCourseJSONRequestBody DeclineCourseJSONBody
@@ -712,6 +727,9 @@ type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
 
 // CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
 type CreateSectionJSONRequestBody CreateSectionJSONBody
+
+// MoveSectionJSONRequestBody defines body for MoveSection for application/json ContentType.
+type MoveSectionJSONRequestBody MoveSectionJSONBody
 
 // AsVideoLesson returns the union data inside the LessonDetail as a VideoLesson
 func (t LessonDetail) AsVideoLesson() (VideoLesson, error) {

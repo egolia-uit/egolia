@@ -6,9 +6,8 @@ export type ClientOptions = {
 
 export const CourseCourseStatus = {
     DRAFT: 'draft',
-    APPROVED: 'approved',
-    PUBLISHED: 'published',
-    ARCHIVED: 'archived'
+    PENDING: 'pending',
+    APPROVED: 'approved'
 } as const;
 
 export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
@@ -18,12 +17,26 @@ export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCo
  */
 export type CourseId = string;
 
+/**
+ * Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
+ */
+export type CourseStructure = Array<{
+    sectionId?: string;
+    lessonIds?: Array<string>;
+}>;
+
 export type CourseCourse = {
-    readonly id: string;
+    readonly id?: string;
     title: string;
-    instructorId: CourseId;
-    status: CourseCourseStatus;
     price: bigint;
+    readonly hidden?: boolean;
+    instructorId?: CourseId;
+    status?: CourseCourseStatus;
+    overview?: string;
+    introduction?: {
+        videoUrl: string;
+    };
+    structure?: CourseStructure;
 };
 
 export type CoursePagination = {
@@ -72,8 +85,8 @@ export type CoursePropertiesId = string;
 
 export type CourseSection = {
     readonly id: string;
-    courseId: CoursePropertiesId;
     title: string;
+    courseId: CoursePropertiesId;
 };
 
 export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
@@ -87,14 +100,11 @@ export type CourseLesson = {
     lessonType: CourseLessonType;
 };
 
-export type CourseCourseDetailSectionItem = {
-    section?: CourseSection & {
-        lessons: Array<CourseLesson>;
-    };
+export type CourseCourseDetailSectionItem = CourseSection & {
+    lessons: Array<CourseLesson>;
 };
 
-export type CourseCourseDetail = {
-    course: CourseCourse;
+export type CourseCourseDetail = CourseCourse & {
     sections: Array<CourseCourseDetailSectionItem>;
 };
 
@@ -105,14 +115,6 @@ export type CourseCourseProgress = {
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
-};
-
-export type CourseCourseLandingPage = {
-    course: CourseCourseDetail;
-    overview: string;
-    introduction: {
-        videoUrl: string;
-    };
 };
 
 export type CourseVideoLesson = CourseLesson & {
@@ -341,8 +343,11 @@ export type BlogComment = {
 
 export type CourseCourseWritable = {
     title: string;
-    status: CourseCourseStatus;
     price: bigint;
+    overview?: string;
+    introduction?: {
+        videoUrl: string;
+    };
 };
 
 export type CourseSectionWritable = {
@@ -353,14 +358,11 @@ export type CourseLessonWritable = {
     title: string;
 };
 
-export type CourseCourseDetailSectionItemWritable = {
-    section?: CourseSectionWritable & {
-        lessons: Array<CourseLessonWritable>;
-    };
+export type CourseCourseDetailSectionItemWritable = CourseSectionWritable & {
+    lessons: Array<CourseLessonWritable>;
 };
 
-export type CourseCourseDetailWritable = {
-    course: CourseCourseWritable;
+export type CourseCourseDetailWritable = CourseCourseWritable & {
     sections: Array<CourseCourseDetailSectionItemWritable>;
 };
 
@@ -370,14 +372,6 @@ export type CourseCourseProgressWritable = {
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
-};
-
-export type CourseCourseLandingPageWritable = {
-    course: CourseCourseDetailWritable;
-    overview: string;
-    introduction: {
-        videoUrl: string;
-    };
 };
 
 export type CourseVideoLessonWritable = CourseLessonWritable & {
@@ -957,12 +951,7 @@ export type GetCourseDetailResponses = {
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
 
 export type UpdatedCourseData = {
-    body: {
-        title?: string;
-        slug?: string;
-        status?: CourseCourseStatus;
-        price?: bigint;
-    };
+    body: CourseCourseWritable;
     path: {
         courseId: CoursePropertiesId;
     };
@@ -1441,7 +1430,7 @@ export type GetCourseLandingPageResponses = {
      * Course landing page data
      */
     200: {
-        data: CourseCourseLandingPage;
+        data: CourseCourse;
     };
 };
 
@@ -1739,7 +1728,7 @@ export type CreateSectionData = {
     body: {
         courseId: CoursePropertiesId;
         title: string;
-        previousSectionId: string | null;
+        targetIndex: number;
     };
     path?: never;
     query?: never;
@@ -1846,6 +1835,82 @@ export type DeleteSectionResponses = {
 };
 
 export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionResponses];
+
+export type MoveSectionData = {
+    body: {
+        courseId: CoursePropertiesId;
+        /**
+         * ID of the section to move (must match the sectionId path parameter)
+         */
+        sectionId: string;
+        /**
+         * New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.
+         */
+        targetIndex: number;
+    };
+    path: {
+        sectionId: string;
+    };
+    query?: never;
+    url: '/course/sections/{sectionId}/move';
+};
+
+export type MoveSectionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type MoveSectionError = MoveSectionErrors[keyof MoveSectionErrors];
+
+export type MoveSectionResponses = {
+    /**
+     * Section moved successfully
+     */
+    200: {
+        data?: {
+            /**
+             * Resulting course structure after moving the section, including all sections and their lessons
+             */
+            structure?: Array<{
+                sectionId?: string;
+                lessonIds?: Array<string>;
+            }>;
+        };
+    };
+};
+
+export type MoveSectionResponse = MoveSectionResponses[keyof MoveSectionResponses];
 
 export type CreateLessonData = {
     body: {

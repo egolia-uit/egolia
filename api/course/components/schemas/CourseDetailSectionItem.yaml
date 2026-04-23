@@ -1,13 +1,12 @@
 type: object
-properties:
-  section:
-    allOf:
-      - $ref: ./Section.yaml
-      - type: object
-        properties:
-          lessons:
-            type: array
-            items:
-              $ref: ./Lesson.yaml
-        required:
-          - lessons
+# Thay vì bọc trong 'section', ta để 'allOf' ở cấp cao nhất
+allOf:
+  - $ref: ./Section.yaml # Lấy id, title, position... từ file gốc
+  - type: object
+    properties:
+      lessons:
+        type: array
+        items:
+          $ref: ./Lesson.yaml
+    required:
+      - lessons
