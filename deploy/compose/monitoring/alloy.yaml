@@ -3,7 +3,7 @@
 services:
   alloy:
     container_name: egolia-alloy
-    image: grafana/alloy:v1.15.1
+    image: grafana/alloy:v1.16.0
     command:
       - run
       - /etc/alloy/config.alloy
