@@ -19,7 +19,7 @@ cmd/                            # Go services
   billing/                      # Billing service (nx: billing)
   blog/                         # Blog service (nx: blog)
 internal/                       # Internal Go packages
-  note/
+  course/
   billing/
   blog/
 pkg/                            # Go packages
@@ -60,15 +60,19 @@ pkg/                            # Go packages
 
 - Use GORM
 - `course` project apply clean architecture, CQRS, DDD
-  - Domain model, repository in `internal/note/domain`
-  - Application handler, service interface in `internal/note/application`
+  - Domain model, repository in `internal/{projectName}/domain`
+  - Application handler, service interface in `internal/{projectName}/application`
   - With CQRS, commands return nothing else but error. The ID must be created in the controller layer
-- `billing` and `blog` projects use layered architecture, domain model merged with ORM, return model directly to controller
+- `billing` and `blog` projects use layered architecture, domain model merged with ORM in `internal/{projectName}/core`, return model directly to controller
 - Use `google/wire` fork
   - Run `nx gen:wire {projectName}`, do not run `go generate`
   - Each package should expose `wire.go` with `wire.Set`, and outside aggregate them in `wire.go`
   - `cmd/{projectName}/wire.go` imports `internal/{projectName}/wire.go`
 - Each services expose `/{projectName}/health/*` including `live`, `ready`. Should used for diagnose stuff relate to infra, and other services connection
+- Logging:
+  - Use `slog.*Context` to add context info (mostly from otel) into log
+  - Use debug, info for app handler (core layer for those not follow clean architecture), and under infrastructure logic
+  - Use warn only for skipping logic, or retry logic. Warn and error log must suppress the return error. If return error, do not log error
 
 ### Infrastructure
 
@@ -78,8 +82,10 @@ pkg/                            # Go packages
 #### Authentik
 
 - Users/Client/Role list in `./deploy/compose/infrastructure/authentik-blueprints/users.yaml`
+  > Read this files for login user. Must use Oauth2 flow, doesn't support direct access grant
+  > If need debugging, use curl or any relate
 - Frontend App in `./deploy/compose/infrastructure/authentik-blueprints/app-web.yaml` (include JWKS, callback URL, etc.)
-- When editting blueprint, authentik will reconcile itself
+- When editing blueprint, authentik will reconcile itself
 
 #### Traefik
 
@@ -89,6 +95,7 @@ pkg/                            # Go packages
 - General local dev domain is `egolia.localhost`:
   - Web: `web.egolia.localhost`
   - API: `api.egolia.localhost`, include `api-web` for root, and `course`, `billing`, `blog` for each service
+  - S3: `rustfs-api.egolia.localhost`
 
 ## Nx
 
@@ -106,6 +113,7 @@ pkg/                            # Go packages
 
 - Temp file must be go into `./tmp/{projectName}`, avoid writing to `/tmp/` when things need to be persisted
 - While writing code, try to not write unnecessary comment into code
+- Use context7 for knowledge. If system doesn't have MCP or CLI tool, use curl to call RestAPI
 
 ### Git
 
