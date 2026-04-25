@@ -5,12 +5,12 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 \
   go build \
-  # -ldflags "-s -w -extldflags '-static'" \
+  -ldflags='-s -w' \
   -o billing \
   ./cmd/billing
 
 FROM alpine:3.23 AS final
 WORKDIR /app
 COPY --from=builder /app/billing .
-EXPOSE 8080
-ENTRYPOINT ["/app/billing"]
+EXPOSE 8082 28082
+ENTRYPOINT ["./billing"]

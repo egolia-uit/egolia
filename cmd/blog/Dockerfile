@@ -5,12 +5,12 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 \
   go build \
-  # -ldflags "-s -w -extldflags '-static'" \
+  -ldflags='-s -w' \
   -o blog \
   ./cmd/blog
 
 FROM alpine:3.23 AS final
 WORKDIR /app
 COPY --from=builder /app/blog .
-EXPOSE 8080
-ENTRYPOINT ["/app/blog"]
+EXPOSE 8083 28083
+ENTRYPOINT ["./blog"]

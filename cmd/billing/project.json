@@ -22,7 +22,7 @@
       },
       "cache": false
     },
-    "dev": {
+    "run": {
       "executor": "nx:run-commands",
       "inputs": ["default"],
       "options": {
@@ -30,17 +30,32 @@
         "cwd": "{projectRoot}",
         "tty": true
       },
-      "dependsOn": ["gen:wire", "^gen*"],
+      "dependsOn": ["build-deps"],
       "continuous": true
     },
     "build": {
       "executor": "nx:run-commands",
       "inputs": ["default"],
       "options": {
-        "command": "go build -o ./billing .",
-        "cwd": "{projectRoot}"
+        "command": "go build -o ./cmd/billing/billing ./cmd/billing/",
+        "cwd": "{workspaceRoot}"
       },
-      "dependsOn": ["gen:wire", "^gen*", "^build*"]
+      "configurations": {
+        "debug": {
+          "command": "go build -gcflags='all=-N -l' -o ./cmd/billing/__debug_bin ./cmd/billing/"
+        },
+        "development": {
+          "command": "go build -o ./cmd/billing/billing ./cmd/billing/"
+        },
+        "production": {
+          "command": "go build -ldflags='-s -w' -o ./cmd/billing/billing ./cmd/billing/"
+        }
+      },
+      "dependsOn": ["gen", "^gen*", "^build*"]
+    },
+    "build-deps": {
+      "executor": "nx:noop",
+      "dependsOn": ["gen", "^gen*", "^build*"]
     },
     "preview": {
       "executor": "nx:run-commands",
@@ -55,13 +70,12 @@
     },
     "debug": {
       "executor": "nx:run-commands",
-      "inputs": ["default"],
       "options": {
-        "command": "dlv debug --headless --listen=127.0.0.1:23452 --accept-multiclient",
+        "command": "dlv debug --headless --listen=127.0.0.1:23452 --accept-multiclient --output ./cmd/billing/__debug_bin ./cmd/billing/",
         "cwd": "{projectRoot}",
         "tty": true
       },
-      "dependsOn": ["gen:wire", "^gen*"],
+      "dependsOn": ["build-deps"],
       "continuous": true
     },
     "lint": {
@@ -73,11 +87,8 @@
       "cache": false,
       "parallelism": false
     },
-    "tidy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "go mod tidy"
-      }
+    "gen": {
+      "dependsOn": ["gen:wire"]
     },
     "nx-release-publish": {
       "parallelism": false
