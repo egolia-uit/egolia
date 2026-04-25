@@ -72,7 +72,6 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "dlv debug --headless --listen=127.0.0.1:23451 --accept-multiclient --output ./cmd/course/__debug_bin ./cmd/course/",
-        "cwd": "{projectRoot}",
         "tty": true
       },
       "dependsOn": ["build-deps"],
