@@ -177,7 +177,7 @@
         }
       },
       "docker": {
-        "projects": [""],
+        "projects": ["course", "billing", "blog", "web"],
         "releaseTag": {
           "pattern": "{projectName}@{version}"
         },
