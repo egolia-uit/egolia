@@ -66,6 +66,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "redocly lint billing --config ../redocly.yaml",
+        "forwardAllArgs": true,
         "cwd": "{projectRoot}"
       },
       "inputs": ["openapiFilesWithCommon"]

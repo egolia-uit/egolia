@@ -160,22 +160,6 @@
       "automaticFromRef": true
     },
     "groups": {
-      "npm": {
-        "releaseTag": {
-          "pattern": "egolia-packages@{version}"
-        },
-        "projects": ["packages/*"],
-        "projectsRelationship": "fixed",
-        "version": {
-          "conventionalCommits": true,
-          "fallbackCurrentVersionResolver": "disk"
-        },
-        "releaseTagPatternRequireSemver": true,
-        "changelog": {
-          "createRelease": "github",
-          "file": false
-        }
-      },
       "docker": {
         "projects": ["course", "billing", "blog", "web"],
         "releaseTag": {

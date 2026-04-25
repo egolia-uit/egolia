@@ -81,6 +81,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "golangci-lint run ./cmd/course/... ./internal/course/...",
+        "forwardAllArgs": true,
         "cwd": "{workspaceRoot}"
       },
       "cache": false,
