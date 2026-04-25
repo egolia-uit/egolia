@@ -1,0 +1,75 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach Course",
+      "type": "go",
+      "debugAdapter": "dlv-dap",
+      "request": "attach",
+      "mode": "remote",
+      "host": "127.0.0.1",
+      "port": 23451
+    },
+    {
+      "name": "Attach Billing",
+      "type": "go",
+      "debugAdapter": "dlv-dap",
+      "request": "attach",
+      "mode": "remote",
+      "host": "127.0.0.1",
+      "port": 23452
+    },
+    {
+      "name": "Attach Blog",
+      "type": "go",
+      "debugAdapter": "dlv-dap",
+      "request": "attach",
+      "mode": "remote",
+      "host": "127.0.0.1",
+      "port": 23453
+    },
+    {
+      "name": "Debug Web",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["exec", "nx", "run", "web:debug"],
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "../../../*": "${workspaceFolder}/*",
+        "../../*": "${workspaceFolder}/*",
+        "server/app/*": "${workspaceFolder}/apps/web/app/*",
+        "server/chunks/ssr/[root-of-the-server]__*": "${workspaceFolder}/apps/web/*",
+        "server/chunks/ssr/packages_api-gen_src_*": "${workspaceFolder}/packages/api-gen/src/*",
+        "server/chunks/ssr/packages_*": "${workspaceFolder}/packages/*",
+        "/turbopack/[project]/*": "${workspaceFolder}/*"
+      },
+      "outFiles": [
+        "${workspaceFolder}/apps/web/.next/**/*.js",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "Attach Web",
+      "type": "pwa-node",
+      "request": "attach",
+      "port": 9300,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMapPathOverrides": {
+        "webpack://_N_E/*": "${workspaceFolder}/*",
+        "../../../*": "${workspaceFolder}/*",
+        "../../*": "${workspaceFolder}/*",
+        "server/app/*": "${workspaceFolder}/apps/web/app/*",
+        "server/chunks/ssr/[root-of-the-server]__*": "${workspaceFolder}/apps/web/*",
+        "server/chunks/ssr/packages_api-gen_src_*": "${workspaceFolder}/packages/api-gen/src/*",
+        "server/chunks/ssr/packages_*": "${workspaceFolder}/packages/*",
+        "/turbopack/[project]/*": "${workspaceFolder}/*"
+      },
+      "outFiles": [
+        "${workspaceFolder}/apps/web/.next/**/*.js",
+        "!**/node_modules/**"
+      ]
+    }
+  ]
+}

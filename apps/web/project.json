@@ -4,6 +4,30 @@
   "targets": {
     "nx-release-publish": {
       "parallelism": false
+    },
+    "dev": {
+      "options": {
+        "hostname": "0.0.0.0"
+      }
+    },
+    "debug": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm -F @egolia-uit/web run next --hostname 0.0.0.0 --inspect=9300"
+      }
+    },
+    "serve-static": {
+      "options": {
+        "hostname": "0.0.0.0"
+      }
+    },
+    "start": {
+      "options": {
+        "hostname": "0.0.0.0"
+      }
+    },
+    "docker:build": {
+      "dependsOn": ["prune", "build", "^build"]
     }
   },
   "release": {
