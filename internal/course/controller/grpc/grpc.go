@@ -6,8 +6,6 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/health"
-	"google.golang.org/grpc/health/grpc_health_v1"
 
 	"buf.build/go/protovalidate"
 	"github.com/egolia-uit/egolia/internal/course/config"
@@ -35,7 +33,12 @@ func New(
 	server := grpc.NewServer(
 		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
-			logging.UnaryServerInterceptor(logger, logging.WithLogOnEvents(logging.StartCall, logging.FinishCall)),
+			logging.UnaryServerInterceptor(logger, logging.WithLogOnEvents(
+				logging.StartCall,
+				logging.FinishCall,
+				logging.PayloadSent,
+				logging.PayloadReceived,
+			)),
 			protovalidate_middleware.UnaryServerInterceptor(validator),
 			unaryErrorInterceptor,
 		),
@@ -45,9 +48,6 @@ func New(
 		address: cfg.GRPC.Address(),
 	}
 	pb.RegisterCourseServiceServer(server, serviceServer)
-	healthServer := health.NewServer()
-	grpc_health_v1.RegisterHealthServer(server, healthServer)
-	healthServer.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
 	return grpc, server.GracefulStop, nil
 }
 

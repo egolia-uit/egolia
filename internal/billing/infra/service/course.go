@@ -32,7 +32,12 @@ func NewCourse(
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithStatsHandler(statsHandler),
 		grpc.WithChainUnaryInterceptor(
-			logging.UnaryClientInterceptor(logger, logging.WithLogOnEvents(logging.StartCall, logging.FinishCall)),
+			logging.UnaryClientInterceptor(logger, logging.WithLogOnEvents(
+				logging.StartCall,
+				logging.FinishCall,
+				logging.PayloadSent,
+				logging.PayloadReceived,
+			)),
 		),
 		grpc.WithChainUnaryInterceptor(courseUnaryClientErrorInterceptor()),
 	)
@@ -85,20 +90,13 @@ func courseUnaryClientErrorInterceptor() grpc.UnaryClientInterceptor {
 		opts ...grpc.CallOption,
 	) error {
 		err := invoker(ctx, method, req, reply, cc, opts...)
-		if err != nil {
-			if method == "/grpc.health.v1.Health/Check" {
-				return err
-			}
-			return mapGrpcError(err)
-		}
-		return nil
+		return mapGrpcError(err)
 	}
 }
 
 func mapGrpcError(err error) error {
 	st, ok := status.FromError(err)
 	if !ok {
-		// If not a gRPC status error, wrap as internal
 		return errs.NewCourseSvcInternalErr(err)
 	}
 

@@ -2,31 +2,27 @@ package commonhttp
 
 import (
 	"context"
-	"strings"
+	"encoding/json"
 
 	"github.com/gin-gonic/gin"
 )
 
-type UserList []string
-
 type User struct {
 	ID     string   `json:"id"`
 	Email  string   `json:"email"`
-	Groups UserList `json:"groups"`
-	Roles  UserList `json:"roles"`
+	Groups []string `json:"groups"`
+	Roles  []string `json:"roles"`
 }
 
-func (u *UserList) UnmarshalHeader(headerValue string) {
-	s := strings.TrimPrefix(headerValue, "[")
-	s = strings.TrimSuffix(s, "]")
-	s = strings.TrimSpace(s)
-
-	if s == "" {
-		*u = []string{}
-		return
+func unmarshalHeader(headerValue string) []string {
+	var list []string
+	if headerValue == "" {
+		return []string{}
 	}
-
-	*u = strings.Fields(s)
+	if err := json.Unmarshal([]byte(headerValue), &list); err != nil {
+		return []string{}
+	}
+	return list
 }
 
 type userCtxKey int
@@ -48,23 +44,13 @@ func UserFromContext(ctx context.Context) (*User, bool) {
 
 func GatewayUserAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		id := c.GetHeader("X-Forwarded-ID")
-		email := c.GetHeader("X-Forwarded-Email")
-		rawGroups := c.GetHeader("X-Forwarded-Groups")
-		rawRoles := c.GetHeader("X-Forwarded-Roles")
-
 		user := &User{
-			ID:     id,
-			Email:  email,
-			Groups: nil,
-			Roles:  nil,
+			ID:     c.GetHeader("X-Forwarded-ID"),
+			Email:  c.GetHeader("X-Forwarded-Email"),
+			Groups: unmarshalHeader(c.GetHeader("X-Forwarded-Groups")),
+			Roles:  unmarshalHeader(c.GetHeader("X-Forwarded-Roles")),
 		}
-
-		user.Groups.UnmarshalHeader(rawGroups)
-		user.Roles.UnmarshalHeader(rawRoles)
-
 		c.Set(UserCtxKey, user)
-
 		c.Next()
 	}
 }

@@ -14,3 +14,6 @@ pnpm = "10.28.2"
 sqlc = "1.30.0"
 java = "latest"
 golangci-lint = "2.11.4"
+
+[shell_alias]
+compose = "docker compose"
