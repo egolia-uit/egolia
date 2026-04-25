@@ -7,12 +7,12 @@
     "lucide-react": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:",
-    "shadcn": "catalog:"
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "autoprefixer": "catalog:",
     "postcss": "catalog:",
+    "shadcn": "catalog:",
     "tailwind-merge": "catalog:",
     "tw-animate-css": "catalog:"
   }

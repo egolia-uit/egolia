@@ -26,6 +26,14 @@
         "hostname": "0.0.0.0"
       }
     },
+    "shadcn:add": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec shadcn add",
+        "cwd": "{projectRoot}",
+        "forwardAllArgs": true
+      }
+    },
     "docker:build": {
       "dependsOn": ["prune", "build", "^build"]
     }
