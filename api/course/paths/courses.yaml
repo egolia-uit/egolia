@@ -48,7 +48,8 @@ get:
     - $ref: ../components/parameters/statusQuery.yaml
     - name: instructorId
       in: query
-      description: Filter courses by one or more instructor ids. Supports multiple
+      description:
+        Filter courses by one or more instructor ids. Supports multiple
         values (e.g., ?instructorId=id1&instructorId=id2)
       style: form
       explode: true

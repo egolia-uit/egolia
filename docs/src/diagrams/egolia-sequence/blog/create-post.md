@@ -46,25 +46,25 @@ alt Invalid content
 else Valid content
   BC -> BA: CreatePost(userID, content, tags)
   activate BA
-  
+
   BA -> P: Build new Post
   activate P
   P -> P: Set id = UUID,\nauthorID = userID,\ncontent = content,\ntags = tags
   BA <-- P: Post entity
   deactivate P
-  
+
   BA -> BDB: Save post
   activate BDB
   BA <-- BDB: Post ID
   deactivate BDB
-  
+
   BC <-- BA: Post ID
   deactivate BA
   GW <-- BC: 201 Created
   deactivate BC
   WA <-- GW: Success with post ID
   deactivate GW
-  
+
   WA -> U: Redirect to new post page
   deactivate WA
   deactivate U

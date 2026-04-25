@@ -24,7 +24,7 @@ properties:
 
   instructorId:
     $ref: ../../../common/components/schemas/User.yaml#/properties/id
-    example: "100"
+    example: '100'
     readOnly: true
 
   status:

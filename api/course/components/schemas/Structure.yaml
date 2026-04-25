@@ -17,6 +17,6 @@ items:
         format: uuid
       example:
         [
-          "1a2b3c4d-5678-90ab-cdef-1234567890ab",
-          "2b3c4d5e-6789-0abc-def1-234567890abc",
+          '1a2b3c4d-5678-90ab-cdef-1234567890ab',
+          '2b3c4d5e-6789-0abc-def1-234567890abc',
         ]

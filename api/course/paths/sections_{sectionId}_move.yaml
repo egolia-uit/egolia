@@ -25,7 +25,8 @@ post:
               type: integer
               format: int32
               minimum: 0
-              description: New index for the section within the course (0-based). For example,
+              description:
+                New index for the section within the course (0-based). For example,
                 if targetIndex is 0, the section will be moved to the beginning
                 of the course. If targetIndex is equal to the number of sections
                 - 1, it will be moved to the end.
@@ -47,7 +48,8 @@ post:
                 properties:
                   structure:
                     type: array
-                    description: Resulting course structure after moving the section, including all
+                    description:
+                      Resulting course structure after moving the section, including all
                       sections and their lessons
                     items:
                       type: object
