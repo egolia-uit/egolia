@@ -1,5 +1,17 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+  "editor.formatOnSave": true,
+  "[go]": {
+    "editor.tabSize": 8,
+    "editor.insertSpaces": false
+  },
+  "[typescript][html][css][scss][json][yaml][markdown]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
   }
 }

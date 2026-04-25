@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "golang.go",
+    "ecmel.vscode-html-css",
+    "ms-vscode.vscode-typescript-next",
+    "hverlin.mise-vscode",
+    "esbenp.prettier-vscode",
+    "redocly.openapi-vs-code",
+    "bradlc.vscode-tailwindcss",
+    "redhat.vscode-yaml"
+  ]
+}
