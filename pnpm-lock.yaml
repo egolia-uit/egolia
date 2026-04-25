@@ -22,8 +22,8 @@ catalogs:
       specifier: 4.2.4
       version: 4.2.4
     '@tanstack/react-query':
-      specifier: 5.90.21
-      version: 5.90.21
+      specifier: 5.100.5
+      version: 5.100.5
     '@trivago/prettier-plugin-sort-imports':
       specifier: 6.0.2
       version: 6.0.2
@@ -385,7 +385,7 @@ importers:
     devDependencies:
       '@tanstack/react-query':
         specifier: 'catalog:'
-        version: 5.90.21(react@19.2.5)
+        version: 5.100.5(react@19.2.5)
       zod:
         specifier: 'catalog:'
         version: 4.3.6
@@ -4253,11 +4253,11 @@ packages:
   '@tailwindcss/postcss@4.2.4':
     resolution: {integrity: sha512-wgAVj6nUWAolAu8YFvzT2cTBIElWHkjZwFYovF+xsqKsW2ADxM/X2opxj5NsF/qVccAOjRNe8X2IdPzMsWyHTg==}
 
-  '@tanstack/query-core@5.90.20':
-    resolution: {integrity: sha512-OMD2HLpNouXEfZJWcKeVKUgQ5n+n3A2JFmBaScpNDUqSrQSjiveC7dKMe53uJUg1nDG16ttFPz2xfilz6i2uVg==}
+  '@tanstack/query-core@5.100.5':
+    resolution: {integrity: sha512-t20KrhKkf0HXzqQkPbJ5erhFesup68BAbwFgYmTrS7bxMF7O5MdmL8jUkik4thsG7Hg00fblz30h6yF1d5TxGg==}
 
-  '@tanstack/react-query@5.90.21':
-    resolution: {integrity: sha512-0Lu6y5t+tvlTJMTO7oh5NSpJfpg/5D41LlThfepTixPYkJ0sE2Jj0m0f6yYqujBwIXlId87e234+MxG3D3g7kg==}
+  '@tanstack/react-query@5.100.5':
+    resolution: {integrity: sha512-aNwj1mi2v2bQ9IxkyR1grLOUkv3BYWoykHy9KDyLNbjC3tsahbOHJibK+Wjtr1wRhG59/AvJhiJG5OlthaCgJA==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -16927,11 +16927,11 @@ snapshots:
       postcss: 8.5.10
       tailwindcss: 4.2.4
 
-  '@tanstack/query-core@5.90.20': {}
+  '@tanstack/query-core@5.100.5': {}
 
-  '@tanstack/react-query@5.90.21(react@19.2.5)':
+  '@tanstack/react-query@5.100.5(react@19.2.5)':
     dependencies:
-      '@tanstack/query-core': 5.90.20
+      '@tanstack/query-core': 5.100.5
       react: 19.2.5
 
   '@tanstack/virtual-core@3.13.21': {}
