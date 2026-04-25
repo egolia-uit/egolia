@@ -33,6 +33,10 @@ pkg/                            # Go packages
 
 ## Technologies
 
+### PNPM
+
+- Use `pnpm-workspace.yaml` with catalog as much as possible, and reference packages with `workspace:` protocol
+
 ### API
 
 - Redocly to bundle and join yaml spec to json

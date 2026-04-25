@@ -5,6 +5,7 @@ on:
     branches:
       - '**'
     paths-ignore: &pushPathsIgnore
+      - .agents/**/*
       - .dockerignore
       - .editorconfig
       - .gitattributes
