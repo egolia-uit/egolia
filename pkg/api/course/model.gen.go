@@ -676,10 +676,10 @@ type CreateSectionJSONBody struct {
 type MoveSectionJSONBody struct {
 	CourseId *PropertiesId `json:"courseId,omitempty"`
 
-	// SectionId ID của Chương cần di chuyển
+	// SectionId ID of the section to move (must match the sectionId path parameter)
 	SectionId openapi_types.UUID `json:"sectionId"`
 
-	// TargetIndex Vị trí mới (index) của chương trong mảng cấu trúc khóa học
+	// TargetIndex New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.
 	TargetIndex int32 `json:"targetIndex"`
 }
 
