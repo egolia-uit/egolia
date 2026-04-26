@@ -1,12 +1,9 @@
 #:schema https://raw.githubusercontent.com/jdx/mise/refs/heads/main/schema/mise.json
 
 [tools]
-"github:pressly/goose" = "3.27.1"
 "go:github.com/goforj/wire/cmd/wire" = "v1.1.0"
 "go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen" = "2.6.0"
 buf = "1.65.0"
-sqlc = "1.30.0"
-java = "latest"
 "npm:@kevinnitro/nx-cache-action" = "0.1.0"
 
 [settings]
