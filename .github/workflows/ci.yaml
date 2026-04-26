@@ -169,15 +169,6 @@ jobs:
           fetch-depth: 0
           filter: tree:0
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          cache: ${{ env.SHOULD_CACHE == 'true' }}
-          version: 10.28.2
-          run_install: | # language: yaml
-            args:
-              - --frozen-lockfile
-
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
@@ -220,6 +211,9 @@ jobs:
         with:
           path: docs/src/public/diagrams/
           key: docs-diagrams-
+
+      - name: Install Node Dependencies
+        run: pnpm install
 
       - name: Install Go Dependencies
         run: go mod download
