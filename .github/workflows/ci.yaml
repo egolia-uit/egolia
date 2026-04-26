@@ -274,8 +274,12 @@ jobs:
           nx-cache-action -- \
           pnpm exec nx run-many \
             --target docker:build \
+            ${{ github.event.inputs.releaseWeb == 'true' && '--projects web' || '' }} \
+            ${{ github.event.inputs.releaseCourse == 'true' && '--projects course' || '' }} \
+            ${{ github.event.inputs.releaseBilling == 'true' && '--projects billing' || '' }} \
+            ${{ github.event.inputs.releaseBlog == 'true' && '--projects blog' || '' }} \
             --parallel=${{env.NX_PARALLEL }} \
-            --configuration production
+            --configuration 'production'
 
           echo 'Built Docker images'
           docker images -a
@@ -289,10 +293,10 @@ jobs:
             nx-cache-action -- \
             pnpm exec nx release \
               --dockerVersionScheme=${{ github.event.inputs.releaseContainerType }} \
-              ${{ (github.event_name == 'push' || github.event.inputs.releaseWeb == 'true') && '--projects web' || '' }} \
-              ${{ (github.event_name == 'push' || github.event.inputs.releaseCourse == 'true') && '--projects course' || '' }} \
-              ${{ (github.event_name == 'push' || github.event.inputs.releaseBilling == 'true') && '--projects billing' || '' }} \
-              ${{ (github.event_name == 'push' || github.event.inputs.releaseBlog == 'true') && '--projects blog' || '' }} \
+              ${{ github.event.inputs.releaseWeb == 'true' && '--projects web' || '' }} \
+              ${{ github.event.inputs.releaseCourse == 'true' && '--projects course' || '' }} \
+              ${{ github.event.inputs.releaseBilling == 'true' && '--projects billing' || '' }} \
+              ${{ github.event.inputs.releaseBlog == 'true' && '--projects blog' || '' }} \
               --yes
           fi
 
