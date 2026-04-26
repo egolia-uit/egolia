@@ -156,6 +156,9 @@
     }
   ],
   "release": {
+    "git": {
+      "commit": false
+    },
     "changelog": {
       "automaticFromRef": true
     },
