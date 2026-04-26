@@ -27,3 +27,4 @@ __debug_bin*
 # tmp, curently having .docker-version from nx
 tmp
 .nx/polygraph
+.nx/self-healing
