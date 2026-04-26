@@ -17,3 +17,6 @@ lazydocker COMPOSE_PROFILES="*":
 
 export-authentik-blueprint:
     docker exec egolia-authentik_worker ak export_blueprint
+
+list-proto-fqn:
+    buf build -o -#format=json | jq -r '.file[] | select(.service != null) | .package as $pkg | .service[] | .name as $svc | .method[] | "/\($pkg).\($svc)/\(.name)"'

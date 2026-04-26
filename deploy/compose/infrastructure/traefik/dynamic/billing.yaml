@@ -18,8 +18,8 @@ http:
     billing:
       loadBalancer:
         servers:
-          - url: http://host.docker.internal:18081
+          - url: http://host.docker.internal:8082
     billing-health:
       loadBalancer:
         servers:
-          - url: http://host.docker.internal:28081
+          - url: http://host.docker.internal:28082

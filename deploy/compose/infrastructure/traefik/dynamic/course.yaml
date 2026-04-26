@@ -1,23 +1,23 @@
 # yaml-language-server: $schema=https://www.schemastore.org/traefik-v3-file-provider.json
 http:
   routers:
-    course-admin:
+    course-http-admin:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
-      service: course
+      service: course-http
       middlewares:
         - protect-admin
 
-    course-instructor-or-admin:
+    course-http-instructor-or-admin:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
-      service: course
+      service: course-http
       middlewares:
         - protect-instructor-or-admin
 
-    course-public:
+    course-http-public:
       entryPoints:
         - web
       rule: "
@@ -29,6 +29,12 @@ http:
         "
       service: course
 
+    course-grpc:
+      entryPoints:
+        - web
+      rule: Host(`api.egolia.localhost`) && PathPrefix(`/course.CourseService/`)
+      service: course-grpc
+
     course-health:
       entryPoints:
         - web
@@ -36,10 +42,16 @@ http:
       service: course-health
 
   services:
-    course:
+    course-http:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:8081
+
+    course-grpc:
       loadBalancer:
         servers:
           - url: http://host.docker.internal:18081
+
     course-health:
       loadBalancer:
         servers:

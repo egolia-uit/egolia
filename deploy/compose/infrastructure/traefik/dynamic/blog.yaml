@@ -1,13 +1,14 @@
 # yaml-language-server: $schema=https://www.schemastore.org/traefik-v3-file-provider.json
 http:
   routers:
-    blog:
+    blog-http:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/blog`)
-      service: blog
+      service: blog-http
       middlewares:
         - jwt
+
     blog-health:
       entryPoints:
         - web
@@ -15,10 +16,10 @@ http:
       service: blog-health
 
   services:
-    blog:
+    blog-http:
       loadBalancer:
         servers:
-          - url: http://host.docker.internal:18083
+          - url: http://host.docker.internal:8083
     blog-health:
       loadBalancer:
         servers:
