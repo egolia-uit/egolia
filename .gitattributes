@@ -1,1 +1,4 @@
 *.go eol=lf
+.agents/skills/next-*/** linguist-vendored
+.agents/skills/ckm-*/** linguist-vendored
+.agents/skills/ui-ux-pro-max/** linguist-vendored
