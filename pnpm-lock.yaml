@@ -368,8 +368,8 @@ importers:
         specifier: 0.1.20
         version: 0.1.20(vitepress@2.0.0-alpha.17(@types/node@25.3.5)(axios@1.13.6)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.10)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
       vitepress-plugin-pagefind:
-        specifier: 0.4.19
-        version: 0.4.19(pagefind@1.4.0)(vitepress@2.0.0-alpha.17(@types/node@25.3.5)(axios@1.13.6)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.10)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
+        specifier: 0.4.20
+        version: 0.4.20(pagefind@1.4.0)(vitepress@2.0.0-alpha.17(@types/node@25.3.5)(axios@1.13.6)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.10)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3))
     devDependencies:
       vitepress:
         specifier: 2.0.0-alpha.17
@@ -11684,11 +11684,11 @@ packages:
       vite: '>= 4.0.0'
       vitepress: '>= 1.0.0'
 
-  vitepress-plugin-pagefind@0.4.19:
-    resolution: {integrity: sha512-o07g9H1ykmcT/Sh1ATRGlH9p/sVcnCC+KrWNN0r1gQk7e7VISerg4HsaSlB21GQdm2Cumtc6kmLhb97O0TEltA==}
+  vitepress-plugin-pagefind@0.4.20:
+    resolution: {integrity: sha512-O6mfkPzRV7V2igs51Qll31ptqJnHlNx9bmfo5JRsf6b4QuSVHjTDgtqM73rrCxRNeOSzFygPmJvSbmn7K4jd1A==}
     peerDependencies:
       pagefind: ^1.1.0
-      vitepress: ^1 || ^2
+      vitepress: ^1.0.0-0 || ^2.0.0-0
 
   vitepress-sidebar@1.33.1:
     resolution: {integrity: sha512-wPUbXezGakVldawixeRW5tKQTLKoMj2t4nWoThKfCltBM/9a38IE+wCXmmRNW22ZKC32SD/X/sG6NyCTK8QBRg==}
@@ -13432,7 +13432,7 @@ snapshots:
 
   '@eslint/eslintrc@3.3.5':
     dependencies:
-      ajv: 6.14.0
+      ajv: 6.15.0
       debug: 4.4.3
       espree: 10.4.0
       globals: 14.0.0
@@ -25587,7 +25587,7 @@ snapshots:
       vite: 8.0.10(@types/node@25.3.5)(esbuild@0.27.3)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(yaml@2.8.3)
       vitepress: 2.0.0-alpha.17(@types/node@25.3.5)(axios@1.13.6)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.10)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3)
 
-  vitepress-plugin-pagefind@0.4.19(pagefind@1.4.0)(vitepress@2.0.0-alpha.17(@types/node@25.3.5)(axios@1.13.6)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.10)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3)):
+  vitepress-plugin-pagefind@0.4.20(pagefind@1.4.0)(vitepress@2.0.0-alpha.17(@types/node@25.3.5)(axios@1.13.6)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.10)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3))(vue@3.5.32(typescript@5.9.3)):
     dependencies:
       '@sugarat/theme-shared': 0.0.7
       '@vueuse/core': 14.2.1(vue@3.5.32(typescript@5.9.3))
