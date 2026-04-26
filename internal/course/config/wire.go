@@ -10,7 +10,6 @@ var ProviderSet = wire.NewSet(
 		"Log",
 		"Server",
 		"Database",
-		"Authentik",
 		"S3",
 		"Services",
 	),
