@@ -132,6 +132,16 @@ jobs:
       - name: Expose GitHub Runtime
         uses: crazy-max/ghaction-github-runtime@v4
 
+      - name: Get token
+        id: get-bot-token
+        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        uses: actions/create-github-app-token@v2
+        with:
+          private-key: ${{ secrets.EGOLIA_BOT_PRIVATE_KEY }}
+          app-id: ${{ vars.EGOLIA_BOT_APP_ID }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.repository }}
+
       - name: Setup Git User
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
@@ -282,6 +292,14 @@ jobs:
               ${{ (github.event_name == 'push' || github.event.inputs.releaseBlog == 'true') && '--projects blog' || '' }} \
               --yes
           fi
+
+      - name: Dispatch Update Deploy
+        uses: benc-uk/workflow-dispatch@v1
+        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        with:
+          workflow: update.yaml
+          repo: ${{ github.repository_owner }}/infra
+          token: ${{ steps.get-bot-token.outputs.token }}
 
       - name: Cache Docs diagrams
         uses: actions/cache/save@v5
