@@ -73,16 +73,16 @@ on:
         default: false
         type: boolean
       releaseAll:
-        description: Release all containers (Use this or the above specific release options, not both)
+        description: Release all containers
         required: true
         default: false
         type: boolean
       releaseContainerType:
         type: choice
-        description: Mark the container tag as production or development
+        description: Container tag as development or production
         options:
-          - production
           - development
+          - production
         default: development
         required: true
 
@@ -140,7 +140,7 @@ jobs:
           private-key: ${{ secrets.EGOLIA_BOT_PRIVATE_KEY }}
           app-id: ${{ vars.EGOLIA_BOT_APP_ID }}
           owner: ${{ github.repository_owner }}
-          repositories: ${{ github.repository }}
+          repositories: ${{ github.event.repository.name }}
 
       - name: Setup Git User
         if: ${{ github.ref == 'refs/heads/main' }}
