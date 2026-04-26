@@ -141,7 +141,9 @@ jobs:
           private-key: ${{ secrets.EGOLIA_BOT_PRIVATE_KEY }}
           app-id: ${{ vars.EGOLIA_BOT_APP_ID }}
           owner: ${{ github.repository_owner }}
-          repositories: ${{ github.event.repository.name }}
+          repositories: |
+            ${{ github.event.repository.name }}
+            infra
 
       - name: Setup Git User
         if: ${{ github.ref == 'refs/heads/main' }}
