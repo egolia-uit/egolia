@@ -157,7 +157,8 @@
   ],
   "release": {
     "git": {
-      "commit": false
+      "commit": false,
+      "pushArgs": "--no-follow-tags --tags"
     },
     "changelog": {
       "automaticFromRef": true
