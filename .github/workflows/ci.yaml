@@ -180,9 +180,6 @@ jobs:
         with:
           node-version-file: .tool-versions
 
-      - name: Install Node Dependencies
-        run: pnpm install
-
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
@@ -222,6 +219,9 @@ jobs:
 
       - name: Install Go Dependencies
         run: go mod download
+
+      - name: Install Node Dependencies
+        run: pnpm install
 
       - name: Nx reset cache
         if: ${{ github.event.inputs.resetNxCache == 'true' }}
