@@ -11,7 +11,7 @@ autoInstallPeers: true
 
 catalog:
   '@hey-api/openapi-ts': '0.96.1'
-  '@redocly/cli': '2.25.4'
+  '@redocly/cli': '2.30.1'
   '@scalar/cli': '1.8.8'
   '@bufbuild/buf': 1.64.0
   '@bufbuild/protobuf': 2.11.0
