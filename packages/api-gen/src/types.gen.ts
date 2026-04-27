@@ -4,6 +4,7 @@ export type ClientOptions = {
     baseUrl: 'http://api.egolia.localhost' | (string & {});
 };
 
+<<<<<<< HEAD
 export const CourseCourseStatus = {
     DRAFT: 'draft',
     PENDING: 'pending',
@@ -12,11 +13,14 @@ export const CourseCourseStatus = {
 
 export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
 
+=======
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
 export type CourseId = string;
 
+<<<<<<< HEAD
 /**
  * Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
  */
@@ -27,6 +31,19 @@ export type CourseStructure = Array<{
 
 export type CourseCourse = {
     readonly id?: string;
+=======
+export const CourseCourseStatus = {
+    DRAFT: 'draft',
+    PENDING: 'pending',
+    APPROVED: 'approved'
+} as const;
+
+export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
+
+export type CourseCourse = {
+    readonly id?: string;
+    readonly originalCourseId?: string;
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
     title: string;
     price: bigint;
     readonly hidden?: boolean;
@@ -36,7 +53,10 @@ export type CourseCourse = {
     introduction?: {
         videoUrl: string;
     };
+<<<<<<< HEAD
     structure?: CourseStructure;
+=======
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 };
 
 export type CoursePagination = {
@@ -86,6 +106,10 @@ export type CoursePropertiesId = string;
 export type CourseSection = {
     readonly id: string;
     title: string;
+<<<<<<< HEAD
+=======
+    readonly order?: string;
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
     courseId: CoursePropertiesId;
 };
 
@@ -97,6 +121,7 @@ export type CourseLesson = {
     readonly id: string;
     courseId: CoursePropertiesId;
     title: string;
+    readonly order?: string;
     lessonType: CourseLessonType;
 };
 
@@ -436,8 +461,6 @@ export type BlogCommentWritable = {
     content: string;
 };
 
-export type CourseStatusQuery = CourseCourseStatus;
-
 /**
  * Page number for pagination
  */
@@ -536,7 +559,6 @@ export type SearchCoursesData = {
          * Search term for course title or description
          */
         q?: string;
-        status?: CourseCourseStatus;
         /**
          * Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
          */
@@ -655,7 +677,6 @@ export type GetSystemCoursesData = {
     body?: never;
     path?: never;
     query?: {
-        status?: CourseCourseStatus;
         /**
          * Page number for pagination
          */
@@ -769,7 +790,6 @@ export type GetInstructorCoursesData = {
         instructorId: string;
     };
     query?: {
-        status?: CourseCourseStatus;
         /**
          * Page number for pagination
          */
@@ -1728,7 +1748,11 @@ export type CreateSectionData = {
     body: {
         courseId: CoursePropertiesId;
         title: string;
+<<<<<<< HEAD
         targetIndex: number;
+=======
+        preOrder?: string;
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
     };
     path?: never;
     query?: never;
@@ -1836,6 +1860,65 @@ export type DeleteSectionResponses = {
 
 export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionResponses];
 
+<<<<<<< HEAD
+=======
+export type UpdateSectionTitleData = {
+    body: {
+        title: string;
+    };
+    path: {
+        sectionId: string;
+    };
+    query?: never;
+    url: '/course/sections/{sectionId}';
+};
+
+export type UpdateSectionTitleErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type UpdateSectionTitleError = UpdateSectionTitleErrors[keyof UpdateSectionTitleErrors];
+
+export type UpdateSectionTitleResponses = {
+    /**
+     * Section title successfully updated
+     */
+    200: unknown;
+};
+
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 export type MoveSectionData = {
     body: {
         courseId: CoursePropertiesId;
@@ -1844,9 +1927,15 @@ export type MoveSectionData = {
          */
         sectionId: string;
         /**
+<<<<<<< HEAD
          * New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.
          */
         targetIndex: number;
+=======
+         * order of the section you want to insert to
+         */
+        preOrder: string;
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
     };
     path: {
         sectionId: string;

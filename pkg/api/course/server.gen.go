@@ -140,6 +140,12 @@ type ServerInterface interface {
 	// Delete section
 	// (DELETE /course/sections/{sectionId})
 	DeleteSection(c *gin.Context, sectionId SectionIdPath)
+<<<<<<< HEAD
+=======
+	// Update section
+	// (PATCH /course/sections/{sectionId})
+	UpdateSectionTitle(c *gin.Context, sectionId SectionIdPath)
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 	// Move section
 	// (POST /course/sections/{sectionId}/move)
 	MoveSection(c *gin.Context, sectionId SectionIdPath)
@@ -242,14 +248,6 @@ func (siw *ServerInterfaceWrapper) SearchCourses(c *gin.Context) {
 		return
 	}
 
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", c.Request.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter status: %w", err), http.StatusBadRequest)
-		return
-	}
-
 	// ------------- Optional query parameter "instructorId" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "instructorId", c.Request.URL.Query(), &params.InstructorId, runtime.BindQueryParameterOptions{Type: "array", Format: ""})
@@ -325,14 +323,6 @@ func (siw *ServerInterfaceWrapper) GetInstructorCourses(c *gin.Context) {
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetInstructorCoursesParams
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", c.Request.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter status: %w", err), http.StatusBadRequest)
-		return
-	}
 
 	// ------------- Optional query parameter "page" -------------
 
@@ -421,14 +411,6 @@ func (siw *ServerInterfaceWrapper) GetSystemCourses(c *gin.Context) {
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetSystemCoursesParams
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", c.Request.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter status: %w", err), http.StatusBadRequest)
-		return
-	}
 
 	// ------------- Optional query parameter "page" -------------
 
@@ -1316,6 +1298,35 @@ func (siw *ServerInterfaceWrapper) DeleteSection(c *gin.Context) {
 	siw.Handler.DeleteSection(c, sectionId)
 }
 
+<<<<<<< HEAD
+=======
+// UpdateSectionTitle operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSectionTitle(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UpdateSectionTitle(c, sectionId)
+}
+
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 // MoveSection operation middleware
 func (siw *ServerInterfaceWrapper) MoveSection(c *gin.Context) {
 
@@ -1409,6 +1420,10 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.PUT(options.BaseURL+"/course/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
 	router.POST(options.BaseURL+"/course/sections", wrapper.CreateSection)
 	router.DELETE(options.BaseURL+"/course/sections/:sectionId", wrapper.DeleteSection)
+<<<<<<< HEAD
+=======
+	router.PATCH(options.BaseURL+"/course/sections/:sectionId", wrapper.UpdateSectionTitle)
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 	router.POST(options.BaseURL+"/course/sections/:sectionId/move", wrapper.MoveSection)
 }
 
@@ -3945,6 +3960,73 @@ func (response DeleteSection500JSONResponse) VisitDeleteSectionResponse(w http.R
 	return json.NewEncoder(w).Encode(response)
 }
 
+<<<<<<< HEAD
+=======
+type UpdateSectionTitleRequestObject struct {
+	SectionId SectionIdPath `json:"sectionId"`
+	Body      *UpdateSectionTitleJSONRequestBody
+}
+
+type UpdateSectionTitleResponseObject interface {
+	VisitUpdateSectionTitleResponse(w http.ResponseWriter) error
+}
+
+type UpdateSectionTitle200Response struct {
+}
+
+func (response UpdateSectionTitle200Response) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+	w.WriteHeader(200)
+	return nil
+}
+
+type UpdateSectionTitle400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response UpdateSectionTitle400JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateSectionTitle401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response UpdateSectionTitle401JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateSectionTitle403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response UpdateSectionTitle403JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateSectionTitle404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response UpdateSectionTitle404JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type UpdateSectionTitle500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response UpdateSectionTitle500JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 type MoveSectionRequestObject struct {
 	SectionId SectionIdPath `json:"sectionId"`
 	Body      *MoveSectionJSONRequestBody
@@ -4140,6 +4222,12 @@ type StrictServerInterface interface {
 	// Delete section
 	// (DELETE /course/sections/{sectionId})
 	DeleteSection(ctx context.Context, request DeleteSectionRequestObject) (DeleteSectionResponseObject, error)
+<<<<<<< HEAD
+=======
+	// Update section
+	// (PATCH /course/sections/{sectionId})
+	UpdateSectionTitle(ctx context.Context, request UpdateSectionTitleRequestObject) (UpdateSectionTitleResponseObject, error)
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 	// Move section
 	// (POST /course/sections/{sectionId}/move)
 	MoveSection(ctx context.Context, request MoveSectionRequestObject) (MoveSectionResponseObject, error)
@@ -5358,6 +5446,44 @@ func (sh *strictHandler) DeleteSection(ctx *gin.Context, sectionId SectionIdPath
 	}
 }
 
+<<<<<<< HEAD
+=======
+// UpdateSectionTitle operation middleware
+func (sh *strictHandler) UpdateSectionTitle(ctx *gin.Context, sectionId SectionIdPath) {
+	var request UpdateSectionTitleRequestObject
+
+	request.SectionId = sectionId
+
+	var body UpdateSectionTitleJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateSectionTitle(ctx, request.(UpdateSectionTitleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateSectionTitle")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(UpdateSectionTitleResponseObject); ok {
+		if err := validResponse.VisitUpdateSectionTitleResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 // MoveSection operation middleware
 func (sh *strictHandler) MoveSection(ctx *gin.Context, sectionId SectionIdPath) {
 	var request MoveSectionRequestObject

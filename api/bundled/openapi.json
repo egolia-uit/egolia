@@ -132,9 +132,6 @@
             }
           },
           {
-            "$ref": "#/components/parameters/course_statusQuery"
-          },
-          {
             "name": "instructorId",
             "in": "query",
             "description": "Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)",
@@ -212,9 +209,6 @@
         "summary": "Get system courses",
         "operationId": "getSystemCourses",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/course_statusQuery"
-          },
           {
             "$ref": "#/components/parameters/course_pageQuery"
           },
@@ -340,9 +334,6 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/course_instructorIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/course_statusQuery"
           },
           {
             "$ref": "#/components/parameters/course_pageQuery"
@@ -1213,11 +1204,17 @@
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
                   },
+<<<<<<< HEAD
                   "targetIndex": {
                     "type": "integer",
                     "format": "int32",
                     "minimum": 0,
                     "example": 1
+=======
+                  "preOrder": {
+                    "type": "string",
+                    "example": "ab"
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
                   }
                 }
               }
@@ -1276,6 +1273,169 @@
         "responses": {
           "204": {
             "description": "Section successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Update section",
+        "operationId": "updateSectionTitle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP Fundamentals"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Section title successfully updated"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/sections/{sectionId}/move": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Move section",
+        "operationId": "moveSection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseId": {
+                    "$ref": "#/components/schemas/course_properties-id"
+                  },
+                  "sectionId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "ID of the section to move (must match the sectionId path parameter)",
+                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                  },
+                  "preOrder": {
+                    "type": "string",
+                    "example": "ab",
+                    "description": "order of the section you want to insert to"
+                  }
+                },
+                "required": [
+                  "courseId",
+                  "sectionId",
+                  "preOrder"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Section moved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "structure": {
+                          "type": "array",
+                          "description": "Resulting course structure after moving the section, including all sections and their lessons",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sectionId": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                              },
+                              "lessonIds": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "format": "uuid"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"
@@ -3172,6 +3332,7 @@
         }
       }
     },
+<<<<<<< HEAD
     "schemas": {
       "course_CourseStatus": {
         "type": "string",
@@ -3182,13 +3343,221 @@
         ],
         "default": "draft",
         "example": "draft"
+=======
+    "parameters": {
+      "course_pageQuery": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "example": 1
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
       },
+      "course_limitQuery": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "example": 20
+      },
+      "course_orderQuery": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "example": "desc"
+        }
+      },
+      "course_instructorIdPath": {
+        "name": "instructorId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        }
+      },
+      "course_courseIdPath": {
+        "name": "courseId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/course_properties-id"
+        }
+      },
+      "course_sectionIdPath": {
+        "name": "sectionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
+      },
+      "course_lessonIdPath": {
+        "name": "lessonId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
+      },
+      "course_commentIdPath": {
+        "name": "commentId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the post comment",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
+      },
+      "course_certificateIdPath": {
+        "name": "certificateId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
+        }
+      },
+      "billing_pageQuery": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "example": 1
+      },
+      "billing_limitQuery": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "example": 20
+      },
+      "billing_orderQuery": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "example": "desc"
+        }
+      },
+      "billing_transactionIdPath": {
+        "name": "transactionId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the billing transaction",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
+      },
+      "blog_pageQuery": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "example": 1
+      },
+      "blog_limitQuery": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "example": 20
+      },
+      "blog_orderQuery": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "example": "desc"
+        }
+      },
+      "blog_postIdPath": {
+        "name": "postId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the blog post",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "74af02ce-4e69-4ca1-a721-c0e19c9937b8"
+      },
+      "blog_commentIdPath": {
+        "name": "commentId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the post comment",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
+      }
+    },
+    "schemas": {
       "course_id": {
         "type": "string",
         "format": "number",
         "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
         "example": "100"
       },
+<<<<<<< HEAD
       "course_Structure": {
         "type": "array",
         "readOnly": true,
@@ -3214,11 +3583,28 @@
             }
           }
         }
+=======
+      "course_CourseStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "pending",
+          "approved"
+        ],
+        "default": "draft",
+        "example": "draft"
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
       },
       "course_Course": {
         "type": "object",
         "properties": {
           "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "readOnly": true
+          },
+          "originalCourseId": {
             "type": "string",
             "format": "uuid",
             "example": "123e4567-e89b-12d3-a456-426614174000",
@@ -3265,10 +3651,13 @@
             "required": [
               "videoUrl"
             ]
+<<<<<<< HEAD
           },
           "structure": {
             "$ref": "#/components/schemas/course_Structure",
             "readOnly": true
+=======
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
           }
         },
         "required": [
@@ -3369,6 +3758,14 @@
             "maxLength": 255,
             "example": "OOP Fundamentals"
           },
+<<<<<<< HEAD
+=======
+          "order": {
+            "type": "string",
+            "example": "a",
+            "readOnly": true
+          },
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
           "courseId": {
             "$ref": "#/components/schemas/course_properties-id"
           }
@@ -3402,6 +3799,11 @@
           "title": {
             "type": "string",
             "example": "Introduction to Python"
+          },
+          "order": {
+            "type": "string",
+            "example": "a",
+            "readOnly": true
           },
           "lessonType": {
             "$ref": "#/components/schemas/course_LessonType",
@@ -4180,219 +4582,6 @@
           "parentCommentId",
           "createdAt"
         ]
-      }
-    },
-    "parameters": {
-      "course_statusQuery": {
-        "name": "status",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/course_CourseStatus"
-        }
-      },
-      "course_pageQuery": {
-        "name": "page",
-        "in": "query",
-        "description": "Page number for pagination",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1
-        },
-        "example": 1
-      },
-      "course_limitQuery": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 20
-        },
-        "example": 20
-      },
-      "course_orderQuery": {
-        "name": "order",
-        "in": "query",
-        "description": "Sort order",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc",
-          "example": "desc"
-        }
-      },
-      "course_instructorIdPath": {
-        "name": "instructorId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "123e4567-e89b-12d3-a456-426614174000"
-        }
-      },
-      "course_courseIdPath": {
-        "name": "courseId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "$ref": "#/components/schemas/course_properties-id"
-        }
-      },
-      "course_sectionIdPath": {
-        "name": "sectionId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
-        }
-      },
-      "course_lessonIdPath": {
-        "name": "lessonId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
-        }
-      },
-      "course_commentIdPath": {
-        "name": "commentId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the post comment",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
-      },
-      "course_certificateIdPath": {
-        "name": "certificateId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
-        }
-      },
-      "billing_pageQuery": {
-        "name": "page",
-        "in": "query",
-        "description": "Page number for pagination",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1
-        },
-        "example": 1
-      },
-      "billing_limitQuery": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 20
-        },
-        "example": 20
-      },
-      "billing_orderQuery": {
-        "name": "order",
-        "in": "query",
-        "description": "Sort order",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc",
-          "example": "desc"
-        }
-      },
-      "billing_transactionIdPath": {
-        "name": "transactionId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the billing transaction",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
-      },
-      "blog_pageQuery": {
-        "name": "page",
-        "in": "query",
-        "description": "Page number for pagination",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1
-        },
-        "example": 1
-      },
-      "blog_limitQuery": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 20
-        },
-        "example": 20
-      },
-      "blog_orderQuery": {
-        "name": "order",
-        "in": "query",
-        "description": "Sort order",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc",
-          "example": "desc"
-        }
-      },
-      "blog_postIdPath": {
-        "name": "postId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the blog post",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "74af02ce-4e69-4ca1-a721-c0e19c9937b8"
-      },
-      "blog_commentIdPath": {
-        "name": "commentId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the post comment",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
       }
     },
     "responses": {

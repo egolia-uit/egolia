@@ -6,7 +6,6 @@ get:
   summary: Get system courses
   operationId: getSystemCourses
   parameters:
-    - $ref: ../components/parameters/statusQuery.yaml
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml
     - $ref: ../../common/components/parameters/orderQuery.yaml

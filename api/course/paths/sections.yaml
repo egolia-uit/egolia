@@ -23,11 +23,11 @@ post:
               minLength: 1
               maxLength: 255
               example: OOP Fundamentals
-            targetIndex:
-              type: integer
-              format: int32
-              minimum: 0
-              example: 1
+
+            preOrder:
+              type: string
+              example: ab
+
   responses:
     201:
       description: Section created

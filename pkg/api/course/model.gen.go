@@ -238,6 +238,7 @@ type Course struct {
 	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+<<<<<<< HEAD
 	InstructorId *Id                            `json:"instructorId,omitempty"`
 	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
 	Overview     *string                        `json:"overview,omitempty"`
@@ -247,6 +248,15 @@ type Course struct {
 	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
 	Structure *Structure `json:"structure,omitempty"`
 	Title     string     `json:"title"`
+=======
+	InstructorId     *Id                            `json:"instructorId,omitempty"`
+	Introduction     *CourseLandingPageIntroduction `json:"introduction,omitempty"`
+	OriginalCourseId *openapi_types.UUID            `json:"originalCourseId,omitempty"`
+	Overview         *string                        `json:"overview,omitempty"`
+	Price            int64                          `json:"price"`
+	Status           *CourseStatus                  `json:"status,omitempty"`
+	Title            string                         `json:"title"`
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // CourseLandingPageIntroduction defines model for .
@@ -260,6 +270,7 @@ type CourseDetail struct {
 	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+<<<<<<< HEAD
 	InstructorId *Id                            `json:"instructorId,omitempty"`
 	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
 	Overview     *string                        `json:"overview,omitempty"`
@@ -270,6 +281,16 @@ type CourseDetail struct {
 	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
 	Structure *Structure `json:"structure,omitempty"`
 	Title     string     `json:"title"`
+=======
+	InstructorId     *Id                            `json:"instructorId,omitempty"`
+	Introduction     *CourseLandingPageIntroduction `json:"introduction,omitempty"`
+	OriginalCourseId *openapi_types.UUID            `json:"originalCourseId,omitempty"`
+	Overview         *string                        `json:"overview,omitempty"`
+	Price            int64                          `json:"price"`
+	Sections         []CourseDetailSectionItem      `json:"sections"`
+	Status           *CourseStatus                  `json:"status,omitempty"`
+	Title            string                         `json:"title"`
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
@@ -277,6 +298,10 @@ type CourseDetailSectionItem struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Lessons  []Lesson            `json:"lessons"`
+<<<<<<< HEAD
+=======
+	Order    *string             `json:"order,omitempty"`
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 	Title    string              `json:"title"`
 }
 
@@ -312,6 +337,7 @@ type Lesson struct {
 	CourseId   *PropertiesId       `json:"courseId,omitempty"`
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
+	Order      *string             `json:"order,omitempty"`
 	Title      string              `json:"title"`
 }
 
@@ -378,6 +404,7 @@ type Pagination struct {
 type Section struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
+	Order    *string             `json:"order,omitempty"`
 	Title    string              `json:"title"`
 }
 
@@ -399,6 +426,7 @@ type TestLesson struct {
 	CourseId   *PropertiesId       `json:"courseId,omitempty"`
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
+	Order      *string             `json:"order,omitempty"`
 	Questions  []TestQuestion      `json:"questions"`
 	Title      string              `json:"title"`
 	Type       TestLessonType      `json:"type"`
@@ -431,6 +459,7 @@ type VideoLesson struct {
 	Duration   int64               `json:"duration"`
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
+	Order      *string             `json:"order,omitempty"`
 	Title      string              `json:"title"`
 	VideoKey   *string             `json:"videoKey,omitempty"`
 	VideoUrl   *string             `json:"videoUrl,omitempty"`
@@ -483,9 +512,6 @@ type PageQuery = int
 // SectionIdPath defines model for sectionIdPath.
 type SectionIdPath = openapi_types.UUID
 
-// StatusQuery defines model for statusQuery.
-type StatusQuery = CourseStatus
-
 // BadRequestError defines model for BadRequestError.
 type BadRequestError = Error
 
@@ -531,8 +557,7 @@ type GetMyCertificatesParamsOrder string
 // SearchCoursesParams defines parameters for SearchCourses.
 type SearchCoursesParams struct {
 	// Q Search term for course title or description
-	Q      *string      `form:"q,omitempty" json:"q,omitempty"`
-	Status *StatusQuery `form:"status,omitempty" json:"status,omitempty"`
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
 
 	// InstructorId Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
 	InstructorId *[]openapi_types.UUID `form:"instructorId,omitempty" json:"instructorId,omitempty"`
@@ -552,8 +577,6 @@ type SearchCoursesParamsOrder string
 
 // GetInstructorCoursesParams defines parameters for GetInstructorCourses.
 type GetInstructorCoursesParams struct {
-	Status *StatusQuery `form:"status,omitempty" json:"status,omitempty"`
-
 	// Page Page number for pagination
 	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
 
@@ -584,8 +607,6 @@ type GetPublishedCoursesParamsOrder string
 
 // GetSystemCoursesParams defines parameters for GetSystemCourses.
 type GetSystemCoursesParams struct {
-	Status *StatusQuery `form:"status,omitempty" json:"status,omitempty"`
-
 	// Page Page number for pagination
 	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
 
@@ -667,20 +688,39 @@ type CreateTestJSONBody struct {
 
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
+<<<<<<< HEAD
 	CourseId    *PropertiesId `json:"courseId,omitempty"`
 	TargetIndex int32         `json:"targetIndex"`
 	Title       string        `json:"title"`
+=======
+	CourseId *PropertiesId `json:"courseId,omitempty"`
+	PreOrder *string       `json:"preOrder,omitempty"`
+	Title    string        `json:"title"`
+}
+
+// UpdateSectionTitleJSONBody defines parameters for UpdateSectionTitle.
+type UpdateSectionTitleJSONBody struct {
+	Title string `json:"title"`
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // MoveSectionJSONBody defines parameters for MoveSection.
 type MoveSectionJSONBody struct {
 	CourseId *PropertiesId `json:"courseId,omitempty"`
 
+<<<<<<< HEAD
 	// SectionId ID of the section to move (must match the sectionId path parameter)
 	SectionId openapi_types.UUID `json:"sectionId"`
 
 	// TargetIndex New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.
 	TargetIndex int32 `json:"targetIndex"`
+=======
+	// PreOrder order of the section you want to insert to
+	PreOrder string `json:"preOrder"`
+
+	// SectionId ID of the section to move (must match the sectionId path parameter)
+	SectionId openapi_types.UUID `json:"sectionId"`
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
@@ -728,6 +768,12 @@ type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
 // CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
 type CreateSectionJSONRequestBody CreateSectionJSONBody
 
+<<<<<<< HEAD
+=======
+// UpdateSectionTitleJSONRequestBody defines body for UpdateSectionTitle for application/json ContentType.
+type UpdateSectionTitleJSONRequestBody UpdateSectionTitleJSONBody
+
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 // MoveSectionJSONRequestBody defines body for MoveSection for application/json ContentType.
 type MoveSectionJSONRequestBody MoveSectionJSONBody
 
