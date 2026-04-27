@@ -274,10 +274,10 @@ jobs:
           nx-cache-action -- \
           pnpm exec nx run-many \
             --target docker:build \
-            ${{ github.event.inputs.releaseWeb == 'true' && '--projects web' || '' }} \
-            ${{ github.event.inputs.releaseCourse == 'true' && '--projects course' || '' }} \
-            ${{ github.event.inputs.releaseBilling == 'true' && '--projects billing' || '' }} \
-            ${{ github.event.inputs.releaseBlog == 'true' && '--projects blog' || '' }} \
+            ${{ (github.event.inputs.releaseAll || github.event.inputs.releaseWeb == 'true') && '--projects web' || '' }} \
+            ${{ (github.event.inputs.releaseAll || github.event.inputs.releaseCourse == 'true') && '--projects course' || '' }} \
+            ${{ (github.event.inputs.releaseAll || github.event.inputs.releaseBilling == 'true') && '--projects billing' || '' }} \
+            ${{ (github.event.inputs.releaseAll || github.event.inputs.releaseBlog == 'true') && '--projects blog' || '' }} \
             --parallel=${{env.NX_PARALLEL }} \
             --configuration 'production'
 
