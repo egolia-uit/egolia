@@ -8,7 +8,6 @@ get:
   description: Maybe removed or used in the future
   parameters:
     - $ref: ../components/parameters/instructorIdPath.yaml
-    - $ref: ../components/parameters/statusQuery.yaml
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml
     - $ref: ../../common/components/parameters/orderQuery.yaml

@@ -7,6 +7,13 @@ properties:
     example: 123e4567-e89b-12d3-a456-426614174000
     readOnly: true
 
+  # originalCourseId readonly, dùng để lưu id của course gốc khi có duplicate course
+  originalCourseId:
+    type: string
+    format: uuid
+    example: 123e4567-e89b-12d3-a456-426614174000
+    readOnly: true
+
   title:
     type: string
     example: Introduction to Programming
@@ -46,10 +53,6 @@ properties:
     required:
       - videoUrl
 
-  # import structure từ file Structure.yaml để trả về cấu trúc khóa học
-  structure:
-    $ref: ./Structure.yaml
-    readOnly: true
 required:
   - title
   - price

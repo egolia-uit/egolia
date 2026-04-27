@@ -2,17 +2,21 @@
 
 import * as z from 'zod';
 
+<<<<<<< HEAD
 export const zCourseCourseStatus = z.enum([
     'draft',
     'pending',
     'approved'
 ]).default('draft');
 
+=======
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
 export const zCourseId = z.string();
 
+<<<<<<< HEAD
 /**
  * Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
  */
@@ -23,6 +27,17 @@ export const zCourseStructure = z.array(z.object({
 
 export const zCourseCourse = z.object({
     id: z.uuid().readonly().optional(),
+=======
+export const zCourseCourseStatus = z.enum([
+    'draft',
+    'pending',
+    'approved'
+]).default('draft');
+
+export const zCourseCourse = z.object({
+    id: z.uuid().readonly().optional(),
+    originalCourseId: z.uuid().readonly().optional(),
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
     title: z.string(),
     price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
     hidden: z.boolean().readonly().optional().default(true),
@@ -31,8 +46,12 @@ export const zCourseCourse = z.object({
     overview: z.string().optional(),
     introduction: z.object({
         videoUrl: z.url()
+<<<<<<< HEAD
     }).optional(),
     structure: zCourseStructure.optional()
+=======
+    }).optional()
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 });
 
 export const zCoursePagination = z.object({
@@ -55,6 +74,10 @@ export const zCoursePropertiesId = z.uuid().readonly();
 export const zCourseSection = z.object({
     id: z.uuid().readonly(),
     title: z.string().min(1).max(255),
+<<<<<<< HEAD
+=======
+    order: z.string().readonly().optional(),
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
     courseId: zCoursePropertiesId
 });
 
@@ -64,6 +87,7 @@ export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
     courseId: zCoursePropertiesId,
     title: z.string(),
+    order: z.string().readonly().optional(),
     lessonType: zCourseLessonType
 });
 
@@ -354,8 +378,6 @@ export const zBlogCommentWritable = z.object({
     content: z.string().min(1)
 });
 
-export const zCourseStatusQuery = zCourseCourseStatus;
-
 /**
  * Page number for pagination
  */
@@ -433,7 +455,6 @@ export const zBlogCommentIdPath = z.uuid();
 
 export const zSearchCoursesQuery = z.object({
     q: z.string().optional(),
-    status: zCourseCourseStatus.optional(),
     instructorId: z.array(z.uuid()).optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
@@ -451,7 +472,6 @@ export const zSearchCoursesResponse = z.object({
 export const zCreateCourseBody = zCourseCourseWritable;
 
 export const zGetSystemCoursesQuery = z.object({
-    status: zCourseCourseStatus.optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
     order: z.enum(['asc', 'desc']).optional().default('desc')
@@ -484,7 +504,6 @@ export const zGetInstructorCoursesPath = z.object({
 });
 
 export const zGetInstructorCoursesQuery = z.object({
-    status: zCourseCourseStatus.optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
     order: z.enum(['asc', 'desc']).optional().default('desc')
@@ -656,7 +675,11 @@ export const zGetMyEnrolledCoursesResponse = z.object({
 export const zCreateSectionBody = z.object({
     courseId: zCoursePropertiesId,
     title: z.string().min(1).max(255),
+<<<<<<< HEAD
     targetIndex: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+=======
+    preOrder: z.string().optional()
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 });
 
 export const zDeleteSectionPath = z.object({
@@ -668,10 +691,25 @@ export const zDeleteSectionPath = z.object({
  */
 export const zDeleteSectionResponse = z.void();
 
+<<<<<<< HEAD
 export const zMoveSectionBody = z.object({
     courseId: zCoursePropertiesId,
     sectionId: z.uuid(),
     targetIndex: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+=======
+export const zUpdateSectionTitleBody = z.object({
+    title: z.string().min(1).max(255)
+});
+
+export const zUpdateSectionTitlePath = z.object({
+    sectionId: z.uuid()
+});
+
+export const zMoveSectionBody = z.object({
+    courseId: zCoursePropertiesId,
+    sectionId: z.uuid(),
+    preOrder: z.string()
+>>>>>>> 3d515b4c9 (feat: refine course and section apis)
 });
 
 export const zMoveSectionPath = z.object({

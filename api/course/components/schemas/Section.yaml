@@ -13,6 +13,12 @@ properties:
     maxLength: 255
     example: OOP Fundamentals
 
+  # order string lexorank
+  order:
+    type: string
+    example: a
+    readOnly: true
+
   courseId:
     $ref: ./Course.yaml#/properties/id
 

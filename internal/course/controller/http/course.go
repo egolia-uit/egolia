@@ -200,6 +200,10 @@ func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request cou
 	return nil, errs.Unimplemented
 }
 
+func (h *StrictHandler) UpdateSectionTitle(ctx context.Context, request course.UpdateSectionTitleRequestObject) (course.UpdateSectionTitleResponseObject, error) {
+	panic("unimplemented")
+}
+
 func (h *StrictHandler) CreateTest(ctx context.Context, request course.CreateTestRequestObject) (course.CreateTestResponseObject, error) {
 	return nil, errs.Unimplemented
 }
