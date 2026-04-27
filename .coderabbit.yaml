@@ -1,0 +1,39 @@
+language: en-GB
+reviews:
+  profile: assertive
+  poem: false
+
+  tools:
+    ruff:
+      enabled: false
+    markdownlint:
+      enabled: false
+    biome:
+      enabled: false
+    tflint:
+      enabled: false
+    flake8:
+      enabled: false
+    prismaLint:
+      enabled: false
+    oxc:
+      enabled: false
+    pylint:
+      enabled: false
+
+  path_instructions:
+    - path: internal/course/**
+      instructions: |
+        - Strictly applying clean architecture, DDD, CQRS
+    - path: internal/billing/**
+      instructions: |
+        - Applying layered architecture
+    - path: internal/blog/**
+      instructions: |
+        - Applying layered architecture
+
+  path_filters:
+    - '!api/bundled/**'
+    - '!packages/api-gen/**'
+    - '!pkg/api/**'
+    - '!pkg/pb/**'
