@@ -6,11 +6,13 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
+	MapSlogToGRPCMiddlewareLogger,
+	ProvideGlobal,
 	ProvideLoggerProvider,
 	ProvideMeterProvider,
+	ProvideOTELSaramaTracer,
 	ProvideResource,
 	ProvideSlogHandler,
 	ProvideTracerProvider,
-	ProvideOTELSaramaTracer,
 	wire.Bind(new(kafka.SaramaTracer), new(*WatermillKafkaTracer)),
 )

@@ -5,7 +5,6 @@ import (
 	"log/slog"
 
 	"go.opentelemetry.io/contrib/exporters/autoexport"
-	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdk "go.opentelemetry.io/otel/sdk/trace"
 )
@@ -28,12 +27,10 @@ func NewTracerProvider(
 		if err := tp.Shutdown(context.Background()); err != nil {
 			slog.Error(
 				"Error shutting down TracerProvider",
-				slog.String("error", err.Error()),
+				slog.Any("error", err),
 			)
 		}
 	}
-
-	otel.SetTracerProvider(tp)
 
 	return tp, cleanup, nil
 }

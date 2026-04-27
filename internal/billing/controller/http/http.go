@@ -129,5 +129,3 @@ func New(
 func (h *HTTP) Run() error {
 	return h.ListenAndServe()
 }
-
-var Provide = New

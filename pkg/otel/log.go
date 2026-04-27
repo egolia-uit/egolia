@@ -5,9 +5,9 @@ import (
 	"log/slog"
 
 	"github.com/egolia-uit/egolia/pkg/metadata"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/contrib/exporters/autoexport"
-	"go.opentelemetry.io/otel/log/global"
 	sdk "go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
 )
@@ -30,12 +30,10 @@ func NewLoggerProvider(
 		if err := lp.Shutdown(context.Background()); err != nil {
 			slog.Error(
 				"Error shutting down LoggerProvider",
-				slog.String("error", err.Error()),
+				slog.Any("error", err),
 			)
 		}
 	}
-
-	global.SetLoggerProvider(lp)
 
 	return lp, cleanup, nil
 }
@@ -55,3 +53,9 @@ func NewSlogHandler(
 }
 
 var ProvideSlogHandler = NewSlogHandler
+
+func MapSlogToGRPCMiddlewareLogger(l *slog.Logger) logging.Logger {
+	return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
+		l.Log(ctx, slog.Level(lvl), msg, fields...)
+	})
+}

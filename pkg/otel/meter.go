@@ -5,7 +5,6 @@ import (
 	"log/slog"
 
 	"go.opentelemetry.io/contrib/exporters/autoexport"
-	"go.opentelemetry.io/otel"
 	sdk "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 )
@@ -27,12 +26,10 @@ func NewMeterProvider(
 		if err := mp.Shutdown(ctx); err != nil {
 			slog.Error(
 				"Error shutting down MeterProvider",
-				slog.String("error", err.Error()),
+				slog.Any("error", err),
 			)
 		}
 	}
-
-	otel.SetMeterProvider(mp)
 
 	return mp, cleanup, nil
 }

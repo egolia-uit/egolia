@@ -38,9 +38,9 @@ func New(
 	viper.SetConfigName("billing.egolia.config")
 	viper.AddConfigPath(".")
 
-	commonconfig.ServerAddressViperSetDefault(viper, "server.http", 8082)
-	commonconfig.ServerAddressViperSetDefault(viper, "server.grpc", 18082)
-	commonconfig.ServerAddressViperSetDefault(viper, "server.health", 28082)
+	commonconfig.ServerAddressViperSetDefault(viper, "server.http", 8083)
+	commonconfig.ServerAddressViperSetDefault(viper, "server.grpc", 18083)
+	commonconfig.ServerAddressViperSetDefault(viper, "server.health", 28083)
 	commonconfig.LogViperSetDefault(viper, "log")
 	commonconfig.SQLViperSetDefault(viper, "database")
 	commonconfig.GeneralViperSetDefault(viper, "general")

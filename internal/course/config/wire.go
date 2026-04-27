@@ -13,4 +13,5 @@ var ProviderSet = wire.NewSet(
 		"S3",
 		"Services",
 	),
+	ProvideViper,
 )
