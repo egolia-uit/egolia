@@ -425,6 +425,40 @@ export const unBookmarkCourseMutation = (options?: Partial<Options<UnBookmarkCou
 };
 
 /**
+ * Hide course
+ */
+export const hideCourseMutation = (options?: Partial<Options<HideCourseData>>): UseMutationOptions<HideCourseResponse, HideCourseError, Options<HideCourseData>> => {
+    const mutationOptions: UseMutationOptions<HideCourseResponse, HideCourseError, Options<HideCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await hideCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * UnHide course
+ */
+export const unHideCourseMutation = (options?: Partial<Options<UnHideCourseData>>): UseMutationOptions<UnHideCourseResponse, UnHideCourseError, Options<UnHideCourseData>> => {
+    const mutationOptions: UseMutationOptions<UnHideCourseResponse, UnHideCourseError, Options<UnHideCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await unHideCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Trigger learning reminder
  */
 export const triggerLearningReminderMutation = (options?: Partial<Options<TriggerLearningReminderData>>): UseMutationOptions<TriggerLearningReminderResponse, TriggerLearningReminderError, Options<TriggerLearningReminderData>> => {
@@ -483,40 +517,6 @@ export const declineCourseMutation = (options?: Partial<Options<DeclineCourseDat
     const mutationOptions: UseMutationOptions<DeclineCourseResponse, DeclineCourseError, Options<DeclineCourseData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await declineCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Hide course
- */
-export const hideCourseMutation = (options?: Partial<Options<HideCourseData>>): UseMutationOptions<HideCourseResponse, HideCourseError, Options<HideCourseData>> => {
-    const mutationOptions: UseMutationOptions<HideCourseResponse, HideCourseError, Options<HideCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await hideCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * UnHide course
- */
-export const unHideCourseMutation = (options?: Partial<Options<UnHideCourseData>>): UseMutationOptions<UnHideCourseResponse, UnHideCourseError, Options<UnHideCourseData>> => {
-    const mutationOptions: UseMutationOptions<UnHideCourseResponse, UnHideCourseError, Options<UnHideCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await unHideCourse({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

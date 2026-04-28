@@ -263,6 +263,36 @@ export const unBookmarkCourse = <ThrowOnError extends boolean = false>(options: 
 });
 
 /**
+ * Hide course
+ */
+export const hideCourse = <ThrowOnError extends boolean = false>(options: Options<HideCourseData, ThrowOnError>) => (options.client ?? client).post<HideCourseResponses, HideCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zHideCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zHideCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/hide',
+    ...options
+});
+
+/**
+ * UnHide course
+ */
+export const unHideCourse = <ThrowOnError extends boolean = false>(options: Options<UnHideCourseData, ThrowOnError>) => (options.client ?? client).post<UnHideCourseResponses, UnHideCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zUnHideCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zUnHideCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/unHide',
+    ...options
+});
+
+/**
  * Trigger learning reminder
  */
 export const triggerLearningReminder = <ThrowOnError extends boolean = false>(options: Options<TriggerLearningReminderData, ThrowOnError>) => (options.client ?? client).post<TriggerLearningReminderResponses, TriggerLearningReminderErrors, ThrowOnError>({
@@ -328,36 +358,6 @@ export const declineCourse = <ThrowOnError extends boolean = false>(options: Opt
         'Content-Type': 'application/json',
         ...options.headers
     }
-});
-
-/**
- * Hide course
- */
-export const hideCourse = <ThrowOnError extends boolean = false>(options: Options<HideCourseData, ThrowOnError>) => (options.client ?? client).post<HideCourseResponses, HideCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zHideCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zHideCourseResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/hide',
-    ...options
-});
-
-/**
- * UnHide course
- */
-export const unHideCourse = <ThrowOnError extends boolean = false>(options: Options<UnHideCourseData, ThrowOnError>) => (options.client ?? client).post<UnHideCourseResponses, UnHideCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zUnHideCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zUnHideCourseResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/unHide',
-    ...options
 });
 
 /**

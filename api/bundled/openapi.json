@@ -838,6 +838,84 @@
         }
       }
     },
+    "/course/courses/{courseId}/hide": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Hide course",
+        "operationId": "hideCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course hidden"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/unHide": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "UnHide course",
+        "operationId": "unHideCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course unhidden"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
     "/course/courses/{courseId}/trigger-learning-reminder": {
       "post": {
         "security": [
@@ -1013,84 +1091,6 @@
         "responses": {
           "204": {
             "description": "Course declined"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/courses/{courseId}/hide": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": []
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Hide course",
-        "operationId": "hideCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course hidden"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/courses/{courseId}/unHide": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": []
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "UnHide course",
-        "operationId": "unHideCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course unhidden"
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"

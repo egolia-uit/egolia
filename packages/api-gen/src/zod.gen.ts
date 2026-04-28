@@ -566,6 +566,24 @@ export const zUnBookmarkCoursePath = z.object({
  */
 export const zUnBookmarkCourseResponse = z.void();
 
+export const zHideCoursePath = z.object({
+    courseId: zCoursePropertiesId
+});
+
+/**
+ * Course hidden
+ */
+export const zHideCourseResponse = z.void();
+
+export const zUnHideCoursePath = z.object({
+    courseId: zCoursePropertiesId
+});
+
+/**
+ * Course unhidden
+ */
+export const zUnHideCourseResponse = z.void();
+
 export const zTriggerLearningReminderBody = z.object({
     dryRun: z.boolean().optional()
 });
@@ -611,24 +629,6 @@ export const zDeclineCoursePath = z.object({
  * Course declined
  */
 export const zDeclineCourseResponse = z.void();
-
-export const zHideCoursePath = z.object({
-    courseId: zCoursePropertiesId
-});
-
-/**
- * Course hidden
- */
-export const zHideCourseResponse = z.void();
-
-export const zUnHideCoursePath = z.object({
-    courseId: zCoursePropertiesId
-});
-
-/**
- * Course unhidden
- */
-export const zUnHideCourseResponse = z.void();
 
 export const zGetMyEnrolledCoursesQuery = z.object({
     page: z.int().gte(1).optional().default(1),

@@ -1332,6 +1332,118 @@ export type UnBookmarkCourseResponses = {
 
 export type UnBookmarkCourseResponse = UnBookmarkCourseResponses[keyof UnBookmarkCourseResponses];
 
+export type HideCourseData = {
+    body?: never;
+    path: {
+        courseId: CoursePropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/hide';
+};
+
+export type HideCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type HideCourseError = HideCourseErrors[keyof HideCourseErrors];
+
+export type HideCourseResponses = {
+    /**
+     * Course hidden
+     */
+    204: void;
+};
+
+export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
+
+export type UnHideCourseData = {
+    body?: never;
+    path: {
+        courseId: CoursePropertiesId;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/unHide';
+};
+
+export type UnHideCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * The error response body returned when JWT validation or OPA authorization fails.
+     */
+    401: {
+        /**
+         * The category of the error encountered during the middleware lifecycle.
+         */
+        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
+        /**
+         * A descriptive message providing technical context for the failure.
+         */
+        details: string;
+        /**
+         * An optional, developer-defined message, often populated by OPA policy violations.
+         */
+        custom_message: string | null;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type UnHideCourseError = UnHideCourseErrors[keyof UnHideCourseErrors];
+
+export type UnHideCourseResponses = {
+    /**
+     * Course unhidden
+     */
+    204: void;
+};
+
+export type UnHideCourseResponse = UnHideCourseResponses[keyof UnHideCourseResponses];
+
 export type TriggerLearningReminderData = {
     body?: {
         dryRun?: boolean;
@@ -1540,118 +1652,6 @@ export type DeclineCourseResponses = {
 };
 
 export type DeclineCourseResponse = DeclineCourseResponses[keyof DeclineCourseResponses];
-
-export type HideCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}/hide';
-};
-
-export type HideCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * The error response body returned when JWT validation or OPA authorization fails.
-     */
-    401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type HideCourseError = HideCourseErrors[keyof HideCourseErrors];
-
-export type HideCourseResponses = {
-    /**
-     * Course hidden
-     */
-    204: void;
-};
-
-export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
-
-export type UnHideCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}/unHide';
-};
-
-export type UnHideCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * The error response body returned when JWT validation or OPA authorization fails.
-     */
-    401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type UnHideCourseError = UnHideCourseErrors[keyof UnHideCourseErrors];
-
-export type UnHideCourseResponses = {
-    /**
-     * Course unhidden
-     */
-    204: void;
-};
-
-export type UnHideCourseResponse = UnHideCourseResponses[keyof UnHideCourseResponses];
 
 export type GetMyEnrolledCoursesData = {
     body?: never;
