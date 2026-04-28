@@ -3,6 +3,6 @@
   "private": true,
   "dependencies": {
     "@egolia-uit/api": "workspace:",
-    "@scalar/api-reference-react": "0.9.27"
+    "@scalar/api-reference-react": "0.9.29"
   }
 }
