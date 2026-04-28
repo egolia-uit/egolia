@@ -14,5 +14,6 @@
       "source.fixAll.eslint": "explicit"
     }
   },
-  "github.copilot.chat.getSearchViewResultsSkill.enabled": true
+  "github.copilot.chat.getSearchViewResultsSkill.enabled": true,
+  "redoclyOpenAPI.configPath": "./api/redocly.yaml"
 }
