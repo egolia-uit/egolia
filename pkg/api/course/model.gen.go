@@ -238,17 +238,6 @@ type Course struct {
 	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-<<<<<<< HEAD
-	InstructorId *Id                            `json:"instructorId,omitempty"`
-	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
-	Overview     *string                        `json:"overview,omitempty"`
-	Price        int64                          `json:"price"`
-	Status       *CourseStatus                  `json:"status,omitempty"`
-
-	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
-	Structure *Structure `json:"structure,omitempty"`
-	Title     string     `json:"title"`
-=======
 	InstructorId     *Id                            `json:"instructorId,omitempty"`
 	Introduction     *CourseLandingPageIntroduction `json:"introduction,omitempty"`
 	OriginalCourseId *openapi_types.UUID            `json:"originalCourseId,omitempty"`
@@ -256,7 +245,6 @@ type Course struct {
 	Price            int64                          `json:"price"`
 	Status           *CourseStatus                  `json:"status,omitempty"`
 	Title            string                         `json:"title"`
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // CourseLandingPageIntroduction defines model for .
@@ -270,18 +258,6 @@ type CourseDetail struct {
 	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-<<<<<<< HEAD
-	InstructorId *Id                            `json:"instructorId,omitempty"`
-	Introduction *CourseLandingPageIntroduction `json:"introduction,omitempty"`
-	Overview     *string                        `json:"overview,omitempty"`
-	Price        int64                          `json:"price"`
-	Sections     []CourseDetailSectionItem      `json:"sections"`
-	Status       *CourseStatus                  `json:"status,omitempty"`
-
-	// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
-	Structure *Structure `json:"structure,omitempty"`
-	Title     string     `json:"title"`
-=======
 	InstructorId     *Id                            `json:"instructorId,omitempty"`
 	Introduction     *CourseLandingPageIntroduction `json:"introduction,omitempty"`
 	OriginalCourseId *openapi_types.UUID            `json:"originalCourseId,omitempty"`
@@ -290,7 +266,6 @@ type CourseDetail struct {
 	Sections         []CourseDetailSectionItem      `json:"sections"`
 	Status           *CourseStatus                  `json:"status,omitempty"`
 	Title            string                         `json:"title"`
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
@@ -298,10 +273,7 @@ type CourseDetailSectionItem struct {
 	CourseId *PropertiesId       `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Lessons  []Lesson            `json:"lessons"`
-<<<<<<< HEAD
-=======
 	Order    *string             `json:"order,omitempty"`
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 	Title    string              `json:"title"`
 }
 
@@ -406,12 +378,6 @@ type Section struct {
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Order    *string             `json:"order,omitempty"`
 	Title    string              `json:"title"`
-}
-
-// Structure Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
-type Structure = []struct {
-	LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
-	SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
 }
 
 // TestAnswer defines model for TestAnswer.
@@ -693,11 +659,6 @@ type GetUploadVideoLessonUrlJSONBody struct {
 
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
-<<<<<<< HEAD
-	CourseId    *PropertiesId `json:"courseId,omitempty"`
-	TargetIndex int32         `json:"targetIndex"`
-	Title       string        `json:"title"`
-=======
 	CourseId *PropertiesId `json:"courseId,omitempty"`
 	PreOrder *string       `json:"preOrder,omitempty"`
 	Title    string        `json:"title"`
@@ -706,26 +667,17 @@ type CreateSectionJSONBody struct {
 // UpdateSectionTitleJSONBody defines parameters for UpdateSectionTitle.
 type UpdateSectionTitleJSONBody struct {
 	Title string `json:"title"`
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // MoveSectionJSONBody defines parameters for MoveSection.
 type MoveSectionJSONBody struct {
 	CourseId *PropertiesId `json:"courseId,omitempty"`
 
-<<<<<<< HEAD
-	// SectionId ID of the section to move (must match the sectionId path parameter)
-	SectionId openapi_types.UUID `json:"sectionId"`
-
-	// TargetIndex New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.
-	TargetIndex int32 `json:"targetIndex"`
-=======
 	// PreOrder order of the section you want to insert to
 	PreOrder string `json:"preOrder"`
 
 	// SectionId ID of the section to move (must match the sectionId path parameter)
 	SectionId openapi_types.UUID `json:"sectionId"`
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 }
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
@@ -776,12 +728,9 @@ type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
 // CreateSectionJSONRequestBody defines body for CreateSection for application/json ContentType.
 type CreateSectionJSONRequestBody CreateSectionJSONBody
 
-<<<<<<< HEAD
-=======
 // UpdateSectionTitleJSONRequestBody defines body for UpdateSectionTitle for application/json ContentType.
 type UpdateSectionTitleJSONRequestBody UpdateSectionTitleJSONBody
 
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 // MoveSectionJSONRequestBody defines body for MoveSection for application/json ContentType.
 type MoveSectionJSONRequestBody MoveSectionJSONBody
 

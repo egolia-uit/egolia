@@ -13,12 +13,10 @@ type MoveLessonAfterLesson struct {
 }
 
 type MoveLesson struct {
-	LessonID   uuid.UUID
-	LessonType LessonType
-
-	Afterlesson *MoveLessonAfterLesson
-
-	SectionID uuid.UUID
+	LessonID    uuid.UUID
+	LessonType  LessonType
+	AfterLesson *MoveLessonAfterLesson
+	SectionID   uuid.UUID
 }
 
 type MoveLessonHandler struct {
@@ -44,18 +42,18 @@ func (h *MoveLessonHandler) Handle(ctx context.Context, params *MoveLesson) erro
 		var prevLesson domain.Lesson
 		var err error
 
-		if params.Afterlesson != nil {
-			switch params.Afterlesson.Type {
+		if params.AfterLesson != nil {
+			switch params.AfterLesson.Type {
 			case LessonTypeVideo:
 				prevLesson, err = repoRegistry.VideoLesson().Get(ctx, &domain.VideoLessonRepoGet{
-					ID: params.Afterlesson.ID,
+					ID: params.AfterLesson.ID,
 				}, false)
 				if err != nil {
 					return err // TODO: map to errs
 				}
 			case LessonTypeTest:
 				prevLesson, err = repoRegistry.TestLesson().Get(ctx, &domain.TestLessonRepoGet{
-					ID: params.Afterlesson.ID,
+					ID: params.AfterLesson.ID,
 				}, false)
 				if err != nil {
 					return err // TODO: map to errs

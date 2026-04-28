@@ -3,7 +3,7 @@ post:
     - Oauth2: []
   tags:
     - Course
-  summary: Unbookmark course
+  summary: UnBookmark course
   operationId: unbookmarkCourse
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml

@@ -4,34 +4,11 @@ export type ClientOptions = {
     baseUrl: 'http://api.egolia.localhost' | (string & {});
 };
 
-<<<<<<< HEAD
-export const CourseCourseStatus = {
-    DRAFT: 'draft',
-    PENDING: 'pending',
-    APPROVED: 'approved'
-} as const;
-
-export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
-
-=======
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
 export type CourseId = string;
 
-<<<<<<< HEAD
-/**
- * Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
- */
-export type CourseStructure = Array<{
-    sectionId?: string;
-    lessonIds?: Array<string>;
-}>;
-
-export type CourseCourse = {
-    readonly id?: string;
-=======
 export const CourseCourseStatus = {
     DRAFT: 'draft',
     PENDING: 'pending',
@@ -43,7 +20,6 @@ export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCo
 export type CourseCourse = {
     readonly id?: string;
     readonly originalCourseId?: string;
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
     title: string;
     price: bigint;
     readonly hidden?: boolean;
@@ -53,10 +29,6 @@ export type CourseCourse = {
     introduction?: {
         videoUrl: string;
     };
-<<<<<<< HEAD
-    structure?: CourseStructure;
-=======
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 };
 
 export type CoursePagination = {
@@ -106,10 +78,7 @@ export type CoursePropertiesId = string;
 export type CourseSection = {
     readonly id: string;
     title: string;
-<<<<<<< HEAD
-=======
     readonly order?: string;
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
     courseId: CoursePropertiesId;
 };
 
@@ -1305,7 +1274,7 @@ export type BookmarkCourseResponses = {
     201: unknown;
 };
 
-export type UnbookmarkCourseData = {
+export type UnBookmarkCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
@@ -1314,7 +1283,7 @@ export type UnbookmarkCourseData = {
     url: '/course/courses/{courseId}/unbookmark';
 };
 
-export type UnbookmarkCourseErrors = {
+export type UnBookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1350,16 +1319,16 @@ export type UnbookmarkCourseErrors = {
     500: CourseError;
 };
 
-export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
+export type UnBookmarkCourseError = UnBookmarkCourseErrors[keyof UnBookmarkCourseErrors];
 
-export type UnbookmarkCourseResponses = {
+export type UnBookmarkCourseResponses = {
     /**
      * Course unbookmarked successfully
      */
     204: void;
 };
 
-export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
+export type UnBookmarkCourseResponse = UnBookmarkCourseResponses[keyof UnBookmarkCourseResponses];
 
 export type TriggerLearningReminderData = {
     body?: {
@@ -1748,11 +1717,7 @@ export type CreateSectionData = {
     body: {
         courseId: CoursePropertiesId;
         title: string;
-<<<<<<< HEAD
-        targetIndex: number;
-=======
         preOrder?: string;
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
     };
     path?: never;
     query?: never;
@@ -1860,8 +1825,6 @@ export type DeleteSectionResponses = {
 
 export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionResponses];
 
-<<<<<<< HEAD
-=======
 export type UpdateSectionTitleData = {
     body: {
         title: string;
@@ -1918,7 +1881,6 @@ export type UpdateSectionTitleResponses = {
     200: unknown;
 };
 
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
 export type MoveSectionData = {
     body: {
         courseId: CoursePropertiesId;
@@ -1927,15 +1889,9 @@ export type MoveSectionData = {
          */
         sectionId: string;
         /**
-<<<<<<< HEAD
-         * New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.
-         */
-        targetIndex: number;
-=======
          * order of the section you want to insert to
          */
         preOrder: string;
->>>>>>> 3d515b4c9 (feat: refine course and section apis)
     };
     path: {
         sectionId: string;

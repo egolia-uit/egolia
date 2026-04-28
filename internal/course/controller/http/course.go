@@ -92,7 +92,7 @@ func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request cou
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
+func (h *StrictHandler) UnBookmarkCourse(ctx context.Context, request course.UnBookmarkCourseRequestObject) (course.UnBookmarkCourseResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -178,7 +178,7 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 	cmd := &app.MoveLesson{
 		LessonID:    request.LessonId,
 		LessonType:  lessonType,
-		Afterlesson: afterLesson,
+		AfterLesson: afterLesson,
 		SectionID:   request.Body.SectionId,
 	}
 	err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
