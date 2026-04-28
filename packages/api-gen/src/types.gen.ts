@@ -1274,7 +1274,7 @@ export type BookmarkCourseResponses = {
     201: unknown;
 };
 
-export type UnBookmarkCourseData = {
+export type UnbookmarkCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
@@ -1283,7 +1283,7 @@ export type UnBookmarkCourseData = {
     url: '/course/courses/{courseId}/unbookmark';
 };
 
-export type UnBookmarkCourseErrors = {
+export type UnbookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1319,16 +1319,16 @@ export type UnBookmarkCourseErrors = {
     500: CourseError;
 };
 
-export type UnBookmarkCourseError = UnBookmarkCourseErrors[keyof UnBookmarkCourseErrors];
+export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
 
-export type UnBookmarkCourseResponses = {
+export type UnbookmarkCourseResponses = {
     /**
      * Course unbookmarked successfully
      */
     204: void;
 };
 
-export type UnBookmarkCourseResponse = UnBookmarkCourseResponses[keyof UnBookmarkCourseResponses];
+export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
 
 export type TriggerLearningReminderData = {
     body?: {

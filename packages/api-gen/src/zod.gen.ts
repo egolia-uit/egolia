@@ -555,14 +555,14 @@ export const zBookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
-export const zUnBookmarkCoursePath = z.object({
+export const zUnbookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
 /**
  * Course unbookmarked successfully
  */
-export const zUnBookmarkCourseResponse = z.void();
+export const zUnbookmarkCourseResponse = z.void();
 
 export const zTriggerLearningReminderBody = z.object({
     dryRun: z.boolean().optional()
