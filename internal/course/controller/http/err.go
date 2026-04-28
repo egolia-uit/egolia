@@ -38,7 +38,27 @@ func strictServerToHTTPErr(err errs.Error) (
 
 	case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson:
 		statusCode = 500
+
+	case errs.CodeCourseNotFound:
+		statusCode = 404
+	case errs.CodeCourseInvalid:
+		statusCode = 400
+	case errs.CodeCourseAlreadyExists:
+		statusCode = 400
+	case errs.CodeCourseCannotModify:
+		statusCode = 400
+	case errs.CodeCourseStatusInvalid:
+		statusCode = 400
+	case errs.CodeSectionNotFound:
+		statusCode = 404
+	case errs.CodeSectionInvalid:
+		statusCode = 400
+	case errs.CodeInstructorPermissionDenied:
+		statusCode = 403
+	case errs.CodeCourseNotApproved:
+		statusCode = 403
 	}
+
 	return
 }
 

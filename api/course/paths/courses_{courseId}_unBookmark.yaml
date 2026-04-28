@@ -3,13 +3,13 @@ post:
     - Oauth2: []
   tags:
     - Course
-  summary: Unbookmark course
-  operationId: unbookmarkCourse
+  summary: UnBookmark course
+  operationId: unBookmarkCourse
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
     204:
-      description: Course unbookmarked successfully
+      description: Course unBookmarked successfully
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

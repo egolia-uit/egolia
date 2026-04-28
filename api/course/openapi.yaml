@@ -52,8 +52,12 @@ paths:
     $ref: ./paths/courses_{courseId}_reviews.yaml
   /course/courses/{courseId}/bookmark:
     $ref: ./paths/courses_{courseId}_bookmark.yaml
-  /course/courses/{courseId}/unbookmark:
-    $ref: ./paths/courses_{courseId}_unbookmark.yaml
+  /course/courses/{courseId}/unBookmark:
+    $ref: ./paths/courses_{courseId}_unBookmark.yaml
+  /course/courses/{courseId}/hide:
+    $ref: ./paths/courses_{courseId}_hide.yaml
+  /course/courses/{courseId}/unHide:
+    $ref: ./paths/courses_{courseId}_unHide.yaml
   /course/courses/{courseId}/trigger-learning-reminder:
     $ref: ./paths/courses_{courseId}_trigger-learning-reminder.yaml
   /course/courses/{courseId}/landing:
@@ -62,10 +66,6 @@ paths:
     $ref: ./paths/courses_{courseId}_approve.yaml
   /course/courses/{courseId}/decline:
     $ref: ./paths/courses_{courseId}_decline.yaml
-  /course/courses/{courseId}/hide:
-    $ref: ./paths/courses_{courseId}_hide.yaml
-  /course/courses/{courseId}/unhide:
-    $ref: ./paths/courses_{courseId}_unhide.yaml
   /course/courses/me/enrolled:
     $ref: ./paths/courses-me-enrolled.yaml
 

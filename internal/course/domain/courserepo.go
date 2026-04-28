@@ -12,5 +12,7 @@ type CourseRepo interface {
 }
 
 type CourseRepoGet struct {
-	ID uuid.UUID
+	ID        uuid.UUID
+	SectionID uuid.UUID
+	LessonID  uuid.UUID
 }

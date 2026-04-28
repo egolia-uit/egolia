@@ -13,9 +13,6 @@ type RepoRegistry interface {
 	// LessonProgressTest() LessonProgressTestRepo
 	// LessonProgressVideo() LessonProgressVideoRepo
 	Review() ReviewRepo
-	Section() SectionRepo
-	TestLesson() TestLessonRepo
-	VideoLesson() VideoLessonRepo
 }
 
 type UnitOfWork interface {

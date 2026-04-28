@@ -13,12 +13,10 @@ type MoveLessonAfterLesson struct {
 }
 
 type MoveLesson struct {
-	LessonID   uuid.UUID
-	LessonType LessonType
-
-	Afterlesson *MoveLessonAfterLesson
-
-	SectionID uuid.UUID
+	LessonID    uuid.UUID
+	LessonType  LessonType
+	AfterLesson *MoveLessonAfterLesson
+	SectionID   uuid.UUID
 }
 
 type MoveLessonHandler struct {
@@ -40,78 +38,61 @@ func NewMoveLessonHandler(
 // TODO: Get course to check if user id == course instructor id
 // TODO: Duc lam tiep nha hehe
 func (h *MoveLessonHandler) Handle(ctx context.Context, params *MoveLesson) error {
-	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		var prevLesson domain.Lesson
-		var err error
+	// return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
+	// 	course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
+	// 		SectionID: params.SectionID,
+	// 	}, true)
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-		if params.Afterlesson != nil {
-			switch params.Afterlesson.Type {
-			case LessonTypeVideo:
-				prevLesson, err = repoRegistry.VideoLesson().Get(ctx, &domain.VideoLessonRepoGet{
-					ID: params.Afterlesson.ID,
-				}, false)
-				if err != nil {
-					return err // TODO: map to errs
-				}
-			case LessonTypeTest:
-				prevLesson, err = repoRegistry.TestLesson().Get(ctx, &domain.TestLessonRepoGet{
-					ID: params.Afterlesson.ID,
-				}, false)
-				if err != nil {
-					return err // TODO: map to errs
-				}
-			}
-		}
+	// 	var prevLesson domain.Lesson
+	// 	var moveErr error
 
-		// TODO: Check if prev lesson is not nil, then get the next lesson
-		// Asume this is the next lesson id
-		nextLesson := &domain.VideoLesson{}
+	// 	if params.AfterLesson != nil {
+	// 		prevLesson = course.GetLesson(params.AfterLesson.ID)
+	// 		if prevLesson == nil {
+	// 			return errs.NewLessonNotFound(params.AfterLesson.ID, nil)
+	// 		}
+	// 	}
 
-		// TODO: not always we have the next lesson after prev lesson
-		// if err != nil && !errors.As(err, &errs.LessonNotFound{}) {
-		// 	return err
-		// }
+	// 	var nextLesson domain.Lesson
+	// 	section := course.GetSection(params.SectionID)
+	// 	if section == nil {
+	// 		return errs.NewLessonNotFound(params.SectionID, nil)
+	// 	}
+	// 	if prevLesson != nil {
+	// 		for i, lesson := range section.Lessons() {
+	// 			if lesson == nil {
+	// 				continue
+	// 			}
+	// 			if lesson.ID() == prevLesson.ID() && i+1 < len(section.Lessons()) {
+	// 				nextLesson = section.Lessons()[i+1]
+	// 				break
+	// 			}
+	// 		}
+	// 	}
 
-		var targetLesson domain.Lesson
+	// 	var targetLesson domain.Lesson
+	// 	targetLesson = course.GetLesson(params.LessonID)
+	// 	if targetLesson == nil {
+	// 		return errs.NewLessonNotFound(params.LessonID, nil)
+	// 	}
 
-		switch params.LessonType {
-		case LessonTypeVideo:
-			targetLesson, err = repoRegistry.VideoLesson().Get(ctx, &domain.VideoLessonRepoGet{
-				ID: params.LessonID,
-			}, true)
-			if err != nil {
-				return err // TODO: map to errs
-			}
-		case LessonTypeTest:
-			targetLesson, err = repoRegistry.TestLesson().Get(ctx, &domain.TestLessonRepoGet{
-				ID: params.LessonID,
-			}, true)
-			if err != nil {
-				return err // TODO: map to errs
-			}
-		}
+	// 	if moveErr = h.moveLessonSvc.Handle(&domain.MoveLesson{
+	// 		PrevLesson: prevLesson,
+	// 		NextLesson: nextLesson,
+	// 		Target:     targetLesson,
+	// 		SectionID:  params.SectionID,
+	// 	}); moveErr != nil {
+	// 		return moveErr
+	// 	}
 
-		if err = h.moveLessonSvc.Handle(&domain.MoveLesson{
-			PrevLesson: prevLesson,
-			NextLesson: nextLesson,
-			Target:     targetLesson,
-			SectionID:  params.SectionID,
-		}); err != nil {
-			return err
-		}
+	// 	if err = repoRegistry.Course().Save(ctx, course); err != nil {
+	// 		return err
+	// 	}
+	// 	return nil
+	// })
 
-		switch lesson := targetLesson.(type) {
-		case *domain.VideoLesson:
-			err = repoRegistry.VideoLesson().Save(ctx, lesson)
-			if err != nil {
-				return err // TODO: map to errs
-			}
-		case *domain.TestLesson:
-			err = repoRegistry.TestLesson().Save(ctx, lesson)
-			if err != nil {
-				return err // TODO: map to errs
-			}
-		}
-		return nil
-	})
+	return nil
 }

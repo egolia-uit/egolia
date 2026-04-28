@@ -114,9 +114,6 @@
             }
           },
           {
-            "$ref": "#/components/parameters/statusQuery"
-          },
-          {
             "name": "instructorId",
             "in": "query",
             "description": "Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)",
@@ -194,9 +191,6 @@
         "summary": "Get system courses",
         "operationId": "getSystemCourses",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/statusQuery"
-          },
           {
             "$ref": "#/components/parameters/pageQuery"
           },
@@ -322,9 +316,6 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/instructorIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/statusQuery"
           },
           {
             "$ref": "#/components/parameters/pageQuery"
@@ -790,7 +781,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/unbookmark": {
+    "/course/courses/{courseId}/unBookmark": {
       "post": {
         "security": [
           {
@@ -800,8 +791,8 @@
         "tags": [
           "Course"
         ],
-        "summary": "Unbookmark course",
-        "operationId": "unbookmarkCourse",
+        "summary": "UnBookmark course",
+        "operationId": "unBookmarkCourse",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -809,7 +800,85 @@
         ],
         "responses": {
           "204": {
-            "description": "Course unbookmarked successfully"
+            "description": "Course unBookmarked successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/hide": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Hide course",
+        "operationId": "hideCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course hidden"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/unHide": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "UnHide course",
+        "operationId": "unHideCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course unhidden"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1023,84 +1092,6 @@
         }
       }
     },
-    "/course/courses/{courseId}/hide": {
-      "post": {
-        "security": [
-          {
-            "Oauth2": []
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Hide course",
-        "operationId": "hideCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course hidden"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/courses/{courseId}/unhide": {
-      "post": {
-        "security": [
-          {
-            "Oauth2": []
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Unhide course",
-        "operationId": "unhideCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course unhidden"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
     "/course/courses/me/enrolled": {
       "get": {
         "security": [
@@ -1195,11 +1186,9 @@
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
                   },
-                  "targetIndex": {
-                    "type": "integer",
-                    "format": "int32",
-                    "minimum": 0,
-                    "example": 1
+                  "preOrder": {
+                    "type": "string",
+                    "example": "ab"
                   }
                 }
               }
@@ -1275,6 +1264,64 @@
             "$ref": "#/components/responses/InternalServerError"
           }
         }
+      },
+      "patch": {
+        "security": [
+          {
+            "Oauth2": []
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Update section",
+        "operationId": "updateSectionTitle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/sectionIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP Fundamentals"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Section title successfully updated"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
       }
     },
     "/course/sections/{sectionId}/move": {
@@ -1310,18 +1357,16 @@
                     "description": "ID of the section to move (must match the sectionId path parameter)",
                     "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
                   },
-                  "targetIndex": {
-                    "type": "integer",
-                    "format": "int32",
-                    "minimum": 0,
-                    "description": "New index for the section within the course (0-based). For example, if targetIndex is 0, the section will be moved to the beginning of the course. If targetIndex is equal to the number of sections - 1, it will be moved to the end.",
-                    "example": 2
+                  "preOrder": {
+                    "type": "string",
+                    "example": "ab",
+                    "description": "order of the section you want to insert to"
                   }
                 },
                 "required": [
                   "courseId",
                   "sectionId",
-                  "targetIndex"
+                  "preOrder"
                 ]
               }
             }
@@ -2405,7 +2450,111 @@
         }
       }
     },
+    "parameters": {
+      "pageQuery": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "example": 1
+      },
+      "limitQuery": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "example": 20
+      },
+      "orderQuery": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "example": "desc"
+        }
+      },
+      "instructorIdPath": {
+        "name": "instructorId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "123e4567-e89b-12d3-a456-426614174000"
+        }
+      },
+      "courseIdPath": {
+        "name": "courseId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/properties-id"
+        }
+      },
+      "sectionIdPath": {
+        "name": "sectionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
+      },
+      "lessonIdPath": {
+        "name": "lessonId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
+        }
+      },
+      "commentIdPath": {
+        "name": "commentId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the post comment",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
+      },
+      "certificateIdPath": {
+        "name": "certificateId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
+        }
+      }
+    },
     "schemas": {
+      "id": {
+        "type": "string",
+        "format": "number",
+        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
+        "example": "100"
+      },
       "CourseStatus": {
         "type": "string",
         "enum": [
@@ -2416,42 +2565,16 @@
         "default": "draft",
         "example": "draft"
       },
-      "id": {
-        "type": "string",
-        "format": "number",
-        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
-        "example": "100"
-      },
-      "Structure": {
-        "type": "array",
-        "readOnly": true,
-        "description": "Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "sectionId": {
-              "type": "string",
-              "format": "uuid",
-              "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
-            },
-            "lessonIds": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "example": [
-                "1a2b3c4d-5678-90ab-cdef-1234567890ab",
-                "2b3c4d5e-6789-0abc-def1-234567890abc"
-              ]
-            }
-          }
-        }
-      },
       "Course": {
         "type": "object",
         "properties": {
           "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "readOnly": true
+          },
+          "originalCourseId": {
             "type": "string",
             "format": "uuid",
             "example": "123e4567-e89b-12d3-a456-426614174000",
@@ -2498,10 +2621,6 @@
             "required": [
               "videoUrl"
             ]
-          },
-          "structure": {
-            "$ref": "#/components/schemas/Structure",
-            "readOnly": true
           }
         },
         "required": [
@@ -2602,6 +2721,11 @@
             "maxLength": 255,
             "example": "OOP Fundamentals"
           },
+          "order": {
+            "type": "string",
+            "example": "a",
+            "readOnly": true
+          },
           "courseId": {
             "$ref": "#/components/schemas/properties-id"
           }
@@ -2611,6 +2735,12 @@
           "courseId",
           "title"
         ]
+      },
+      "Section_properties-id": {
+        "type": "string",
+        "format": "uuid",
+        "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+        "readOnly": true
       },
       "LessonType": {
         "type": "string",
@@ -2629,12 +2759,17 @@
             "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
             "readOnly": true
           },
-          "courseId": {
-            "$ref": "#/components/schemas/properties-id"
+          "sectionId": {
+            "$ref": "#/components/schemas/Section_properties-id"
           },
           "title": {
             "type": "string",
             "example": "Introduction to Python"
+          },
+          "order": {
+            "type": "string",
+            "example": "a",
+            "readOnly": true
           },
           "lessonType": {
             "$ref": "#/components/schemas/LessonType",
@@ -3033,112 +3168,6 @@
           "userId",
           "issuedAt"
         ]
-      }
-    },
-    "parameters": {
-      "statusQuery": {
-        "name": "status",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/CourseStatus"
-        }
-      },
-      "pageQuery": {
-        "name": "page",
-        "in": "query",
-        "description": "Page number for pagination",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1
-        },
-        "example": 1
-      },
-      "limitQuery": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 20
-        },
-        "example": 20
-      },
-      "orderQuery": {
-        "name": "order",
-        "in": "query",
-        "description": "Sort order",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc",
-          "example": "desc"
-        }
-      },
-      "instructorIdPath": {
-        "name": "instructorId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "123e4567-e89b-12d3-a456-426614174000"
-        }
-      },
-      "courseIdPath": {
-        "name": "courseId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "$ref": "#/components/schemas/properties-id"
-        }
-      },
-      "sectionIdPath": {
-        "name": "sectionId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
-        }
-      },
-      "lessonIdPath": {
-        "name": "lessonId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
-        }
-      },
-      "commentIdPath": {
-        "name": "commentId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the post comment",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
-      },
-      "certificateIdPath": {
-        "name": "certificateId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
-        }
       }
     },
     "responses": {

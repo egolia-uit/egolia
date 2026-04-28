@@ -24,11 +24,11 @@ func (r *Registry) LessonComment() domain.LessonCommentRepo { return nil }
 
 func (r *Registry) Review() domain.ReviewRepo { return nil }
 
-func (r *Registry) Section() domain.SectionRepo { return nil }
+// func (r *Registry) Section() domain.SectionRepo { return nil }
 
-func (r *Registry) TestLesson() domain.TestLessonRepo { return nil }
+// func (r *Registry) TestLesson() domain.TestLessonRepo { return nil }
 
-func (r *Registry) VideoLesson() domain.VideoLessonRepo { return nil }
+// func (r *Registry) VideoLesson() domain.VideoLessonRepo { return nil }
 
 type UnitOfWork struct{}
 

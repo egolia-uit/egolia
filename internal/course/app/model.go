@@ -25,12 +25,29 @@ type Paginated[T any] struct {
 	Pagination Pagination
 }
 
+type CourseStatus string
+
+const (
+	CourseStatusDraft    CourseStatus = "draft"
+	CourseStatusPending  CourseStatus = "pending"
+	CourseStatusApproved CourseStatus = "approved"
+	CourseStatusRejected CourseStatus = "rejected"
+)
+
+type CourseLandingPageIntroduction struct {
+	VideoUrl string
+}
+
 type Course struct {
-	ID           uuid.UUID
-	Title        string
-	InstructorID string
-	// Status???
-	Price int64 // Maybe affected by db and controller out
+	ID               uuid.UUID
+	OriginalCourseID uuid.UUID
+	Hidden           bool
+	Title            string
+	InstructorID     string
+	Status           CourseStatus
+	Price            int64
+	Overview         string
+	Introduction     CourseLandingPageIntroduction
 }
 
 type Section struct {
@@ -49,16 +66,18 @@ const (
 type Lesson interface {
 	isLesson()
 	GetID() uuid.UUID
-	GetCourseID() uuid.UUID
+	GetSectionID() uuid.UUID
 	GetTitle() string
 	GetLessonType() LessonType
+	GetOrder() string
 }
 
 type LessonBase struct {
 	ID         uuid.UUID
-	CourseID   uuid.UUID
+	SectionID  uuid.UUID
 	Title      string
 	LessonType LessonType
+	Order      string
 }
 
 var _ Lesson = (*VideoLesson)(nil)
@@ -69,8 +88,8 @@ func (l *LessonBase) GetID() uuid.UUID {
 	return l.ID
 }
 
-func (l *LessonBase) GetCourseID() uuid.UUID {
-	return l.CourseID
+func (l *LessonBase) GetSectionID() uuid.UUID {
+	return l.SectionID
 }
 
 func (l *LessonBase) GetTitle() string {
@@ -79,6 +98,10 @@ func (l *LessonBase) GetTitle() string {
 
 func (l *LessonBase) GetLessonType() LessonType {
 	return l.LessonType
+}
+
+func (l *LessonBase) GetOrder() string {
+	return l.Order
 }
 
 type VideoLesson struct {

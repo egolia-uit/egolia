@@ -6,6 +6,8 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
+	commonHTTP "github.com/egolia-uit/egolia/pkg/common/http"
+	"github.com/google/uuid"
 )
 
 func (h *StrictHandler) GetMyCertificates(ctx context.Context, request course.GetMyCertificatesRequestObject) (course.GetMyCertificatesResponseObject, error) {
@@ -21,7 +23,48 @@ func (h *StrictHandler) SearchCourses(ctx context.Context, request course.Search
 }
 
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	if request.Body == nil {
+		return nil, errs.NewInvalid("request body is required")
+	}
+
+	courseID := uuid.New()
+	instructorID, err := uuid.Parse(user.ID)
+	if err != nil {
+		return nil, errs.NewInvalid("authenticated user id must be a valid uuid")
+	}
+
+	overview := ""
+	if request.Body.Overview != nil {
+		overview = *request.Body.Overview
+	}
+
+	introduction := app.CourseLandingPageIntroduction{}
+	if request.Body.Introduction != nil {
+		introduction = app.CourseLandingPageIntroduction{
+			VideoUrl: request.Body.Introduction.VideoUrl,
+		}
+	}
+
+	cmd := &app.CreateCourse{
+		ID:           courseID,
+		Title:        request.Body.Title,
+		InstructorID: instructorID,
+		Price:        request.Body.Price,
+		Overview:     overview,
+		Introduction: introduction,
+	}
+	if err := h.App.Cmds.CreateCourse.Handle(ctx, cmd); err != nil {
+		return nil, err
+	}
+	return &course.CreateCourse201Response{
+		Headers: course.CreateCourse201ResponseHeaders{
+			ContentLocation: h.BaseURL.JoinPath("/courses", courseID.String()).String(),
+		},
+	}, nil
 }
 
 func (h *StrictHandler) GetInstructorCourses(ctx context.Context, request course.GetInstructorCoursesRequestObject) (course.GetInstructorCoursesResponseObject, error) {
@@ -92,11 +135,11 @@ func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request cou
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
+func (h *StrictHandler) UnBookmarkCourse(ctx context.Context, request course.UnBookmarkCourseRequestObject) (course.UnBookmarkCourseResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UnhideCourse(ctx context.Context, request course.UnhideCourseRequestObject) (course.UnhideCourseResponseObject, error) {
+func (h *StrictHandler) UnHideCourse(ctx context.Context, request course.UnHideCourseRequestObject) (course.UnHideCourseResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -178,7 +221,7 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 	cmd := &app.MoveLesson{
 		LessonID:    request.LessonId,
 		LessonType:  lessonType,
-		Afterlesson: afterLesson,
+		AfterLesson: afterLesson,
 		SectionID:   request.Body.SectionId,
 	}
 	err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
@@ -198,6 +241,10 @@ func (h *StrictHandler) SaveTestLessonProgress(ctx context.Context, request cour
 
 func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
 	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) UpdateSectionTitle(ctx context.Context, request course.UpdateSectionTitleRequestObject) (course.UpdateSectionTitleResponseObject, error) {
+	panic("unimplemented")
 }
 
 func (h *StrictHandler) CreateTest(ctx context.Context, request course.CreateTestRequestObject) (course.CreateTestResponseObject, error) {

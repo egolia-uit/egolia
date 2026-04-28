@@ -6,10 +6,6 @@ type GetCourse struct {
 	CourseID string
 }
 
-type GetCourseReadModel interface {
-	GetCourse(ctx context.Context, courseID string) (*Course, error)
-}
-
 type GetCourseHandler struct {
 	readModel GetCourseReadModel
 }

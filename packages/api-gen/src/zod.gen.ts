@@ -2,27 +2,20 @@
 
 import * as z from 'zod';
 
+/**
+ * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+ */
+export const zCourseId = z.string();
+
 export const zCourseCourseStatus = z.enum([
     'draft',
     'pending',
     'approved'
 ]).default('draft');
 
-/**
- * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
- */
-export const zCourseId = z.string();
-
-/**
- * Course structure with sections and their corresponding lessons. This is a read-only field that provides the organization of the course content.
- */
-export const zCourseStructure = z.array(z.object({
-    sectionId: z.uuid().optional(),
-    lessonIds: z.array(z.uuid()).optional()
-})).readonly();
-
 export const zCourseCourse = z.object({
     id: z.uuid().readonly().optional(),
+    originalCourseId: z.uuid().readonly().optional(),
     title: z.string(),
     price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
     hidden: z.boolean().readonly().optional().default(true),
@@ -31,8 +24,7 @@ export const zCourseCourse = z.object({
     overview: z.string().optional(),
     introduction: z.object({
         videoUrl: z.url()
-    }).optional(),
-    structure: zCourseStructure.optional()
+    }).optional()
 });
 
 export const zCoursePagination = z.object({
@@ -55,15 +47,19 @@ export const zCoursePropertiesId = z.uuid().readonly();
 export const zCourseSection = z.object({
     id: z.uuid().readonly(),
     title: z.string().min(1).max(255),
+    order: z.string().readonly().optional(),
     courseId: zCoursePropertiesId
 });
+
+export const zCourseSectionPropertiesId = z.uuid().readonly();
 
 export const zCourseLessonType = z.enum(['video', 'test']);
 
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
-    courseId: zCoursePropertiesId,
+    sectionId: zCourseSectionPropertiesId.optional(),
     title: z.string(),
+    order: z.string().readonly().optional(),
     lessonType: zCourseLessonType
 });
 
@@ -354,8 +350,6 @@ export const zBlogCommentWritable = z.object({
     content: z.string().min(1)
 });
 
-export const zCourseStatusQuery = zCourseCourseStatus;
-
 /**
  * Page number for pagination
  */
@@ -433,7 +427,6 @@ export const zBlogCommentIdPath = z.uuid();
 
 export const zSearchCoursesQuery = z.object({
     q: z.string().optional(),
-    status: zCourseCourseStatus.optional(),
     instructorId: z.array(z.uuid()).optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
@@ -451,7 +444,6 @@ export const zSearchCoursesResponse = z.object({
 export const zCreateCourseBody = zCourseCourseWritable;
 
 export const zGetSystemCoursesQuery = z.object({
-    status: zCourseCourseStatus.optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
     order: z.enum(['asc', 'desc']).optional().default('desc')
@@ -484,7 +476,6 @@ export const zGetInstructorCoursesPath = z.object({
 });
 
 export const zGetInstructorCoursesQuery = z.object({
-    status: zCourseCourseStatus.optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
     order: z.enum(['asc', 'desc']).optional().default('desc')
@@ -566,14 +557,32 @@ export const zBookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
-export const zUnbookmarkCoursePath = z.object({
+export const zUnBookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
 /**
- * Course unbookmarked successfully
+ * Course unBookmarked successfully
  */
-export const zUnbookmarkCourseResponse = z.void();
+export const zUnBookmarkCourseResponse = z.void();
+
+export const zHideCoursePath = z.object({
+    courseId: zCoursePropertiesId
+});
+
+/**
+ * Course hidden
+ */
+export const zHideCourseResponse = z.void();
+
+export const zUnHideCoursePath = z.object({
+    courseId: zCoursePropertiesId
+});
+
+/**
+ * Course unhidden
+ */
+export const zUnHideCourseResponse = z.void();
 
 export const zTriggerLearningReminderBody = z.object({
     dryRun: z.boolean().optional()
@@ -621,24 +630,6 @@ export const zDeclineCoursePath = z.object({
  */
 export const zDeclineCourseResponse = z.void();
 
-export const zHideCoursePath = z.object({
-    courseId: zCoursePropertiesId
-});
-
-/**
- * Course hidden
- */
-export const zHideCourseResponse = z.void();
-
-export const zUnhideCoursePath = z.object({
-    courseId: zCoursePropertiesId
-});
-
-/**
- * Course unhidden
- */
-export const zUnhideCourseResponse = z.void();
-
 export const zGetMyEnrolledCoursesQuery = z.object({
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
@@ -656,7 +647,7 @@ export const zGetMyEnrolledCoursesResponse = z.object({
 export const zCreateSectionBody = z.object({
     courseId: zCoursePropertiesId,
     title: z.string().min(1).max(255),
-    targetIndex: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+    preOrder: z.string().optional()
 });
 
 export const zDeleteSectionPath = z.object({
@@ -668,10 +659,18 @@ export const zDeleteSectionPath = z.object({
  */
 export const zDeleteSectionResponse = z.void();
 
+export const zUpdateSectionTitleBody = z.object({
+    title: z.string().min(1).max(255)
+});
+
+export const zUpdateSectionTitlePath = z.object({
+    sectionId: z.uuid()
+});
+
 export const zMoveSectionBody = z.object({
     courseId: zCoursePropertiesId,
     sectionId: z.uuid(),
-    targetIndex: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' })
+    preOrder: z.string()
 });
 
 export const zMoveSectionPath = z.object({
