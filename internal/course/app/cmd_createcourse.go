@@ -1,0 +1,55 @@
+package app
+
+import (
+	"context"
+
+	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/egolia-uit/egolia/internal/course/errs"
+	"github.com/google/uuid"
+)
+
+type CreateCourse struct {
+	ID           uuid.UUID
+	Title        string
+	InstructorID uuid.UUID
+	Price        int64
+	Overview     string
+	Introduction CourseLandingPageIntroduction
+}
+
+type CreateCourseHandler struct {
+	createCourseSvc *domain.CreateCourseSvc
+	uow             domain.UnitOfWork
+}
+
+func NewCreateCourseHandler(
+	createCourseSvc *domain.CreateCourseSvc,
+	uow domain.UnitOfWork,
+) *CreateCourseHandler {
+	return &CreateCourseHandler{
+		createCourseSvc: createCourseSvc,
+		uow:             uow,
+	}
+}
+
+func (h *CreateCourseHandler) Handle(ctx context.Context, cmd *CreateCourse) error {
+	course, err := h.createCourseSvc.Handle(&domain.CreateCourse{
+		ID:               cmd.ID,
+		Title:            cmd.Title,
+		OriginalCourseID: uuid.Nil,
+		InstructorID:     cmd.InstructorID,
+		Price:            float64(cmd.Price),
+		Overview:         cmd.Overview,
+		Hidden:           false,
+		Introduction:     domain.NewCourseLandingPageIntroduction(cmd.Introduction.VideoUrl),
+	})
+	if err != nil {
+		return err
+	}
+	if h.uow == nil {
+		return errs.NewInternal("unit of work is required")
+	}
+	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
+		return repoRegistry.Course().Save(ctx, course)
+	})
+}

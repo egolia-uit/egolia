@@ -3,8 +3,8 @@ post:
     - Oauth2: []
   tags:
     - Course
-  summary: Unhide course
-  operationId: unhideCourse
+  summary: UnHide course
+  operationId: unHideCourse
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:

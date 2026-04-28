@@ -30,7 +30,7 @@ func NewTestAnswer(
 type TestQuestion struct {
 	ID       uuid.UUID
 	Question string
-	Anwsers  []*TestAnswer
+	Answers  []*TestAnswer
 }
 
 func NewTestQuestion(
@@ -41,7 +41,7 @@ func NewTestQuestion(
 	return &TestQuestion{
 		ID:       id,
 		Question: question,
-		Anwsers:  answers,
+		Answers:  answers,
 	}
 }
 
@@ -55,11 +55,12 @@ func NewTestLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
 	order string,
+	title string,
 	lessonType TestLessonType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *NewLessonBase(id, sectionID, order),
+		LessonBase: *NewLessonBase(id, sectionID, order, title),
 		Type:       lessonType,
 		Questions:  questions,
 	}
@@ -69,11 +70,12 @@ func UnmarshalTestLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
 	order string,
+	title string,
 	lessonType TestLessonType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *UnmarshalLessonBase(id, sectionID, order),
+		LessonBase: *UnmarshalLessonBase(id, sectionID, order, title),
 		Type:       lessonType,
 		Questions:  questions,
 	}

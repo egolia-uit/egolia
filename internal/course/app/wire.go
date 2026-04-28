@@ -3,6 +3,8 @@ package app
 import "github.com/goforj/wire"
 
 var ProviderSetCmds = wire.NewSet(
+	NewCreateCourseHandler,
+	NewGetUploadVideoLessonURLHandler,
 	NewMoveLessonHandler,
 	wire.Struct(new(Cmds), "*"),
 )
@@ -11,7 +13,6 @@ var ProviderSetQueries = wire.NewSet(
 	NewGetCourseDetailHandler,
 	NewGetCourseHandler,
 	NewGetLessonDetailHandler,
-	NewGetUploadVideoLessonURLHandler,
 	NewSearchCoursesHandler,
 	wire.Struct(new(Queries), "*"),
 )

@@ -82,13 +82,15 @@ export type CourseSection = {
     courseId: CoursePropertiesId;
 };
 
+export type CourseSectionPropertiesId = string;
+
 export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
 
 export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
 
 export type CourseLesson = {
     readonly id: string;
-    courseId: CoursePropertiesId;
+    sectionId?: CourseSectionPropertiesId;
     title: string;
     readonly order?: string;
     lessonType: CourseLessonType;
@@ -1274,16 +1276,16 @@ export type BookmarkCourseResponses = {
     201: unknown;
 };
 
-export type UnbookmarkCourseData = {
+export type UnBookmarkCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/unbookmark';
+    url: '/course/courses/{courseId}/unBookmark';
 };
 
-export type UnbookmarkCourseErrors = {
+export type UnBookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1319,16 +1321,16 @@ export type UnbookmarkCourseErrors = {
     500: CourseError;
 };
 
-export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
+export type UnBookmarkCourseError = UnBookmarkCourseErrors[keyof UnBookmarkCourseErrors];
 
-export type UnbookmarkCourseResponses = {
+export type UnBookmarkCourseResponses = {
     /**
-     * Course unbookmarked successfully
+     * Course unBookmarked successfully
      */
     204: void;
 };
 
-export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
+export type UnBookmarkCourseResponse = UnBookmarkCourseResponses[keyof UnBookmarkCourseResponses];
 
 export type TriggerLearningReminderData = {
     body?: {
@@ -1595,16 +1597,16 @@ export type HideCourseResponses = {
 
 export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
 
-export type UnhideCourseData = {
+export type UnHideCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/unhide';
+    url: '/course/courses/{courseId}/unHide';
 };
 
-export type UnhideCourseErrors = {
+export type UnHideCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1640,16 +1642,16 @@ export type UnhideCourseErrors = {
     500: CourseError;
 };
 
-export type UnhideCourseError = UnhideCourseErrors[keyof UnhideCourseErrors];
+export type UnHideCourseError = UnHideCourseErrors[keyof UnHideCourseErrors];
 
-export type UnhideCourseResponses = {
+export type UnHideCourseResponses = {
     /**
      * Course unhidden
      */
     204: void;
 };
 
-export type UnhideCourseResponse = UnhideCourseResponses[keyof UnhideCourseResponses];
+export type UnHideCourseResponse = UnHideCourseResponses[keyof UnHideCourseResponses];
 
 export type GetMyEnrolledCoursesData = {
     body?: never;

@@ -306,11 +306,11 @@ type Error struct {
 
 // Lesson defines model for Lesson.
 type Lesson struct {
-	CourseId   *PropertiesId       `json:"courseId,omitempty"`
-	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
-	Title      string              `json:"title"`
+	Id         *openapi_types.UUID  `json:"id,omitempty"`
+	LessonType LessonType           `json:"lessonType"`
+	Order      *string              `json:"order,omitempty"`
+	SectionId  *SectionPropertiesId `json:"sectionId,omitempty"`
+	Title      string               `json:"title"`
 }
 
 // LessonComment defines model for LessonComment.
@@ -380,6 +380,9 @@ type Section struct {
 	Title    string              `json:"title"`
 }
 
+// SectionPropertiesId defines model for Section_properties-id.
+type SectionPropertiesId = openapi_types.UUID
+
 // TestAnswer defines model for TestAnswer.
 type TestAnswer struct {
 	Content   string              `json:"content"`
@@ -389,13 +392,13 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	CourseId   *PropertiesId       `json:"courseId,omitempty"`
-	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
-	Questions  []TestQuestion      `json:"questions"`
-	Title      string              `json:"title"`
-	Type       TestLessonType      `json:"type"`
+	Id         *openapi_types.UUID  `json:"id,omitempty"`
+	LessonType LessonType           `json:"lessonType"`
+	Order      *string              `json:"order,omitempty"`
+	Questions  []TestQuestion       `json:"questions"`
+	SectionId  *SectionPropertiesId `json:"sectionId,omitempty"`
+	Title      string               `json:"title"`
+	Type       TestLessonType       `json:"type"`
 }
 
 // TestLessonType defines model for TestLesson.Type.
@@ -421,14 +424,14 @@ type TestQuestion struct {
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	CourseId   *PropertiesId       `json:"courseId,omitempty"`
-	Duration   int64               `json:"duration"`
-	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
-	Title      string              `json:"title"`
-	VideoKey   *string             `json:"videoKey,omitempty"`
-	VideoUrl   *string             `json:"videoUrl,omitempty"`
+	Duration   int64                `json:"duration"`
+	Id         *openapi_types.UUID  `json:"id,omitempty"`
+	LessonType LessonType           `json:"lessonType"`
+	Order      *string              `json:"order,omitempty"`
+	SectionId  *SectionPropertiesId `json:"sectionId,omitempty"`
+	Title      string               `json:"title"`
+	VideoKey   *string              `json:"videoKey,omitempty"`
+	VideoUrl   *string              `json:"videoUrl,omitempty"`
 }
 
 // VideoLessonProgress defines model for VideoLessonProgress.

@@ -72,7 +72,7 @@ classDiagram
         <<Entity>>
         id uuid.UUID
         question string
-        anwsers []*TestAnswer
+        answers []*TestAnswer
     }
 
     class TestAnswer {

@@ -16,11 +16,12 @@ func NewVideoLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
 	order string,
+	title string,
 	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *NewLessonBase(id, sectionID, order),
+		LessonBase: *NewLessonBase(id, sectionID, order, title),
 		VideoKey:   videoKey,
 		Duration:   duration,
 	}
@@ -30,11 +31,12 @@ func UnmarshalVideoLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
 	order string,
+	title string,
 	videoURL string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *UnmarshalLessonBase(id, sectionID, order),
+		LessonBase: *UnmarshalLessonBase(id, sectionID, order, title),
 		VideoKey:   videoURL,
 		Duration:   duration,
 	}

@@ -3,6 +3,7 @@ package app
 type Cmds struct {
 	MoveLesson              *MoveLessonHandler
 	GetUploadVideoLessonURL *GetUploadVideoLessonURLHandler
+	CreateCourse            *CreateCourseHandler
 }
 
 type Queries struct {

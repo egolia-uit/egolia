@@ -781,7 +781,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/unbookmark": {
+    "/course/courses/{courseId}/unBookmark": {
       "post": {
         "security": [
           {
@@ -792,7 +792,7 @@
           "Course"
         ],
         "summary": "UnBookmark course",
-        "operationId": "unbookmarkCourse",
+        "operationId": "unBookmarkCourse",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -800,7 +800,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Course unbookmarked successfully"
+            "description": "Course unBookmarked successfully"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1053,7 +1053,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/unhide": {
+    "/course/courses/{courseId}/unHide": {
       "post": {
         "security": [
           {
@@ -1063,8 +1063,8 @@
         "tags": [
           "Course"
         ],
-        "summary": "Unhide course",
-        "operationId": "unhideCourse",
+        "summary": "UnHide course",
+        "operationId": "unHideCourse",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -2736,6 +2736,12 @@
           "title"
         ]
       },
+      "Section_properties-id": {
+        "type": "string",
+        "format": "uuid",
+        "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+        "readOnly": true
+      },
       "LessonType": {
         "type": "string",
         "enum": [
@@ -2753,8 +2759,8 @@
             "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
             "readOnly": true
           },
-          "courseId": {
-            "$ref": "#/components/schemas/properties-id"
+          "sectionId": {
+            "$ref": "#/components/schemas/Section_properties-id"
           },
           "title": {
             "type": "string",

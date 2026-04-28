@@ -84,11 +84,11 @@ type ServerInterface interface {
 	// (POST /course/courses/{courseId}/trigger-learning-reminder)
 	TriggerLearningReminder(c *gin.Context, courseId CourseIdPath)
 	// UnBookmark course
-	// (POST /course/courses/{courseId}/unbookmark)
+	// (POST /course/courses/{courseId}/unBookmark)
 	UnBookmarkCourse(c *gin.Context, courseId CourseIdPath)
-	// Unhide course
-	// (POST /course/courses/{courseId}/unhide)
-	UnhideCourse(c *gin.Context, courseId CourseIdPath)
+	// UnHide course
+	// (POST /course/courses/{courseId}/unHide)
+	UnHideCourse(c *gin.Context, courseId CourseIdPath)
 	// Reply lesson comment
 	// (POST /course/lesson-comments/{commentId}/reply)
 	ReplyLessonComment(c *gin.Context, commentId CommentIdPath)
@@ -849,8 +849,8 @@ func (siw *ServerInterfaceWrapper) UnBookmarkCourse(c *gin.Context) {
 	siw.Handler.UnBookmarkCourse(c, courseId)
 }
 
-// UnhideCourse operation middleware
-func (siw *ServerInterfaceWrapper) UnhideCourse(c *gin.Context) {
+// UnHideCourse operation middleware
+func (siw *ServerInterfaceWrapper) UnHideCourse(c *gin.Context) {
 
 	var err error
 
@@ -872,7 +872,7 @@ func (siw *ServerInterfaceWrapper) UnhideCourse(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.UnhideCourse(c, courseId)
+	siw.Handler.UnHideCourse(c, courseId)
 }
 
 // ReplyLessonComment operation middleware
@@ -1395,8 +1395,8 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/course/courses/:courseId/progress", wrapper.GetCourseProgress)
 	router.POST(options.BaseURL+"/course/courses/:courseId/reviews", wrapper.ReviewCourse)
 	router.POST(options.BaseURL+"/course/courses/:courseId/trigger-learning-reminder", wrapper.TriggerLearningReminder)
-	router.POST(options.BaseURL+"/course/courses/:courseId/unbookmark", wrapper.UnBookmarkCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/unhide", wrapper.UnhideCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/unBookmark", wrapper.UnBookmarkCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/unHide", wrapper.UnHideCourse)
 	router.POST(options.BaseURL+"/course/lesson-comments/:commentId/reply", wrapper.ReplyLessonComment)
 	router.POST(options.BaseURL+"/course/lessons", wrapper.CreateLesson)
 	router.DELETE(options.BaseURL+"/course/lessons/:lessonId", wrapper.DeleteLesson)
@@ -2780,63 +2780,63 @@ func (response UnBookmarkCourse500JSONResponse) VisitUnBookmarkCourseResponse(w 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type UnhideCourseRequestObject struct {
+type UnHideCourseRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
 }
 
-type UnhideCourseResponseObject interface {
-	VisitUnhideCourseResponse(w http.ResponseWriter) error
+type UnHideCourseResponseObject interface {
+	VisitUnHideCourseResponse(w http.ResponseWriter) error
 }
 
-type UnhideCourse204Response struct {
+type UnHideCourse204Response struct {
 }
 
-func (response UnhideCourse204Response) VisitUnhideCourseResponse(w http.ResponseWriter) error {
+func (response UnHideCourse204Response) VisitUnHideCourseResponse(w http.ResponseWriter) error {
 	w.WriteHeader(204)
 	return nil
 }
 
-type UnhideCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
+type UnHideCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
 
-func (response UnhideCourse400JSONResponse) VisitUnhideCourseResponse(w http.ResponseWriter) error {
+func (response UnHideCourse400JSONResponse) VisitUnHideCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type UnhideCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+type UnHideCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
 
-func (response UnhideCourse401JSONResponse) VisitUnhideCourseResponse(w http.ResponseWriter) error {
+func (response UnHideCourse401JSONResponse) VisitUnHideCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(401)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type UnhideCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
+type UnHideCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
 
-func (response UnhideCourse403JSONResponse) VisitUnhideCourseResponse(w http.ResponseWriter) error {
+func (response UnHideCourse403JSONResponse) VisitUnHideCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(403)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type UnhideCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
+type UnHideCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
 
-func (response UnhideCourse404JSONResponse) VisitUnhideCourseResponse(w http.ResponseWriter) error {
+func (response UnHideCourse404JSONResponse) VisitUnHideCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(404)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type UnhideCourse500JSONResponse struct {
+type UnHideCourse500JSONResponse struct {
 	InternalServerErrorJSONResponse
 }
 
-func (response UnhideCourse500JSONResponse) VisitUnhideCourseResponse(w http.ResponseWriter) error {
+func (response UnHideCourse500JSONResponse) VisitUnHideCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -4155,11 +4155,11 @@ type StrictServerInterface interface {
 	// (POST /course/courses/{courseId}/trigger-learning-reminder)
 	TriggerLearningReminder(ctx context.Context, request TriggerLearningReminderRequestObject) (TriggerLearningReminderResponseObject, error)
 	// UnBookmark course
-	// (POST /course/courses/{courseId}/unbookmark)
+	// (POST /course/courses/{courseId}/unBookmark)
 	UnBookmarkCourse(ctx context.Context, request UnBookmarkCourseRequestObject) (UnBookmarkCourseResponseObject, error)
-	// Unhide course
-	// (POST /course/courses/{courseId}/unhide)
-	UnhideCourse(ctx context.Context, request UnhideCourseRequestObject) (UnhideCourseResponseObject, error)
+	// UnHide course
+	// (POST /course/courses/{courseId}/unHide)
+	UnHideCourse(ctx context.Context, request UnHideCourseRequestObject) (UnHideCourseResponseObject, error)
 	// Reply lesson comment
 	// (POST /course/lesson-comments/{commentId}/reply)
 	ReplyLessonComment(ctx context.Context, request ReplyLessonCommentRequestObject) (ReplyLessonCommentResponseObject, error)
@@ -4870,17 +4870,17 @@ func (sh *strictHandler) UnBookmarkCourse(ctx *gin.Context, courseId CourseIdPat
 	}
 }
 
-// UnhideCourse operation middleware
-func (sh *strictHandler) UnhideCourse(ctx *gin.Context, courseId CourseIdPath) {
-	var request UnhideCourseRequestObject
+// UnHideCourse operation middleware
+func (sh *strictHandler) UnHideCourse(ctx *gin.Context, courseId CourseIdPath) {
+	var request UnHideCourseRequestObject
 
 	request.CourseId = courseId
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.UnhideCourse(ctx, request.(UnhideCourseRequestObject))
+		return sh.ssi.UnHideCourse(ctx, request.(UnHideCourseRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "UnhideCourse")
+		handler = middleware(handler, "UnHideCourse")
 	}
 
 	response, err := handler(ctx, request)
@@ -4888,8 +4888,8 @@ func (sh *strictHandler) UnhideCourse(ctx *gin.Context, courseId CourseIdPath) {
 	if err != nil {
 		ctx.Error(err)
 		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(UnhideCourseResponseObject); ok {
-		if err := validResponse.VisitUnhideCourseResponse(ctx.Writer); err != nil {
+	} else if validResponse, ok := response.(UnHideCourseResponseObject); ok {
+		if err := validResponse.VisitUnHideCourseResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

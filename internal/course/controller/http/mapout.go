@@ -30,7 +30,7 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 		Title:      vl.GetTitle(),
 		Order:      new(vl.GetOrder()),
 		LessonType: course.LessonTypeVideo,
-		CourseId:   new(vl.GetCourseID()),
+		SectionId:  new(vl.GetSectionID()),
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
 		VideoKey:   nil,
@@ -47,7 +47,7 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 		Title:      t.GetTitle(),
 		LessonType: course.LessonTypeTest,
 		Type:       testLessonTypeToDTO(t.TestLessonType),
-		CourseId:   new(t.GetCourseID()),
+		SectionId:  new(t.GetSectionID()),
 		Order:      new(t.GetOrder()),
 		Questions:  questions,
 	}

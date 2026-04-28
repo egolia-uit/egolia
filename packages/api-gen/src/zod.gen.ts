@@ -51,11 +51,13 @@ export const zCourseSection = z.object({
     courseId: zCoursePropertiesId
 });
 
+export const zCourseSectionPropertiesId = z.uuid().readonly();
+
 export const zCourseLessonType = z.enum(['video', 'test']);
 
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
-    courseId: zCoursePropertiesId,
+    sectionId: zCourseSectionPropertiesId.optional(),
     title: z.string(),
     order: z.string().readonly().optional(),
     lessonType: zCourseLessonType
@@ -555,14 +557,14 @@ export const zBookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
-export const zUnbookmarkCoursePath = z.object({
+export const zUnBookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
 /**
- * Course unbookmarked successfully
+ * Course unBookmarked successfully
  */
-export const zUnbookmarkCourseResponse = z.void();
+export const zUnBookmarkCourseResponse = z.void();
 
 export const zTriggerLearningReminderBody = z.object({
     dryRun: z.boolean().optional()
@@ -619,14 +621,14 @@ export const zHideCoursePath = z.object({
  */
 export const zHideCourseResponse = z.void();
 
-export const zUnhideCoursePath = z.object({
+export const zUnHideCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
 /**
  * Course unhidden
  */
-export const zUnhideCourseResponse = z.void();
+export const zUnHideCourseResponse = z.void();
 
 export const zGetMyEnrolledCoursesQuery = z.object({
     page: z.int().gte(1).optional().default(1),

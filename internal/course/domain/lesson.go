@@ -2,6 +2,8 @@ package domain
 
 import "github.com/google/uuid"
 
+type LessonType string
+
 type Lesson interface {
 	isLesson()
 	ID() uuid.UUID
@@ -9,12 +11,15 @@ type Lesson interface {
 	SetSectionID(sectionID uuid.UUID)
 	Order() string
 	SetOrder(order string)
+	Title() string
+	SetTitle(title string)
 }
 
 type LessonBase struct {
 	id        uuid.UUID
 	sectionID uuid.UUID
 	order     string
+	title     string
 }
 
 var _ Lesson = (*LessonBase)(nil)
@@ -23,11 +28,13 @@ func NewLessonBase(
 	id uuid.UUID,
 	sectionID uuid.UUID,
 	order string,
+	title string,
 ) *LessonBase {
 	return &LessonBase{
 		id:        id,
 		sectionID: sectionID,
 		order:     order,
+		title:     title,
 	}
 }
 
@@ -35,11 +42,13 @@ func UnmarshalLessonBase(
 	id uuid.UUID,
 	sectionID uuid.UUID,
 	order string,
+	title string,
 ) *LessonBase {
 	return &LessonBase{
 		id:        id,
 		sectionID: sectionID,
 		order:     order,
+		title:     title,
 	}
 }
 
@@ -63,4 +72,12 @@ func (l *LessonBase) Order() string {
 
 func (l *LessonBase) SetOrder(order string) {
 	l.order = order
+}
+
+func (l *LessonBase) Title() string {
+	return l.title
+}
+
+func (l *LessonBase) SetTitle(title string) {
+	l.title = title
 }
