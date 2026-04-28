@@ -12,11 +12,6 @@ type GetLessonDetail struct {
 	LessonID uuid.UUID
 }
 
-type GetLessonDetailReadModel interface {
-	GetVideoLessonDetail(ctx context.Context, params *GetLessonDetail) (*VideoLesson, error)
-	GetTestLessonDetail(ctx context.Context, params *GetLessonDetail) (*TestLesson, error)
-}
-
 type GetLessonDetailHandler struct {
 	readModel GetLessonDetailReadModel
 }

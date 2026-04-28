@@ -7,10 +7,6 @@ type SearchCourses struct {
 	Paginate PaginationParams
 }
 
-type SearchCoursesReadModel interface {
-	SearchCourses(ctx context.Context, params *SearchCourses) (*Paginated[Course], error)
-}
-
 type SearchCoursesHandler struct {
 	readModel SearchCoursesReadModel
 }
