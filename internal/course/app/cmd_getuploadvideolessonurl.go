@@ -7,7 +7,8 @@ import (
 )
 
 type GetUploadVideoLessonURL struct {
-	LessonID uuid.UUID
+	LessonID      uuid.UUID
+	VideoFilename string
 }
 
 type GetUploadVideoLessonURLHandler struct {
@@ -19,5 +20,8 @@ func NewGetUploadVideoLessonURLHandler(objectStorageSvc ObjectStorageSvc) *GetUp
 }
 
 func (h *GetUploadVideoLessonURLHandler) Handle(ctx context.Context, cmd *GetUploadVideoLessonURL) (*VideoLessonObject, error) {
-	return h.objectStorageSvc.GetUploadVideoLessonURL(ctx, cmd.LessonID)
+	return h.objectStorageSvc.GetUploadVideoLessonURL(ctx, &GetUploadVideoLessonURLParams{
+		LessonID:      cmd.LessonID,
+		VideoFilename: cmd.VideoFilename,
+	})
 }

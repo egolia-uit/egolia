@@ -30,15 +30,22 @@ func NewS3(
 	c, err := config.LoadDefaultConfig(
 		ctx,
 		config.WithCredentialsProvider(
-			credentials.NewStaticCredentialsProvider(cfg.AccessKey, cfg.SecretKey, ""),
-		), config.WithRegion(cfg.RegionName))
+			aws.NewCredentialsCache(
+				credentials.NewStaticCredentialsProvider(cfg.AccessKey, cfg.SecretKey, ""),
+			),
+		),
+		config.WithRegion(cfg.RegionName),
+		config.WithBaseEndpoint(cfg.Endpoint),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("unable to load AWS SDK config: %w", err)
 	}
-	client := s3.NewFromConfig(c, func(o *s3.Options) {
-		o.UsePathStyle = true
-		o.BaseEndpoint = aws.String(cfg.Endpoint)
-	})
+	client := s3.NewFromConfig(
+		c,
+		func(o *s3.Options) {
+			o.UsePathStyle = true
+		},
+	)
 
 	return &S3{
 		S3Client:          client,
@@ -50,13 +57,13 @@ func NewS3(
 
 var _ app.ObjectStorageSvc = (*S3)(nil)
 
-func (s *S3) GetUploadVideoLessonURL(ctx context.Context, lessonID uuid.UUID) (*app.VideoLessonObject, error) {
+func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadVideoLessonURLParams) (*app.VideoLessonObject, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
 		return nil, errs.NewInternalGenerateID(err)
 	}
 	// TODO: Please check the key if it is right
-	key := fmt.Sprintf("video-lessons/%s/%s.mp4", lessonID.String(), id.String())
+	key := fmt.Sprintf("video-lessons/%s/%s-%s", params.LessonID.String(), params.VideoFilename, id.String())
 	presignParams := &s3.PutObjectInput{
 		Bucket: &s.bucket,
 		Key:    new(key),
@@ -66,7 +73,7 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, lessonID uuid.UUID) (*
 		s3.WithPresignExpires(s.presignExpiration),
 	)
 	if err != nil {
-		return nil, errs.NewObjectStorageFailToRetrieveUploadURLForVideoLesson(lessonID, err)
+		return nil, errs.NewObjectStorageFailToRetrieveUploadURLForVideoLesson(params.LessonID, params.VideoFilename, err)
 	}
 	return &app.VideoLessonObject{
 		UploadURL: url.URL,

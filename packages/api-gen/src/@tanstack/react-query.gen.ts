@@ -709,23 +709,22 @@ export const editTestLessonMutation = (options?: Partial<Options<EditTestLessonD
     return mutationOptions;
 };
 
-export const getUploadVideoLessonUrlQueryKey = (options: Options<GetUploadVideoLessonUrlData>) => createQueryKey('getUploadVideoLessonUrl', options);
-
 /**
  * Get upload video lesson URL
  */
-export const getUploadVideoLessonUrlOptions = (options: Options<GetUploadVideoLessonUrlData>) => queryOptions<GetUploadVideoLessonUrlResponse, GetUploadVideoLessonUrlError, GetUploadVideoLessonUrlResponse, ReturnType<typeof getUploadVideoLessonUrlQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getUploadVideoLessonUrl({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getUploadVideoLessonUrlQueryKey(options)
-});
+export const getUploadVideoLessonUrlMutation = (options?: Partial<Options<GetUploadVideoLessonUrlData>>): UseMutationOptions<GetUploadVideoLessonUrlResponse, GetUploadVideoLessonUrlError, Options<GetUploadVideoLessonUrlData>> => {
+    const mutationOptions: UseMutationOptions<GetUploadVideoLessonUrlResponse, GetUploadVideoLessonUrlError, Options<GetUploadVideoLessonUrlData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await getUploadVideoLessonUrl({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 /**
  * Create test

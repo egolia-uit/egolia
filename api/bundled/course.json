@@ -1633,7 +1633,7 @@
       }
     },
     "/course/lessons/{lessonId}/upload-video-url": {
-      "get": {
+      "post": {
         "security": [
           {
             "Oauth2": []
@@ -1649,8 +1649,27 @@
             "$ref": "#/components/parameters/lessonIdPath"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "videoFilename": {
+                    "type": "string",
+                    "example": "introduction_to_python.mp4"
+                  }
+                },
+                "required": [
+                  "videoFilename"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
-          "200": {
+          "201": {
             "description": "Upload URL generated",
             "content": {
               "application/json": {
@@ -1664,7 +1683,7 @@
                     },
                     "videoKey": {
                       "type": "string",
-                      "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4"
+                      "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4"
                     },
                     "expiresAt": {
                       "type": "string",
@@ -2726,7 +2745,7 @@
             "properties": {
               "videoKey": {
                 "type": "string",
-                "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4",
+                "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
                 "writeOnly": true
               },
               "videoUrl": {
@@ -2742,6 +2761,7 @@
               }
             },
             "required": [
+              "videoKey",
               "videoUrl",
               "duration"
             ]

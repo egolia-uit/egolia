@@ -375,7 +375,7 @@ export type CourseCourseProgressWritable = {
 };
 
 export type CourseVideoLessonWritable = CourseLessonWritable & {
-    videoKey?: string;
+    videoKey: string;
     duration: bigint;
 };
 
@@ -2190,7 +2190,9 @@ export type EditTestLessonResponses = {
 export type EditTestLessonResponse = EditTestLessonResponses[keyof EditTestLessonResponses];
 
 export type GetUploadVideoLessonUrlData = {
-    body?: never;
+    body: {
+        videoFilename: string;
+    };
     path: {
         lessonId: string;
     };
@@ -2240,7 +2242,7 @@ export type GetUploadVideoLessonUrlResponses = {
     /**
      * Upload URL generated
      */
-    200: {
+    201: {
         uploadUrl: string;
         videoKey: string;
         expiresAt: Date;

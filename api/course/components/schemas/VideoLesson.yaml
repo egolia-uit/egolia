@@ -4,7 +4,7 @@ allOf:
     properties:
       videoKey:
         type: string
-        example: lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/video.mp4
+        example: lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4
         writeOnly: true
 
       videoUrl:
@@ -19,5 +19,6 @@ allOf:
         example: 300
 
     required:
+      - videoKey
       - videoUrl
       - duration

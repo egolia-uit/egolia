@@ -206,13 +206,14 @@ func (h *StrictHandler) CreateTest(ctx context.Context, request course.CreateTes
 
 func (h *StrictHandler) GetUploadVideoLessonUrl(ctx context.Context, request course.GetUploadVideoLessonUrlRequestObject) (course.GetUploadVideoLessonUrlResponseObject, error) {
 	cmd := &app.GetUploadVideoLessonURL{
-		LessonID: request.LessonId,
+		LessonID:      request.LessonId,
+		VideoFilename: request.Body.VideoFilename,
 	}
 	result, err := h.App.Cmds.GetUploadVideoLessonURL.Handle(ctx, cmd)
 	if err != nil {
 		return nil, err
 	}
-	return &course.GetUploadVideoLessonUrl200JSONResponse{
+	return &course.GetUploadVideoLessonUrl201JSONResponse{
 		VideoKey:  result.VideoKey,
 		UploadUrl: result.UploadURL,
 		ExpiresAt: result.ExpiresAt,

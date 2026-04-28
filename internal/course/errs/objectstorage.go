@@ -11,13 +11,15 @@ const (
 )
 
 type ObjectStorageFailToRetrieveUploadURLForVideoLesson struct {
-	LessonID uuid.UUID
+	LessonID      uuid.UUID
+	VideoFilename string
 	Err
 }
 
-func NewObjectStorageFailToRetrieveUploadURLForVideoLesson(lessonID uuid.UUID, err error) *ObjectStorageFailToRetrieveUploadURLForVideoLesson {
+func NewObjectStorageFailToRetrieveUploadURLForVideoLesson(lessonID uuid.UUID, videoFilename string, err error) *ObjectStorageFailToRetrieveUploadURLForVideoLesson {
 	return &ObjectStorageFailToRetrieveUploadURLForVideoLesson{
-		LessonID: lessonID,
+		LessonID:      lessonID,
+		VideoFilename: videoFilename,
 		Err: Err{
 			message: fmt.Sprintf("failed to retrieve upload URL for video lesson with ID %s", lessonID),
 			code:    CodeObjectStorageFailToRetrieveUploadURLForVideoLesson,

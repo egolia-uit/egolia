@@ -665,6 +665,11 @@ type CreateTestJSONBody struct {
 	Type      TestLessonType `json:"type"`
 }
 
+// GetUploadVideoLessonUrlJSONBody defines parameters for GetUploadVideoLessonUrl.
+type GetUploadVideoLessonUrlJSONBody struct {
+	VideoFilename string `json:"videoFilename"`
+}
+
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
 	CourseId    *PropertiesId `json:"courseId,omitempty"`
@@ -718,6 +723,9 @@ type SaveTestLessonProgressJSONRequestBody = TestLessonProgress
 
 // CreateTestJSONRequestBody defines body for CreateTest for application/json ContentType.
 type CreateTestJSONRequestBody CreateTestJSONBody
+
+// GetUploadVideoLessonUrlJSONRequestBody defines body for GetUploadVideoLessonUrl for application/json ContentType.
+type GetUploadVideoLessonUrlJSONRequestBody GetUploadVideoLessonUrlJSONBody
 
 // EditVideoLessonJSONRequestBody defines body for EditVideoLesson for application/json ContentType.
 type EditVideoLessonJSONRequestBody = VideoLesson

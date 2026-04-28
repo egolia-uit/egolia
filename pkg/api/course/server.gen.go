@@ -126,7 +126,7 @@ type ServerInterface interface {
 	// (POST /course/lessons/{lessonId}/tests)
 	CreateTest(c *gin.Context, lessonId LessonIdPath)
 	// Get upload video lesson URL
-	// (GET /course/lessons/{lessonId}/upload-video-url)
+	// (POST /course/lessons/{lessonId}/upload-video-url)
 	GetUploadVideoLessonUrl(c *gin.Context, lessonId LessonIdPath)
 	// Edit video lesson
 	// (PATCH /course/lessons/{lessonId}/video)
@@ -1404,7 +1404,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.PATCH(options.BaseURL+"/course/lessons/:lessonId/test", wrapper.EditTestLesson)
 	router.PUT(options.BaseURL+"/course/lessons/:lessonId/test-progress", wrapper.SaveTestLessonProgress)
 	router.POST(options.BaseURL+"/course/lessons/:lessonId/tests", wrapper.CreateTest)
-	router.GET(options.BaseURL+"/course/lessons/:lessonId/upload-video-url", wrapper.GetUploadVideoLessonUrl)
+	router.POST(options.BaseURL+"/course/lessons/:lessonId/upload-video-url", wrapper.GetUploadVideoLessonUrl)
 	router.PATCH(options.BaseURL+"/course/lessons/:lessonId/video", wrapper.EditVideoLesson)
 	router.PUT(options.BaseURL+"/course/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
 	router.POST(options.BaseURL+"/course/sections", wrapper.CreateSection)
@@ -3619,21 +3619,22 @@ func (response CreateTest500JSONResponse) VisitCreateTestResponse(w http.Respons
 
 type GetUploadVideoLessonUrlRequestObject struct {
 	LessonId LessonIdPath `json:"lessonId"`
+	Body     *GetUploadVideoLessonUrlJSONRequestBody
 }
 
 type GetUploadVideoLessonUrlResponseObject interface {
 	VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error
 }
 
-type GetUploadVideoLessonUrl200JSONResponse struct {
+type GetUploadVideoLessonUrl201JSONResponse struct {
 	ExpiresAt time.Time `json:"expiresAt"`
 	UploadUrl string    `json:"uploadUrl"`
 	VideoKey  string    `json:"videoKey"`
 }
 
-func (response GetUploadVideoLessonUrl200JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+func (response GetUploadVideoLessonUrl201JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(201)
 
 	return json.NewEncoder(w).Encode(response)
 }
@@ -4126,7 +4127,7 @@ type StrictServerInterface interface {
 	// (POST /course/lessons/{lessonId}/tests)
 	CreateTest(ctx context.Context, request CreateTestRequestObject) (CreateTestResponseObject, error)
 	// Get upload video lesson URL
-	// (GET /course/lessons/{lessonId}/upload-video-url)
+	// (POST /course/lessons/{lessonId}/upload-video-url)
 	GetUploadVideoLessonUrl(ctx context.Context, request GetUploadVideoLessonUrlRequestObject) (GetUploadVideoLessonUrlResponseObject, error)
 	// Edit video lesson
 	// (PATCH /course/lessons/{lessonId}/video)
@@ -5206,6 +5207,14 @@ func (sh *strictHandler) GetUploadVideoLessonUrl(ctx *gin.Context, lessonId Less
 	var request GetUploadVideoLessonUrlRequestObject
 
 	request.LessonId = lessonId
+
+	var body GetUploadVideoLessonUrlJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetUploadVideoLessonUrl(ctx, request.(GetUploadVideoLessonUrlRequestObject))

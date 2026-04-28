@@ -287,7 +287,7 @@ export const zCourseCourseProgressWritable = z.object({
 });
 
 export const zCourseVideoLessonWritable = zCourseLessonWritable.and(z.object({
-    videoKey: z.string().optional(),
+    videoKey: z.string(),
     duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 }));
 
@@ -736,6 +736,10 @@ export const zEditTestLessonPath = z.object({
  * Test lesson successfully updated
  */
 export const zEditTestLessonResponse = z.void();
+
+export const zGetUploadVideoLessonUrlBody = z.object({
+    videoFilename: z.string()
+});
 
 export const zGetUploadVideoLessonUrlPath = z.object({
     lessonId: z.uuid()
