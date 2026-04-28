@@ -43,3 +43,5 @@ func (b *Bookmark) UserID() string {
 func (b *Bookmark) CourseID() uuid.UUID {
 	return b.courseID
 }
+
+// blabla
