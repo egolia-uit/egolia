@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
 )
 
@@ -39,76 +40,57 @@ func NewMoveLessonHandler(
 // TODO: Duc lam tiep nha hehe
 func (h *MoveLessonHandler) Handle(ctx context.Context, params *MoveLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
+		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
+			SectionID: params.SectionID,
+		}, true)
+		if err != nil {
+			return err
+		}
+
 		var prevLesson domain.Lesson
-		var err error
+		var moveErr error
 
 		if params.AfterLesson != nil {
-			switch params.AfterLesson.Type {
-			case LessonTypeVideo:
-				prevLesson, err = repoRegistry.VideoLesson().Get(ctx, &domain.VideoLessonRepoGet{
-					ID: params.AfterLesson.ID,
-				}, false)
-				if err != nil {
-					return err // TODO: map to errs
-				}
-			case LessonTypeTest:
-				prevLesson, err = repoRegistry.TestLesson().Get(ctx, &domain.TestLessonRepoGet{
-					ID: params.AfterLesson.ID,
-				}, false)
-				if err != nil {
-					return err // TODO: map to errs
-				}
+			prevLesson = course.GetLesson(params.AfterLesson.ID)
+			if prevLesson == nil {
+				return errs.NewLessonNotFound(params.AfterLesson.ID, nil)
 			}
 		}
 
-		// TODO: Check if prev lesson is not nil, then get the next lesson
-		// Asume this is the next lesson id
-		nextLesson := &domain.VideoLesson{}
-
-		// TODO: not always we have the next lesson after prev lesson
-		// if err != nil && !errors.As(err, &errs.LessonNotFound{}) {
-		// 	return err
-		// }
+		var nextLesson domain.Lesson
+		section := course.GetSection(params.SectionID)
+		if section == nil {
+			return errs.NewLessonNotFound(params.SectionID, nil)
+		}
+		if prevLesson != nil {
+			for i, lesson := range section.Lessons() {
+				if lesson == nil {
+					continue
+				}
+				if lesson.ID() == prevLesson.ID() && i+1 < len(section.Lessons()) {
+					nextLesson = section.Lessons()[i+1]
+					break
+				}
+			}
+		}
 
 		var targetLesson domain.Lesson
-
-		switch params.LessonType {
-		case LessonTypeVideo:
-			targetLesson, err = repoRegistry.VideoLesson().Get(ctx, &domain.VideoLessonRepoGet{
-				ID: params.LessonID,
-			}, true)
-			if err != nil {
-				return err // TODO: map to errs
-			}
-		case LessonTypeTest:
-			targetLesson, err = repoRegistry.TestLesson().Get(ctx, &domain.TestLessonRepoGet{
-				ID: params.LessonID,
-			}, true)
-			if err != nil {
-				return err // TODO: map to errs
-			}
+		targetLesson = course.GetLesson(params.LessonID)
+		if targetLesson == nil {
+			return errs.NewLessonNotFound(params.LessonID, nil)
 		}
 
-		if err = h.moveLessonSvc.Handle(&domain.MoveLesson{
+		if moveErr = h.moveLessonSvc.Handle(&domain.MoveLesson{
 			PrevLesson: prevLesson,
 			NextLesson: nextLesson,
 			Target:     targetLesson,
 			SectionID:  params.SectionID,
-		}); err != nil {
-			return err
+		}); moveErr != nil {
+			return moveErr
 		}
 
-		switch lesson := targetLesson.(type) {
-		case *domain.VideoLesson:
-			err = repoRegistry.VideoLesson().Save(ctx, lesson)
-			if err != nil {
-				return err // TODO: map to errs
-			}
-		case *domain.TestLesson:
-			err = repoRegistry.TestLesson().Save(ctx, lesson)
-			if err != nil {
-				return err // TODO: map to errs
-			}
+		if err = repoRegistry.Course().Save(ctx, course); err != nil {
+			return err
 		}
 		return nil
 	})

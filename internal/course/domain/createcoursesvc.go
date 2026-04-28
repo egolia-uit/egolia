@@ -43,6 +43,7 @@ func (s *CreateCourseSvc) Handle(params *CreateCourse) (*Course, error) {
 		strings.TrimSpace(params.Overview),
 		params.Hidden,
 		params.Introduction,
+		nil,
 	)
 	return course, nil
 }
