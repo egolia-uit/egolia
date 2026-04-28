@@ -1,0 +1,1 @@
+import{Gt as e,Ht as t,rn as n}from"./index-GA1W0Beh.js";var r={xmlns:`http://www.w3.org/2000/svg`,fill:`currentColor`,viewBox:`0 0 256 256`};function i(i,a){return n(),e(`svg`,r,[...a[0]||=[t(`path`,{d:`M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24m0 192a88 88 0 1 1 88-88 88.1 88.1 0 0 1-88 88`},null,-1)]])}var a={render:i};export{a as default,i as render};
