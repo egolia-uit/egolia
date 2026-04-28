@@ -6,7 +6,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
-	commonhttp "github.com/egolia-uit/egolia/pkg/common/http"
+	commonHTTP "github.com/egolia-uit/egolia/pkg/common/http"
 	"github.com/google/uuid"
 )
 
@@ -23,7 +23,7 @@ func (h *StrictHandler) SearchCourses(ctx context.Context, request course.Search
 }
 
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
-	user, ok := commonhttp.UserFromContext(ctx)
+	user, ok := commonHTTP.UserFromContext(ctx)
 	if !ok {
 		return nil, errs.Unauthorized
 	}
