@@ -125,7 +125,49 @@ func (h *StrictHandler) GetInstructorCourses(ctx context.Context, request course
 }
 
 func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.GetPublishedCoursesRequestObject) (course.GetPublishedCoursesResponseObject, error) {
-	return nil, errs.Unimplemented
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	order := app.SearchCoursesOrderDesc
+	if request.Params.Order != nil {
+		order = app.SearchCoursesOrder(*request.Params.Order)
+	}
+
+	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order:  order,
+		Hidden: false,
+		Status: app.CourseStatusApproved,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetPublishedCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.GetSystemCoursesRequestObject) (course.GetSystemCoursesResponseObject, error) {

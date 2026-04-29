@@ -11,6 +11,7 @@ type Queries struct {
 	GetCourse       *GetCourseHandler
 	GetLessonDetail *GetLessonDetailHandler
 	SearchCourses   *SearchCoursesHandler
+	GetCourses      *GetCoursesHandler
 }
 
 type App struct {
