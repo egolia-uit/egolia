@@ -179,7 +179,35 @@ func (h *StrictHandler) GetMyEnrolledCourses(ctx context.Context, request course
 }
 
 func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteCourseRequestObject) (course.DeleteCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID, err := uuid.Parse(user.ID)
+	if err != nil {
+		return nil, errs.NewInvalid("authenticated user id must be a valid uuid")
+	}
+	isAdmin := false
+	isInstructor := false
+	for _, role := range user.Roles {
+		switch role {
+		case "admin":
+			isAdmin = true
+		case "instructor":
+			isInstructor = true
+		}
+	}
+	if !isAdmin && !isInstructor {
+		return nil, errs.NewForbidden("only instructor or admin can delete course")
+	}
+	if err := h.App.Cmds.DeleteCourse.Handle(ctx, &app.DeleteCourse{
+		CourseID: request.CourseId,
+		ActorID:  userID,
+		IsAdmin:  isAdmin,
+	}); err != nil {
+		return nil, err
+	}
+	return course.DeleteCourse204Response{}, nil
 }
 
 func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.ApproveCourseRequestObject) (course.ApproveCourseResponseObject, error) {

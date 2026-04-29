@@ -4,6 +4,7 @@ import "github.com/goforj/wire"
 
 var ProviderSetCmds = wire.NewSet(
 	NewCreateCourseHandler,
+	NewDeleteCourseHandler,
 	NewGetUploadVideoLessonURLHandler,
 	NewMoveLessonHandler,
 	wire.Struct(new(Cmds), "*"),

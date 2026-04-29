@@ -11,6 +11,7 @@ const (
 	CodeCourseInvalid              Code = "courseInvalid"
 	CodeCourseAlreadyExists        Code = "courseAlreadyExists"
 	CodeCourseCannotModify         Code = "courseCannotModify"
+	CodeCourseHasEnrollment        Code = "courseHasEnrollment"
 	CodeCourseStatusInvalid        Code = "courseStatusInvalid"
 	CodeSectionNotFound            Code = "sectionNotFound"
 	CodeSectionInvalid             Code = "sectionInvalid"
@@ -77,6 +78,21 @@ func NewCourseCannotModify(id uuid.UUID, status string) *CourseCannotModify {
 		Err: Err{
 			message: fmt.Sprintf("course with ID %s has status %s and cannot be modified", id, status),
 			code:    CodeCourseCannotModify,
+		},
+	}
+}
+
+type CourseHasEnrollment struct {
+	ID uuid.UUID
+	Err
+}
+
+func NewCourseHasEnrollment(id uuid.UUID) *CourseHasEnrollment {
+	return &CourseHasEnrollment{
+		ID: id,
+		Err: Err{
+			message: fmt.Sprintf("course with ID %s has enrolled learners and cannot be deleted", id),
+			code:    CodeCourseHasEnrollment,
 		},
 	}
 }

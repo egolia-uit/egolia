@@ -38,6 +38,7 @@ func toGRPCError(err error) error {
 		case errs.CodeCourseInvalid,
 			errs.CodeCourseAlreadyExists,
 			errs.CodeCourseCannotModify,
+			errs.CodeCourseHasEnrollment,
 			errs.CodeCourseStatusInvalid,
 			errs.CodeSectionInvalid:
 			return status.Error(codes.InvalidArgument, cerr.Error())
@@ -81,6 +82,7 @@ func toGRPCError(err error) error {
 		case errs.CodeCourseInvalid,
 			errs.CodeCourseAlreadyExists,
 			errs.CodeCourseCannotModify,
+			errs.CodeCourseHasEnrollment,
 			errs.CodeCourseStatusInvalid,
 			errs.CodeSectionInvalid:
 			return status.Error(codes.InvalidArgument, cerr.Error())
