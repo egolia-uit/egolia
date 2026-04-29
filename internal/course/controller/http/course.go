@@ -19,7 +19,60 @@ func (h *StrictHandler) GetCertificateById(ctx context.Context, request course.G
 }
 
 func (h *StrictHandler) SearchCourses(ctx context.Context, request course.SearchCoursesRequestObject) (course.SearchCoursesResponseObject, error) {
-	return nil, errs.Unimplemented
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	query := ""
+	if request.Params.Q != nil {
+		query = *request.Params.Q
+	}
+	instructorIDs := []string(nil)
+	if request.Params.InstructorId != nil {
+		instructorIDs = make([]string, 0, len(*request.Params.InstructorId))
+		for _, id := range *request.Params.InstructorId {
+			instructorIDs = append(instructorIDs, id.String())
+		}
+	}
+	order := app.SearchCoursesOrderDesc
+	if request.Params.Order != nil {
+		order = app.SearchCoursesOrder(*request.Params.Order)
+	}
+
+	result, err := h.App.Queries.SearchCourses.Handle(ctx, &app.SearchCourses{
+		Query:         query,
+		InstructorIDs: instructorIDs,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order: order,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.SearchCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
@@ -111,10 +164,7 @@ func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetC
 	if err != nil {
 		return nil, err
 	}
-	courseDetail, err := courseDetailToDTO(result)
-	if err != nil {
-		return nil, err
-	}
+	courseDetail := courseDetailToDTO(result)
 	return &course.GetCourseDetail200JSONResponse{
 		Data: *courseDetail,
 	}, nil

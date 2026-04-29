@@ -94,8 +94,7 @@ func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
 	panic("invalid test lesson type")
 }
 
-func courseDetailToDTO(result *app.CourseDetail) (*course.CourseDetail, error) {
-	var err error
+func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 	return &course.CourseDetail{
 		Id:               (*types.UUID)(&result.Course.ID),
 		Title:            result.Course.Title,
@@ -133,12 +132,11 @@ func courseDetailToDTO(result *app.CourseDetail) (*course.CourseDetail, error) {
 			}
 			return items
 		}(),
-	}, err
+	}
 }
 
-func courseToDTO(c *app.Course) (*course.Course, error) {
-	var err error
-	return &course.Course{
+func courseToDTO(c *app.Course) *course.Course {
+	dto := &course.Course{
 		Id:               (*types.UUID)(&c.ID),
 		Title:            c.Title,
 		InstructorId:     &c.InstructorID,
@@ -150,5 +148,6 @@ func courseToDTO(c *app.Course) (*course.Course, error) {
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: c.Introduction.VideoUrl,
 		},
-	}, err
+	}
+	return dto
 }

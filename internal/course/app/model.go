@@ -16,8 +16,8 @@ type Pagination struct {
 	Limit      int
 	Total      int
 	TotalPages int
-	hasNext    bool
-	hasPrev    bool
+	HasNext    bool
+	HasPrev    bool
 }
 
 type Paginated[T any] struct {
