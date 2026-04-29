@@ -1,0 +1,98 @@
+package model
+
+import (
+	"time"
+
+	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
+type Lesson struct {
+	ID          uuid.UUID         `gorm:"type:uuid;primaryKey"`
+	SectionID   uuid.UUID         `gorm:"type:uuid;not null"`
+	Title       string            `gorm:"type:varchar(255);not null"`
+	SortOrder   string            `gorm:"column:sort_order;type:text;not null;default:''"`
+	LessonType  domain.LessonType `gorm:"column:lesson_type;type:varchar(50);not null"`
+	VideoLesson *VideoLesson      `gorm:"foreignKey:LessonID"`
+	TestLesson  *TestLesson       `gorm:"foreignKey:LessonID"`
+	DeletedAt   gorm.DeletedAt    `gorm:"index"`
+	CreatedAt   time.Time         `gorm:"autoCreateTime"`
+	UpdatedAt   time.Time         `gorm:"autoUpdateTime"`
+}
+
+func (Lesson) TableName() string { return "lessons" }
+
+func LessonFromDomain(l domain.Lesson) *Lesson {
+	switch lesson := l.(type) {
+	case *domain.VideoLesson:
+		return &Lesson{
+			ID:         l.ID(),
+			SectionID:  l.SectionID(),
+			Title:      l.Title(),
+			SortOrder:  l.Order(),
+			LessonType: domain.LessonTypeVideo,
+			VideoLesson: &VideoLesson{
+				LessonID: l.ID(),
+				VideoKey: lesson.GetVideoKey(),
+				Duration: int64(lesson.GetDuration() / time.Second),
+			},
+			TestLesson: nil,
+			DeletedAt:  gorm.DeletedAt{},
+			CreatedAt:  time.Time{},
+			UpdatedAt:  time.Time{},
+		}
+	case *domain.TestLesson:
+		questions := make([]TestQuestion, 0, len(lesson.GetQuestions()))
+		for _, q := range lesson.GetQuestions() {
+			questions = append(questions, TestQuestionFromDomain(q, l.ID()))
+		}
+		return &Lesson{
+			ID:          l.ID(),
+			SectionID:   l.SectionID(),
+			Title:       l.Title(),
+			SortOrder:   l.Order(),
+			LessonType:  domain.LessonTypeTest,
+			VideoLesson: nil,
+			TestLesson: &TestLesson{
+				LessonID:  l.ID(),
+				Type:      lesson.LessonType(),
+				Questions: questions,
+			},
+			DeletedAt: gorm.DeletedAt{},
+			CreatedAt: time.Time{},
+			UpdatedAt: time.Time{},
+		}
+	}
+	return nil
+}
+
+func (m *Lesson) ToDomain() domain.Lesson {
+	switch m.LessonType {
+	case domain.LessonTypeVideo:
+		if m.VideoLesson == nil {
+			return nil
+		}
+		return domain.UnmarshalVideoLesson(
+			m.ID,
+			m.SectionID,
+			m.SortOrder,
+			m.Title,
+			m.VideoLesson.VideoKey,
+			time.Duration(m.VideoLesson.Duration)*time.Second,
+		)
+	case domain.LessonTypeTest:
+		if m.TestLesson == nil {
+			return nil
+		}
+		questions := make([]*domain.TestQuestion, 0, len(m.TestLesson.Questions))
+		for i := range m.TestLesson.Questions {
+			questions = append(questions, m.TestLesson.Questions[i].ToDomain())
+		}
+		return domain.UnmarshalTestLesson(
+			m.ID, m.SectionID, m.SortOrder, m.Title,
+			m.TestLesson.Type, questions,
+		)
+	}
+	return nil
+}

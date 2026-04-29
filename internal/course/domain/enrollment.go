@@ -12,6 +12,7 @@ type Enrollment struct {
 	courseID       uuid.UUID
 	enrollmentDate time.Time
 	completedAt    *time.Time
+	expiredAt      *time.Time
 }
 
 func NewEnrollment(
@@ -26,6 +27,7 @@ func NewEnrollment(
 		courseID:       courseID,
 		enrollmentDate: enrollmentDate,
 		completedAt:    nil,
+		expiredAt:      nil,
 	}
 }
 
@@ -35,6 +37,7 @@ func UnmarshalEnrollment(
 	courseID uuid.UUID,
 	enrollmentDate time.Time,
 	completedAt *time.Time,
+	expiredAt *time.Time,
 ) *Enrollment {
 	return &Enrollment{
 		id:             id,
@@ -42,6 +45,7 @@ func UnmarshalEnrollment(
 		courseID:       courseID,
 		enrollmentDate: enrollmentDate,
 		completedAt:    completedAt,
+		expiredAt:      expiredAt,
 	}
 }
 
@@ -68,4 +72,12 @@ func (e *Enrollment) CompletedAt() *time.Time {
 func (e *Enrollment) Complete() {
 	e.completedAt = new(time.Time)
 	*e.completedAt = time.Now()
+}
+
+func (e *Enrollment) ExpiredAt() *time.Time {
+	return e.expiredAt
+}
+
+func (e *Enrollment) SetExpiredAt(t *time.Time) {
+	e.expiredAt = t
 }

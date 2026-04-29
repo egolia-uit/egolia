@@ -473,6 +473,14 @@ func (c *Course) ID() uuid.UUID {
 	return c.id
 }
 
+func (c *Course) OriginalCourseID() uuid.UUID {
+	return c.originalCourseID
+}
+
+func (c *Course) Hidden() bool {
+	return c.hidden
+}
+
 func (c *Course) Title() string {
 	return c.title
 }
