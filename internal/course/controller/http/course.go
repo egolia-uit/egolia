@@ -104,7 +104,20 @@ func (h *StrictHandler) DeclineCourse(ctx context.Context, request course.Declin
 }
 
 func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetCourseDetailRequestObject) (course.GetCourseDetailResponseObject, error) {
-	return nil, errs.Unimplemented
+	query := &app.GetCourseDetail{
+		CourseID: request.CourseId.String(),
+	}
+	result, err := h.App.Queries.GetCourseDetail.Handle(ctx, *query)
+	if err != nil {
+		return nil, err
+	}
+	courseDetail, err := courseDetailToDTO(result)
+	if err != nil {
+		return nil, err
+	}
+	return &course.GetCourseDetail200JSONResponse{
+		Data: *courseDetail,
+	}, nil
 }
 
 func (h *StrictHandler) EnrollInCourse(ctx context.Context, request course.EnrollInCourseRequestObject) (course.EnrollInCourseResponseObject, error) {

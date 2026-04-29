@@ -136,8 +136,11 @@ type TestLesson struct {
 }
 
 type CourseDetailSectionItem struct {
-	LessonBase
-	Sections []Section
+	ID       uuid.UUID
+	CourseID uuid.UUID
+	Title    string
+	Order    string
+	Lessons  []Lesson
 }
 
 type CourseDetail struct {

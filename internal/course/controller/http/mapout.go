@@ -4,6 +4,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
+	"github.com/oapi-codegen/runtime/types"
 )
 
 func lessonDetailToDTO(l app.Lesson) (*course.LessonDetail, error) {
@@ -91,4 +92,63 @@ func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
 		return course.TestLessonTypeSingleChoice
 	}
 	panic("invalid test lesson type")
+}
+
+func courseDetailToDTO(result *app.CourseDetail) (*course.CourseDetail, error) {
+	var err error
+	return &course.CourseDetail{
+		Id:               (*types.UUID)(&result.Course.ID),
+		Title:            result.Course.Title,
+		InstructorId:     &result.Course.InstructorID,
+		OriginalCourseId: (*types.UUID)(&result.Course.OriginalCourseID),
+		Price:            result.Course.Price,
+		Overview:         &result.Course.Overview,
+		Hidden:           &result.Course.Hidden,
+		Status:           (*course.CourseStatus)(&result.Course.Status),
+		Introduction: &course.CourseLandingPageIntroduction{
+			VideoUrl: result.Course.Introduction.VideoUrl,
+		},
+		Sections: func() []course.CourseDetailSectionItem {
+			items := make([]course.CourseDetailSectionItem, 0, len(result.Sections))
+			for _, s := range result.Sections {
+				items = append(items, course.CourseDetailSectionItem{
+					Id:       (*types.UUID)(&s.ID),
+					CourseId: (*types.UUID)(&s.CourseID),
+					Title:    s.Title,
+					Order:    &s.Order,
+					Lessons: func() []course.Lesson {
+						lessons := make([]course.Lesson, 0, len(s.Lessons))
+						for _, l := range s.Lessons {
+							lessons = append(lessons, course.Lesson{
+								Id:         new(l.GetID()),
+								Title:      l.GetTitle(),
+								Order:      new(l.GetOrder()),
+								LessonType: lessonTypeToDTO(l.GetLessonType()),
+								SectionId:  new(l.GetSectionID()),
+							})
+						}
+						return lessons
+					}(),
+				})
+			}
+			return items
+		}(),
+	}, err
+}
+
+func courseToDTO(c *app.Course) (*course.Course, error) {
+	var err error
+	return &course.Course{
+		Id:               (*types.UUID)(&c.ID),
+		Title:            c.Title,
+		InstructorId:     &c.InstructorID,
+		OriginalCourseId: (*types.UUID)(&c.OriginalCourseID),
+		Price:            c.Price,
+		Overview:         &c.Overview,
+		Hidden:           &c.Hidden,
+		Status:           (*course.CourseStatus)(&c.Status),
+		Introduction: &course.CourseLandingPageIntroduction{
+			VideoUrl: c.Introduction.VideoUrl,
+		},
+	}, err
 }
