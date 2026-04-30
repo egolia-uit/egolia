@@ -45,12 +45,12 @@ pkg/                            # Go packages
 - openapi-generator generate NestJS server code
 - heyapi/openapi-ts generate frontend API client code (typescript, react-query, nextjs)
 - oapi-codegen generate Go server code (gin, strict server)
-- API change should come from API spec in `api` and `proto`, run `nx gen api` and `nx gen proto` to generate code
+- API change should come from API spec in `api` and `proto`, run `pnpm nx gen api` and `pnpm nx gen proto` to generate code
 
 ### Frontend
 
 - Use shadcn component as much as possible, install into `apps/web`
-  - Example: `nx shadcn:add web button`
+  - Example: `pnpm nx shadcn:add web button`
 - Use Tailwind CSS, try to avoid writing custom css and color
 - Anything relate to calling API should look into `packages/api-gen`
 - Avoid static site generation if need to call API
@@ -65,7 +65,7 @@ pkg/                            # Go packages
   - With CQRS, commands return nothing else but error. The ID must be created in the controller layer
 - `billing` and `blog` projects use layered architecture, domain model merged with ORM in `internal/{projectName}/core`, return model directly to controller
 - Use `google/wire` fork
-  - Run `nx gen:wire {projectName}`, do not run `go generate`
+  - Run `pnpm nx gen:wire {projectName}`, do not run `go generate`
   - Each package should expose `wire.go` with `wire.Set`, and outside aggregate them in `wire.go`
   - `cmd/{projectName}/wire.go` imports `internal/{projectName}/wire.go`
 - Each services expose `/{projectName}/health/*` including `live`, `ready`. Should used for diagnose stuff relate to infra, and other services connection
@@ -107,7 +107,7 @@ pkg/                            # Go packages
   - start for nextjs style
   - serve/preview: run the built
 - Do not skip nx to run command directly for build, lint
-- If nx hang, or got error cannot resolve any further, try to run `nx reset` to clear cache and stop nx process
+- If nx hang, or got error cannot resolve any further, try to run `pnpm nx reset` to clear cache and stop nx process
 
 ## General Rules
 
@@ -121,5 +121,5 @@ Before commit, make sure to:
 
 - Use conventional commit
 - Should run `pnpm exec prettier --write .` after writing JS code
-- Run `nx lint {projectName} --fix` to apply eslint/golangcilint fix
+- Run `pnpm nx lint {projectName} --fix` to apply eslint/golangcilint fix
 - If introduce deps, should run `go mod tidy` for go, and `pnpm install` for JS/TS
