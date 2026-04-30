@@ -17,7 +17,7 @@ require (
 	github.com/getkin/kin-openapi v0.134.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-playground/validator/v10 v10.30.2
-	github.com/goforj/wire v1.1.0
+	github.com/goforj/wire v1.2.0
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.3
 	github.com/hellofresh/health-go/v5 v5.5.5
@@ -41,6 +41,8 @@ require (
 	golang.org/x/sync v0.20.0
 	google.golang.org/grpc v1.80.0
 	google.golang.org/protobuf v1.36.11
+	gorm.io/driver/postgres v1.6.0
+	gorm.io/gorm v1.31.1
 	roci.dev/fracdex v0.0.0-20241211175510-82d7df79e312
 )
 
@@ -166,6 +168,4 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20260226221140-a57be14db171 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260406210006-6f92a3bedf2d // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/postgres v1.6.0 // indirect
-	gorm.io/gorm v1.31.1 // indirect
 )
