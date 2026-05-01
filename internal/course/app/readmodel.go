@@ -20,3 +20,6 @@ type GetLessonDetailReadModel interface {
 	GetVideoLessonDetail(ctx context.Context, params *GetLessonDetail) (*VideoLesson, error)
 	GetTestLessonDetail(ctx context.Context, params *GetLessonDetail) (*TestLesson, error)
 }
+type GetCoursesReadModel interface {
+	GetCourses(ctx context.Context, params *GetCourses) (*Paginated[Course], error)
+}

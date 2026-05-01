@@ -47,6 +47,8 @@ func strictServerToHTTPErr(err errs.Error) (
 		statusCode = 400
 	case errs.CodeCourseCannotModify:
 		statusCode = 400
+	case errs.CodeCourseHasEnrollment:
+		statusCode = 400
 	case errs.CodeCourseStatusInvalid:
 		statusCode = 400
 	case errs.CodeSectionNotFound:

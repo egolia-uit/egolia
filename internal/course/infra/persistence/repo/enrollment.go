@@ -5,12 +5,18 @@ import (
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/model"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
 type enrollmentRepo struct {
 	db *gorm.DB
+}
+
+// ExistsByCourseID implements [domain.EnrollmentRepo].
+func (r *enrollmentRepo) ExistsByCourseID(ctx context.Context, courseID uuid.UUID) (bool, error) {
+	panic("unimplemented")
 }
 
 func (r *enrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRepoGetByID, forUpdate bool) (*domain.Enrollment, error) {

@@ -16,8 +16,8 @@ type Pagination struct {
 	Limit      int
 	Total      int
 	TotalPages int
-	hasNext    bool
-	hasPrev    bool
+	HasNext    bool
+	HasPrev    bool
 }
 
 type Paginated[T any] struct {
@@ -136,8 +136,11 @@ type TestLesson struct {
 }
 
 type CourseDetailSectionItem struct {
-	LessonBase
-	Sections []Section
+	ID       uuid.UUID
+	CourseID uuid.UUID
+	Title    string
+	Order    string
+	Lessons  []Lesson
 }
 
 type CourseDetail struct {

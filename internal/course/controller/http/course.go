@@ -19,7 +19,60 @@ func (h *StrictHandler) GetCertificateById(ctx context.Context, request course.G
 }
 
 func (h *StrictHandler) SearchCourses(ctx context.Context, request course.SearchCoursesRequestObject) (course.SearchCoursesResponseObject, error) {
-	return nil, errs.Unimplemented
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	query := ""
+	if request.Params.Q != nil {
+		query = *request.Params.Q
+	}
+	instructorIDs := []string(nil)
+	if request.Params.InstructorId != nil {
+		instructorIDs = make([]string, 0, len(*request.Params.InstructorId))
+		for _, id := range *request.Params.InstructorId {
+			instructorIDs = append(instructorIDs, id.String())
+		}
+	}
+	order := app.SearchCoursesOrderDesc
+	if request.Params.Order != nil {
+		order = app.SearchCoursesOrder(*request.Params.Order)
+	}
+
+	result, err := h.App.Queries.SearchCourses.Handle(ctx, &app.SearchCourses{
+		Query:         query,
+		InstructorIDs: instructorIDs,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order: order,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.SearchCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
@@ -72,7 +125,49 @@ func (h *StrictHandler) GetInstructorCourses(ctx context.Context, request course
 }
 
 func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.GetPublishedCoursesRequestObject) (course.GetPublishedCoursesResponseObject, error) {
-	return nil, errs.Unimplemented
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	order := app.SearchCoursesOrderDesc
+	if request.Params.Order != nil {
+		order = app.SearchCoursesOrder(*request.Params.Order)
+	}
+
+	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order:  order,
+		Hidden: false,
+		Status: app.CourseStatusApproved,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetPublishedCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.GetSystemCoursesRequestObject) (course.GetSystemCoursesResponseObject, error) {
@@ -84,7 +179,35 @@ func (h *StrictHandler) GetMyEnrolledCourses(ctx context.Context, request course
 }
 
 func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteCourseRequestObject) (course.DeleteCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID, err := uuid.Parse(user.ID)
+	if err != nil {
+		return nil, errs.NewInvalid("authenticated user id must be a valid uuid")
+	}
+	isAdmin := false
+	isInstructor := false
+	for _, role := range user.Roles {
+		switch role {
+		case "admin":
+			isAdmin = true
+		case "instructor":
+			isInstructor = true
+		}
+	}
+	if !isAdmin && !isInstructor {
+		return nil, errs.NewForbidden("only instructor or admin can delete course")
+	}
+	if err := h.App.Cmds.DeleteCourse.Handle(ctx, &app.DeleteCourse{
+		CourseID: request.CourseId,
+		ActorID:  userID,
+		IsAdmin:  isAdmin,
+	}); err != nil {
+		return nil, err
+	}
+	return course.DeleteCourse204Response{}, nil
 }
 
 func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.ApproveCourseRequestObject) (course.ApproveCourseResponseObject, error) {
@@ -104,7 +227,17 @@ func (h *StrictHandler) DeclineCourse(ctx context.Context, request course.Declin
 }
 
 func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetCourseDetailRequestObject) (course.GetCourseDetailResponseObject, error) {
-	return nil, errs.Unimplemented
+	query := &app.GetCourseDetail{
+		CourseID: request.CourseId.String(),
+	}
+	result, err := h.App.Queries.GetCourseDetail.Handle(ctx, *query)
+	if err != nil {
+		return nil, err
+	}
+	courseDetail := courseDetailToDTO(result)
+	return &course.GetCourseDetail200JSONResponse{
+		Data: *courseDetail,
+	}, nil
 }
 
 func (h *StrictHandler) EnrollInCourse(ctx context.Context, request course.EnrollInCourseRequestObject) (course.EnrollInCourseResponseObject, error) {
