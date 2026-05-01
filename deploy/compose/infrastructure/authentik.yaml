@@ -58,7 +58,7 @@ services:
       POSTGRES_PASSWORD: ${AUTHENTIK_POSTGRESQL__PASSWORD:-egoliauit}
       POSTGRES_USER: ${AUTHENTIK_POSTGRESQL__USER:-egoliauit}
     volumes:
-      - authentik_postgresql_data:/var/lib/postgresql/data
+      - authentik_postgresql_data:/var/lib/postgresql
     healthcheck:
       test:
         - CMD-SHELL

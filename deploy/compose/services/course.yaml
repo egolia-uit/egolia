@@ -11,7 +11,7 @@ services:
     ports:
       - ${course_POSTGRESQL_PORT:-5431}:5432
     volumes:
-      - course_postgresql_data:/var/lib/postgresql/data
+      - course_postgresql_data:/var/lib/postgresql
     healthcheck:
       test:
         - CMD-SHELL

@@ -6,8 +6,7 @@ http:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/billing`)
       service: billing
-      middlewares:
-        - jwt
+
     billing-health:
       entryPoints:
         - web
