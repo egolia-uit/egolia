@@ -20,10 +20,14 @@ func NewCourseReadRepo(db *gorm.DB) *CourseReadRepo {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a356e13a4 (feat: read model golang lint fix)
 var (
 	_ app.GetCourseReadModel       = (*CourseReadRepo)(nil)
 	_ app.SearchCoursesReadModel   = (*CourseReadRepo)(nil)
 	_ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
+<<<<<<< HEAD
 	_ app.GetCoursesReadModel      = (*CourseReadRepo)(nil)
 )
 =======
@@ -31,6 +35,9 @@ var _ app.GetCourseReadModel = (*CourseReadRepo)(nil)
 var _ app.SearchCoursesReadModel = (*CourseReadRepo)(nil)
 var _ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
 >>>>>>> 65e45e788 (feat: read model in)
+=======
+)
+>>>>>>> a356e13a4 (feat: read model golang lint fix)
 
 func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.Course, error) {
 	id, err := uuid.Parse(courseID)
@@ -51,10 +58,14 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.C
 
 func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCourses) (*app.Paginated[app.Course], error) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
 =======
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{})
 >>>>>>> 65e45e788 (feat: read model in)
+=======
+	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
+>>>>>>> a356e13a4 (feat: read model golang lint fix)
 
 	if params.Query != "" {
 		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
@@ -166,6 +177,7 @@ func toAppCourse(m *model.ReadCourse) *app.Course {
 =======
 func toAppCourse(m *model.ReadCourse) *app.Course {
 	return &app.Course{
+<<<<<<< HEAD
 		ID:           m.CourseID,
 		Title:        m.FullCourseContent.Title,
 		InstructorID: m.FullCourseContent.InstructorID,
@@ -173,6 +185,16 @@ func toAppCourse(m *model.ReadCourse) *app.Course {
 		Price:        int64(m.Price),
 		Overview:     m.FullCourseContent.Overview,
 >>>>>>> 65e45e788 (feat: read model in)
+=======
+		ID:               m.CourseID,
+		OriginalCourseID: uuid.Nil,
+		Hidden:           false,
+		Title:            m.FullCourseContent.Title,
+		InstructorID:     m.FullCourseContent.InstructorID,
+		Status:           app.CourseStatus(m.FullCourseContent.Status),
+		Price:            int64(m.Price),
+		Overview:         m.FullCourseContent.Overview,
+>>>>>>> a356e13a4 (feat: read model golang lint fix)
 		Introduction: app.CourseLandingPageIntroduction{
 			VideoUrl: m.FullCourseContent.IntroVideoURL,
 		},
@@ -217,10 +239,13 @@ func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionI
 	//	}
 =======
 		LessonBase: app.LessonBase{
-			ID:    s.ID,
-			Title: s.Title,
-			Order: s.SortOrder,
+			ID:         s.ID,
+			SectionID:  uuid.Nil,
+			Title:      s.Title,
+			LessonType: "",
+			Order:      s.SortOrder,
 		},
+		Sections: nil,
 	}
 >>>>>>> 65e45e788 (feat: read model in)
 }
