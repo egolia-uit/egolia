@@ -14,6 +14,9 @@ type CertificateRepo struct {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 func NewCertificateRepo(db *gorm.DB) *CertificateRepo {
 	return &CertificateRepo{db: db}
 }
@@ -21,9 +24,12 @@ func NewCertificateRepo(db *gorm.DB) *CertificateRepo {
 var _ domain.CertificateRepo = (*CertificateRepo)(nil)
 
 func (r *CertificateRepo) Get(ctx context.Context, params domain.CertificateRepoGet, forUpdate bool) (*domain.Certificate, error) {
+<<<<<<< HEAD
 =======
 func (r *certificateRepo) Get(ctx context.Context, params domain.CertificateRepoGet, forUpdate bool) (*domain.Certificate, error) {
 >>>>>>> 65e45e788 (feat: read model in)
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})

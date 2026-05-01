@@ -53,8 +53,12 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
 	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc)
 	moveLessonSvc := domain.NewMoveLessonSvc()
+<<<<<<< HEAD
 	loggerInterface := persistence.NewSlogDB(logger)
 	db, cleanup2, err := persistence.NewDB(ctx, configConfig, loggerInterface)
+=======
+	db, cleanup2, err := persistence.NewDB(configConfig)
+>>>>>>> 97d60f7c3 (feat: check backend)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -73,13 +77,19 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
 	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
+<<<<<<< HEAD
 	updateCourseHandler := app.NewUpdateCourseHandler(unitOfWork)
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	cmds := &app.Cmds{
 		MoveLesson:              moveLessonHandler,
 		GetUploadVideoLessonURL: getUploadVideoLessonURLHandler,
 		CreateCourse:            createCourseHandler,
 		DeleteCourse:            deleteCourseHandler,
+<<<<<<< HEAD
 		UpdateCourse:            updateCourseHandler,
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db)
 	getCourseDetailHandler := app.NewGetCourseDetailHandler(courseReadRepo)
@@ -118,7 +128,10 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		return nil, nil, err
 	}
 	healthHealth := health.New(server)
+<<<<<<< HEAD
 	pg := persistence.NewPG(db)
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	meterProvider, cleanup5, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup4()
@@ -137,7 +150,11 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		return nil, nil, err
 	}
 	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider)
+<<<<<<< HEAD
 	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
+=======
+	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, global, logger)
+>>>>>>> 97d60f7c3 (feat: check backend)
 	return courseServer, func() {
 		cleanup6()
 		cleanup5()

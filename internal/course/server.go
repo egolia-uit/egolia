@@ -8,7 +8,10 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/controller/grpc"
 	"github.com/egolia-uit/egolia/internal/course/controller/health"
 	"github.com/egolia-uit/egolia/internal/course/controller/http"
+<<<<<<< HEAD
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence"
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	"github.com/egolia-uit/egolia/pkg/otel"
 	"golang.org/x/sync/errgroup"
 )
@@ -17,14 +20,20 @@ type Server struct {
 	http   *http.HTTP
 	grpc   *grpc.GRPC
 	health *health.Health
+<<<<<<< HEAD
 	pg     *persistence.PG
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 }
 
 func NewServer(
 	http *http.HTTP,
 	grpc *grpc.GRPC,
 	health *health.Health,
+<<<<<<< HEAD
 	pg *persistence.PG,
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	globalOtel otel.Global,
 	logger *slog.Logger,
 ) *Server {
@@ -33,11 +42,21 @@ func NewServer(
 		http:   http,
 		grpc:   grpc,
 		health: health,
+<<<<<<< HEAD
 		pg:     pg,
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	}
 }
 
 func (s *Server) Run(ctx context.Context) error {
+<<<<<<< HEAD
+=======
+	// if err := s.persistence.RunMigrations(ctx); err != nil {
+	// 	return fmt.Errorf("failed to run migrations: %w", err)
+	// }
+
+>>>>>>> 97d60f7c3 (feat: check backend)
 	g, ctx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
@@ -77,6 +96,7 @@ func (s *Server) Run(ctx context.Context) error {
 		return nil
 	})
 
+<<<<<<< HEAD
 	g.Go(func() error {
 		if err := s.pg.RunMigrations(); err != nil {
 			return fmt.Errorf("failed to run database migrations: %w", err)
@@ -84,5 +104,7 @@ func (s *Server) Run(ctx context.Context) error {
 		return nil
 	})
 
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	return g.Wait()
 }

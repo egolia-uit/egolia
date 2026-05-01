@@ -28,6 +28,9 @@ var (
 	_ app.SearchCoursesReadModel   = (*CourseReadRepo)(nil)
 	_ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 	_ app.GetCoursesReadModel      = (*CourseReadRepo)(nil)
 )
 =======
@@ -126,6 +129,9 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 // TODO: Recheck @bighousevn
 func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses) (*app.Paginated[app.Course], error) {
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
@@ -158,8 +164,11 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 			Limit:      params.Paginate.Limit,
 			Total:      int(total),
 			TotalPages: totalPages,
+<<<<<<< HEAD
 			HasNext:    true,
 			HasPrev:    true,
+=======
+>>>>>>> 97d60f7c3 (feat: check backend)
 		},
 	}, nil
 }
@@ -213,6 +222,7 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 }
 
 func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionItem {
+<<<<<<< HEAD
 	return app.CourseDetailSectionItem{
 <<<<<<< HEAD
 		ID:       s.ID,
@@ -248,4 +258,17 @@ func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionI
 		Sections: nil,
 	}
 >>>>>>> 65e45e788 (feat: read model in)
+=======
+	return app.CourseDetailSectionItem{}
+	// return app.CourseDetailSectionItem{
+	// 	LessonBase: app.LessonBase{
+	// 		ID:         s.ID,
+	// 		SectionID:  uuid.Nil,
+	// 		Title:      s.Title,
+	// 		LessonType: "",
+	// 		Order:      s.SortOrder,
+	// 	},
+	// 	Sections: nil,
+	// }
+>>>>>>> 97d60f7c3 (feat: check backend)
 }
