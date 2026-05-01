@@ -11,7 +11,7 @@ services:
     ports:
       - ${blog_POSTGRESQL_PORT:-5433}:5432
     volumes:
-      - blog_postgresql_data:/var/lib/postgresql/data
+      - blog_postgresql_data:/var/lib/postgresql
     healthcheck:
       test:
         - CMD-SHELL

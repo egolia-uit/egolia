@@ -6,8 +6,6 @@ http:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/blog`)
       service: blog-http
-      middlewares:
-        - jwt
 
     blog-health:
       entryPoints:

@@ -6,16 +6,16 @@ http:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
       service: course-http
-      # middlewares:
-      #   - protect-admin
+      middlewares:
+        - protect-admin
 
     course-http-instructor-or-admin:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
       service: course-http
-      # middlewares:
-      #   - protect-instructor-or-admin
+      middlewares:
+        - protect-instructor-or-admin
 
     course-http-public:
       entryPoints:
@@ -27,7 +27,7 @@ http:
         PathPrefix(`/course/certificates/{certificateId:[a-zA-Z0-9-]+}`) \
         ) \
         "
-      service: course
+      service: course-http
 
     course-grpc:
       entryPoints:

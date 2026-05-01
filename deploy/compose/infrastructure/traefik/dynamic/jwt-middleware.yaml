@@ -6,9 +6,9 @@ http:
         jwt:
           issuers: &issuers
             - issuer: http://authentik.egolia.localhost/application/o/api-web/
-              jwks: http://authentik_server:9000/application/o/api-web/jwks/
+              jwks: http://authentik.egolia.localhost/application/o/api-web/jwks/
             - issuer: http://authentik.egolia.localhost/application/o/app-web/
-              jwks: http://authentik_server:9000/application/o/app-web/jwks/
+              jwks: http://authentik.egolia.localhost/application/o/app-web/jwks/
           headerMap: &headerMap
             X-Forwarded-ID: sub
             X-Forwarded-Roles: roles

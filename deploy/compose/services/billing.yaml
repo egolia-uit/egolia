@@ -11,7 +11,7 @@ services:
     ports:
       - ${billing_POSTGRESQL_PORT:-5432}:5432
     volumes:
-      - billing_postgresql_data:/var/lib/postgresql/data
+      - billing_postgresql_data:/var/lib/postgresql
     healthcheck:
       test:
         - CMD-SHELL
