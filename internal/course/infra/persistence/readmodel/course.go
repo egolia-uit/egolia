@@ -78,6 +78,8 @@ func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCo
 			Limit:      params.Paginate.Limit,
 			Total:      int(total),
 			TotalPages: totalPages,
+			HasNext:    true,
+			HasPrev:    true,
 		},
 	}, nil
 }
@@ -131,6 +133,8 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 			Limit:      params.Paginate.Limit,
 			Total:      int(total),
 			TotalPages: totalPages,
+			HasNext:    true,
+			HasPrev:    true,
 		},
 	}, nil
 }
@@ -163,15 +167,27 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 }
 
 func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionItem {
-	return app.CourseDetailSectionItem{}
-	// return app.CourseDetailSectionItem{
-	// 	LessonBase: app.LessonBase{
-	// 		ID:         s.ID,
-	// 		SectionID:  uuid.Nil,
-	// 		Title:      s.Title,
-	// 		LessonType: "",
-	// 		Order:      s.SortOrder,
-	// 	},
-	// 	Sections: nil,
-	// }
+	return app.CourseDetailSectionItem{
+		ID:       s.ID,
+		CourseID: s.ID,
+		Title:    s.Title,
+		Order:    s.SortOrder,
+		Lessons:  nil, // TODO: Get lessons of section
+	}
+	//		    ID       uuid.UUID
+	//	    CourseID uuid.UUID
+	//	    Title    string
+	//	    Order    string
+	//	    Lessons  []Lesson
+	//
+	//	return app.CourseDetailSectionItem{
+	//		LessonBase: app.LessonBase{
+	//			ID:         s.ID,
+	//			SectionID:  uuid.Nil,
+	//			Title:      s.Title,
+	//			LessonType: "",
+	//			Order:      s.SortOrder,
+	//		},
+	//		Sections: nil,
+	//	}
 }

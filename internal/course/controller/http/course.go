@@ -189,14 +189,14 @@ func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteC
 	}
 	isAdmin := false
 	isInstructor := false
-	for _, role := range user.Roles {
-		switch role {
-		case "admin":
-			isAdmin = true
-		case "instructor":
-			isInstructor = true
-		}
-	}
+	// for _, role := range user.Roles {
+	// 	switch role {
+	// 	case UserRoleAdmin:
+	// 		isAdmin = true
+	// 	case UserRoleInstructor:
+	// 		isInstructor = true
+	// 	}
+	// }
 	if !isAdmin && !isInstructor {
 		return nil, errs.NewForbidden("only instructor or admin can delete course")
 	}
@@ -228,14 +228,14 @@ func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateC
 	}
 	isAdmin := false
 	isInstructor := false
-	for _, role := range user.Roles {
-		switch role {
-		case "admin":
-			isAdmin = true
-		case "instructor":
-			isInstructor = true
-		}
-	}
+	// for _, role := range user.Roles {
+	// 	switch role {
+	// 	case "admin":
+	// 		isAdmin = true
+	// 	case "instructor":
+	// 		isInstructor = true
+	// 	}
+	// }
 	if !isAdmin && !isInstructor {
 		return nil, errs.NewForbidden("only instructor or admin can update course")
 	}
