@@ -19,9 +19,11 @@ func NewCourseReadRepo(db *gorm.DB) *CourseReadRepo {
 	return &CourseReadRepo{db: db}
 }
 
-var _ app.GetCourseReadModel = (*CourseReadRepo)(nil)
-var _ app.SearchCoursesReadModel = (*CourseReadRepo)(nil)
-var _ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
+var (
+	_ app.GetCourseReadModel       = (*CourseReadRepo)(nil)
+	_ app.SearchCoursesReadModel   = (*CourseReadRepo)(nil)
+	_ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
+)
 
 func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.Course, error) {
 	id, err := uuid.Parse(courseID)
@@ -41,7 +43,7 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.C
 }
 
 func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCourses) (*app.Paginated[app.Course], error) {
-	q := r.db.WithContext(ctx).Model(&model.ReadCourse{})
+	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
 
 	if params.Query != "" {
 		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
@@ -98,12 +100,14 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (
 
 func toAppCourse(m *model.ReadCourse) *app.Course {
 	return &app.Course{
-		ID:           m.CourseID,
-		Title:        m.FullCourseContent.Title,
-		InstructorID: m.FullCourseContent.InstructorID,
-		Status:       app.CourseStatus(m.FullCourseContent.Status),
-		Price:        int64(m.Price),
-		Overview:     m.FullCourseContent.Overview,
+		ID:               m.CourseID,
+		OriginalCourseID: uuid.Nil,
+		Hidden:           false,
+		Title:            m.FullCourseContent.Title,
+		InstructorID:     m.FullCourseContent.InstructorID,
+		Status:           app.CourseStatus(m.FullCourseContent.Status),
+		Price:            int64(m.Price),
+		Overview:         m.FullCourseContent.Overview,
 		Introduction: app.CourseLandingPageIntroduction{
 			VideoUrl: m.FullCourseContent.IntroVideoURL,
 		},
@@ -124,9 +128,12 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionItem {
 	return app.CourseDetailSectionItem{
 		LessonBase: app.LessonBase{
-			ID:    s.ID,
-			Title: s.Title,
-			Order: s.SortOrder,
+			ID:         s.ID,
+			SectionID:  uuid.Nil,
+			Title:      s.Title,
+			LessonType: "",
+			Order:      s.SortOrder,
 		},
+		Sections: nil,
 	}
 }

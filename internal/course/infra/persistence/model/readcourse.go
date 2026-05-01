@@ -22,13 +22,13 @@ type ReadCourseQuestionContent struct {
 }
 
 type ReadCourseLessonContent struct {
-	ID         uuid.UUID  `json:"id"`
-	Title      string     `json:"title"`
-	SortOrder  string     `json:"sort_order"`
-	LessonType string     `json:"lesson_type"`
-	VideoKey   *string    `json:"video_key,omitempty"`
-	Duration   *int64     `json:"duration_seconds,omitempty"`
-	TestType   *string    `json:"test_type,omitempty"`
+	ID         uuid.UUID                   `json:"id"`
+	Title      string                      `json:"title"`
+	SortOrder  string                      `json:"sort_order"`
+	LessonType string                      `json:"lesson_type"`
+	VideoKey   *string                     `json:"video_key,omitempty"`
+	Duration   *int64                      `json:"duration_seconds,omitempty"`
+	TestType   *string                     `json:"test_type,omitempty"`
 	Questions  []ReadCourseQuestionContent `json:"questions,omitempty"`
 }
 
@@ -40,13 +40,13 @@ type ReadCourseSectionContent struct {
 }
 
 type ReadCourseContent struct {
-	Title        string                     `json:"title"`
-	InstructorID string                     `json:"instructor_id"`
-	Status       string                     `json:"status"`
-	Price        float64                    `json:"price"`
-	Overview     string                     `json:"overview"`
-	IntroVideoURL string                    `json:"intro_video_url"`
-	Sections     []ReadCourseSectionContent `json:"sections"`
+	Title         string                     `json:"title"`
+	InstructorID  string                     `json:"instructor_id"`
+	Status        string                     `json:"status"`
+	Price         float64                    `json:"price"`
+	Overview      string                     `json:"overview"`
+	IntroVideoURL string                     `json:"intro_video_url"`
+	Sections      []ReadCourseSectionContent `json:"sections"`
 }
 
 // --- GORM model ---
@@ -107,9 +107,14 @@ func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
 
 func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
 	base := ReadCourseLessonContent{
-		ID:        l.ID(),
-		Title:     l.Title(),
-		SortOrder: l.Order(),
+		ID:         l.ID(),
+		Title:      l.Title(),
+		SortOrder:  l.Order(),
+		LessonType: "",
+		VideoKey:   nil,
+		Duration:   nil,
+		TestType:   nil,
+		Questions:  nil,
 	}
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:
