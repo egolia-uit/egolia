@@ -509,16 +509,16 @@ export const zGetCourseDetailResponse = z.object({
     data: zCourseCourseDetail
 });
 
-export const zUpdatedCourseBody = zCourseCourseWritable;
+export const zUpdateCourseBody = zCourseCourseWritable;
 
-export const zUpdatedCoursePath = z.object({
+export const zUpdateCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
 /**
  * Course basic information updated
  */
-export const zUpdatedCourseResponse = z.void();
+export const zUpdateCourseResponse = z.void();
 
 export const zEnrollInCoursePath = z.object({
     courseId: zCoursePropertiesId

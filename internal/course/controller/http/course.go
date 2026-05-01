@@ -214,7 +214,7 @@ func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.Approv
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UpdatedCourse(ctx context.Context, request course.UpdatedCourseRequestObject) (course.UpdatedCourseResponseObject, error) {
+func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 

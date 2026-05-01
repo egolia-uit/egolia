@@ -686,8 +686,8 @@ type MoveSectionJSONBody struct {
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course
 
-// UpdatedCourseJSONRequestBody defines body for UpdatedCourse for application/json ContentType.
-type UpdatedCourseJSONRequestBody = Course
+// UpdateCourseJSONRequestBody defines body for UpdateCourse for application/json ContentType.
+type UpdateCourseJSONRequestBody = Course
 
 // DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
 type DeclineCourseJSONRequestBody DeclineCourseJSONBody

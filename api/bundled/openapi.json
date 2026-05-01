@@ -493,7 +493,7 @@
           "Course"
         ],
         "summary": "Update course",
-        "operationId": "updatedCourse",
+        "operationId": "updateCourse",
         "parameters": [
           {
             "$ref": "#/components/parameters/course_courseIdPath"
@@ -3672,7 +3672,6 @@
         "required": [
           "id",
           "title",
-          "courseId",
           "lessonType"
         ]
       },

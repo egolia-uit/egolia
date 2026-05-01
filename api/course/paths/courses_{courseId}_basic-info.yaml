@@ -4,7 +4,7 @@ patch:
   tags:
     - Course
   summary: Update course
-  operationId: updatedCourse
+  operationId: updateCourse
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:
