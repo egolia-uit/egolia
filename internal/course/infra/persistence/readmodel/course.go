@@ -23,6 +23,7 @@ var (
 	_ app.GetCourseReadModel       = (*CourseReadRepo)(nil)
 	_ app.SearchCoursesReadModel   = (*CourseReadRepo)(nil)
 	_ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
+	_ app.GetCoursesReadModel      = (*CourseReadRepo)(nil)
 )
 
 func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.Course, error) {
@@ -98,6 +99,42 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (
 	return toAppCourseDetail(&m), nil
 }
 
+// TODO: Recheck @bighousevn
+func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses) (*app.Paginated[app.Course], error) {
+	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
+
+	var total int64
+	if err := q.Count(&total).Error; err != nil {
+		return nil, err
+	}
+
+	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
+	var ms []model.ReadCourse
+	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+		return nil, err
+	}
+
+	courses := make([]app.Course, 0, len(ms))
+	for i := range ms {
+		courses = append(courses, *toAppCourse(&ms[i]))
+	}
+
+	totalPages := int(total) / params.Paginate.Limit
+	if params.Paginate.Limit > 0 && int(total)%params.Paginate.Limit > 0 {
+		totalPages++
+	}
+
+	return &app.Paginated[app.Course]{
+		Data: courses,
+		Pagination: app.Pagination{
+			Page:       params.Paginate.Page,
+			Limit:      params.Paginate.Limit,
+			Total:      int(total),
+			TotalPages: totalPages,
+		},
+	}, nil
+}
+
 func toAppCourse(m *model.ReadCourse) *app.Course {
 	return &app.Course{
 		ID:               m.CourseID,
@@ -126,14 +163,15 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 }
 
 func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionItem {
-	return app.CourseDetailSectionItem{
-		LessonBase: app.LessonBase{
-			ID:         s.ID,
-			SectionID:  uuid.Nil,
-			Title:      s.Title,
-			LessonType: "",
-			Order:      s.SortOrder,
-		},
-		Sections: nil,
-	}
+	return app.CourseDetailSectionItem{}
+	// return app.CourseDetailSectionItem{
+	// 	LessonBase: app.LessonBase{
+	// 		ID:         s.ID,
+	// 		SectionID:  uuid.Nil,
+	// 		Title:      s.Title,
+	// 		LessonType: "",
+	// 		Order:      s.SortOrder,
+	// 	},
+	// 	Sections: nil,
+	// }
 }

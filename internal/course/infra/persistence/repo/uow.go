@@ -17,18 +17,20 @@ func NewRegistry(db *gorm.DB) *Registry {
 	return &Registry{db: db}
 }
 
-func (r *Registry) Course() domain.CourseRepo               { return &courseRepo{db: r.db} }
-func (r *Registry) Enrollment() domain.EnrollmentRepo       { return &enrollmentRepo{db: r.db} }
-func (r *Registry) Bookmark() domain.BookmarkRepo           { return &bookmarkRepo{db: r.db} }
-func (r *Registry) Certificate() domain.CertificateRepo     { return &certificateRepo{db: r.db} }
-func (r *Registry) LessonComment() domain.LessonCommentRepo { return &lessonCommentRepo{db: r.db} }
-func (r *Registry) Review() domain.ReviewRepo               { return &reviewRepo{db: r.db} }
+func (r *Registry) Course() domain.CourseRepo               { return &CourseRepo{db: r.db} }
+func (r *Registry) Enrollment() domain.EnrollmentRepo       { return &EnrollmentRepo{db: r.db} }
+func (r *Registry) Bookmark() domain.BookmarkRepo           { return &BookmarkRepo{db: r.db} }
+func (r *Registry) Certificate() domain.CertificateRepo     { return &CertificateRepo{db: r.db} }
+func (r *Registry) LessonComment() domain.LessonCommentRepo { return &LessonCommentRepo{db: r.db} }
+func (r *Registry) Review() domain.ReviewRepo               { return &ReviewRepo{db: r.db} }
 
 // UnitOfWork opens a Postgres transaction and passes a Registry backed by
 // that tx to fn, keeping all repo operations atomic.
 type UnitOfWork struct {
 	db *gorm.DB
 }
+
+var _ domain.UnitOfWork = (*UnitOfWork)(nil)
 
 func NewUnitOfWork(db *gorm.DB) *UnitOfWork {
 	return &UnitOfWork{db: db}

@@ -9,11 +9,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type bookmarkRepo struct {
+type BookmarkRepo struct {
 	db *gorm.DB
 }
 
-func (r *bookmarkRepo) Get(ctx context.Context, params domain.BookmarkRepoGet, forUpdate bool) (*domain.Bookmark, error) {
+func NewBookmarkRepo(db *gorm.DB) *BookmarkRepo {
+	return &BookmarkRepo{db: db}
+}
+
+var _ domain.BookmarkRepo = (*BookmarkRepo)(nil)
+
+func (r *BookmarkRepo) Get(ctx context.Context, params domain.BookmarkRepoGet, forUpdate bool) (*domain.Bookmark, error) {
 	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
@@ -26,7 +32,7 @@ func (r *bookmarkRepo) Get(ctx context.Context, params domain.BookmarkRepoGet, f
 	return m.ToDomain(), nil
 }
 
-func (r *bookmarkRepo) Save(ctx context.Context, bookmark *domain.Bookmark) error {
+func (r *BookmarkRepo) Save(ctx context.Context, bookmark *domain.Bookmark) error {
 	m := model.BookmarkFromDomain(bookmark)
 	return r.db.WithContext(ctx).Save(m).Error
 }

@@ -4,6 +4,7 @@ name: egolia
 include:
   - ./infrastructure/authentik.yaml
   - ./infrastructure/dbgate.yaml
+  - ./infrastructure/rustfs.yaml
   - ./infrastructure/traefik.yaml
 
   - ./monitoring/alloy.yaml
