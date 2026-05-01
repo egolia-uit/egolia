@@ -34,6 +34,13 @@ var RepoProviderSet = wire.NewSet(
 	wire.Bind(new(domain.LessonCommentRepo), new(*repo.LessonCommentRepo)),
 	wire.Bind(new(domain.ReviewRepo), new(*repo.ReviewRepo)),
 	wire.Bind(new(domain.UnitOfWork), new(*repo.UnitOfWork)),
+
+	readmodel.NewCourseReadRepo,
+	readmodel.NewLessonReadRepo,
+	wire.Bind(new(app.GetCourseReadModel), new(*readmodel.CourseReadRepo)),
+	wire.Bind(new(app.SearchCoursesReadModel), new(*readmodel.CourseReadRepo)),
+	wire.Bind(new(app.GetCourseDetailReadModel), new(*readmodel.CourseReadRepo)),
+	wire.Bind(new(app.GetLessonDetailReadModel), new(*readmodel.LessonReadRepo)),
 )
 
 var ProviderSet = wire.NewSet(

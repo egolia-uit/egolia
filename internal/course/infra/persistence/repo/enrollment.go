@@ -24,7 +24,11 @@ func (r *EnrollmentRepo) ExistsByCourseID(ctx context.Context, courseID uuid.UUI
 	panic("unimplemented")
 }
 
+<<<<<<< HEAD
 func (r *EnrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRepoGetByID, forUpdate bool) (*domain.Enrollment, error) {
+=======
+func (r *enrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRepoGetByID, forUpdate bool) (*domain.Enrollment, error) {
+>>>>>>> 65e45e788 (feat: read model in)
 	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})

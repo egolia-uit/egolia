@@ -22,6 +22,7 @@ type ReadCourseQuestionContent struct {
 }
 
 type ReadCourseLessonContent struct {
+<<<<<<< HEAD
 	ID         uuid.UUID                   `json:"id"`
 	Title      string                      `json:"title"`
 	SortOrder  string                      `json:"sort_order"`
@@ -29,6 +30,15 @@ type ReadCourseLessonContent struct {
 	VideoKey   *string                     `json:"video_key,omitempty"`
 	Duration   *int64                      `json:"duration_seconds,omitempty"`
 	TestType   *string                     `json:"test_type,omitempty"`
+=======
+	ID         uuid.UUID  `json:"id"`
+	Title      string     `json:"title"`
+	SortOrder  string     `json:"sort_order"`
+	LessonType string     `json:"lesson_type"`
+	VideoKey   *string    `json:"video_key,omitempty"`
+	Duration   *int64     `json:"duration_seconds,omitempty"`
+	TestType   *string    `json:"test_type,omitempty"`
+>>>>>>> 65e45e788 (feat: read model in)
 	Questions  []ReadCourseQuestionContent `json:"questions,omitempty"`
 }
 
@@ -40,6 +50,7 @@ type ReadCourseSectionContent struct {
 }
 
 type ReadCourseContent struct {
+<<<<<<< HEAD
 	Title         string                     `json:"title"`
 	InstructorID  string                     `json:"instructor_id"`
 	Status        string                     `json:"status"`
@@ -47,6 +58,15 @@ type ReadCourseContent struct {
 	Overview      string                     `json:"overview"`
 	IntroVideoURL string                     `json:"intro_video_url"`
 	Sections      []ReadCourseSectionContent `json:"sections"`
+=======
+	Title        string                     `json:"title"`
+	InstructorID string                     `json:"instructor_id"`
+	Status       string                     `json:"status"`
+	Price        float64                    `json:"price"`
+	Overview     string                     `json:"overview"`
+	IntroVideoURL string                    `json:"intro_video_url"`
+	Sections     []ReadCourseSectionContent `json:"sections"`
+>>>>>>> 65e45e788 (feat: read model in)
 }
 
 // --- GORM model ---
@@ -107,6 +127,7 @@ func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
 
 func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
 	base := ReadCourseLessonContent{
+<<<<<<< HEAD
 		ID:         l.ID(),
 		Title:      l.Title(),
 		SortOrder:  l.Order(),
@@ -115,6 +136,11 @@ func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
 		Duration:   nil,
 		TestType:   nil,
 		Questions:  nil,
+=======
+		ID:        l.ID(),
+		Title:     l.Title(),
+		SortOrder: l.Order(),
+>>>>>>> 65e45e788 (feat: read model in)
 	}
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:

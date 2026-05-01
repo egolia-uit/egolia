@@ -19,12 +19,18 @@ func NewCourseReadRepo(db *gorm.DB) *CourseReadRepo {
 	return &CourseReadRepo{db: db}
 }
 
+<<<<<<< HEAD
 var (
 	_ app.GetCourseReadModel       = (*CourseReadRepo)(nil)
 	_ app.SearchCoursesReadModel   = (*CourseReadRepo)(nil)
 	_ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
 	_ app.GetCoursesReadModel      = (*CourseReadRepo)(nil)
 )
+=======
+var _ app.GetCourseReadModel = (*CourseReadRepo)(nil)
+var _ app.SearchCoursesReadModel = (*CourseReadRepo)(nil)
+var _ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
+>>>>>>> 65e45e788 (feat: read model in)
 
 func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.Course, error) {
 	id, err := uuid.Parse(courseID)
@@ -44,7 +50,11 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.C
 }
 
 func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCourses) (*app.Paginated[app.Course], error) {
+<<<<<<< HEAD
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
+=======
+	q := r.db.WithContext(ctx).Model(&model.ReadCourse{})
+>>>>>>> 65e45e788 (feat: read model in)
 
 	if params.Query != "" {
 		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
@@ -78,8 +88,11 @@ func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCo
 			Limit:      params.Paginate.Limit,
 			Total:      int(total),
 			TotalPages: totalPages,
+<<<<<<< HEAD
 			HasNext:    true,
 			HasPrev:    true,
+=======
+>>>>>>> 65e45e788 (feat: read model in)
 		},
 	}, nil
 }
@@ -101,6 +114,7 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (
 	return toAppCourseDetail(&m), nil
 }
 
+<<<<<<< HEAD
 // TODO: Recheck @bighousevn
 func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses) (*app.Paginated[app.Course], error) {
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
@@ -149,6 +163,16 @@ func toAppCourse(m *model.ReadCourse) *app.Course {
 		Status:           app.CourseStatus(m.FullCourseContent.Status),
 		Price:            int64(m.Price),
 		Overview:         m.FullCourseContent.Overview,
+=======
+func toAppCourse(m *model.ReadCourse) *app.Course {
+	return &app.Course{
+		ID:           m.CourseID,
+		Title:        m.FullCourseContent.Title,
+		InstructorID: m.FullCourseContent.InstructorID,
+		Status:       app.CourseStatus(m.FullCourseContent.Status),
+		Price:        int64(m.Price),
+		Overview:     m.FullCourseContent.Overview,
+>>>>>>> 65e45e788 (feat: read model in)
 		Introduction: app.CourseLandingPageIntroduction{
 			VideoUrl: m.FullCourseContent.IntroVideoURL,
 		},
@@ -168,6 +192,7 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 
 func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionItem {
 	return app.CourseDetailSectionItem{
+<<<<<<< HEAD
 		ID:       s.ID,
 		CourseID: s.ID,
 		Title:    s.Title,
@@ -190,4 +215,12 @@ func toAppSectionItem(s model.ReadCourseSectionContent) app.CourseDetailSectionI
 	//		},
 	//		Sections: nil,
 	//	}
+=======
+		LessonBase: app.LessonBase{
+			ID:    s.ID,
+			Title: s.Title,
+			Order: s.SortOrder,
+		},
+	}
+>>>>>>> 65e45e788 (feat: read model in)
 }

@@ -14,6 +14,7 @@ type CourseRepo struct {
 	db *gorm.DB
 }
 
+<<<<<<< HEAD
 func NewCourseRepo(db *gorm.DB) *CourseRepo {
 	return &CourseRepo{db: db}
 }
@@ -21,6 +22,9 @@ func NewCourseRepo(db *gorm.DB) *CourseRepo {
 var _ domain.CourseRepo = (*CourseRepo)(nil)
 
 func (r *CourseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUpdate bool) (*domain.Course, error) {
+=======
+func (r *courseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUpdate bool) (*domain.Course, error) {
+>>>>>>> 65e45e788 (feat: read model in)
 	db := r.db.WithContext(ctx).
 		Preload("Sections.Lessons.VideoLesson").
 		Preload("Sections.Lessons.TestLesson.Questions.Answers")
@@ -54,7 +58,11 @@ func (r *CourseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUp
 	return m.ToDomain(), nil
 }
 
+<<<<<<< HEAD
 func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
+=======
+func (r *courseRepo) Save(ctx context.Context, course *domain.Course) error {
+>>>>>>> 65e45e788 (feat: read model in)
 	db := r.db.WithContext(ctx)
 
 	m := model.CourseFromDomain(course)
