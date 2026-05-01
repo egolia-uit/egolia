@@ -14,7 +14,7 @@ type certificateRepo struct {
 }
 
 func (r *certificateRepo) Get(ctx context.Context, params domain.CertificateRepoGet, forUpdate bool) (*domain.Certificate, error) {
-	db := txOrDB(ctx, r.db)
+	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
 	}

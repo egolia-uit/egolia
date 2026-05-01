@@ -14,7 +14,7 @@ type bookmarkRepo struct {
 }
 
 func (r *bookmarkRepo) Get(ctx context.Context, params domain.BookmarkRepoGet, forUpdate bool) (*domain.Bookmark, error) {
-	db := txOrDB(ctx, r.db)
+	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
 	}
@@ -28,5 +28,5 @@ func (r *bookmarkRepo) Get(ctx context.Context, params domain.BookmarkRepoGet, f
 
 func (r *bookmarkRepo) Save(ctx context.Context, bookmark *domain.Bookmark) error {
 	m := model.BookmarkFromDomain(bookmark)
-	return txOrDB(ctx, r.db).Save(m).Error
+	return r.db.WithContext(ctx).Save(m).Error
 }

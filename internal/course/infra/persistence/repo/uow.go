@@ -7,10 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// Registry holds the root *gorm.DB. Repos created from it call txOrDB(ctx, db)
-// which uses the tx from context if present, or falls back to db.WithContext(ctx).
-// When Registry is created with a tx (inside UnitOfWork.Execute), the fallback
-// itself is the tx, so the transaction is always honoured.
+// Registry holds a *gorm.DB (root or tx). Inside UnitOfWork.Execute the db is
+// already the GORM transaction, so all repo methods share the same tx.
 type Registry struct {
 	db *gorm.DB
 }
@@ -27,8 +25,7 @@ func (r *Registry) LessonComment() domain.LessonCommentRepo { return &lessonComm
 func (r *Registry) Review() domain.ReviewRepo               { return &reviewRepo{db: r.db} }
 
 // UnitOfWork opens a Postgres transaction and passes a Registry backed by
-// that tx to fn. Each repo method receives the caller's ctx and resolves
-// to tx.WithContext(ctx) via txOrDB, keeping the operation in the transaction.
+// that tx to fn, keeping all repo operations atomic.
 type UnitOfWork struct {
 	db *gorm.DB
 }
