@@ -1,5 +1,3 @@
 # vim:ft=sh:
 
-export PATH="$HOME/.local/share/mise/shims:$PATH"
-
 node .husky/pre-commit.js
