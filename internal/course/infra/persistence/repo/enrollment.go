@@ -20,7 +20,7 @@ func (r *enrollmentRepo) ExistsByCourseID(ctx context.Context, courseID uuid.UUI
 }
 
 func (r *enrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRepoGetByID, forUpdate bool) (*domain.Enrollment, error) {
-	db := txOrDB(ctx, r.db)
+	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
 	}
@@ -34,5 +34,5 @@ func (r *enrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRe
 
 func (r *enrollmentRepo) Save(ctx context.Context, enrollment *domain.Enrollment) error {
 	m := model.EnrollmentFromDomain(enrollment)
-	return txOrDB(ctx, r.db).Save(m).Error
+	return r.db.WithContext(ctx).Save(m).Error
 }

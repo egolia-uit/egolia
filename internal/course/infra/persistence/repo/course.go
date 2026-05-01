@@ -15,7 +15,7 @@ type courseRepo struct {
 }
 
 func (r *courseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUpdate bool) (*domain.Course, error) {
-	db := txOrDB(ctx, r.db).
+	db := r.db.WithContext(ctx).
 		Preload("Sections.Lessons.VideoLesson").
 		Preload("Sections.Lessons.TestLesson.Questions.Answers")
 
@@ -49,6 +49,14 @@ func (r *courseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUp
 }
 
 func (r *courseRepo) Save(ctx context.Context, course *domain.Course) error {
+	db := r.db.WithContext(ctx)
+
 	m := model.CourseFromDomain(course)
-	return txOrDB(ctx, r.db).Session(&gorm.Session{FullSaveAssociations: true}).Save(m).Error
+	if err := db.Session(&gorm.Session{FullSaveAssociations: true}).Save(m).Error; err != nil {
+		return err
+	}
+
+	// Rebuild read_courses JSONB in the same transaction so reads are never stale.
+	readModel := model.ReadCourseFromDomain(course)
+	return db.Save(readModel).Error
 }

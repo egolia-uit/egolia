@@ -14,7 +14,7 @@ type lessonCommentRepo struct {
 }
 
 func (r *lessonCommentRepo) Get(ctx context.Context, params domain.LessonCommentRepoGet, forUpdate bool) (*domain.LessonComment, error) {
-	db := txOrDB(ctx, r.db)
+	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
 	}
@@ -28,7 +28,7 @@ func (r *lessonCommentRepo) Get(ctx context.Context, params domain.LessonComment
 
 // GetRecursive uses a Postgres recursive CTE to fetch a comment and all its descendants.
 func (r *lessonCommentRepo) GetRecursive(ctx context.Context, params domain.LessonCommentRepoGetRecursive, forUpdate bool) ([]*domain.LessonComment, error) {
-	db := txOrDB(ctx, r.db)
+	db := r.db.WithContext(ctx)
 
 	lockClause := ""
 	if forUpdate {
@@ -62,5 +62,5 @@ SELECT * FROM comment_tree ` + lockClause
 
 func (r *lessonCommentRepo) Save(ctx context.Context, lessonComment *domain.LessonComment) error {
 	m := model.LessonCommentFromDomain(lessonComment)
-	return txOrDB(ctx, r.db).Save(m).Error
+	return r.db.WithContext(ctx).Save(m).Error
 }
