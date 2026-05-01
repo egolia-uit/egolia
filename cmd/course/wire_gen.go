@@ -54,11 +54,16 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc)
 	moveLessonSvc := domain.NewMoveLessonSvc()
 <<<<<<< HEAD
+<<<<<<< HEAD
 	loggerInterface := persistence.NewSlogDB(logger)
 	db, cleanup2, err := persistence.NewDB(ctx, configConfig, loggerInterface)
 =======
 	db, cleanup2, err := persistence.NewDB(configConfig)
 >>>>>>> 97d60f7c3 (feat: check backend)
+=======
+	loggerInterface := persistence.NewSlogDB(logger)
+	db, cleanup2, err := persistence.NewDB(ctx, configConfig, loggerInterface)
+>>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -129,9 +134,13 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	healthHealth := health.New(server)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pg := persistence.NewPG(db)
 =======
 >>>>>>> 97d60f7c3 (feat: check backend)
+=======
+	pg := persistence.NewPG(db)
+>>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
 	meterProvider, cleanup5, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup4()
@@ -151,10 +160,14 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
 =======
 	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, global, logger)
 >>>>>>> 97d60f7c3 (feat: check backend)
+=======
+	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
+>>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
 	return courseServer, func() {
 		cleanup6()
 		cleanup5()

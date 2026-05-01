@@ -75,7 +75,12 @@ var RepoProviderSet = wire.NewSet(
 
 var ProviderSet = wire.NewSet(
 	NewDB,
-	RepoProviderSet,
+	NewPG,
+	NewSlogDB,
 	ReadModelProviderSet,
+<<<<<<< HEAD
 >>>>>>> 97d60f7c3 (feat: check backend)
+=======
+	RepoProviderSet,
+>>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
 )
