@@ -215,7 +215,55 @@ func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.Approv
 }
 
 func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	if request.Body == nil {
+		return nil, errs.NewInvalid("request body is required")
+	}
+	userID, err := uuid.Parse(user.ID)
+	if err != nil {
+		return nil, errs.NewInvalid("authenticated user id must be a valid uuid")
+	}
+	isAdmin := false
+	isInstructor := false
+	for _, role := range user.Roles {
+		switch role {
+		case "admin":
+			isAdmin = true
+		case "instructor":
+			isInstructor = true
+		}
+	}
+	if !isAdmin && !isInstructor {
+		return nil, errs.NewForbidden("only instructor or admin can update course")
+	}
+
+	overview := ""
+	if request.Body.Overview != nil {
+		overview = *request.Body.Overview
+	}
+
+	introduction := app.CourseLandingPageIntroduction{}
+	if request.Body.Introduction != nil {
+		introduction = app.CourseLandingPageIntroduction{
+			VideoUrl: request.Body.Introduction.VideoUrl,
+		}
+	}
+
+	if err := h.App.Cmds.UpdateCourse.Handle(ctx, &app.UpdateCourse{
+		CourseID:     request.CourseId,
+		ActorID:      userID,
+		IsAdmin:      isAdmin,
+		Title:        request.Body.Title,
+		Price:        request.Body.Price,
+		Overview:     overview,
+		Introduction: introduction,
+	}); err != nil {
+		return nil, err
+	}
+	return course.UpdateCourse204Response{}, nil
 }
 
 func (h *StrictHandler) BookmarkCourse(ctx context.Context, request course.BookmarkCourseRequestObject) (course.BookmarkCourseResponseObject, error) {
