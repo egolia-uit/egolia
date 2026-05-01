@@ -191,9 +191,9 @@ func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteC
 	isInstructor := false
 	for _, role := range user.Roles {
 		switch role {
-		case "admin":
+		case commonHTTP.UserRoleAdmin:
 			isAdmin = true
-		case "instructor":
+		case commonHTTP.UserRoleInstructor:
 			isInstructor = true
 		}
 	}
