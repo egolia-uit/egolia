@@ -38,6 +38,8 @@ var RepoProviderSet = wire.NewSet(
 
 var ProviderSet = wire.NewSet(
 	NewDB,
-	RepoProviderSet,
+	NewPG,
+	NewSlogDB,
 	ReadModelProviderSet,
+	RepoProviderSet,
 )

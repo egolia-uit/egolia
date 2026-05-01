@@ -8,6 +8,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/controller/grpc"
 	"github.com/egolia-uit/egolia/internal/course/controller/health"
 	"github.com/egolia-uit/egolia/internal/course/controller/http"
+	"github.com/egolia-uit/egolia/internal/course/infra/persistence"
 	"github.com/egolia-uit/egolia/pkg/otel"
 	"golang.org/x/sync/errgroup"
 )
@@ -16,12 +17,14 @@ type Server struct {
 	http   *http.HTTP
 	grpc   *grpc.GRPC
 	health *health.Health
+	pg     *persistence.PG
 }
 
 func NewServer(
 	http *http.HTTP,
 	grpc *grpc.GRPC,
 	health *health.Health,
+	pg *persistence.PG,
 	globalOtel otel.Global,
 	logger *slog.Logger,
 ) *Server {
@@ -30,14 +33,11 @@ func NewServer(
 		http:   http,
 		grpc:   grpc,
 		health: health,
+		pg:     pg,
 	}
 }
 
 func (s *Server) Run(ctx context.Context) error {
-	// if err := s.persistence.RunMigrations(ctx); err != nil {
-	// 	return fmt.Errorf("failed to run migrations: %w", err)
-	// }
-
 	g, ctx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
@@ -73,6 +73,13 @@ func (s *Server) Run(ctx context.Context) error {
 		}()
 		if err := s.health.Run(); err != nil {
 			return fmt.Errorf("failed to run health server: %w", err)
+		}
+		return nil
+	})
+
+	g.Go(func() error {
+		if err := s.pg.RunMigrations(); err != nil {
+			return fmt.Errorf("failed to run database migrations: %w", err)
 		}
 		return nil
 	})
