@@ -7,11 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type UserRole string
+
+const (
+	UserRoleAdmin      UserRole = "admin"
+	UserRoleInstructor UserRole = "instructor"
+)
+
 type User struct {
-	ID     string   `json:"id"`
-	Email  string   `json:"email"`
-	Groups []string `json:"groups"`
-	Roles  []string `json:"roles"`
+	ID     string     `json:"id"`
+	Email  string     `json:"email"`
+	Groups []string   `json:"groups"`
+	Roles  []UserRole `json:"roles"`
 }
 
 func unmarshalHeader(headerValue string) []string {
@@ -21,6 +28,17 @@ func unmarshalHeader(headerValue string) []string {
 	}
 	if err := json.Unmarshal([]byte(headerValue), &list); err != nil {
 		return []string{}
+	}
+	return list
+}
+
+func unmarshalHeaderToUserRoles(headerValue string) []UserRole {
+	var list []UserRole
+	if headerValue == "" {
+		return []UserRole{}
+	}
+	if err := json.Unmarshal([]byte(headerValue), &list); err != nil {
+		return []UserRole{}
 	}
 	return list
 }
@@ -48,7 +66,7 @@ func GatewayUserAuth() gin.HandlerFunc {
 			ID:     c.GetHeader("X-Forwarded-ID"),
 			Email:  c.GetHeader("X-Forwarded-Email"),
 			Groups: unmarshalHeader(c.GetHeader("X-Forwarded-Groups")),
-			Roles:  unmarshalHeader(c.GetHeader("X-Forwarded-Roles")),
+			Roles:  unmarshalHeaderToUserRoles(c.GetHeader("X-Forwarded-Roles")),
 		}
 		c.Set(UserCtxKey, user)
 		c.Next()

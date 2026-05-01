@@ -17,15 +17,12 @@ type Server struct {
 	Health commonconfig.ServerAddress `json:"health" mapstructure:"health" validate:"required"     yaml:"health"`
 }
 
-type Services struct{}
-
 type Config struct {
 	General  commonconfig.General `json:"general"  mapstructure:"general"  validate:"omitempty" yaml:"general"`
 	Log      commonconfig.Log     `json:"log"      mapstructure:"log"      validate:"omitempty" yaml:"log"`
 	Server   Server               `json:"server"   mapstructure:"server"   validate:"required"  yaml:"server"`
 	Database commonconfig.SQL     `json:"database" mapstructure:"database" validate:"required"  yaml:"database"`
 	S3       commonconfig.S3      `json:"s3"       mapstructure:"s3"       validate:"required"  yaml:"s3"`
-	Services Services             `json:"services" mapstructure:"services" validate:"required"  yaml:"services"`
 }
 
 func New(

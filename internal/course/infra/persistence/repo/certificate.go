@@ -9,11 +9,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type certificateRepo struct {
+type CertificateRepo struct {
 	db *gorm.DB
 }
 
-func (r *certificateRepo) Get(ctx context.Context, params domain.CertificateRepoGet, forUpdate bool) (*domain.Certificate, error) {
+func NewCertificateRepo(db *gorm.DB) *CertificateRepo {
+	return &CertificateRepo{db: db}
+}
+
+var _ domain.CertificateRepo = (*CertificateRepo)(nil)
+
+func (r *CertificateRepo) Get(ctx context.Context, params domain.CertificateRepoGet, forUpdate bool) (*domain.Certificate, error) {
 	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
@@ -27,7 +33,7 @@ func (r *certificateRepo) Get(ctx context.Context, params domain.CertificateRepo
 }
 
 // CertificateRepo.Save does not take context (per domain interface)
-func (r *certificateRepo) Save(certificate *domain.Certificate) error {
+func (r *CertificateRepo) Save(certificate *domain.Certificate) error {
 	m := model.CertificateFromDomain(certificate)
 	return r.db.Save(m).Error
 }

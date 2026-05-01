@@ -152,8 +152,15 @@ type User struct {
 	ID     string
 	Name   *string
 	Groups []string
-	Roles  []string
+	Roles  []UserRole
 }
+
+type UserRole string
+
+const (
+	UserRoleAdmin      UserRole = "admin"
+	UserRoleInstructor UserRole = "instructor"
+)
 
 type VideoLessonObject struct {
 	UploadURL string

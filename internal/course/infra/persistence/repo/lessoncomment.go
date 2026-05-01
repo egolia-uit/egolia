@@ -9,11 +9,17 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-type lessonCommentRepo struct {
+type LessonCommentRepo struct {
 	db *gorm.DB
 }
 
-func (r *lessonCommentRepo) Get(ctx context.Context, params domain.LessonCommentRepoGet, forUpdate bool) (*domain.LessonComment, error) {
+func NewLessonCommentRepo(db *gorm.DB) *LessonCommentRepo {
+	return &LessonCommentRepo{db: db}
+}
+
+var _ domain.LessonCommentRepo = (*LessonCommentRepo)(nil)
+
+func (r *LessonCommentRepo) Get(ctx context.Context, params domain.LessonCommentRepoGet, forUpdate bool) (*domain.LessonComment, error) {
 	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
@@ -27,7 +33,7 @@ func (r *lessonCommentRepo) Get(ctx context.Context, params domain.LessonComment
 }
 
 // GetRecursive uses a Postgres recursive CTE to fetch a comment and all its descendants.
-func (r *lessonCommentRepo) GetRecursive(ctx context.Context, params domain.LessonCommentRepoGetRecursive, forUpdate bool) ([]*domain.LessonComment, error) {
+func (r *LessonCommentRepo) GetRecursive(ctx context.Context, params domain.LessonCommentRepoGetRecursive, forUpdate bool) ([]*domain.LessonComment, error) {
 	db := r.db.WithContext(ctx)
 
 	lockClause := ""
@@ -60,7 +66,7 @@ SELECT * FROM comment_tree ` + lockClause
 	return result, nil
 }
 
-func (r *lessonCommentRepo) Save(ctx context.Context, lessonComment *domain.LessonComment) error {
+func (r *LessonCommentRepo) Save(ctx context.Context, lessonComment *domain.LessonComment) error {
 	m := model.LessonCommentFromDomain(lessonComment)
 	return r.db.WithContext(ctx).Save(m).Error
 }

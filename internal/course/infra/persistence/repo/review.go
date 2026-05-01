@@ -6,12 +6,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type reviewRepo struct {
+type ReviewRepo struct {
 	db *gorm.DB
 }
 
+func NewReviewRepo(db *gorm.DB) *ReviewRepo {
+	return &ReviewRepo{db: db}
+}
+
+var _ domain.ReviewRepo = (*ReviewRepo)(nil)
+
 // ReviewRepo.Save does not take context (per domain interface)
-func (r *reviewRepo) Save(review *domain.Review) error {
+func (r *ReviewRepo) Save(review *domain.Review) error {
 	m := model.ReviewFromDomain(review)
 	return r.db.Save(m).Error
 }

@@ -9,16 +9,145 @@ package main
 import (
 	"context"
 	"github.com/egolia-uit/egolia/internal/course"
+	"github.com/egolia-uit/egolia/internal/course/app"
+	"github.com/egolia-uit/egolia/internal/course/component"
+	"github.com/egolia-uit/egolia/internal/course/config"
+	"github.com/egolia-uit/egolia/internal/course/controller/grpc"
+	"github.com/egolia-uit/egolia/internal/course/controller/health"
+	"github.com/egolia-uit/egolia/internal/course/controller/http"
+	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/egolia-uit/egolia/internal/course/infra/objectstorage"
+	"github.com/egolia-uit/egolia/internal/course/infra/persistence"
+	"github.com/egolia-uit/egolia/internal/course/infra/persistence/readmodel"
+	"github.com/egolia-uit/egolia/internal/course/infra/persistence/repo"
+	"github.com/egolia-uit/egolia/pkg/common/http"
+	"github.com/egolia-uit/egolia/pkg/logging"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/goforj/wire"
 )
 
 // Injectors from wire.go:
 
 func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
-	server := course.NewServer()
-	return server, func() {
+	validate := component.ProvideValidate()
+	viper := config.NewViper()
+	configConfig, err := config.New(validate, viper)
+	if err != nil {
+		return nil, nil, err
+	}
+	log := &configConfig.Log
+	stdoutHandler := logging.NewStdoutHandler(log)
+	serviceName := _wireServiceNameValue
+	serviceVersion := _wireServiceVersionValue
+	resource, err := otel.NewResource(ctx, serviceName, serviceVersion)
+	if err != nil {
+		return nil, nil, err
+	}
+	loggerProvider, cleanup, err := otel.NewLoggerProvider(ctx, resource)
+	if err != nil {
+		return nil, nil, err
+	}
+	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
+	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
+	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
+	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc)
+	moveLessonSvc := domain.NewMoveLessonSvc()
+	db, cleanup2, err := persistence.NewDB(configConfig)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	unitOfWork := repo.NewUnitOfWork(db)
+	moveLessonHandler := app.NewMoveLessonHandler(moveLessonSvc, unitOfWork)
+	s3 := &configConfig.S3
+	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
+	createCourseSvc := domain.NewCreateCourseSvc()
+	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
+	deleteCourseSvc := domain.NewDeleteCourseSvc()
+	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
+	cmds := &app.Cmds{
+		MoveLesson:              moveLessonHandler,
+		GetUploadVideoLessonURL: getUploadVideoLessonURLHandler,
+		CreateCourse:            createCourseHandler,
+		DeleteCourse:            deleteCourseHandler,
+	}
+	courseReadRepo := readmodel.NewCourseReadRepo(db)
+	getCourseDetailHandler := app.NewGetCourseDetailHandler(courseReadRepo)
+	getCourseHandler := app.NewGetCourseHandler(courseReadRepo)
+	lessonReadRepo := readmodel.NewLessonReadRepo(db)
+	getLessonDetailHandler := app.NewGetLessonDetailHandler(lessonReadRepo)
+	searchCoursesHandler := app.NewSearchCoursesHandler(courseReadRepo)
+	getCoursesHandler := app.NewGetCoursesHandler(courseReadRepo)
+	queries := &app.Queries{
+		GetCourseDetail: getCourseDetailHandler,
+		GetCourse:       getCourseHandler,
+		GetLessonDetail: getLessonDetailHandler,
+		SearchCourses:   searchCoursesHandler,
+		GetCourses:      getCoursesHandler,
+	}
+	appApp := &app.App{
+		Cmds:    cmds,
+		Queries: queries,
+	}
+	server := &configConfig.Server
+	strictHandler := http.NewStrictHandler(appApp, server)
+	serverInterface := http.NewHandler(strictHandler)
+	httpHTTP, cleanup3, err := http.New(ctx, engine, serverInterface, server, logger)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	serviceServer := grpc.NewServiceServer(appApp)
+	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
+	grpcGRPC, cleanup4, err := grpc.New(ctx, serviceServer, server, loggingLogger)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	healthHealth := health.New(server)
+	meterProvider, cleanup5, err := otel.NewMeterProvider(ctx, resource)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	tracerProvider, cleanup6, err := otel.NewTracerProvider(ctx, resource)
+	if err != nil {
+		cleanup5()
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider)
+	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, global, logger)
+	return courseServer, func() {
+		cleanup6()
+		cleanup5()
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
 	}, nil
 }
+
+var (
+	_wireServiceNameValue    = ServiceName
+	_wireServiceVersionValue = ServiceVersion
+)
 
 // wire.go:
 

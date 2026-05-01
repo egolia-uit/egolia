@@ -22,7 +22,7 @@
       },
       "cache": false
     },
-    "dev": {
+    "run": {
       "executor": "nx:run-commands",
       "inputs": ["default"],
       "options": {
