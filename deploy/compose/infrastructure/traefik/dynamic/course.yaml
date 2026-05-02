@@ -8,6 +8,7 @@ http:
       service: course-http
       middlewares:
         - protect-admin
+        - cors
 
     course-http-instructor-or-admin:
       entryPoints:
@@ -16,6 +17,7 @@ http:
       service: course-http
       middlewares:
         - protect-instructor-or-admin
+        - cors
 
     course-http-public:
       entryPoints:
@@ -28,6 +30,8 @@ http:
         ) \
         "
       service: course-http
+      middlewares:
+        - cors
 
     course-grpc:
       entryPoints:

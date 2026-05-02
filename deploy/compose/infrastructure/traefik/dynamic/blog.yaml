@@ -6,6 +6,8 @@ http:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/blog`)
       service: blog-http
+      middlewares:
+        - cors
 
     blog-health:
       entryPoints:
