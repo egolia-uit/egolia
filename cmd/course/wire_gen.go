@@ -82,19 +82,23 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
 	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
-<<<<<<< HEAD
 	updateCourseHandler := app.NewUpdateCourseHandler(unitOfWork)
+<<<<<<< HEAD
 =======
 >>>>>>> 97d60f7c3 (feat: check backend)
+=======
+>>>>>>> 359c43dfe (fix: cors)
 	cmds := &app.Cmds{
 		MoveLesson:              moveLessonHandler,
 		GetUploadVideoLessonURL: getUploadVideoLessonURLHandler,
 		CreateCourse:            createCourseHandler,
 		DeleteCourse:            deleteCourseHandler,
-<<<<<<< HEAD
 		UpdateCourse:            updateCourseHandler,
+<<<<<<< HEAD
 =======
 >>>>>>> 97d60f7c3 (feat: check backend)
+=======
+>>>>>>> 359c43dfe (fix: cors)
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db)
 	getCourseDetailHandler := app.NewGetCourseDetailHandler(courseReadRepo)

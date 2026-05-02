@@ -29,6 +29,7 @@ http:
           issuers: *issuers
           headerMap: *headerMap
           require:
+            # i want instructor or admin, not both
             or:
               - role: instructor
               - role: admin
