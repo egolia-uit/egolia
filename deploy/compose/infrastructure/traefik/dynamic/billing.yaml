@@ -1,11 +1,13 @@
 # yaml-language-server: $schema=https://www.schemastore.org/traefik-v3-file-provider.json
 http:
   routers:
-    billing:
+    billing-http:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/billing`)
-      service: billing
+      service: billing-http
+      middlewares:
+        - cors
 
     billing-health:
       entryPoints:
@@ -14,7 +16,7 @@ http:
       service: billing-health
 
   services:
-    billing:
+    billing-http:
       loadBalancer:
         servers:
           - url: http://host.docker.internal:8082
