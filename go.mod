@@ -25,7 +25,7 @@ require (
 	github.com/oapi-codegen/gin-middleware v1.0.2
 	github.com/oapi-codegen/runtime v1.4.0
 	github.com/orandin/slog-gorm v1.4.0
-	github.com/samber/slog-gin v1.21.0
+	github.com/samber/slog-gin v1.21.1
 	github.com/samber/slog-multi v1.8.0
 	github.com/spf13/viper v1.21.0
 	go.opentelemetry.io/contrib/bridges/otelslog v0.17.0
