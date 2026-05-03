@@ -3370,7 +3370,12 @@
         "flows": {
           "password": {
             "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {},
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"
@@ -3401,7 +3406,12 @@
         "flows": {
           "password": {
             "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {},
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"
@@ -3432,7 +3442,12 @@
         "flows": {
           "password": {
             "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {},
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"
