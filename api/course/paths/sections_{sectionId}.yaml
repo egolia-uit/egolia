@@ -1,6 +1,7 @@
 delete:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Section
   summary: Delete section
@@ -23,7 +24,8 @@ delete:
 
 patch:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Section
   summary: Update section

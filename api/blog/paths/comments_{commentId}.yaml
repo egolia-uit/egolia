@@ -1,6 +1,7 @@
 put:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Comment
   summary: Update comment
@@ -33,7 +34,8 @@ put:
 
 delete:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Comment
   summary: Delete comment

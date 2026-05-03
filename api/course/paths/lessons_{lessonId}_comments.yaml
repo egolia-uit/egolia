@@ -1,6 +1,7 @@
 get:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Lesson
   summary: Get lesson comments
@@ -32,7 +33,8 @@ get:
 
 post:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Lesson
   summary: Comment on lesson

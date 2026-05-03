@@ -82,6 +82,39 @@ entries:
       groups:
         - !KeyOf egolia-admin
 
+  - model: authentik_core.token
+    identifiers:
+      identifier: learner-app-password
+    attrs:
+      description: App password for learner
+      expiring: false
+      key: egoliauit
+      managed: null
+      intent: app_password
+      user: !KeyOf user-learner
+
+  - model: authentik_core.token
+    identifiers:
+      identifier: instructor-app-password
+    attrs:
+      description: App password for instructor
+      expiring: false
+      key: egoliauit
+      managed: null
+      intent: app_password
+      user: !KeyOf user-instructor
+
+  - model: authentik_core.token
+    identifiers:
+      identifier: admin-app-password
+    attrs:
+      description: App password for admin
+      expiring: false
+      key: egoliauit
+      managed: null
+      intent: app_password
+      user: !KeyOf user-admin
+
   - model: authentik_core.user
     id: billing-service
     identifiers:
@@ -102,7 +135,6 @@ entries:
       identifier: service-account-billing-service-password
     attrs:
       description: Token for billing Service
-      expires: 9999-12-31T23:59:59Z
       expiring: false
       key: egoliauit
       managed: null

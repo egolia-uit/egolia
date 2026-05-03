@@ -1,0 +1,14 @@
+### Authentik Client Credentials Flow
+
+# @prompt clientId
+# @prompt username
+# @secret password
+
+POST /application/o/token/ HTTP/1.1
+Host: authentik.egolia.localhost
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&
+client_id={{clientId}}&
+username={{username}}&
+password={{password}}

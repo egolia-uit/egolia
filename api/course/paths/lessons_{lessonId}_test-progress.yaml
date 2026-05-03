@@ -1,6 +1,7 @@
 put:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Lesson
   summary: Save test lesson progress
