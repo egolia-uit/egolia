@@ -8,6 +8,26 @@ metadata:
       Egolia - API Web OAuth2 Provider and Application
 
 entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Provider invalidation flow
+
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Provider authorization flow (implicit consent)
+
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: System - OAuth2 Provider - Scopes
+
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Egolia - Users
+
   - id: provider
     model: authentik_providers_oauth2.oauth2provider
     identifiers:
@@ -73,26 +93,14 @@ entries:
     attrs:
       app: !KeyOf app
 
-  - model: authentik_core.group
-    id: egolia-instructor
-    state: created
-    identifiers:
-      name: Egolia Instructor
-
-  - model: authentik_core.group
-    id: egolia-admin
-    state: created
-    identifiers:
-      name: Egolia Admin
-
   - model: authentik_policies.policybinding
     identifiers:
       order: 0
       target: !KeyOf admin-entitlement
-      group: !KeyOf egolia-admin
+      group: !Find [authentik_core.group, [name, Egolia Admin]]
 
   - model: authentik_policies.policybinding
     identifiers:
       order: 0
       target: !KeyOf instructor-entitlement
-      group: !KeyOf egolia-instructor
+      group: !Find [authentik_core.group, [name, Egolia Instructor]]
