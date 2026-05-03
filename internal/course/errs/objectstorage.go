@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	CodeObjectStorageFailToRetrieveUploadURLForVideoLesson Code = "objectStorageFailToRetrieveUploadURLForVideoLesson"
+	CodeObjectStorageFailToRetrieveUploadURLForVideoLesson   Code = "objectStorageFailToRetrieveUploadURLForVideoLesson"
+	CodeObjectStorageFailToRetrieveDownloadURLForVideoLesson Code = "objectStorageFailToRetrieveDownloadURLForVideoLesson"
 )
 
 type ObjectStorageFailToRetrieveUploadURLForVideoLesson struct {
@@ -23,6 +24,22 @@ func NewObjectStorageFailToRetrieveUploadURLForVideoLesson(lessonID uuid.UUID, v
 		Err: Err{
 			message: fmt.Sprintf("failed to retrieve upload URL for video lesson with ID %s", lessonID),
 			code:    CodeObjectStorageFailToRetrieveUploadURLForVideoLesson,
+			err:     err,
+		},
+	}
+}
+
+type ObjectStorageFailToRetrieveDownloadURLForVideoLesson struct {
+	VideoKey string
+	Err
+}
+
+func NewObjectStorageFailToRetrieveDownloadURLForVideoLesson(videoKey string, err error) *ObjectStorageFailToRetrieveDownloadURLForVideoLesson {
+	return &ObjectStorageFailToRetrieveDownloadURLForVideoLesson{
+		VideoKey: videoKey,
+		Err: Err{
+			message: fmt.Sprintf("failed to retrieve download URL for video lesson with key %s", videoKey),
+			code:    CodeObjectStorageFailToRetrieveDownloadURLForVideoLesson,
 			err:     err,
 		},
 	}

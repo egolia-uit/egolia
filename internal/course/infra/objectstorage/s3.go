@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	"gopkg.in/vansante/go-ffprobe.v2"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/credentials"
@@ -80,4 +81,34 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 		VideoKey:  key,
 		ExpiresAt: expiration,
 	}, nil
+}
+
+func (s *S3) GetVideoLessonDuration(ctx context.Context, videoKey string) (time.Duration, error) {
+	url, err := s.getPresignedDownloadURL(ctx, videoKey)
+	if err != nil {
+		return 0, errs.NewObjectStorageFailToRetrieveDownloadURLForVideoLesson(videoKey, err)
+	}
+	data, err := ffprobe.ProbeURL(ctx, url)
+	if err != nil {
+		return 0, errs.NewObjectStorageFailToRetrieveDownloadURLForVideoLesson(videoKey, err)
+	}
+	if data.Format == nil {
+		return 0, errs.NewObjectStorageFailToRetrieveDownloadURLForVideoLesson(videoKey, fmt.Errorf("ffprobe returned nil format"))
+	}
+	return data.Format.Duration(), nil
+}
+
+func (s *S3) getPresignedDownloadURL(ctx context.Context, videoKey string) (string, error) {
+	presignParams := &s3.GetObjectInput{
+		Bucket: aws.String(s.bucket),
+		Key:    aws.String(videoKey),
+	}
+
+	url, err := s.S3PresignClient.PresignGetObject(ctx, presignParams,
+		s3.WithPresignExpires(15*time.Minute),
+	)
+	if err != nil {
+		return "", err
+	}
+	return url.URL, nil
 }
