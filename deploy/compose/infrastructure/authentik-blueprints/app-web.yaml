@@ -77,14 +77,12 @@ entries:
     id: instructor-entitlement
     identifiers:
       name: instructor
-    attrs:
       app: !KeyOf app
 
   - model: authentik_core.applicationentitlement
     id: admin-entitlement
     identifiers:
       name: admin
-    attrs:
       app: !KeyOf app
 
   - model: authentik_policies.policybinding
