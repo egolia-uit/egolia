@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://www.schemastore.org/traefik-v3-file-provider.json
 http:
   middlewares:
-    protect-instructor:
+    authenticated:
       plugin:
         jwt:
           issuers: &issuers
@@ -12,9 +12,6 @@ http:
           headerMap: &headerMap
             X-Forwarded-ID: sub
             X-Forwarded-Roles: roles
-          require:
-            roles:
-              - instructor
 
     protect-admin:
       plugin:
@@ -22,22 +19,15 @@ http:
           issuers: *issuers
           headerMap: *headerMap
           require:
-            roles:
+            $or:
+              - instructor
               - admin
 
-    protect-instructor-or-admin:
+    protect-instructor:
       plugin:
         jwt:
           issuers: *issuers
           headerMap: *headerMap
           require:
             roles:
-              $or:
-                - instructor
-                - admin
-
-    authenticated:
-      plugin:
-        jwt:
-          issuers: *issuers
-          headerMap: *headerMap
+              - instructor
