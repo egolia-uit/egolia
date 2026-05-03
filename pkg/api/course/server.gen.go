@@ -20,131 +20,131 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Get my certificates
-	// (GET /course/certificates/me)
-	GetMyCertificates(c *gin.Context, params GetMyCertificatesParams)
-	// Get certificate by id
-	// (GET /course/certificates/{certificateId})
-	GetCertificateById(c *gin.Context, certificateId CertificateIdPath)
-	// Search courses
-	// (GET /course/courses)
-	SearchCourses(c *gin.Context, params SearchCoursesParams)
-	// Create course
-	// (POST /course/courses)
-	CreateCourse(c *gin.Context)
-	// Get instructor courses
-	// (GET /course/courses-by-instructor/{instructorId})
-	GetInstructorCourses(c *gin.Context, instructorId InstructorIdPath, params GetInstructorCoursesParams)
-	// Get published courses
-	// (GET /course/courses-published)
-	GetPublishedCourses(c *gin.Context, params GetPublishedCoursesParams)
-	// Get system courses
-	// (GET /course/courses-system)
-	GetSystemCourses(c *gin.Context, params GetSystemCoursesParams)
+	// Approve course
+	// (POST /course/admin/courses/{courseId}/approve)
+	ApproveCourse(c *gin.Context, courseId CourseIdPath)
+	// Decline course
+	// (POST /course/admin/courses/{courseId}/decline)
+	DeclineCourse(c *gin.Context, courseId CourseIdPath)
 	// Get my enrolled courses
 	// (GET /course/courses/me/enrolled)
 	GetMyEnrolledCourses(c *gin.Context, params GetMyEnrolledCoursesParams)
+	// Get my certificates
+	// (GET /course/instructor/certificates/me)
+	GetMyCertificates(c *gin.Context, params GetMyCertificatesParams)
+	// Get certificate by id
+	// (GET /course/instructor/certificates/{certificateId})
+	GetCertificateById(c *gin.Context, certificateId CertificateIdPath)
+	// Search courses
+	// (GET /course/instructor/courses)
+	SearchCourses(c *gin.Context, params SearchCoursesParams)
+	// Create course
+	// (POST /course/instructor/courses)
+	CreateCourse(c *gin.Context)
+	// Get instructor courses
+	// (GET /course/instructor/courses-by-instructor/{instructorId})
+	GetInstructorCourses(c *gin.Context, instructorId InstructorIdPath, params GetInstructorCoursesParams)
+	// Get published courses
+	// (GET /course/instructor/courses-published)
+	GetPublishedCourses(c *gin.Context, params GetPublishedCoursesParams)
+	// Get system courses
+	// (GET /course/instructor/courses-system)
+	GetSystemCourses(c *gin.Context, params GetSystemCoursesParams)
 	// Delete course
-	// (DELETE /course/courses/{courseId})
+	// (DELETE /course/instructor/courses/{courseId})
 	DeleteCourse(c *gin.Context, courseId CourseIdPath)
-	// Approve course
-	// (POST /course/courses/{courseId}/approve)
-	ApproveCourse(c *gin.Context, courseId CourseIdPath)
 	// Update course
-	// (PATCH /course/courses/{courseId}/basic-info)
+	// (PATCH /course/instructor/courses/{courseId}/basic-info)
 	UpdateCourse(c *gin.Context, courseId CourseIdPath)
 	// Bookmark course
-	// (POST /course/courses/{courseId}/bookmark)
+	// (POST /course/instructor/courses/{courseId}/bookmark)
 	BookmarkCourse(c *gin.Context, courseId CourseIdPath)
-	// Decline course
-	// (POST /course/courses/{courseId}/decline)
-	DeclineCourse(c *gin.Context, courseId CourseIdPath)
 	// Get course detail
-	// (GET /course/courses/{courseId}/detail)
+	// (GET /course/instructor/courses/{courseId}/detail)
 	GetCourseDetail(c *gin.Context, courseId CourseIdPath)
 	// Enroll in course
-	// (POST /course/courses/{courseId}/enroll)
+	// (POST /course/instructor/courses/{courseId}/enroll)
 	EnrollInCourse(c *gin.Context, courseId CourseIdPath)
 	// Finish course
-	// (POST /course/courses/{courseId}/finish)
+	// (POST /course/instructor/courses/{courseId}/finish)
 	FinishCourse(c *gin.Context, courseId CourseIdPath)
 	// Hide course
-	// (POST /course/courses/{courseId}/hide)
+	// (POST /course/instructor/courses/{courseId}/hide)
 	HideCourse(c *gin.Context, courseId CourseIdPath)
 	// Get course landing page
-	// (GET /course/courses/{courseId}/landing)
+	// (GET /course/instructor/courses/{courseId}/landing)
 	GetCourseLandingPage(c *gin.Context, courseId CourseIdPath)
 	// Get course progress
-	// (GET /course/courses/{courseId}/progress)
+	// (GET /course/instructor/courses/{courseId}/progress)
 	GetCourseProgress(c *gin.Context, courseId CourseIdPath)
 	// Review course
-	// (POST /course/courses/{courseId}/reviews)
+	// (POST /course/instructor/courses/{courseId}/reviews)
 	ReviewCourse(c *gin.Context, courseId CourseIdPath)
 	// Trigger learning reminder
-	// (POST /course/courses/{courseId}/trigger-learning-reminder)
+	// (POST /course/instructor/courses/{courseId}/trigger-learning-reminder)
 	TriggerLearningReminder(c *gin.Context, courseId CourseIdPath)
 	// Unbookmark course
-	// (POST /course/courses/{courseId}/unbookmark)
+	// (POST /course/instructor/courses/{courseId}/unbookmark)
 	UnbookmarkCourse(c *gin.Context, courseId CourseIdPath)
 	// Unhide course
-	// (POST /course/courses/{courseId}/unhide)
+	// (POST /course/instructor/courses/{courseId}/unhide)
 	UnhideCourse(c *gin.Context, courseId CourseIdPath)
 	// Reply lesson comment
-	// (POST /course/lesson-comments/{commentId}/reply)
+	// (POST /course/instructor/lesson-comments/{commentId}/reply)
 	ReplyLessonComment(c *gin.Context, commentId CommentIdPath)
 	// Create lesson
-	// (POST /course/lessons)
+	// (POST /course/instructor/lessons)
 	CreateLesson(c *gin.Context)
 	// Delete lesson
-	// (DELETE /course/lessons/{lessonId})
+	// (DELETE /course/instructor/lessons/{lessonId})
 	DeleteLesson(c *gin.Context, lessonId LessonIdPath)
 	// Get lesson detail
-	// (GET /course/lessons/{lessonId})
+	// (GET /course/instructor/lessons/{lessonId})
 	GetLessonDetail(c *gin.Context, lessonId LessonIdPath)
 	// Get lesson comments
-	// (GET /course/lessons/{lessonId}/comments)
+	// (GET /course/instructor/lessons/{lessonId}/comments)
 	GetLessonComments(c *gin.Context, lessonId LessonIdPath)
 	// Comment on lesson
-	// (POST /course/lessons/{lessonId}/comments)
+	// (POST /course/instructor/lessons/{lessonId}/comments)
 	CommentOnLesson(c *gin.Context, lessonId LessonIdPath)
 	// Mark lesson as completed
-	// (POST /course/lessons/{lessonId}/mark-completed)
+	// (POST /course/instructor/lessons/{lessonId}/mark-completed)
 	MarkLessonAsCompleted(c *gin.Context, lessonId LessonIdPath)
 	// Move lesson
-	// (POST /course/lessons/{lessonId}/move)
+	// (POST /course/instructor/lessons/{lessonId}/move)
 	MoveLesson(c *gin.Context, lessonId LessonIdPath)
 	// Get lesson progress
-	// (GET /course/lessons/{lessonId}/progress)
+	// (GET /course/instructor/lessons/{lessonId}/progress)
 	GetLessonProgress(c *gin.Context, lessonId LessonIdPath)
 	// Edit test lesson
-	// (PATCH /course/lessons/{lessonId}/test)
+	// (PATCH /course/instructor/lessons/{lessonId}/test)
 	EditTestLesson(c *gin.Context, lessonId LessonIdPath)
 	// Save test lesson progress
-	// (PUT /course/lessons/{lessonId}/test-progress)
+	// (PUT /course/instructor/lessons/{lessonId}/test-progress)
 	SaveTestLessonProgress(c *gin.Context, lessonId LessonIdPath)
 	// Create test
-	// (POST /course/lessons/{lessonId}/tests)
+	// (POST /course/instructor/lessons/{lessonId}/tests)
 	CreateTest(c *gin.Context, lessonId LessonIdPath)
 	// Get upload video lesson URL
-	// (POST /course/lessons/{lessonId}/upload-video-url)
+	// (POST /course/instructor/lessons/{lessonId}/upload-video-url)
 	GetUploadVideoLessonUrl(c *gin.Context, lessonId LessonIdPath)
 	// Edit video lesson
-	// (PATCH /course/lessons/{lessonId}/video)
+	// (PATCH /course/instructor/lessons/{lessonId}/video)
 	EditVideoLesson(c *gin.Context, lessonId LessonIdPath)
 	// Save video lesson progress
-	// (PUT /course/lessons/{lessonId}/video-progress)
+	// (PUT /course/instructor/lessons/{lessonId}/video-progress)
 	SaveVideoLessonProgress(c *gin.Context, lessonId LessonIdPath)
 	// Create section
-	// (POST /course/sections)
+	// (POST /course/instructor/sections)
 	CreateSection(c *gin.Context)
 	// Delete section
-	// (DELETE /course/sections/{sectionId})
+	// (DELETE /course/instructor/sections/{sectionId})
 	DeleteSection(c *gin.Context, sectionId SectionIdPath)
 	// Update section
-	// (PATCH /course/sections/{sectionId})
+	// (PATCH /course/instructor/sections/{sectionId})
 	UpdateSectionTitle(c *gin.Context, sectionId SectionIdPath)
 	// Move section
-	// (POST /course/sections/{sectionId}/move)
+	// (POST /course/instructor/sections/{sectionId}/move)
 	MoveSection(c *gin.Context, sectionId SectionIdPath)
 }
 
@@ -156,6 +156,102 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// ApproveCourse operation middleware
+func (siw *ServerInterfaceWrapper) ApproveCourse(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.ApproveCourse(c, courseId)
+}
+
+// DeclineCourse operation middleware
+func (siw *ServerInterfaceWrapper) DeclineCourse(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(Oauth2Scopes, []string{})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeclineCourse(c, courseId)
+}
+
+// GetMyEnrolledCourses operation middleware
+func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
+
+	var err error
+
+	c.Set(Oauth2Scopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMyEnrolledCoursesParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "order" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetMyEnrolledCourses(c, params)
+}
 
 // GetMyCertificates operation middleware
 func (siw *ServerInterfaceWrapper) GetMyCertificates(c *gin.Context) {
@@ -443,50 +539,6 @@ func (siw *ServerInterfaceWrapper) GetSystemCourses(c *gin.Context) {
 	siw.Handler.GetSystemCourses(c, params)
 }
 
-// GetMyEnrolledCourses operation middleware
-func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
-
-	var err error
-
-	c.Set(Oauth2Scopes, []string{})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetMyEnrolledCoursesParams
-
-	// ------------- Optional query parameter "page" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "order" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetMyEnrolledCourses(c, params)
-}
-
 // DeleteCourse operation middleware
 func (siw *ServerInterfaceWrapper) DeleteCourse(c *gin.Context) {
 
@@ -511,32 +563,6 @@ func (siw *ServerInterfaceWrapper) DeleteCourse(c *gin.Context) {
 	}
 
 	siw.Handler.DeleteCourse(c, courseId)
-}
-
-// ApproveCourse operation middleware
-func (siw *ServerInterfaceWrapper) ApproveCourse(c *gin.Context) {
-
-	var err error
-
-	// ------------- Path parameter "courseId" -------------
-	var courseId CourseIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(Oauth2Scopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.ApproveCourse(c, courseId)
 }
 
 // UpdateCourse operation middleware
@@ -589,32 +615,6 @@ func (siw *ServerInterfaceWrapper) BookmarkCourse(c *gin.Context) {
 	}
 
 	siw.Handler.BookmarkCourse(c, courseId)
-}
-
-// DeclineCourse operation middleware
-func (siw *ServerInterfaceWrapper) DeclineCourse(c *gin.Context) {
-
-	var err error
-
-	// ------------- Path parameter "courseId" -------------
-	var courseId CourseIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(Oauth2Scopes, []string{})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.DeclineCourse(c, courseId)
 }
 
 // GetCourseDetail operation middleware
@@ -1374,48 +1374,48 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
-	router.GET(options.BaseURL+"/course/certificates/me", wrapper.GetMyCertificates)
-	router.GET(options.BaseURL+"/course/certificates/:certificateId", wrapper.GetCertificateById)
-	router.GET(options.BaseURL+"/course/courses", wrapper.SearchCourses)
-	router.POST(options.BaseURL+"/course/courses", wrapper.CreateCourse)
-	router.GET(options.BaseURL+"/course/courses-by-instructor/:instructorId", wrapper.GetInstructorCourses)
-	router.GET(options.BaseURL+"/course/courses-published", wrapper.GetPublishedCourses)
-	router.GET(options.BaseURL+"/course/courses-system", wrapper.GetSystemCourses)
+	router.POST(options.BaseURL+"/course/admin/courses/:courseId/approve", wrapper.ApproveCourse)
+	router.POST(options.BaseURL+"/course/admin/courses/:courseId/decline", wrapper.DeclineCourse)
 	router.GET(options.BaseURL+"/course/courses/me/enrolled", wrapper.GetMyEnrolledCourses)
-	router.DELETE(options.BaseURL+"/course/courses/:courseId", wrapper.DeleteCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/approve", wrapper.ApproveCourse)
-	router.PATCH(options.BaseURL+"/course/courses/:courseId/basic-info", wrapper.UpdateCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/bookmark", wrapper.BookmarkCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/decline", wrapper.DeclineCourse)
-	router.GET(options.BaseURL+"/course/courses/:courseId/detail", wrapper.GetCourseDetail)
-	router.POST(options.BaseURL+"/course/courses/:courseId/enroll", wrapper.EnrollInCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/finish", wrapper.FinishCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/hide", wrapper.HideCourse)
-	router.GET(options.BaseURL+"/course/courses/:courseId/landing", wrapper.GetCourseLandingPage)
-	router.GET(options.BaseURL+"/course/courses/:courseId/progress", wrapper.GetCourseProgress)
-	router.POST(options.BaseURL+"/course/courses/:courseId/reviews", wrapper.ReviewCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/trigger-learning-reminder", wrapper.TriggerLearningReminder)
-	router.POST(options.BaseURL+"/course/courses/:courseId/unbookmark", wrapper.UnbookmarkCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/unhide", wrapper.UnhideCourse)
-	router.POST(options.BaseURL+"/course/lesson-comments/:commentId/reply", wrapper.ReplyLessonComment)
-	router.POST(options.BaseURL+"/course/lessons", wrapper.CreateLesson)
-	router.DELETE(options.BaseURL+"/course/lessons/:lessonId", wrapper.DeleteLesson)
-	router.GET(options.BaseURL+"/course/lessons/:lessonId", wrapper.GetLessonDetail)
-	router.GET(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.GetLessonComments)
-	router.POST(options.BaseURL+"/course/lessons/:lessonId/comments", wrapper.CommentOnLesson)
-	router.POST(options.BaseURL+"/course/lessons/:lessonId/mark-completed", wrapper.MarkLessonAsCompleted)
-	router.POST(options.BaseURL+"/course/lessons/:lessonId/move", wrapper.MoveLesson)
-	router.GET(options.BaseURL+"/course/lessons/:lessonId/progress", wrapper.GetLessonProgress)
-	router.PATCH(options.BaseURL+"/course/lessons/:lessonId/test", wrapper.EditTestLesson)
-	router.PUT(options.BaseURL+"/course/lessons/:lessonId/test-progress", wrapper.SaveTestLessonProgress)
-	router.POST(options.BaseURL+"/course/lessons/:lessonId/tests", wrapper.CreateTest)
-	router.POST(options.BaseURL+"/course/lessons/:lessonId/upload-video-url", wrapper.GetUploadVideoLessonUrl)
-	router.PATCH(options.BaseURL+"/course/lessons/:lessonId/video", wrapper.EditVideoLesson)
-	router.PUT(options.BaseURL+"/course/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
-	router.POST(options.BaseURL+"/course/sections", wrapper.CreateSection)
-	router.DELETE(options.BaseURL+"/course/sections/:sectionId", wrapper.DeleteSection)
-	router.PATCH(options.BaseURL+"/course/sections/:sectionId", wrapper.UpdateSectionTitle)
-	router.POST(options.BaseURL+"/course/sections/:sectionId/move", wrapper.MoveSection)
+	router.GET(options.BaseURL+"/course/instructor/certificates/me", wrapper.GetMyCertificates)
+	router.GET(options.BaseURL+"/course/instructor/certificates/:certificateId", wrapper.GetCertificateById)
+	router.GET(options.BaseURL+"/course/instructor/courses", wrapper.SearchCourses)
+	router.POST(options.BaseURL+"/course/instructor/courses", wrapper.CreateCourse)
+	router.GET(options.BaseURL+"/course/instructor/courses-by-instructor/:instructorId", wrapper.GetInstructorCourses)
+	router.GET(options.BaseURL+"/course/instructor/courses-published", wrapper.GetPublishedCourses)
+	router.GET(options.BaseURL+"/course/instructor/courses-system", wrapper.GetSystemCourses)
+	router.DELETE(options.BaseURL+"/course/instructor/courses/:courseId", wrapper.DeleteCourse)
+	router.PATCH(options.BaseURL+"/course/instructor/courses/:courseId/basic-info", wrapper.UpdateCourse)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/bookmark", wrapper.BookmarkCourse)
+	router.GET(options.BaseURL+"/course/instructor/courses/:courseId/detail", wrapper.GetCourseDetail)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/enroll", wrapper.EnrollInCourse)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/finish", wrapper.FinishCourse)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/hide", wrapper.HideCourse)
+	router.GET(options.BaseURL+"/course/instructor/courses/:courseId/landing", wrapper.GetCourseLandingPage)
+	router.GET(options.BaseURL+"/course/instructor/courses/:courseId/progress", wrapper.GetCourseProgress)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/reviews", wrapper.ReviewCourse)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/trigger-learning-reminder", wrapper.TriggerLearningReminder)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/unbookmark", wrapper.UnbookmarkCourse)
+	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/unhide", wrapper.UnhideCourse)
+	router.POST(options.BaseURL+"/course/instructor/lesson-comments/:commentId/reply", wrapper.ReplyLessonComment)
+	router.POST(options.BaseURL+"/course/instructor/lessons", wrapper.CreateLesson)
+	router.DELETE(options.BaseURL+"/course/instructor/lessons/:lessonId", wrapper.DeleteLesson)
+	router.GET(options.BaseURL+"/course/instructor/lessons/:lessonId", wrapper.GetLessonDetail)
+	router.GET(options.BaseURL+"/course/instructor/lessons/:lessonId/comments", wrapper.GetLessonComments)
+	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/comments", wrapper.CommentOnLesson)
+	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/mark-completed", wrapper.MarkLessonAsCompleted)
+	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/move", wrapper.MoveLesson)
+	router.GET(options.BaseURL+"/course/instructor/lessons/:lessonId/progress", wrapper.GetLessonProgress)
+	router.PATCH(options.BaseURL+"/course/instructor/lessons/:lessonId/test", wrapper.EditTestLesson)
+	router.PUT(options.BaseURL+"/course/instructor/lessons/:lessonId/test-progress", wrapper.SaveTestLessonProgress)
+	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/tests", wrapper.CreateTest)
+	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/upload-video-url", wrapper.GetUploadVideoLessonUrl)
+	router.PATCH(options.BaseURL+"/course/instructor/lessons/:lessonId/video", wrapper.EditVideoLesson)
+	router.PUT(options.BaseURL+"/course/instructor/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
+	router.POST(options.BaseURL+"/course/instructor/sections", wrapper.CreateSection)
+	router.DELETE(options.BaseURL+"/course/instructor/sections/:sectionId", wrapper.DeleteSection)
+	router.PATCH(options.BaseURL+"/course/instructor/sections/:sectionId", wrapper.UpdateSectionTitle)
+	router.POST(options.BaseURL+"/course/instructor/sections/:sectionId/move", wrapper.MoveSection)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -1435,6 +1435,182 @@ type UnauthorizedErrorJSONResponse struct {
 
 	// Type The category of the error encountered during the middleware lifecycle.
 	Type UnauthorizedErrorJSONResponseType `json:"type"`
+}
+
+type ApproveCourseRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+}
+
+type ApproveCourseResponseObject interface {
+	VisitApproveCourseResponse(w http.ResponseWriter) error
+}
+
+type ApproveCourse204Response struct {
+}
+
+func (response ApproveCourse204Response) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type ApproveCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response ApproveCourse400JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ApproveCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response ApproveCourse401JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ApproveCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response ApproveCourse403JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ApproveCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response ApproveCourse404JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type ApproveCourse500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response ApproveCourse500JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeclineCourseRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+	Body     *DeclineCourseJSONRequestBody
+}
+
+type DeclineCourseResponseObject interface {
+	VisitDeclineCourseResponse(w http.ResponseWriter) error
+}
+
+type DeclineCourse204Response struct {
+}
+
+func (response DeclineCourse204Response) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeclineCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response DeclineCourse400JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeclineCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response DeclineCourse401JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeclineCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response DeclineCourse403JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeclineCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response DeclineCourse404JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type DeclineCourse500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response DeclineCourse500JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCoursesRequestObject struct {
+	Params GetMyEnrolledCoursesParams
+}
+
+type GetMyEnrolledCoursesResponseObject interface {
+	VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error
+}
+
+type GetMyEnrolledCourses200JSONResponse struct {
+	Data       []Course   `json:"data"`
+	Pagination Pagination `json:"pagination"`
+}
+
+func (response GetMyEnrolledCourses200JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCourses400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetMyEnrolledCourses400JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCourses401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetMyEnrolledCourses401JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetMyEnrolledCourses500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetMyEnrolledCourses500JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+
+	return json.NewEncoder(w).Encode(response)
 }
 
 type GetMyCertificatesRequestObject struct {
@@ -1836,55 +2012,6 @@ func (response GetSystemCourses500JSONResponse) VisitGetSystemCoursesResponse(w 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetMyEnrolledCoursesRequestObject struct {
-	Params GetMyEnrolledCoursesParams
-}
-
-type GetMyEnrolledCoursesResponseObject interface {
-	VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error
-}
-
-type GetMyEnrolledCourses200JSONResponse struct {
-	Data       []Course   `json:"data"`
-	Pagination Pagination `json:"pagination"`
-}
-
-func (response GetMyEnrolledCourses200JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetMyEnrolledCourses400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetMyEnrolledCourses400JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetMyEnrolledCourses401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetMyEnrolledCourses401JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type GetMyEnrolledCourses500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetMyEnrolledCourses500JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
 type DeleteCourseRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
 }
@@ -1942,69 +2069,6 @@ type DeleteCourse500JSONResponse struct {
 }
 
 func (response DeleteCourse500JSONResponse) VisitDeleteCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type ApproveCourseRequestObject struct {
-	CourseId CourseIdPath `json:"courseId"`
-}
-
-type ApproveCourseResponseObject interface {
-	VisitApproveCourseResponse(w http.ResponseWriter) error
-}
-
-type ApproveCourse204Response struct {
-}
-
-func (response ApproveCourse204Response) VisitApproveCourseResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type ApproveCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response ApproveCourse400JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type ApproveCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response ApproveCourse401JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type ApproveCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response ApproveCourse403JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type ApproveCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response ApproveCourse404JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type ApproveCourse500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response ApproveCourse500JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -2138,70 +2202,6 @@ type BookmarkCourse500JSONResponse struct {
 }
 
 func (response BookmarkCourse500JSONResponse) VisitBookmarkCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type DeclineCourseRequestObject struct {
-	CourseId CourseIdPath `json:"courseId"`
-	Body     *DeclineCourseJSONRequestBody
-}
-
-type DeclineCourseResponseObject interface {
-	VisitDeclineCourseResponse(w http.ResponseWriter) error
-}
-
-type DeclineCourse204Response struct {
-}
-
-func (response DeclineCourse204Response) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeclineCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response DeclineCourse400JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type DeclineCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response DeclineCourse401JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type DeclineCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response DeclineCourse403JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type DeclineCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response DeclineCourse404JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-
-	return json.NewEncoder(w).Encode(response)
-}
-
-type DeclineCourse500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response DeclineCourse500JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
 
@@ -4091,131 +4091,131 @@ func (response MoveSection500JSONResponse) VisitMoveSectionResponse(w http.Respo
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
-	// Get my certificates
-	// (GET /course/certificates/me)
-	GetMyCertificates(ctx context.Context, request GetMyCertificatesRequestObject) (GetMyCertificatesResponseObject, error)
-	// Get certificate by id
-	// (GET /course/certificates/{certificateId})
-	GetCertificateById(ctx context.Context, request GetCertificateByIdRequestObject) (GetCertificateByIdResponseObject, error)
-	// Search courses
-	// (GET /course/courses)
-	SearchCourses(ctx context.Context, request SearchCoursesRequestObject) (SearchCoursesResponseObject, error)
-	// Create course
-	// (POST /course/courses)
-	CreateCourse(ctx context.Context, request CreateCourseRequestObject) (CreateCourseResponseObject, error)
-	// Get instructor courses
-	// (GET /course/courses-by-instructor/{instructorId})
-	GetInstructorCourses(ctx context.Context, request GetInstructorCoursesRequestObject) (GetInstructorCoursesResponseObject, error)
-	// Get published courses
-	// (GET /course/courses-published)
-	GetPublishedCourses(ctx context.Context, request GetPublishedCoursesRequestObject) (GetPublishedCoursesResponseObject, error)
-	// Get system courses
-	// (GET /course/courses-system)
-	GetSystemCourses(ctx context.Context, request GetSystemCoursesRequestObject) (GetSystemCoursesResponseObject, error)
+	// Approve course
+	// (POST /course/admin/courses/{courseId}/approve)
+	ApproveCourse(ctx context.Context, request ApproveCourseRequestObject) (ApproveCourseResponseObject, error)
+	// Decline course
+	// (POST /course/admin/courses/{courseId}/decline)
+	DeclineCourse(ctx context.Context, request DeclineCourseRequestObject) (DeclineCourseResponseObject, error)
 	// Get my enrolled courses
 	// (GET /course/courses/me/enrolled)
 	GetMyEnrolledCourses(ctx context.Context, request GetMyEnrolledCoursesRequestObject) (GetMyEnrolledCoursesResponseObject, error)
+	// Get my certificates
+	// (GET /course/instructor/certificates/me)
+	GetMyCertificates(ctx context.Context, request GetMyCertificatesRequestObject) (GetMyCertificatesResponseObject, error)
+	// Get certificate by id
+	// (GET /course/instructor/certificates/{certificateId})
+	GetCertificateById(ctx context.Context, request GetCertificateByIdRequestObject) (GetCertificateByIdResponseObject, error)
+	// Search courses
+	// (GET /course/instructor/courses)
+	SearchCourses(ctx context.Context, request SearchCoursesRequestObject) (SearchCoursesResponseObject, error)
+	// Create course
+	// (POST /course/instructor/courses)
+	CreateCourse(ctx context.Context, request CreateCourseRequestObject) (CreateCourseResponseObject, error)
+	// Get instructor courses
+	// (GET /course/instructor/courses-by-instructor/{instructorId})
+	GetInstructorCourses(ctx context.Context, request GetInstructorCoursesRequestObject) (GetInstructorCoursesResponseObject, error)
+	// Get published courses
+	// (GET /course/instructor/courses-published)
+	GetPublishedCourses(ctx context.Context, request GetPublishedCoursesRequestObject) (GetPublishedCoursesResponseObject, error)
+	// Get system courses
+	// (GET /course/instructor/courses-system)
+	GetSystemCourses(ctx context.Context, request GetSystemCoursesRequestObject) (GetSystemCoursesResponseObject, error)
 	// Delete course
-	// (DELETE /course/courses/{courseId})
+	// (DELETE /course/instructor/courses/{courseId})
 	DeleteCourse(ctx context.Context, request DeleteCourseRequestObject) (DeleteCourseResponseObject, error)
-	// Approve course
-	// (POST /course/courses/{courseId}/approve)
-	ApproveCourse(ctx context.Context, request ApproveCourseRequestObject) (ApproveCourseResponseObject, error)
 	// Update course
-	// (PATCH /course/courses/{courseId}/basic-info)
+	// (PATCH /course/instructor/courses/{courseId}/basic-info)
 	UpdateCourse(ctx context.Context, request UpdateCourseRequestObject) (UpdateCourseResponseObject, error)
 	// Bookmark course
-	// (POST /course/courses/{courseId}/bookmark)
+	// (POST /course/instructor/courses/{courseId}/bookmark)
 	BookmarkCourse(ctx context.Context, request BookmarkCourseRequestObject) (BookmarkCourseResponseObject, error)
-	// Decline course
-	// (POST /course/courses/{courseId}/decline)
-	DeclineCourse(ctx context.Context, request DeclineCourseRequestObject) (DeclineCourseResponseObject, error)
 	// Get course detail
-	// (GET /course/courses/{courseId}/detail)
+	// (GET /course/instructor/courses/{courseId}/detail)
 	GetCourseDetail(ctx context.Context, request GetCourseDetailRequestObject) (GetCourseDetailResponseObject, error)
 	// Enroll in course
-	// (POST /course/courses/{courseId}/enroll)
+	// (POST /course/instructor/courses/{courseId}/enroll)
 	EnrollInCourse(ctx context.Context, request EnrollInCourseRequestObject) (EnrollInCourseResponseObject, error)
 	// Finish course
-	// (POST /course/courses/{courseId}/finish)
+	// (POST /course/instructor/courses/{courseId}/finish)
 	FinishCourse(ctx context.Context, request FinishCourseRequestObject) (FinishCourseResponseObject, error)
 	// Hide course
-	// (POST /course/courses/{courseId}/hide)
+	// (POST /course/instructor/courses/{courseId}/hide)
 	HideCourse(ctx context.Context, request HideCourseRequestObject) (HideCourseResponseObject, error)
 	// Get course landing page
-	// (GET /course/courses/{courseId}/landing)
+	// (GET /course/instructor/courses/{courseId}/landing)
 	GetCourseLandingPage(ctx context.Context, request GetCourseLandingPageRequestObject) (GetCourseLandingPageResponseObject, error)
 	// Get course progress
-	// (GET /course/courses/{courseId}/progress)
+	// (GET /course/instructor/courses/{courseId}/progress)
 	GetCourseProgress(ctx context.Context, request GetCourseProgressRequestObject) (GetCourseProgressResponseObject, error)
 	// Review course
-	// (POST /course/courses/{courseId}/reviews)
+	// (POST /course/instructor/courses/{courseId}/reviews)
 	ReviewCourse(ctx context.Context, request ReviewCourseRequestObject) (ReviewCourseResponseObject, error)
 	// Trigger learning reminder
-	// (POST /course/courses/{courseId}/trigger-learning-reminder)
+	// (POST /course/instructor/courses/{courseId}/trigger-learning-reminder)
 	TriggerLearningReminder(ctx context.Context, request TriggerLearningReminderRequestObject) (TriggerLearningReminderResponseObject, error)
 	// Unbookmark course
-	// (POST /course/courses/{courseId}/unbookmark)
+	// (POST /course/instructor/courses/{courseId}/unbookmark)
 	UnbookmarkCourse(ctx context.Context, request UnbookmarkCourseRequestObject) (UnbookmarkCourseResponseObject, error)
 	// Unhide course
-	// (POST /course/courses/{courseId}/unhide)
+	// (POST /course/instructor/courses/{courseId}/unhide)
 	UnhideCourse(ctx context.Context, request UnhideCourseRequestObject) (UnhideCourseResponseObject, error)
 	// Reply lesson comment
-	// (POST /course/lesson-comments/{commentId}/reply)
+	// (POST /course/instructor/lesson-comments/{commentId}/reply)
 	ReplyLessonComment(ctx context.Context, request ReplyLessonCommentRequestObject) (ReplyLessonCommentResponseObject, error)
 	// Create lesson
-	// (POST /course/lessons)
+	// (POST /course/instructor/lessons)
 	CreateLesson(ctx context.Context, request CreateLessonRequestObject) (CreateLessonResponseObject, error)
 	// Delete lesson
-	// (DELETE /course/lessons/{lessonId})
+	// (DELETE /course/instructor/lessons/{lessonId})
 	DeleteLesson(ctx context.Context, request DeleteLessonRequestObject) (DeleteLessonResponseObject, error)
 	// Get lesson detail
-	// (GET /course/lessons/{lessonId})
+	// (GET /course/instructor/lessons/{lessonId})
 	GetLessonDetail(ctx context.Context, request GetLessonDetailRequestObject) (GetLessonDetailResponseObject, error)
 	// Get lesson comments
-	// (GET /course/lessons/{lessonId}/comments)
+	// (GET /course/instructor/lessons/{lessonId}/comments)
 	GetLessonComments(ctx context.Context, request GetLessonCommentsRequestObject) (GetLessonCommentsResponseObject, error)
 	// Comment on lesson
-	// (POST /course/lessons/{lessonId}/comments)
+	// (POST /course/instructor/lessons/{lessonId}/comments)
 	CommentOnLesson(ctx context.Context, request CommentOnLessonRequestObject) (CommentOnLessonResponseObject, error)
 	// Mark lesson as completed
-	// (POST /course/lessons/{lessonId}/mark-completed)
+	// (POST /course/instructor/lessons/{lessonId}/mark-completed)
 	MarkLessonAsCompleted(ctx context.Context, request MarkLessonAsCompletedRequestObject) (MarkLessonAsCompletedResponseObject, error)
 	// Move lesson
-	// (POST /course/lessons/{lessonId}/move)
+	// (POST /course/instructor/lessons/{lessonId}/move)
 	MoveLesson(ctx context.Context, request MoveLessonRequestObject) (MoveLessonResponseObject, error)
 	// Get lesson progress
-	// (GET /course/lessons/{lessonId}/progress)
+	// (GET /course/instructor/lessons/{lessonId}/progress)
 	GetLessonProgress(ctx context.Context, request GetLessonProgressRequestObject) (GetLessonProgressResponseObject, error)
 	// Edit test lesson
-	// (PATCH /course/lessons/{lessonId}/test)
+	// (PATCH /course/instructor/lessons/{lessonId}/test)
 	EditTestLesson(ctx context.Context, request EditTestLessonRequestObject) (EditTestLessonResponseObject, error)
 	// Save test lesson progress
-	// (PUT /course/lessons/{lessonId}/test-progress)
+	// (PUT /course/instructor/lessons/{lessonId}/test-progress)
 	SaveTestLessonProgress(ctx context.Context, request SaveTestLessonProgressRequestObject) (SaveTestLessonProgressResponseObject, error)
 	// Create test
-	// (POST /course/lessons/{lessonId}/tests)
+	// (POST /course/instructor/lessons/{lessonId}/tests)
 	CreateTest(ctx context.Context, request CreateTestRequestObject) (CreateTestResponseObject, error)
 	// Get upload video lesson URL
-	// (POST /course/lessons/{lessonId}/upload-video-url)
+	// (POST /course/instructor/lessons/{lessonId}/upload-video-url)
 	GetUploadVideoLessonUrl(ctx context.Context, request GetUploadVideoLessonUrlRequestObject) (GetUploadVideoLessonUrlResponseObject, error)
 	// Edit video lesson
-	// (PATCH /course/lessons/{lessonId}/video)
+	// (PATCH /course/instructor/lessons/{lessonId}/video)
 	EditVideoLesson(ctx context.Context, request EditVideoLessonRequestObject) (EditVideoLessonResponseObject, error)
 	// Save video lesson progress
-	// (PUT /course/lessons/{lessonId}/video-progress)
+	// (PUT /course/instructor/lessons/{lessonId}/video-progress)
 	SaveVideoLessonProgress(ctx context.Context, request SaveVideoLessonProgressRequestObject) (SaveVideoLessonProgressResponseObject, error)
 	// Create section
-	// (POST /course/sections)
+	// (POST /course/instructor/sections)
 	CreateSection(ctx context.Context, request CreateSectionRequestObject) (CreateSectionResponseObject, error)
 	// Delete section
-	// (DELETE /course/sections/{sectionId})
+	// (DELETE /course/instructor/sections/{sectionId})
 	DeleteSection(ctx context.Context, request DeleteSectionRequestObject) (DeleteSectionResponseObject, error)
 	// Update section
-	// (PATCH /course/sections/{sectionId})
+	// (PATCH /course/instructor/sections/{sectionId})
 	UpdateSectionTitle(ctx context.Context, request UpdateSectionTitleRequestObject) (UpdateSectionTitleResponseObject, error)
 	// Move section
-	// (POST /course/sections/{sectionId}/move)
+	// (POST /course/instructor/sections/{sectionId}/move)
 	MoveSection(ctx context.Context, request MoveSectionRequestObject) (MoveSectionResponseObject, error)
 }
 
@@ -4229,6 +4229,98 @@ func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareF
 type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
+}
+
+// ApproveCourse operation middleware
+func (sh *strictHandler) ApproveCourse(ctx *gin.Context, courseId CourseIdPath) {
+	var request ApproveCourseRequestObject
+
+	request.CourseId = courseId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.ApproveCourse(ctx, request.(ApproveCourseRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ApproveCourse")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(ApproveCourseResponseObject); ok {
+		if err := validResponse.VisitApproveCourseResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeclineCourse operation middleware
+func (sh *strictHandler) DeclineCourse(ctx *gin.Context, courseId CourseIdPath) {
+	var request DeclineCourseRequestObject
+
+	request.CourseId = courseId
+
+	var body DeclineCourseJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			ctx.Status(http.StatusBadRequest)
+			ctx.Error(err)
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeclineCourse(ctx, request.(DeclineCourseRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeclineCourse")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(DeclineCourseResponseObject); ok {
+		if err := validResponse.VisitDeclineCourseResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetMyEnrolledCourses operation middleware
+func (sh *strictHandler) GetMyEnrolledCourses(ctx *gin.Context, params GetMyEnrolledCoursesParams) {
+	var request GetMyEnrolledCoursesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMyEnrolledCourses(ctx, request.(GetMyEnrolledCoursesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMyEnrolledCourses")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetMyEnrolledCoursesResponseObject); ok {
+		if err := validResponse.VisitGetMyEnrolledCoursesResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
 }
 
 // GetMyCertificates operation middleware
@@ -4427,33 +4519,6 @@ func (sh *strictHandler) GetSystemCourses(ctx *gin.Context, params GetSystemCour
 	}
 }
 
-// GetMyEnrolledCourses operation middleware
-func (sh *strictHandler) GetMyEnrolledCourses(ctx *gin.Context, params GetMyEnrolledCoursesParams) {
-	var request GetMyEnrolledCoursesRequestObject
-
-	request.Params = params
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetMyEnrolledCourses(ctx, request.(GetMyEnrolledCoursesRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetMyEnrolledCourses")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetMyEnrolledCoursesResponseObject); ok {
-		if err := validResponse.VisitGetMyEnrolledCoursesResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // DeleteCourse operation middleware
 func (sh *strictHandler) DeleteCourse(ctx *gin.Context, courseId CourseIdPath) {
 	var request DeleteCourseRequestObject
@@ -4474,33 +4539,6 @@ func (sh *strictHandler) DeleteCourse(ctx *gin.Context, courseId CourseIdPath) {
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(DeleteCourseResponseObject); ok {
 		if err := validResponse.VisitDeleteCourseResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ApproveCourse operation middleware
-func (sh *strictHandler) ApproveCourse(ctx *gin.Context, courseId CourseIdPath) {
-	var request ApproveCourseRequestObject
-
-	request.CourseId = courseId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.ApproveCourse(ctx, request.(ApproveCourseRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ApproveCourse")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(ApproveCourseResponseObject); ok {
-		if err := validResponse.VisitApproveCourseResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {
@@ -4563,44 +4601,6 @@ func (sh *strictHandler) BookmarkCourse(ctx *gin.Context, courseId CourseIdPath)
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(BookmarkCourseResponseObject); ok {
 		if err := validResponse.VisitBookmarkCourseResponse(ctx.Writer); err != nil {
-			ctx.Error(err)
-		}
-	} else if response != nil {
-		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// DeclineCourse operation middleware
-func (sh *strictHandler) DeclineCourse(ctx *gin.Context, courseId CourseIdPath) {
-	var request DeclineCourseRequestObject
-
-	request.CourseId = courseId
-
-	var body DeclineCourseJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		if !errors.Is(err, io.EOF) {
-			ctx.Status(http.StatusBadRequest)
-			ctx.Error(err)
-			return
-		}
-	} else {
-		request.Body = &body
-	}
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeclineCourse(ctx, request.(DeclineCourseRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeclineCourse")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		ctx.Error(err)
-		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(DeclineCourseResponseObject); ok {
-		if err := validResponse.VisitDeclineCourseResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

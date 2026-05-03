@@ -59,7 +59,7 @@
     "url": "https://egolia-uit.github.io/egolia"
   },
   "paths": {
-    "/course/courses": {
+    "/course/instructor/courses": {
       "post": {
         "security": [
           {
@@ -196,7 +196,7 @@
         }
       }
     },
-    "/course/courses-system": {
+    "/course/instructor/courses-system": {
       "get": {
         "security": [
           {
@@ -260,7 +260,7 @@
         }
       }
     },
-    "/course/courses-published": {
+    "/course/instructor/courses-published": {
       "get": {
         "security": [
           {
@@ -318,7 +318,7 @@
         }
       }
     },
-    "/course/courses-by-instructor/{instructorId}": {
+    "/course/instructor/courses-by-instructor/{instructorId}": {
       "get": {
         "security": [
           {
@@ -389,7 +389,7 @@
         }
       }
     },
-    "/course/courses/{courseId}": {
+    "/course/instructor/courses/{courseId}": {
       "delete": {
         "security": [
           {
@@ -428,7 +428,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/detail": {
+    "/course/instructor/courses/{courseId}/detail": {
       "get": {
         "security": [
           {
@@ -482,7 +482,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/basic-info": {
+    "/course/instructor/courses/{courseId}/basic-info": {
       "patch": {
         "security": [
           {
@@ -531,7 +531,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/enroll": {
+    "/course/instructor/courses/{courseId}/enroll": {
       "post": {
         "security": [
           {
@@ -580,7 +580,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/progress": {
+    "/course/instructor/courses/{courseId}/progress": {
       "get": {
         "security": [
           {
@@ -634,7 +634,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/finish": {
+    "/course/instructor/courses/{courseId}/finish": {
       "post": {
         "security": [
           {
@@ -673,7 +673,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/reviews": {
+    "/course/instructor/courses/{courseId}/reviews": {
       "post": {
         "security": [
           {
@@ -750,7 +750,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/bookmark": {
+    "/course/instructor/courses/{courseId}/bookmark": {
       "post": {
         "security": [
           {
@@ -799,7 +799,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/unbookmark": {
+    "/course/instructor/courses/{courseId}/unbookmark": {
       "post": {
         "security": [
           {
@@ -838,7 +838,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/hide": {
+    "/course/instructor/courses/{courseId}/hide": {
       "post": {
         "security": [
           {
@@ -877,7 +877,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/unhide": {
+    "/course/instructor/courses/{courseId}/unhide": {
       "post": {
         "security": [
           {
@@ -916,7 +916,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/trigger-learning-reminder": {
+    "/course/instructor/courses/{courseId}/trigger-learning-reminder": {
       "post": {
         "security": [
           {
@@ -971,7 +971,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/landing": {
+    "/course/instructor/courses/{courseId}/landing": {
       "get": {
         "security": [],
         "tags": [
@@ -1015,7 +1015,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/approve": {
+    "/course/admin/courses/{courseId}/approve": {
       "post": {
         "security": [
           {
@@ -1054,7 +1054,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/decline": {
+    "/course/admin/courses/{courseId}/decline": {
       "post": {
         "security": [
           {
@@ -1171,7 +1171,7 @@
         }
       }
     },
-    "/course/sections": {
+    "/course/instructor/sections": {
       "post": {
         "security": [
           {
@@ -1245,7 +1245,7 @@
         }
       }
     },
-    "/course/sections/{sectionId}": {
+    "/course/instructor/sections/{sectionId}": {
       "delete": {
         "security": [
           {
@@ -1342,7 +1342,7 @@
         }
       }
     },
-    "/course/sections/{sectionId}/move": {
+    "/course/instructor/sections/{sectionId}/move": {
       "post": {
         "security": [
           {
@@ -1447,7 +1447,7 @@
         }
       }
     },
-    "/course/lessons": {
+    "/course/instructor/lessons": {
       "post": {
         "security": [
           {
@@ -1506,7 +1506,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}": {
+    "/course/instructor/lessons/{lessonId}": {
       "get": {
         "security": [
           {
@@ -1597,7 +1597,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/video": {
+    "/course/instructor/lessons/{lessonId}/video": {
       "patch": {
         "security": [
           {
@@ -1646,7 +1646,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/test": {
+    "/course/instructor/lessons/{lessonId}/test": {
       "patch": {
         "security": [
           {
@@ -1695,7 +1695,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/upload-video-url": {
+    "/course/instructor/lessons/{lessonId}/upload-video-url": {
       "post": {
         "security": [
           {
@@ -1781,7 +1781,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/tests": {
+    "/course/instructor/lessons/{lessonId}/tests": {
       "post": {
         "security": [
           {
@@ -1856,7 +1856,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/progress": {
+    "/course/instructor/lessons/{lessonId}/progress": {
       "get": {
         "security": [
           {
@@ -1910,7 +1910,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/video-progress": {
+    "/course/instructor/lessons/{lessonId}/video-progress": {
       "put": {
         "security": [
           {
@@ -1959,7 +1959,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/test-progress": {
+    "/course/instructor/lessons/{lessonId}/test-progress": {
       "put": {
         "security": [
           {
@@ -2023,7 +2023,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/mark-completed": {
+    "/course/instructor/lessons/{lessonId}/mark-completed": {
       "post": {
         "security": [
           {
@@ -2062,7 +2062,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/move": {
+    "/course/instructor/lessons/{lessonId}/move": {
       "post": {
         "security": [
           {
@@ -2145,7 +2145,7 @@
         }
       }
     },
-    "/course/lessons/{lessonId}/comments": {
+    "/course/instructor/lessons/{lessonId}/comments": {
       "get": {
         "security": [
           {
@@ -2264,7 +2264,7 @@
         }
       }
     },
-    "/course/lesson-comments/{commentId}/reply": {
+    "/course/instructor/lesson-comments/{commentId}/reply": {
       "post": {
         "security": [
           {
@@ -2331,7 +2331,7 @@
         }
       }
     },
-    "/course/certificates/me": {
+    "/course/instructor/certificates/me": {
       "get": {
         "security": [
           {
@@ -2392,7 +2392,7 @@
         }
       }
     },
-    "/course/certificates/{certificateId}": {
+    "/course/instructor/certificates/{certificateId}": {
       "get": {
         "security": [
           {

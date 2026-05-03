@@ -12,11 +12,13 @@ http:
     course-http-admin:
       entryPoints:
         - web
-      rule: "
-        Host(`api.egolia.localhost`) && ( \
-        (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) \
-        ) \
-        "
+      # rule: "
+      #   Host(`api.egolia.localhost`) && ( \
+      #   (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) \
+      #   ) \
+      #   "
+      # rule: start with /course/admin/
+      rule: Host(`api.egolia.localhost`) && PathPrefix(`/course/admin/`)
       service: course-http
       priority: 80
       middlewares:
@@ -26,11 +28,14 @@ http:
     course-http-instructor-or-admin:
       entryPoints:
         - web
-      rule: "
-        Host(`api.egolia.localhost`) && ( \
-        (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}/basic-info`) && Method(`PATCH`)) \
-        ) \
-        "
+        # rule: start with /course/instructor/
+      rule: Host(`api.egolia.localhost`) && PathPrefix(`/course/instructor/`)
+      # rule: "
+      # rule: "
+      #   Host(`api.egolia.localhost`) && ( \
+      #   (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}/basic-info`) && Method(`PATCH`)) \
+      #   ) \
+      #   "
       service: course-http
       priority: 70
       middlewares:

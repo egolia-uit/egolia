@@ -34,7 +34,7 @@ export const searchCourses = <ThrowOnError extends boolean = false>(options?: Op
     responseTransformer: searchCoursesResponseTransformer,
     responseValidator: async (data) => await zSearchCoursesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses',
+    url: '/course/instructor/courses',
     ...options
 });
 
@@ -48,7 +48,7 @@ export const createCourse = <ThrowOnError extends boolean = false>(options: Opti
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses',
+    url: '/course/instructor/courses',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export const getSystemCourses = <ThrowOnError extends boolean = false>(options?:
     responseTransformer: getSystemCoursesResponseTransformer,
     responseValidator: async (data) => await zGetSystemCoursesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses-system',
+    url: '/course/instructor/courses-system',
     ...options
 });
 
@@ -84,7 +84,7 @@ export const getPublishedCourses = <ThrowOnError extends boolean = false>(option
     responseTransformer: getPublishedCoursesResponseTransformer,
     responseValidator: async (data) => await zGetPublishedCoursesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses-published',
+    url: '/course/instructor/courses-published',
     ...options
 });
 
@@ -102,7 +102,7 @@ export const getInstructorCourses = <ThrowOnError extends boolean = false>(optio
     responseTransformer: getInstructorCoursesResponseTransformer,
     responseValidator: async (data) => await zGetInstructorCoursesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses-by-instructor/{instructorId}',
+    url: '/course/instructor/courses-by-instructor/{instructorId}',
     ...options
 });
 
@@ -117,7 +117,7 @@ export const deleteCourse = <ThrowOnError extends boolean = false>(options: Opti
     }).parseAsync(data),
     responseValidator: async (data) => await zDeleteCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}',
+    url: '/course/instructor/courses/{courseId}',
     ...options
 });
 
@@ -133,7 +133,7 @@ export const getCourseDetail = <ThrowOnError extends boolean = false>(options: O
     responseTransformer: getCourseDetailResponseTransformer,
     responseValidator: async (data) => await zGetCourseDetailResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/detail',
+    url: '/course/instructor/courses/{courseId}/detail',
     ...options
 });
 
@@ -148,7 +148,7 @@ export const updateCourse = <ThrowOnError extends boolean = false>(options: Opti
     }).parseAsync(data),
     responseValidator: async (data) => await zUpdateCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/basic-info',
+    url: '/course/instructor/courses/{courseId}/basic-info',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export const enrollInCourse = <ThrowOnError extends boolean = false>(options: Op
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/enroll',
+    url: '/course/instructor/courses/{courseId}/enroll',
     ...options
 });
 
@@ -181,7 +181,7 @@ export const getCourseProgress = <ThrowOnError extends boolean = false>(options:
     }).parseAsync(data),
     responseValidator: async (data) => await zGetCourseProgressResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/progress',
+    url: '/course/instructor/courses/{courseId}/progress',
     ...options
 });
 
@@ -196,7 +196,7 @@ export const finishCourse = <ThrowOnError extends boolean = false>(options: Opti
     }).parseAsync(data),
     responseValidator: async (data) => await zFinishCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/finish',
+    url: '/course/instructor/courses/{courseId}/finish',
     ...options
 });
 
@@ -210,7 +210,7 @@ export const reviewCourse = <ThrowOnError extends boolean = false>(options: Opti
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/reviews',
+    url: '/course/instructor/courses/{courseId}/reviews',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ export const bookmarkCourse = <ThrowOnError extends boolean = false>(options: Op
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/bookmark',
+    url: '/course/instructor/courses/{courseId}/bookmark',
     ...options
 });
 
@@ -243,7 +243,7 @@ export const unbookmarkCourse = <ThrowOnError extends boolean = false>(options: 
     }).parseAsync(data),
     responseValidator: async (data) => await zUnbookmarkCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/unbookmark',
+    url: '/course/instructor/courses/{courseId}/unbookmark',
     ...options
 });
 
@@ -258,7 +258,7 @@ export const hideCourse = <ThrowOnError extends boolean = false>(options: Option
     }).parseAsync(data),
     responseValidator: async (data) => await zHideCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/hide',
+    url: '/course/instructor/courses/{courseId}/hide',
     ...options
 });
 
@@ -273,7 +273,7 @@ export const unhideCourse = <ThrowOnError extends boolean = false>(options: Opti
     }).parseAsync(data),
     responseValidator: async (data) => await zUnhideCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/unhide',
+    url: '/course/instructor/courses/{courseId}/unhide',
     ...options
 });
 
@@ -288,7 +288,7 @@ export const triggerLearningReminder = <ThrowOnError extends boolean = false>(op
     }).parseAsync(data),
     responseValidator: async (data) => await zTriggerLearningReminderResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/trigger-learning-reminder',
+    url: '/course/instructor/courses/{courseId}/trigger-learning-reminder',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -307,7 +307,7 @@ export const getCourseLandingPage = <ThrowOnError extends boolean = false>(optio
     }).parseAsync(data),
     responseTransformer: getCourseLandingPageResponseTransformer,
     responseValidator: async (data) => await zGetCourseLandingPageResponse.parseAsync(data),
-    url: '/course/courses/{courseId}/landing',
+    url: '/course/instructor/courses/{courseId}/landing',
     ...options
 });
 
@@ -322,7 +322,7 @@ export const approveCourse = <ThrowOnError extends boolean = false>(options: Opt
     }).parseAsync(data),
     responseValidator: async (data) => await zApproveCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/approve',
+    url: '/course/admin/courses/{courseId}/approve',
     ...options
 });
 
@@ -337,7 +337,7 @@ export const declineCourse = <ThrowOnError extends boolean = false>(options: Opt
     }).parseAsync(data),
     responseValidator: async (data) => await zDeclineCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/courses/{courseId}/decline',
+    url: '/course/admin/courses/{courseId}/decline',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -371,7 +371,7 @@ export const createSection = <ThrowOnError extends boolean = false>(options: Opt
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/sections',
+    url: '/course/instructor/sections',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -390,7 +390,7 @@ export const deleteSection = <ThrowOnError extends boolean = false>(options: Opt
     }).parseAsync(data),
     responseValidator: async (data) => await zDeleteSectionResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/sections/{sectionId}',
+    url: '/course/instructor/sections/{sectionId}',
     ...options
 });
 
@@ -404,7 +404,7 @@ export const updateSectionTitle = <ThrowOnError extends boolean = false>(options
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/sections/{sectionId}',
+    url: '/course/instructor/sections/{sectionId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -423,7 +423,7 @@ export const moveSection = <ThrowOnError extends boolean = false>(options: Optio
     }).parseAsync(data),
     responseValidator: async (data) => await zMoveSectionResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/sections/{sectionId}/move',
+    url: '/course/instructor/sections/{sectionId}/move',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -441,7 +441,7 @@ export const createLesson = <ThrowOnError extends boolean = false>(options: Opti
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons',
+    url: '/course/instructor/lessons',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -460,7 +460,7 @@ export const deleteLesson = <ThrowOnError extends boolean = false>(options: Opti
     }).parseAsync(data),
     responseValidator: async (data) => await zDeleteLessonResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}',
+    url: '/course/instructor/lessons/{lessonId}',
     ...options
 });
 
@@ -475,7 +475,7 @@ export const getLessonDetail = <ThrowOnError extends boolean = false>(options: O
     }).parseAsync(data),
     responseValidator: async (data) => await zGetLessonDetailResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}',
+    url: '/course/instructor/lessons/{lessonId}',
     ...options
 });
 
@@ -490,7 +490,7 @@ export const editVideoLesson = <ThrowOnError extends boolean = false>(options: O
     }).parseAsync(data),
     responseValidator: async (data) => await zEditVideoLessonResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/video',
+    url: '/course/instructor/lessons/{lessonId}/video',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -509,7 +509,7 @@ export const editTestLesson = <ThrowOnError extends boolean = false>(options: Op
     }).parseAsync(data),
     responseValidator: async (data) => await zEditTestLessonResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/test',
+    url: '/course/instructor/lessons/{lessonId}/test',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -529,7 +529,7 @@ export const getUploadVideoLessonUrl = <ThrowOnError extends boolean = false>(op
     responseTransformer: getUploadVideoLessonUrlResponseTransformer,
     responseValidator: async (data) => await zGetUploadVideoLessonUrlResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/upload-video-url',
+    url: '/course/instructor/lessons/{lessonId}/upload-video-url',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -547,7 +547,7 @@ export const createTest = <ThrowOnError extends boolean = false>(options: Option
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/tests',
+    url: '/course/instructor/lessons/{lessonId}/tests',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -566,7 +566,7 @@ export const getLessonProgress = <ThrowOnError extends boolean = false>(options:
     }).parseAsync(data),
     responseValidator: async (data) => await zGetLessonProgressResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/progress',
+    url: '/course/instructor/lessons/{lessonId}/progress',
     ...options
 });
 
@@ -581,7 +581,7 @@ export const saveVideoLessonProgress = <ThrowOnError extends boolean = false>(op
     }).parseAsync(data),
     responseValidator: async (data) => await zSaveVideoLessonProgressResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/video-progress',
+    url: '/course/instructor/lessons/{lessonId}/video-progress',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -600,7 +600,7 @@ export const saveTestLessonProgress = <ThrowOnError extends boolean = false>(opt
     }).parseAsync(data),
     responseValidator: async (data) => await zSaveTestLessonProgressResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/test-progress',
+    url: '/course/instructor/lessons/{lessonId}/test-progress',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -619,7 +619,7 @@ export const markLessonAsCompleted = <ThrowOnError extends boolean = false>(opti
     }).parseAsync(data),
     responseValidator: async (data) => await zMarkLessonAsCompletedResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/mark-completed',
+    url: '/course/instructor/lessons/{lessonId}/mark-completed',
     ...options
 });
 
@@ -633,7 +633,7 @@ export const moveLesson = <ThrowOnError extends boolean = false>(options: Option
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/move',
+    url: '/course/instructor/lessons/{lessonId}/move',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -653,7 +653,7 @@ export const getLessonComments = <ThrowOnError extends boolean = false>(options:
     responseTransformer: getLessonCommentsResponseTransformer,
     responseValidator: async (data) => await zGetLessonCommentsResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/comments',
+    url: '/course/instructor/lessons/{lessonId}/comments',
     ...options
 });
 
@@ -667,7 +667,7 @@ export const commentOnLesson = <ThrowOnError extends boolean = false>(options: O
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lessons/{lessonId}/comments',
+    url: '/course/instructor/lessons/{lessonId}/comments',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -685,7 +685,7 @@ export const replyLessonComment = <ThrowOnError extends boolean = false>(options
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/lesson-comments/{commentId}/reply',
+    url: '/course/instructor/lesson-comments/{commentId}/reply',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -705,7 +705,7 @@ export const getMyCertificates = <ThrowOnError extends boolean = false>(options?
     responseTransformer: getMyCertificatesResponseTransformer,
     responseValidator: async (data) => await zGetMyCertificatesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/certificates/me',
+    url: '/course/instructor/certificates/me',
     ...options
 });
 
@@ -721,7 +721,7 @@ export const getCertificateById = <ThrowOnError extends boolean = false>(options
     responseTransformer: getCertificateByIdResponseTransformer,
     responseValidator: async (data) => await zGetCertificateByIdResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/course/certificates/{certificateId}',
+    url: '/course/instructor/certificates/{certificateId}',
     ...options
 });
 
