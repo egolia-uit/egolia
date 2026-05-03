@@ -1174,7 +1174,7 @@
                 "required": [
                   "courseId",
                   "title",
-                  "targetIndex"
+                  "preOrder"
                 ],
                 "properties": {
                   "courseId": {

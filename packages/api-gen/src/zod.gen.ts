@@ -647,7 +647,7 @@ export const zGetMyEnrolledCoursesResponse = z.object({
 export const zCreateSectionBody = z.object({
     courseId: zCoursePropertiesId,
     title: z.string().min(1).max(255),
-    preOrder: z.string().optional()
+    preOrder: z.string()
 });
 
 export const zDeleteSectionPath = z.object({

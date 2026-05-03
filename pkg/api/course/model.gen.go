@@ -663,7 +663,7 @@ type GetUploadVideoLessonUrlJSONBody struct {
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
 	CourseId *PropertiesId `json:"courseId,omitempty"`
-	PreOrder *string       `json:"preOrder,omitempty"`
+	PreOrder string        `json:"preOrder"`
 	Title    string        `json:"title"`
 }
 

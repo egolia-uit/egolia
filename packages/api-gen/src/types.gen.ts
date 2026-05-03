@@ -1719,7 +1719,7 @@ export type CreateSectionData = {
     body: {
         courseId: CoursePropertiesId;
         title: string;
-        preOrder?: string;
+        preOrder: string;
     };
     path?: never;
     query?: never;
