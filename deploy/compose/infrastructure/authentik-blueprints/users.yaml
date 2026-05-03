@@ -7,6 +7,16 @@ metadata:
     blueprints.goauthentik.io/description: |
       User list
 entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: authentik Bootstrap
+
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - RBAC - Read-only
+
   - model: authentik_core.user
     identifiers:
       username: egoliauit
