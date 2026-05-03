@@ -12,20 +12,30 @@ http:
     course-http-admin:
       entryPoints:
         - web
-      rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
+      rule: "
+        Host(`api.egolia.localhost`) && ( \
+        (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) \
+        ) \
+        "
       service: course-http
+      priority: 80
       middlewares:
         - cors
-        # - protect-admin
+        - protect-admin
 
     course-http-instructor-or-admin:
       entryPoints:
         - web
-      rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
+      rule: "
+        Host(`api.egolia.localhost`) && ( \
+        (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}/basic-info`) && Method(`PATCH`)) \
+        ) \
+        "
       service: course-http
+      priority: 70
       middlewares:
         - cors
-        # - protect-instructor-or-admin
+        - protect-instructor-or-admin
 
     course-http-public:
       entryPoints:
@@ -38,6 +48,20 @@ http:
         ) \
         "
       service: course-http
+      priority: 60
+      middlewares:
+        - cors
+
+    course-http-authenticated:
+      entryPoints:
+        - web
+      rule: "
+        Host(`api.egolia.localhost`) && ( \
+        PathPrefix(`/course/`) \
+        ) \
+        "
+      service: course-http
+      priority: 50
       middlewares:
         - cors
 
@@ -45,12 +69,14 @@ http:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course.CourseService/`)
+      priority: 90
       service: course-grpc
 
     course-health:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course/health`)
+      priority: 100
       service: course-health
       middlewares:
         - cors
