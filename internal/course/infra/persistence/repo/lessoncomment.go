@@ -13,10 +13,6 @@ type LessonCommentRepo struct {
 	db *gorm.DB
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 97d60f7c3 (feat: check backend)
 func NewLessonCommentRepo(db *gorm.DB) *LessonCommentRepo {
 	return &LessonCommentRepo{db: db}
 }
@@ -24,12 +20,6 @@ func NewLessonCommentRepo(db *gorm.DB) *LessonCommentRepo {
 var _ domain.LessonCommentRepo = (*LessonCommentRepo)(nil)
 
 func (r *LessonCommentRepo) Get(ctx context.Context, params domain.LessonCommentRepoGet, forUpdate bool) (*domain.LessonComment, error) {
-<<<<<<< HEAD
-=======
-func (r *lessonCommentRepo) Get(ctx context.Context, params domain.LessonCommentRepoGet, forUpdate bool) (*domain.LessonComment, error) {
->>>>>>> 65e45e788 (feat: read model in)
-=======
->>>>>>> 97d60f7c3 (feat: check backend)
 	db := r.db.WithContext(ctx)
 	if forUpdate {
 		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
@@ -43,15 +33,7 @@ func (r *lessonCommentRepo) Get(ctx context.Context, params domain.LessonComment
 }
 
 // GetRecursive uses a Postgres recursive CTE to fetch a comment and all its descendants.
-<<<<<<< HEAD
-<<<<<<< HEAD
 func (r *LessonCommentRepo) GetRecursive(ctx context.Context, params domain.LessonCommentRepoGetRecursive, forUpdate bool) ([]*domain.LessonComment, error) {
-=======
-func (r *lessonCommentRepo) GetRecursive(ctx context.Context, params domain.LessonCommentRepoGetRecursive, forUpdate bool) ([]*domain.LessonComment, error) {
->>>>>>> 65e45e788 (feat: read model in)
-=======
-func (r *LessonCommentRepo) GetRecursive(ctx context.Context, params domain.LessonCommentRepoGetRecursive, forUpdate bool) ([]*domain.LessonComment, error) {
->>>>>>> 97d60f7c3 (feat: check backend)
 	db := r.db.WithContext(ctx)
 
 	lockClause := ""

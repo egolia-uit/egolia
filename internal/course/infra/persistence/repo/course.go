@@ -14,10 +14,6 @@ type CourseRepo struct {
 	db *gorm.DB
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 97d60f7c3 (feat: check backend)
 func NewCourseRepo(db *gorm.DB) *CourseRepo {
 	return &CourseRepo{db: db}
 }
@@ -25,12 +21,6 @@ func NewCourseRepo(db *gorm.DB) *CourseRepo {
 var _ domain.CourseRepo = (*CourseRepo)(nil)
 
 func (r *CourseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUpdate bool) (*domain.Course, error) {
-<<<<<<< HEAD
-=======
-func (r *courseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUpdate bool) (*domain.Course, error) {
->>>>>>> 65e45e788 (feat: read model in)
-=======
->>>>>>> 97d60f7c3 (feat: check backend)
 	db := r.db.WithContext(ctx).
 		Preload("Sections.Lessons.VideoLesson").
 		Preload("Sections.Lessons.TestLesson.Questions.Answers")
@@ -64,15 +54,7 @@ func (r *courseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUp
 	return m.ToDomain(), nil
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
-=======
-func (r *courseRepo) Save(ctx context.Context, course *domain.Course) error {
->>>>>>> 65e45e788 (feat: read model in)
-=======
-func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
->>>>>>> 97d60f7c3 (feat: check backend)
 	db := r.db.WithContext(ctx)
 
 	m := model.CourseFromDomain(course)

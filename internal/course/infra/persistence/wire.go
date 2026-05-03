@@ -9,7 +9,6 @@ import (
 )
 
 var ReadModelProviderSet = wire.NewSet(
-<<<<<<< HEAD
 	readmodel.NewCourseReadRepo,
 	readmodel.NewLessonReadRepo,
 	wire.Bind(new(app.GetCourseReadModel), new(*readmodel.CourseReadRepo)),
@@ -35,42 +34,6 @@ var RepoProviderSet = wire.NewSet(
 	wire.Bind(new(domain.LessonCommentRepo), new(*repo.LessonCommentRepo)),
 	wire.Bind(new(domain.ReviewRepo), new(*repo.ReviewRepo)),
 	wire.Bind(new(domain.UnitOfWork), new(*repo.UnitOfWork)),
-
-=======
->>>>>>> 97d60f7c3 (feat: check backend)
-	readmodel.NewCourseReadRepo,
-	readmodel.NewLessonReadRepo,
-	wire.Bind(new(app.GetCourseReadModel), new(*readmodel.CourseReadRepo)),
-	wire.Bind(new(app.GetCoursesReadModel), new(*readmodel.CourseReadRepo)),
-	wire.Bind(new(app.SearchCoursesReadModel), new(*readmodel.CourseReadRepo)),
-	wire.Bind(new(app.GetCourseDetailReadModel), new(*readmodel.CourseReadRepo)),
-	wire.Bind(new(app.GetLessonDetailReadModel), new(*readmodel.LessonReadRepo)),
-)
-
-<<<<<<< HEAD
-var ProviderSet = wire.NewSet(
-	NewDB,
-	NewPG,
-	NewSlogDB,
-	ReadModelProviderSet,
-	RepoProviderSet,
-=======
-var RepoProviderSet = wire.NewSet(
-	repo.NewBookmarkRepo,
-	repo.NewCertificateRepo,
-	repo.NewCourseRepo,
-	repo.NewEnrollmentRepo,
-	repo.NewLessonCommentRepo,
-	repo.NewRegistry,
-	repo.NewReviewRepo,
-	repo.NewUnitOfWork,
-	wire.Bind(new(domain.BookmarkRepo), new(*repo.BookmarkRepo)),
-	wire.Bind(new(domain.CertificateRepo), new(*repo.CertificateRepo)),
-	wire.Bind(new(domain.CourseRepo), new(*repo.CourseRepo)),
-	wire.Bind(new(domain.EnrollmentRepo), new(*repo.EnrollmentRepo)),
-	wire.Bind(new(domain.LessonCommentRepo), new(*repo.LessonCommentRepo)),
-	wire.Bind(new(domain.ReviewRepo), new(*repo.ReviewRepo)),
-	wire.Bind(new(domain.UnitOfWork), new(*repo.UnitOfWork)),
 )
 
 var ProviderSet = wire.NewSet(
@@ -78,9 +41,5 @@ var ProviderSet = wire.NewSet(
 	NewPG,
 	NewSlogDB,
 	ReadModelProviderSet,
-<<<<<<< HEAD
->>>>>>> 97d60f7c3 (feat: check backend)
-=======
 	RepoProviderSet,
->>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
 )

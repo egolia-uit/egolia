@@ -55,6 +55,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	moveLessonSvc := domain.NewMoveLessonSvc()
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	loggerInterface := persistence.NewSlogDB(logger)
 	db, cleanup2, err := persistence.NewDB(ctx, configConfig, loggerInterface)
 =======
@@ -64,6 +65,10 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	loggerInterface := persistence.NewSlogDB(logger)
 	db, cleanup2, err := persistence.NewDB(ctx, configConfig, loggerInterface)
 >>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
+=======
+	loggerInterface := persistence.NewSlogDB(logger)
+	db, cleanup2, err := persistence.NewDB(ctx, configConfig, loggerInterface)
+>>>>>>> origin/main
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -82,23 +87,29 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
 	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
+<<<<<<< HEAD
 	updateCourseHandler := app.NewUpdateCourseHandler(unitOfWork)
 <<<<<<< HEAD
 =======
 >>>>>>> 97d60f7c3 (feat: check backend)
 =======
 >>>>>>> 359c43dfe (fix: cors)
+=======
+>>>>>>> origin/main
 	cmds := &app.Cmds{
 		MoveLesson:              moveLessonHandler,
 		GetUploadVideoLessonURL: getUploadVideoLessonURLHandler,
 		CreateCourse:            createCourseHandler,
 		DeleteCourse:            deleteCourseHandler,
+<<<<<<< HEAD
 		UpdateCourse:            updateCourseHandler,
 <<<<<<< HEAD
 =======
 >>>>>>> 97d60f7c3 (feat: check backend)
 =======
 >>>>>>> 359c43dfe (fix: cors)
+=======
+>>>>>>> origin/main
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db)
 	getCourseDetailHandler := app.NewGetCourseDetailHandler(courseReadRepo)
@@ -139,12 +150,16 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	healthHealth := health.New(server)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pg := persistence.NewPG(db)
 =======
 >>>>>>> 97d60f7c3 (feat: check backend)
 =======
 	pg := persistence.NewPG(db)
 >>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
+=======
+	pg := persistence.NewPG(db)
+>>>>>>> origin/main
 	meterProvider, cleanup5, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup4()
@@ -165,6 +180,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
 =======
 	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, global, logger)
@@ -172,6 +188,9 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 =======
 	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
 >>>>>>> 292ce1154 (feat(course): gorm slog, and auto migrate)
+=======
+	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
+>>>>>>> origin/main
 	return courseServer, func() {
 		cleanup6()
 		cleanup5()

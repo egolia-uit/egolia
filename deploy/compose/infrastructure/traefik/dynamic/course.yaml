@@ -17,6 +17,7 @@ http:
       middlewares:
         - cors
         - protect-admin
+        - cors
 
     course-http-instructor-or-admin:
       entryPoints:
@@ -26,6 +27,7 @@ http:
       middlewares:
         - cors
         - protect-instructor-or-admin
+        - cors
 
     course-http-public:
       entryPoints:
