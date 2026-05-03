@@ -15,7 +15,6 @@ entries:
     attrs:
       name: API Web
       meta_launch_url: https://api.egolia.localhost
-      client_secret: egoliauit
       client_type: public
       access_code_validity: minutes=10
       access_token_validity: days=30
