@@ -941,7 +941,7 @@ export type GetCourseDetailResponses = {
 
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
 
-export type UpdatedCourseData = {
+export type UpdateCourseData = {
     body: CourseCourseWritable;
     path: {
         courseId: CoursePropertiesId;
@@ -950,7 +950,7 @@ export type UpdatedCourseData = {
     url: '/course/courses/{courseId}/basic-info';
 };
 
-export type UpdatedCourseErrors = {
+export type UpdateCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -986,16 +986,16 @@ export type UpdatedCourseErrors = {
     500: CourseError;
 };
 
-export type UpdatedCourseError = UpdatedCourseErrors[keyof UpdatedCourseErrors];
+export type UpdateCourseError = UpdateCourseErrors[keyof UpdateCourseErrors];
 
-export type UpdatedCourseResponses = {
+export type UpdateCourseResponses = {
     /**
      * Course basic information updated
      */
     204: void;
 };
 
-export type UpdatedCourseResponse = UpdatedCourseResponses[keyof UpdatedCourseResponses];
+export type UpdateCourseResponse = UpdateCourseResponses[keyof UpdateCourseResponses];
 
 export type EnrollInCourseData = {
     body?: never;
@@ -1719,7 +1719,7 @@ export type CreateSectionData = {
     body: {
         courseId: CoursePropertiesId;
         title: string;
-        preOrder?: string;
+        preOrder: string;
     };
     path?: never;
     query?: never;

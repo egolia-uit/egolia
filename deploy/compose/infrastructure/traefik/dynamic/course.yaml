@@ -1,12 +1,21 @@
 # yaml-language-server: $schema=https://www.schemastore.org/traefik-v3-file-provider.json
 http:
   routers:
+    course-preflight:
+      entryPoints:
+        - web
+      rule: Host(`api.egolia.localhost`) && Method(`OPTIONS`) && PathPrefix(`/course`)
+      service: course-http
+      middlewares:
+        - cors
+
     course-http-admin:
       entryPoints:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
       service: course-http
       middlewares:
+        - cors
         - protect-admin
         - cors
 
@@ -16,6 +25,7 @@ http:
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course`)
       service: course-http
       middlewares:
+        - cors
         - protect-instructor-or-admin
         - cors
 
@@ -44,6 +54,8 @@ http:
         - web
       rule: Host(`api.egolia.localhost`) && PathPrefix(`/course/health`)
       service: course-health
+      middlewares:
+        - cors
 
   services:
     course-http:

@@ -14,7 +14,7 @@ post:
           required:
             - courseId
             - title
-            - targetIndex
+            - preOrder
           properties:
             courseId:
               $ref: ../components/schemas/Course.yaml#/properties/id

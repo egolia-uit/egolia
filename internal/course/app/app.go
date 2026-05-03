@@ -5,6 +5,7 @@ type Cmds struct {
 	GetUploadVideoLessonURL *GetUploadVideoLessonURLHandler
 	CreateCourse            *CreateCourseHandler
 	DeleteCourse            *DeleteCourseHandler
+	UpdateCourse            *UpdateCourseHandler
 }
 
 type Queries struct {

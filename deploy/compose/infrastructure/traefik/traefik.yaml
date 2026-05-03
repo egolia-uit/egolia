@@ -12,7 +12,7 @@ providers:
 log:
   level: INFO
 
-accessLog: false
+accessLog: true
 
 # tracing:
 #   samplerate: 1.0
