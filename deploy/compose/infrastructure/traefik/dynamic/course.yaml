@@ -16,8 +16,7 @@ http:
       service: course-http
       middlewares:
         - cors
-        - protect-admin
-        - cors
+        # - protect-admin
 
     course-http-instructor-or-admin:
       entryPoints:
@@ -26,8 +25,7 @@ http:
       service: course-http
       middlewares:
         - cors
-        - protect-instructor-or-admin
-        - cors
+        # - protect-instructor-or-admin
 
     course-http-public:
       entryPoints:

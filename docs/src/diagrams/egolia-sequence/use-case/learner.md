@@ -46,7 +46,7 @@ rectangle "Egolia E-Learning System" {
     usecase "Reply Lesson Comment" as UC_REPLY
     usecase "Review Course" as UC_REVIEW
     usecase "Bookmark Course" as UC_BOOKMARK
-    usecase "UnBookmark Course" as UC_UNBOOKMARK
+    usecase "Unbookmark Course" as UC_UNBOOKMARK
   }
 
   package "Certificate" {

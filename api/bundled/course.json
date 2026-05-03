@@ -781,7 +781,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/unBookmark": {
+    "/course/courses/{courseId}/unbookmark": {
       "post": {
         "security": [
           {
@@ -791,8 +791,8 @@
         "tags": [
           "Course"
         ],
-        "summary": "UnBookmark course",
-        "operationId": "unBookmarkCourse",
+        "summary": "Unbookmark course",
+        "operationId": "unbookmarkCourse",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -800,7 +800,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Course unBookmarked successfully"
+            "description": "Course unbookmarked successfully"
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -859,7 +859,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/unHide": {
+    "/course/courses/{courseId}/unhide": {
       "post": {
         "security": [
           {
@@ -869,8 +869,8 @@
         "tags": [
           "Course"
         ],
-        "summary": "UnHide course",
-        "operationId": "unHideCourse",
+        "summary": "Unhide course",
+        "operationId": "unhideCourse",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"

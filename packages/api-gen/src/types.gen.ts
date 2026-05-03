@@ -1276,16 +1276,16 @@ export type BookmarkCourseResponses = {
     201: unknown;
 };
 
-export type UnBookmarkCourseData = {
+export type UnbookmarkCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/unBookmark';
+    url: '/course/courses/{courseId}/unbookmark';
 };
 
-export type UnBookmarkCourseErrors = {
+export type UnbookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1321,16 +1321,16 @@ export type UnBookmarkCourseErrors = {
     500: CourseError;
 };
 
-export type UnBookmarkCourseError = UnBookmarkCourseErrors[keyof UnBookmarkCourseErrors];
+export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
 
-export type UnBookmarkCourseResponses = {
+export type UnbookmarkCourseResponses = {
     /**
-     * Course unBookmarked successfully
+     * Course unbookmarked successfully
      */
     204: void;
 };
 
-export type UnBookmarkCourseResponse = UnBookmarkCourseResponses[keyof UnBookmarkCourseResponses];
+export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
 
 export type HideCourseData = {
     body?: never;
@@ -1388,16 +1388,16 @@ export type HideCourseResponses = {
 
 export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
 
-export type UnHideCourseData = {
+export type UnhideCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/unHide';
+    url: '/course/courses/{courseId}/unhide';
 };
 
-export type UnHideCourseErrors = {
+export type UnhideCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1433,16 +1433,16 @@ export type UnHideCourseErrors = {
     500: CourseError;
 };
 
-export type UnHideCourseError = UnHideCourseErrors[keyof UnHideCourseErrors];
+export type UnhideCourseError = UnhideCourseErrors[keyof UnhideCourseErrors];
 
-export type UnHideCourseResponses = {
+export type UnhideCourseResponses = {
     /**
      * Course unhidden
      */
     204: void;
 };
 
-export type UnHideCourseResponse = UnHideCourseResponses[keyof UnHideCourseResponses];
+export type UnhideCourseResponse = UnhideCourseResponses[keyof UnhideCourseResponses];
 
 export type TriggerLearningReminderData = {
     body?: {

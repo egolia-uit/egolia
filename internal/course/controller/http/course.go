@@ -83,18 +83,32 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 	if request.Body == nil {
 		return nil, errs.NewInvalid("request body is required")
 	}
-
-	courseID := uuid.New()
-	instructorID, err := uuid.Parse(user.ID)
+	userID, err := uuid.Parse(user.ID)
 	if err != nil {
 		return nil, errs.NewInvalid("authenticated user id must be a valid uuid")
 	}
+	isAdmin := false
+	isInstructor := false
+	for _, role := range user.Roles {
+		switch role {
+		case commonHTTP.UserRoleAdmin:
+			isAdmin = true
+		case commonHTTP.UserRoleInstructor:
+			isInstructor = true
+		}
+	}
+	if !isAdmin && !isInstructor {
+		return nil, errs.NewForbidden("only instructor or admin can create course")
+	}
 
+	courseID, err := uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
 	overview := ""
 	if request.Body.Overview != nil {
 		overview = *request.Body.Overview
 	}
-
 	introduction := app.CourseLandingPageIntroduction{}
 	if request.Body.Introduction != nil {
 		introduction = app.CourseLandingPageIntroduction{
@@ -102,20 +116,19 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 		}
 	}
 
-	cmd := &app.CreateCourse{
+	if err := h.App.Cmds.CreateCourse.Handle(ctx, &app.CreateCourse{
 		ID:           courseID,
 		Title:        request.Body.Title,
-		InstructorID: instructorID,
+		InstructorID: userID,
 		Price:        request.Body.Price,
 		Overview:     overview,
 		Introduction: introduction,
-	}
-	if err := h.App.Cmds.CreateCourse.Handle(ctx, cmd); err != nil {
+	}); err != nil {
 		return nil, err
 	}
-	return &course.CreateCourse201Response{
+	return course.CreateCourse201Response{
 		Headers: course.CreateCourse201ResponseHeaders{
-			ContentLocation: h.BaseURL.JoinPath("/courses", courseID.String()).String(),
+			ContentLocation: h.BaseURL.JoinPath("course", "courses", courseID.String()).String(),
 		},
 	}, nil
 }
@@ -316,11 +329,11 @@ func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request cou
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UnBookmarkCourse(ctx context.Context, request course.UnBookmarkCourseRequestObject) (course.UnBookmarkCourseResponseObject, error) {
+func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UnHideCourse(ctx context.Context, request course.UnHideCourseRequestObject) (course.UnHideCourseResponseObject, error) {
+func (h *StrictHandler) UnhideCourse(ctx context.Context, request course.UnhideCourseRequestObject) (course.UnhideCourseResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
