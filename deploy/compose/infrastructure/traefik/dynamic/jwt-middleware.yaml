@@ -13,7 +13,8 @@ http:
             X-Forwarded-ID: sub
             X-Forwarded-Roles: roles
           require:
-            role: instructor
+            roles:
+              - instructor
 
     protect-admin:
       plugin:
@@ -21,7 +22,8 @@ http:
           issuers: *issuers
           headerMap: *headerMap
           require:
-            role: admin
+            roles:
+              - admin
 
     protect-instructor-or-admin:
       plugin:
@@ -29,7 +31,13 @@ http:
           issuers: *issuers
           headerMap: *headerMap
           require:
-            # i want instructor or admin, not both
-            or:
-              - role: instructor
-              - role: admin
+            roles:
+              $or:
+                - instructor
+                - admin
+
+    authenticated:
+      plugin:
+        jwt:
+          issuers: *issuers
+          headerMap: *headerMap
