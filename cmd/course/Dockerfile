@@ -10,6 +10,8 @@ RUN CGO_ENABLED=0 \
   ./cmd/course
 
 FROM alpine:3.23 AS final
+# hadolint ignore=DL3018
+RUN apk --no-cache add ffmpeg
 WORKDIR /app
 COPY --from=builder /app/course .
 EXPOSE 8081 28081
