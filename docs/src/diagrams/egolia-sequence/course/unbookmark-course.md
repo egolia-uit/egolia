@@ -1,4 +1,4 @@
-# Sequence UnBookmarkCourse
+# Sequence UnbookmarkCourse
 
 :::info
 Bỏ lưu khóa học khỏi danh sách yêu thích.
@@ -33,7 +33,7 @@ GW -> GW: Validate JWT, extract userID
 GW -> BC: Forward request
 activate BC
 
-BC -> CA: UnBookmarkCourse(courseId, userID)
+BC -> CA: UnbookmarkCourse(courseId, userID)
 activate CA
 
 CA -> CDB: Find and delete bookmark

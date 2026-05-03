@@ -557,14 +557,14 @@ export const zBookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
-export const zUnBookmarkCoursePath = z.object({
+export const zUnbookmarkCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
 /**
- * Course unBookmarked successfully
+ * Course unbookmarked successfully
  */
-export const zUnBookmarkCourseResponse = z.void();
+export const zUnbookmarkCourseResponse = z.void();
 
 export const zHideCoursePath = z.object({
     courseId: zCoursePropertiesId
@@ -575,14 +575,14 @@ export const zHideCoursePath = z.object({
  */
 export const zHideCourseResponse = z.void();
 
-export const zUnHideCoursePath = z.object({
+export const zUnhideCoursePath = z.object({
     courseId: zCoursePropertiesId
 });
 
 /**
  * Course unhidden
  */
-export const zUnHideCourseResponse = z.void();
+export const zUnhideCourseResponse = z.void();
 
 export const zTriggerLearningReminderBody = z.object({
     dryRun: z.boolean().optional()

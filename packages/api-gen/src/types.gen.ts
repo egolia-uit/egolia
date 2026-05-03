@@ -547,7 +547,7 @@ export type SearchCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/courses';
+    url: '/course/instructor/courses';
 };
 
 export type SearchCoursesErrors = {
@@ -600,7 +600,7 @@ export type CreateCourseData = {
     body: CourseCourseWritable;
     path?: never;
     query?: never;
-    url: '/course/courses';
+    url: '/course/instructor/courses';
 };
 
 export type CreateCourseErrors = {
@@ -661,7 +661,7 @@ export type GetSystemCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/courses-system';
+    url: '/course/instructor/courses-system';
 };
 
 export type GetSystemCoursesErrors = {
@@ -727,7 +727,7 @@ export type GetPublishedCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/courses-published';
+    url: '/course/instructor/courses-published';
 };
 
 export type GetPublishedCoursesErrors = {
@@ -774,7 +774,7 @@ export type GetInstructorCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/courses-by-instructor/{instructorId}';
+    url: '/course/instructor/courses-by-instructor/{instructorId}';
 };
 
 export type GetInstructorCoursesErrors = {
@@ -833,7 +833,7 @@ export type DeleteCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}';
+    url: '/course/instructor/courses/{courseId}';
 };
 
 export type DeleteCourseErrors = {
@@ -889,7 +889,7 @@ export type GetCourseDetailData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/detail';
+    url: '/course/instructor/courses/{courseId}/detail';
 };
 
 export type GetCourseDetailErrors = {
@@ -947,7 +947,7 @@ export type UpdateCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/basic-info';
+    url: '/course/instructor/courses/{courseId}/basic-info';
 };
 
 export type UpdateCourseErrors = {
@@ -1003,7 +1003,7 @@ export type EnrollInCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/enroll';
+    url: '/course/instructor/courses/{courseId}/enroll';
 };
 
 export type EnrollInCourseErrors = {
@@ -1057,7 +1057,7 @@ export type GetCourseProgressData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/progress';
+    url: '/course/instructor/courses/{courseId}/progress';
 };
 
 export type GetCourseProgressErrors = {
@@ -1115,7 +1115,7 @@ export type FinishCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/finish';
+    url: '/course/instructor/courses/{courseId}/finish';
 };
 
 export type FinishCourseErrors = {
@@ -1174,7 +1174,7 @@ export type ReviewCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/reviews';
+    url: '/course/instructor/courses/{courseId}/reviews';
 };
 
 export type ReviewCourseErrors = {
@@ -1228,7 +1228,7 @@ export type BookmarkCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/bookmark';
+    url: '/course/instructor/courses/{courseId}/bookmark';
 };
 
 export type BookmarkCourseErrors = {
@@ -1276,16 +1276,16 @@ export type BookmarkCourseResponses = {
     201: unknown;
 };
 
-export type UnBookmarkCourseData = {
+export type UnbookmarkCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/unBookmark';
+    url: '/course/instructor/courses/{courseId}/unbookmark';
 };
 
-export type UnBookmarkCourseErrors = {
+export type UnbookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1321,16 +1321,16 @@ export type UnBookmarkCourseErrors = {
     500: CourseError;
 };
 
-export type UnBookmarkCourseError = UnBookmarkCourseErrors[keyof UnBookmarkCourseErrors];
+export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
 
-export type UnBookmarkCourseResponses = {
+export type UnbookmarkCourseResponses = {
     /**
-     * Course unBookmarked successfully
+     * Course unbookmarked successfully
      */
     204: void;
 };
 
-export type UnBookmarkCourseResponse = UnBookmarkCourseResponses[keyof UnBookmarkCourseResponses];
+export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
 
 export type HideCourseData = {
     body?: never;
@@ -1338,7 +1338,7 @@ export type HideCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/hide';
+    url: '/course/instructor/courses/{courseId}/hide';
 };
 
 export type HideCourseErrors = {
@@ -1388,16 +1388,16 @@ export type HideCourseResponses = {
 
 export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
 
-export type UnHideCourseData = {
+export type UnhideCourseData = {
     body?: never;
     path: {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/unHide';
+    url: '/course/instructor/courses/{courseId}/unhide';
 };
 
-export type UnHideCourseErrors = {
+export type UnhideCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1433,16 +1433,16 @@ export type UnHideCourseErrors = {
     500: CourseError;
 };
 
-export type UnHideCourseError = UnHideCourseErrors[keyof UnHideCourseErrors];
+export type UnhideCourseError = UnhideCourseErrors[keyof UnhideCourseErrors];
 
-export type UnHideCourseResponses = {
+export type UnhideCourseResponses = {
     /**
      * Course unhidden
      */
     204: void;
 };
 
-export type UnHideCourseResponse = UnHideCourseResponses[keyof UnHideCourseResponses];
+export type UnhideCourseResponse = UnhideCourseResponses[keyof UnhideCourseResponses];
 
 export type TriggerLearningReminderData = {
     body?: {
@@ -1452,7 +1452,7 @@ export type TriggerLearningReminderData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/trigger-learning-reminder';
+    url: '/course/instructor/courses/{courseId}/trigger-learning-reminder';
 };
 
 export type TriggerLearningReminderErrors = {
@@ -1508,7 +1508,7 @@ export type GetCourseLandingPageData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/landing';
+    url: '/course/instructor/courses/{courseId}/landing';
 };
 
 export type GetCourseLandingPageErrors = {
@@ -1545,7 +1545,7 @@ export type ApproveCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/approve';
+    url: '/course/admin/courses/{courseId}/approve';
 };
 
 export type ApproveCourseErrors = {
@@ -1603,7 +1603,7 @@ export type DeclineCourseData = {
         courseId: CoursePropertiesId;
     };
     query?: never;
-    url: '/course/courses/{courseId}/decline';
+    url: '/course/admin/courses/{courseId}/decline';
 };
 
 export type DeclineCourseErrors = {
@@ -1723,7 +1723,7 @@ export type CreateSectionData = {
     };
     path?: never;
     query?: never;
-    url: '/course/sections';
+    url: '/course/instructor/sections';
 };
 
 export type CreateSectionErrors = {
@@ -1777,7 +1777,7 @@ export type DeleteSectionData = {
         sectionId: string;
     };
     query?: never;
-    url: '/course/sections/{sectionId}';
+    url: '/course/instructor/sections/{sectionId}';
 };
 
 export type DeleteSectionErrors = {
@@ -1835,7 +1835,7 @@ export type UpdateSectionTitleData = {
         sectionId: string;
     };
     query?: never;
-    url: '/course/sections/{sectionId}';
+    url: '/course/instructor/sections/{sectionId}';
 };
 
 export type UpdateSectionTitleErrors = {
@@ -1899,7 +1899,7 @@ export type MoveSectionData = {
         sectionId: string;
     };
     query?: never;
-    url: '/course/sections/{sectionId}/move';
+    url: '/course/instructor/sections/{sectionId}/move';
 };
 
 export type MoveSectionErrors = {
@@ -1966,7 +1966,7 @@ export type CreateLessonData = {
     };
     path?: never;
     query?: never;
-    url: '/course/lessons';
+    url: '/course/instructor/lessons';
 };
 
 export type CreateLessonErrors = {
@@ -2016,7 +2016,7 @@ export type DeleteLessonData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}';
+    url: '/course/instructor/lessons/{lessonId}';
 };
 
 export type DeleteLessonErrors = {
@@ -2072,7 +2072,7 @@ export type GetLessonDetailData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}';
+    url: '/course/instructor/lessons/{lessonId}';
 };
 
 export type GetLessonDetailErrors = {
@@ -2130,7 +2130,7 @@ export type EditVideoLessonData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/video';
+    url: '/course/instructor/lessons/{lessonId}/video';
 };
 
 export type EditVideoLessonErrors = {
@@ -2186,7 +2186,7 @@ export type EditTestLessonData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/test';
+    url: '/course/instructor/lessons/{lessonId}/test';
 };
 
 export type EditTestLessonErrors = {
@@ -2244,7 +2244,7 @@ export type GetUploadVideoLessonUrlData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/upload-video-url';
+    url: '/course/instructor/lessons/{lessonId}/upload-video-url';
 };
 
 export type GetUploadVideoLessonUrlErrors = {
@@ -2307,7 +2307,7 @@ export type CreateTestData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/tests';
+    url: '/course/instructor/lessons/{lessonId}/tests';
 };
 
 export type CreateTestErrors = {
@@ -2361,7 +2361,7 @@ export type GetLessonProgressData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/progress';
+    url: '/course/instructor/lessons/{lessonId}/progress';
 };
 
 export type GetLessonProgressErrors = {
@@ -2419,7 +2419,7 @@ export type SaveVideoLessonProgressData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/video-progress';
+    url: '/course/instructor/lessons/{lessonId}/video-progress';
 };
 
 export type SaveVideoLessonProgressErrors = {
@@ -2475,7 +2475,7 @@ export type SaveTestLessonProgressData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/test-progress';
+    url: '/course/instructor/lessons/{lessonId}/test-progress';
 };
 
 export type SaveTestLessonProgressErrors = {
@@ -2533,7 +2533,7 @@ export type MarkLessonAsCompletedData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/mark-completed';
+    url: '/course/instructor/lessons/{lessonId}/mark-completed';
 };
 
 export type MarkLessonAsCompletedErrors = {
@@ -2596,7 +2596,7 @@ export type MoveLessonData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/move';
+    url: '/course/instructor/lessons/{lessonId}/move';
 };
 
 export type MoveLessonErrors = {
@@ -2650,7 +2650,7 @@ export type GetLessonCommentsData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/comments';
+    url: '/course/instructor/lessons/{lessonId}/comments';
 };
 
 export type GetLessonCommentsErrors = {
@@ -2706,7 +2706,7 @@ export type CommentOnLessonData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/lessons/{lessonId}/comments';
+    url: '/course/instructor/lessons/{lessonId}/comments';
 };
 
 export type CommentOnLessonErrors = {
@@ -2765,7 +2765,7 @@ export type ReplyLessonCommentData = {
         commentId: string;
     };
     query?: never;
-    url: '/course/lesson-comments/{commentId}/reply';
+    url: '/course/instructor/lesson-comments/{commentId}/reply';
 };
 
 export type ReplyLessonCommentErrors = {
@@ -2830,7 +2830,7 @@ export type GetMyCertificatesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/certificates/me';
+    url: '/course/instructor/certificates/me';
 };
 
 export type GetMyCertificatesErrors = {
@@ -2881,7 +2881,7 @@ export type GetCertificateByIdData = {
         certificateId: string;
     };
     query?: never;
-    url: '/course/certificates/{certificateId}';
+    url: '/course/instructor/certificates/{certificateId}';
 };
 
 export type GetCertificateByIdErrors = {

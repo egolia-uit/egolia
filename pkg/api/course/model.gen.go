@@ -114,6 +114,24 @@ func (e UnauthorizedErrorType) Valid() bool {
 	}
 }
 
+// Defines values for GetMyEnrolledCoursesParamsOrder.
+const (
+	GetMyEnrolledCoursesParamsOrderAsc  GetMyEnrolledCoursesParamsOrder = "asc"
+	GetMyEnrolledCoursesParamsOrderDesc GetMyEnrolledCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetMyEnrolledCoursesParamsOrder enum.
+func (e GetMyEnrolledCoursesParamsOrder) Valid() bool {
+	switch e {
+	case GetMyEnrolledCoursesParamsOrderAsc:
+		return true
+	case GetMyEnrolledCoursesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for GetMyCertificatesParamsOrder.
 const (
 	GetMyCertificatesParamsOrderAsc  GetMyCertificatesParamsOrder = "asc"
@@ -198,24 +216,6 @@ func (e GetSystemCoursesParamsOrder) Valid() bool {
 	case GetSystemCoursesParamsOrderAsc:
 		return true
 	case GetSystemCoursesParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetMyEnrolledCoursesParamsOrder.
-const (
-	GetMyEnrolledCoursesParamsOrderAsc  GetMyEnrolledCoursesParamsOrder = "asc"
-	GetMyEnrolledCoursesParamsOrderDesc GetMyEnrolledCoursesParamsOrder = "desc"
-)
-
-// Valid indicates whether the value is a known member of the GetMyEnrolledCoursesParamsOrder enum.
-func (e GetMyEnrolledCoursesParamsOrder) Valid() bool {
-	switch e {
-	case GetMyEnrolledCoursesParamsOrderAsc:
-		return true
-	case GetMyEnrolledCoursesParamsOrderDesc:
 		return true
 	default:
 		return false
@@ -508,6 +508,26 @@ type UnauthorizedError struct {
 // UnauthorizedErrorType The category of the error encountered during the middleware lifecycle.
 type UnauthorizedErrorType string
 
+// DeclineCourseJSONBody defines parameters for DeclineCourse.
+type DeclineCourseJSONBody struct {
+	Reason *string `json:"reason,omitempty"`
+}
+
+// GetMyEnrolledCoursesParams defines parameters for GetMyEnrolledCourses.
+type GetMyEnrolledCoursesParams struct {
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetMyEnrolledCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
+type GetMyEnrolledCoursesParamsOrder string
+
 // GetMyCertificatesParams defines parameters for GetMyCertificates.
 type GetMyCertificatesParams struct {
 	// Page Page number for pagination
@@ -589,26 +609,6 @@ type GetSystemCoursesParams struct {
 // GetSystemCoursesParamsOrder defines parameters for GetSystemCourses.
 type GetSystemCoursesParamsOrder string
 
-// GetMyEnrolledCoursesParams defines parameters for GetMyEnrolledCourses.
-type GetMyEnrolledCoursesParams struct {
-	// Page Page number for pagination
-	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
-
-	// Limit Number of items per page
-	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Order Sort order
-	Order *GetMyEnrolledCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
-}
-
-// GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
-type GetMyEnrolledCoursesParamsOrder string
-
-// DeclineCourseJSONBody defines parameters for DeclineCourse.
-type DeclineCourseJSONBody struct {
-	Reason *string `json:"reason,omitempty"`
-}
-
 // ReviewCourseJSONBody defines parameters for ReviewCourse.
 type ReviewCourseJSONBody struct {
 	Comment string `json:"comment"`
@@ -683,14 +683,14 @@ type MoveSectionJSONBody struct {
 	SectionId openapi_types.UUID `json:"sectionId"`
 }
 
+// DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
+type DeclineCourseJSONRequestBody DeclineCourseJSONBody
+
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course
 
 // UpdateCourseJSONRequestBody defines body for UpdateCourse for application/json ContentType.
 type UpdateCourseJSONRequestBody = Course
-
-// DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
-type DeclineCourseJSONRequestBody DeclineCourseJSONBody
 
 // ReviewCourseJSONRequestBody defines body for ReviewCourse for application/json ContentType.
 type ReviewCourseJSONRequestBody ReviewCourseJSONBody
