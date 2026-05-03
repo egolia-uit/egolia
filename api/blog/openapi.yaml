@@ -36,8 +36,10 @@ paths:
 
 components:
   securitySchemes:
-    Oauth2:
-      $ref: ../common/components/securitySchemes/Oauth2.yaml
+    AuthorizationCodeOauth2:
+      $ref: ../common/components/securitySchemes/AuthorizationCodeOauth2.yaml
+    PasswordOauth2:
+      $ref: ../common/components/securitySchemes/PasswordOauth2.yaml
 
 externalDocs:
   url: https://egolia-uit.github.io/egolia

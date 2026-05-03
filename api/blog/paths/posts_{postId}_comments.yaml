@@ -1,6 +1,7 @@
 get:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Comment
   summary: Get post comments
@@ -30,7 +31,8 @@ get:
 
 post:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Comment
   summary: Comment on post

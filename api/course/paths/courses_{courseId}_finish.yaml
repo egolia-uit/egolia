@@ -1,6 +1,7 @@
 post:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Course
   summary: Finish course

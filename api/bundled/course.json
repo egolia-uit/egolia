@@ -45,7 +45,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -94,7 +97,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -182,7 +188,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -246,7 +255,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -304,7 +316,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -375,7 +390,10 @@
       "delete": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -414,7 +432,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -468,7 +489,10 @@
       "patch": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -517,7 +541,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -566,7 +593,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -620,7 +650,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -659,7 +692,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -736,7 +772,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -785,7 +824,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -824,7 +866,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -863,7 +908,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -902,7 +950,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1001,7 +1052,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1040,7 +1094,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1096,7 +1153,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1157,7 +1217,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1231,7 +1294,10 @@
       "delete": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1268,7 +1334,10 @@
       "patch": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1328,7 +1397,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1433,7 +1505,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1492,7 +1567,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1544,7 +1622,10 @@
       "delete": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1583,7 +1664,10 @@
       "patch": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1632,7 +1716,10 @@
       "patch": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1681,7 +1768,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1767,7 +1857,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1842,7 +1935,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1896,7 +1992,10 @@
       "put": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -1945,7 +2044,10 @@
       "put": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2009,7 +2111,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2048,7 +2153,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2131,7 +2239,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2183,7 +2294,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2250,7 +2364,10 @@
       "post": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2317,7 +2434,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2378,7 +2498,10 @@
       "get": {
         "security": [
           {
-            "Oauth2": []
+            "AuthorizationCodeOauth2": []
+          },
+          {
+            "PasswordOauth2": []
           }
         ],
         "tags": [
@@ -2431,7 +2554,7 @@
   },
   "components": {
     "securitySchemes": {
-      "Oauth2": {
+      "AuthorizationCodeOauth2": {
         "type": "oauth2",
         "description": "OAuth2 Security Scheme",
         "flows": {
@@ -2446,6 +2569,19 @@
             "x-scalar-client-id": "api-web",
             "x-usePkce": "SHA-256",
             "x-scalar-credentials-location": "header"
+          }
+        }
+      },
+      "PasswordOauth2": {
+        "type": "oauth2",
+        "description": "OAuth2 Security Scheme",
+        "flows": {
+          "password": {
+            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
+            "scopes": {},
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-scalar-credentials-location": "body"
           }
         }
       }

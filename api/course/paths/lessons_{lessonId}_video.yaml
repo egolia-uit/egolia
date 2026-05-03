@@ -1,6 +1,7 @@
 patch:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Lesson
   summary: Edit video lesson

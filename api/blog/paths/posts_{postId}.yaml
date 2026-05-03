@@ -1,6 +1,7 @@
 get:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Post
   summary: Get post detail
@@ -23,7 +24,8 @@ get:
 
 put:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Post
   summary: Update post
@@ -75,7 +77,8 @@ put:
 
 delete:
   security:
-    - Oauth2: []
+    - AuthorizationCodeOauth2: []
+    - PasswordOauth2: []
   tags:
     - Post
   summary: Delete post
