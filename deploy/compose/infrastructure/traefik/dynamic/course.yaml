@@ -25,7 +25,7 @@ http:
         - cors
         - protect-admin
 
-    course-http-instructor-or-admin:
+    course-http-instructor:
       entryPoints:
         - web
         # rule: start with /course/instructor/
@@ -40,7 +40,7 @@ http:
       priority: 70
       middlewares:
         - cors
-        - protect-instructor-or-admin
+        - protect-instructor
 
     course-http-public:
       entryPoints:
@@ -69,6 +69,7 @@ http:
       priority: 50
       middlewares:
         - cors
+        - authenticated
 
     course-grpc:
       entryPoints:
