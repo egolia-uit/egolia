@@ -48,7 +48,7 @@ func NewCourse(
 
 	cleanup := func() {
 		if err := conn.Close(); err != nil {
-			slog.Error("failed to close course service connection", "error", err)
+			slog.Error("failed to close course service connection", slog.Any("error", err))
 		}
 	}
 	return &Course{

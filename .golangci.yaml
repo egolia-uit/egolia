@@ -6,6 +6,8 @@ linters:
   enable:
     - exhaustive
     - exhaustruct
+    - sloglint
+    - testifylint
     - unparam
   disable:
     - unused
@@ -20,6 +22,12 @@ linters:
         - github\.com/egolia-uit/egolia/.*\.*
       exclude:
         - github\.com/egolia-uit/egolia/.*/errs\.Err
+    sloglint:
+      static-msg: true
+      no-mixed-args: true
+      attr-only: true
+      args-on-sep-lines: true
+      context: scope
 
 formatters:
   enable:
