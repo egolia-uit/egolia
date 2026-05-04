@@ -7,6 +7,8 @@ type SearchCourses struct {
 	InstructorIDs []string
 	Paginate      PaginationParams
 	Order         SearchCoursesOrder
+	Hidden        bool
+	Status        CourseStatus
 }
 
 type SearchCoursesOrder string

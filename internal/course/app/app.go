@@ -9,11 +9,12 @@ type Cmds struct {
 }
 
 type Queries struct {
-	GetCourseDetail *GetCourseDetailHandler
-	GetCourse       *GetCourseHandler
-	GetLessonDetail *GetLessonDetailHandler
-	SearchCourses   *SearchCoursesHandler
-	GetCourses      *GetCoursesHandler
+	GetCourseDetail      *GetCourseDetailHandler
+	GetCourse            *GetCourseHandler
+	GetLessonDetail      *GetLessonDetailHandler
+	SearchCourses        *SearchCoursesHandler
+	GetCourses           *GetCoursesHandler
+	GetInstructorCourses *GetInstructorCoursesHandler
 }
 
 type App struct {
