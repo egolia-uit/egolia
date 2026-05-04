@@ -32,7 +32,6 @@ func NewEnrollInCourseHandler(
 
 func (h *EnrollInCourseHandler) Handle(ctx context.Context, cmd *EnrollInCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
 			ID: cmd.CourseID,
 		}, false)

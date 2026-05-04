@@ -376,7 +376,6 @@ func (h *StrictHandler) FinishCourse(ctx context.Context, request course.FinishC
 		return nil, err
 	}
 	return course.FinishCourse204Response{}, nil
-
 }
 
 func (h *StrictHandler) HideCourse(ctx context.Context, request course.HideCourseRequestObject) (course.HideCourseResponseObject, error) {
@@ -408,7 +407,11 @@ func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewC
 	}); err != nil {
 		return nil, err
 	}
-	return course.ReviewCourse201Response{}, nil
+	return course.ReviewCourse201Response{
+		Headers: course.ReviewCourse201ResponseHeaders{
+			ContentLocation: "i dont know what to put here", // TODO: return the actual review ID
+		},
+	}, nil
 }
 
 func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request course.TriggerLearningReminderRequestObject) (course.TriggerLearningReminderResponseObject, error) {

@@ -26,11 +26,13 @@ func (r *ReviewRepo) Save(review *domain.Review) error {
 }
 
 func (r *ReviewRepo) ExistsByCourseAndLearner(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error) {
-	var count int64
-	if err := r.db.WithContext(ctx).Model(&model.Review{}).
-		Where("course_id = ? AND user_id = ?", courseID, learnerID).
-		Count(&count).Error; err != nil {
-		return false, err
-	}
-	return count > 0, nil
+	// unemplemented
+	return false, nil
+	// var count int64
+	// if err := r.db.WithContext(ctx).Model(&model.Review{}).
+	// 	Where("course_id = ? AND user_id = ?", courseID, learnerID).
+	// 	Count(&count).Error; err != nil {
+	// 	return false, err
+	// }
+	// return count > 0, nil
 }

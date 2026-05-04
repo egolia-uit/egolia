@@ -55,8 +55,8 @@ func (s *ReviewCourseSvc) Handle(ctx context.Context, review *ReviewCourse) (*Re
 		return nil, errs.NewInvalid("learner has already reviewed this course")
 	}
 
-	if review.Course.Status() != CourseStatusApproved && review.Course.Hidden() != false {
-		return nil, errs.NewInvalid("course is not approved")
+	if review.Course.Status() != CourseStatusApproved && review.Course.Hidden() {
+		return nil, errs.NewInvalid("course is not published")
 	}
 
 	reviewID := uuid.New()
