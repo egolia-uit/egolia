@@ -19,12 +19,20 @@ type EnrollInCourse struct {
 	LearnerID string
 }
 
-func (s *EnrollInCourseSvc) Handle(ctx context.Context, params *EnrollInCourse) (*Enrollment, error) {
-	if params.LearnerID == "" {
+func (s *EnrollInCourseSvc) Handle(ctx context.Context, course *Course, learnerID string, enrollRepo EnrollmentRepo) (*Enrollment, error) {
+	if learnerID == "" {
 		return nil, errs.NewInvalid("learner id is required")
 	}
 
+	hasEnrolled, err := enrollRepo.ExistsByCourseAndLearner(ctx, course.ID(), learnerID)
+	if err != nil {
+		return nil, err
+	}
+	if hasEnrolled {
+		return nil, errs.NewInvalid("learner has already enrolled in this course")
+	}
+
 	enrollmentID := uuid.New()
-	enrollment := NewEnrollment(enrollmentID, params.LearnerID, params.Course.ID(), time.Now())
+	enrollment := NewEnrollment(enrollmentID, learnerID, course.ID(), time.Now())
 	return enrollment, nil
 }

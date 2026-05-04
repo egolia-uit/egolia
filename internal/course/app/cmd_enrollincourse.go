@@ -32,6 +32,7 @@ func NewEnrollInCourseHandler(
 
 func (h *EnrollInCourseHandler) Handle(ctx context.Context, cmd *EnrollInCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
+
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
 			ID: cmd.CourseID,
 		}, false)
@@ -42,13 +43,11 @@ func (h *EnrollInCourseHandler) Handle(ctx context.Context, cmd *EnrollInCourse)
 			return err
 		}
 
-		enrollment, err := h.enrollInCourseSvc.Handle(ctx, &domain.EnrollInCourse{
-			Course:    course,
-			LearnerID: cmd.ActorID,
-		})
+		enrollment, err := h.enrollInCourseSvc.Handle(ctx, course, cmd.ActorID, repoRegistry.Enrollment())
 		if err != nil {
 			return err
 		}
+
 		return repoRegistry.Enrollment().Save(ctx, enrollment)
 	})
 }

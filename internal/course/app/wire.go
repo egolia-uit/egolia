@@ -9,6 +9,8 @@ var ProviderSetCmds = wire.NewSet(
 	NewGetUploadVideoLessonURLHandler,
 	NewMoveLessonHandler,
 	NewEnrollInCourseHandler,
+	NewFinishCourseHandler,
+	NewReviewCourseHandler,
 	wire.Struct(new(Cmds), "*"),
 )
 

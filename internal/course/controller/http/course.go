@@ -353,12 +353,30 @@ func (h *StrictHandler) EnrollInCourse(ctx context.Context, request course.Enrol
 	}); err != nil {
 		return nil, err
 	}
-	return course.EnrollInCourse201Response{}, nil
-
+	return course.EnrollInCourse201Response{
+		Headers: course.EnrollInCourse201ResponseHeaders{
+			ContentLocation: "i dont know what to put here", // TODO: return the actual enrollment ID or course progress ID
+		},
+	}, nil
 }
 
 func (h *StrictHandler) FinishCourse(ctx context.Context, request course.FinishCourseRequestObject) (course.FinishCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	// TODO: implement finish course
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.FinishCourse.Handle(ctx, &app.FinishCourse{
+		CourseID: courseID,
+		ActorID:  userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.FinishCourse204Response{}, nil
+
 }
 
 func (h *StrictHandler) HideCourse(ctx context.Context, request course.HideCourseRequestObject) (course.HideCourseResponseObject, error) {
@@ -374,7 +392,23 @@ func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.Ge
 }
 
 func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewCourseRequestObject) (course.ReviewCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	// TODO: implement review course
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.ReviewCourse.Handle(ctx, &app.ReviewCourse{
+		CourseID: courseID,
+		ActorID:  userID,
+		Rating:   request.Body.Rating,
+		Comment:  request.Body.Comment,
+	}); err != nil {
+		return nil, err
+	}
+	return course.ReviewCourse201Response{}, nil
 }
 
 func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request course.TriggerLearningReminderRequestObject) (course.TriggerLearningReminderResponseObject, error) {
