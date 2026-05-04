@@ -88,12 +88,14 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getLessonDetailHandler := app.NewGetLessonDetailHandler(lessonReadRepo)
 	searchCoursesHandler := app.NewSearchCoursesHandler(courseReadRepo)
 	getCoursesHandler := app.NewGetCoursesHandler(courseReadRepo)
+	getInstructorCoursesHandler := app.NewGetInstructorCoursesHandler(courseReadRepo)
 	queries := &app.Queries{
-		GetCourseDetail: getCourseDetailHandler,
-		GetCourse:       getCourseHandler,
-		GetLessonDetail: getLessonDetailHandler,
-		SearchCourses:   searchCoursesHandler,
-		GetCourses:      getCoursesHandler,
+		GetCourseDetail:      getCourseDetailHandler,
+		GetCourse:            getCourseHandler,
+		GetLessonDetail:      getLessonDetailHandler,
+		SearchCourses:        searchCoursesHandler,
+		GetCourses:           getCoursesHandler,
+		GetInstructorCourses: getInstructorCoursesHandler,
 	}
 	appApp := &app.App{
 		Cmds:    cmds,

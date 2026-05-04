@@ -128,6 +128,11 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 	}, nil
 }
 
+func (r *CourseReadRepo) GetInstructorCourses(ctx context.Context, params *app.GetInstructorCourses) (*app.Paginated[app.Course], error) {
+	// unimplemented
+	return &app.Paginated[app.Course]{}, nil
+}
+
 func buildPagination(page, limit, total int) app.Pagination {
 	totalPages := 0
 	if limit > 0 {

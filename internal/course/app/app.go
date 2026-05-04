@@ -6,6 +6,7 @@ type Cmds struct {
 	CreateCourse            *CreateCourseHandler
 	DeleteCourse            *DeleteCourseHandler
 	UpdateCourse            *UpdateCourseHandler
+	EnrollInCourse          *EnrollInCourseHandler
 }
 
 type Queries struct {

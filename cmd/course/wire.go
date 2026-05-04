@@ -5,8 +5,8 @@ package main
 import (
 	"context"
 
-	"github.com/goforj/wire"
 	"github.com/egolia-uit/egolia/internal/course"
+	"github.com/goforj/wire"
 )
 
 var ProviderSet = wire.NewSet(
