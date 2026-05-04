@@ -11,7 +11,7 @@ import (
 type CreateCourse struct {
 	ID           uuid.UUID
 	Title        string
-	InstructorID uuid.UUID
+	InstructorID string
 	Price        int64
 	Overview     string
 	Introduction CourseLandingPageIntroduction

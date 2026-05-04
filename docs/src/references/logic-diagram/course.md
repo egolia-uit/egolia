@@ -27,7 +27,7 @@ classDiagram
         <<AggregateRoot>>
         id uuid.UUID
         title string
-        instructorID uuid.UUID
+        instructorID string
         status CourseStatus
         price float64
         deletedAt *time.Time

@@ -18,7 +18,7 @@ type CreateCourse struct {
 	ID               uuid.UUID
 	Title            string
 	OriginalCourseID uuid.UUID
-	InstructorID     uuid.UUID
+	InstructorID     string
 	Price            float64
 	Overview         string
 	Hidden           bool

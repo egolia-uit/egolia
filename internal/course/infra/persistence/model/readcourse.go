@@ -69,7 +69,7 @@ func ReadCourseFromDomain(c *domain.Course) *ReadCourse {
 
 	content := ReadCourseContent{
 		Title:         c.Title(),
-		InstructorID:  c.InstructorID().String(),
+		InstructorID:  c.InstructorID(),
 		Status:        string(c.Status()),
 		Price:         c.Price(),
 		Overview:      c.Overview(),

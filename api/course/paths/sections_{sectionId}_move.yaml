@@ -14,7 +14,6 @@ post:
         schema:
           type: object
           properties:
-
             courseId:
               $ref: ../components/schemas/Course.yaml#/properties/id
 
@@ -46,7 +45,8 @@ post:
                 properties:
                   structure:
                     type: array
-                    description: Resulting course structure after moving the section, including all
+                    description:
+                      Resulting course structure after moving the section, including all
                       sections and their lessons
                     items:
                       type: object

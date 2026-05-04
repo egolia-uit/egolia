@@ -77,29 +77,14 @@ func (h *StrictHandler) SearchCourses(ctx context.Context, request course.Search
 
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
 	user, ok := commonHTTP.UserFromContext(ctx)
+
 	if !ok {
 		return nil, errs.Unauthorized
 	}
 	if request.Body == nil {
 		return nil, errs.NewInvalid("request body is required")
 	}
-	userID, err := uuid.Parse(user.ID)
-	if err != nil {
-		return nil, errs.NewInvalid("authenticated user id must be a valid uuid")
-	}
-	isAdmin := false
-	isInstructor := false
-	for _, role := range user.Roles {
-		switch role {
-		case commonHTTP.UserRoleAdmin:
-			isAdmin = true
-		case commonHTTP.UserRoleInstructor:
-			isInstructor = true
-		}
-	}
-	if !isAdmin && !isInstructor {
-		return nil, errs.NewForbidden("only instructor or admin can create course")
-	}
+	userID := user.ID
 
 	courseID, err := uuid.NewV7()
 	if err != nil {
@@ -196,10 +181,7 @@ func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteC
 	if !ok {
 		return nil, errs.Unauthorized
 	}
-	userID, err := uuid.Parse(user.ID)
-	if err != nil {
-		return nil, errs.NewInvalid("authenticated user id must be a valid uuid")
-	}
+	userID := user.ID
 	isAdmin := false
 	isInstructor := false
 	// for _, role := range user.Roles {

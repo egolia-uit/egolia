@@ -12,7 +12,7 @@ import (
 
 type DeleteCourse struct {
 	CourseID uuid.UUID
-	ActorID  uuid.UUID
+	ActorID  string
 	IsAdmin  bool
 }
 

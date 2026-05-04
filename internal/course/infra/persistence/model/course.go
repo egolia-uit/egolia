@@ -41,7 +41,7 @@ func CourseFromDomain(c *domain.Course) *Course {
 		ID:                   c.ID(),
 		OriginalCourseID:     c.OriginalCourseID(),
 		Title:                c.Title(),
-		InstructorID:         c.InstructorID().String(),
+		InstructorID:         c.InstructorID(),
 		Status:               c.Status(),
 		Price:                c.Price(),
 		Overview:             c.Overview(),
@@ -60,7 +60,7 @@ func (m *Course) ToDomain() *domain.Course {
 		deletedAt = &m.DeletedAt.Time
 	}
 
-	instructorID := uuid.MustParse(m.InstructorID)
+	instructorID := m.InstructorID
 	intro := domain.NewCourseLandingPageIntroduction(m.IntroductionVideoURL)
 
 	sections := make([]*domain.Section, 0, len(m.Sections))

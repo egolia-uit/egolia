@@ -13,7 +13,7 @@ import (
 
 type UpdateCourse struct {
 	CourseID     uuid.UUID
-	ActorID      uuid.UUID
+	ActorID      string
 	IsAdmin      bool
 	Title        string
 	Price        int64
