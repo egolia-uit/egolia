@@ -1,4 +1,3 @@
 # vim:ft=sh:
 
 node .husky/pre-commit.js
-#test
