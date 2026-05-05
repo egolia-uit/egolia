@@ -4334,12 +4334,6 @@
           "title"
         ]
       },
-      "course_Section_properties-id": {
-        "type": "string",
-        "format": "uuid",
-        "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
-        "readOnly": true
-      },
       "course_LessonType": {
         "type": "string",
         "enum": [
@@ -4356,9 +4350,6 @@
             "format": "uuid",
             "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
             "readOnly": true
-          },
-          "sectionId": {
-            "$ref": "#/components/schemas/course_Section_properties-id"
           },
           "title": {
             "type": "string",

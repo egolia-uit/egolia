@@ -61,7 +61,14 @@ type ReadCourse struct {
 
 func (ReadCourse) TableName() string { return "read_courses" }
 
-func ReadCourseFromDomain(c *domain.Course) *ReadCourse {
+func ReadCourseFromDomain(
+	c *domain.Course,
+	videoKeyToURL func(videoKey string) (string, error),
+) (*ReadCourse, error) {
+	videoURL, err := videoKeyToURL(c.IntroductionVideoKey())
+	if err != nil {
+		return nil, err
+	}
 	sections := make([]ReadCourseSectionContent, 0, len(c.Sections()))
 	for _, s := range c.Sections() {
 		sections = append(sections, buildSectionContent(s))
@@ -73,7 +80,7 @@ func ReadCourseFromDomain(c *domain.Course) *ReadCourse {
 		Status:        string(c.Status()),
 		Price:         c.Price(),
 		Overview:      c.Overview(),
-		IntroVideoURL: c.Introduction().VideoURL(),
+		IntroVideoURL: videoURL,
 		Sections:      sections,
 	}
 
@@ -89,7 +96,7 @@ func ReadCourseFromDomain(c *domain.Course) *ReadCourse {
 		Price:             c.Price(),
 		FullCourseContent: content,
 		PublishedAt:       publishedAt,
-	}
+	}, nil
 }
 
 func buildSectionContent(s *domain.Section) ReadCourseSectionContent {

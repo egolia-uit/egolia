@@ -33,6 +33,5 @@ func (s *MoveLessonSvc) Handle(params *MoveLesson) error {
 		return errs.NewLessonGenerateOrderFailed(prevOrder, nextOrder, err)
 	}
 	params.Target.SetOrder(order)
-	params.Target.SetSectionID(params.SectionID)
 	return nil
 }

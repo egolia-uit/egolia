@@ -178,7 +178,7 @@ func toAppCourse(m *model.ReadCourse) *app.Course {
 func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 	sections := make([]app.CourseDetailSectionItem, 0, len(m.FullCourseContent.Sections))
 	for _, s := range m.FullCourseContent.Sections {
-		sections = append(sections, toAppSectionItem(m.CourseID, s))
+		sections = append(sections, toAppSectionItem(m.CourseID, &s))
 	}
 	return &app.CourseDetail{
 		Course:   *toAppCourse(m),
@@ -186,10 +186,10 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 	}
 }
 
-func toAppSectionItem(courseID uuid.UUID, s model.ReadCourseSectionContent) app.CourseDetailSectionItem {
+func toAppSectionItem(courseID uuid.UUID, s *model.ReadCourseSectionContent) app.CourseDetailSectionItem {
 	lessons := make([]app.Lesson, 0, len(s.Lessons))
 	for _, l := range s.Lessons {
-		lessons = append(lessons, toAppLesson(s.ID, l))
+		lessons = append(lessons, toAppLesson(&l))
 	}
 	return app.CourseDetailSectionItem{
 		ID:       s.ID,
@@ -200,10 +200,9 @@ func toAppSectionItem(courseID uuid.UUID, s model.ReadCourseSectionContent) app.
 	}
 }
 
-func toAppLesson(sectionID uuid.UUID, l model.ReadCourseLessonContent) app.Lesson {
+func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 	base := app.LessonBase{
 		ID:         l.ID,
-		SectionID:  sectionID,
 		Title:      l.Title,
 		LessonType: app.LessonType(l.LessonType),
 		Order:      l.SortOrder,

@@ -11,22 +11,20 @@ import (
 )
 
 type UpdateCourse struct {
-	CourseID     uuid.UUID
-	Title        string
-	Price        int64
-	Overview     string
-	Introduction CourseLandingPageIntroduction
+	CourseID             uuid.UUID
+	Title                string // emptyable
+	Price                int64  // emptyable
+	Overview             string // emptyable
+	IntroductionVideoKey string // emptyable
 }
 
 type UpdateCourseHandler struct {
-	updateCourseSvc *domain.UpdateCourseSvc
-	uow             domain.UnitOfWork
+	uow domain.UnitOfWork
 }
 
-func NewUpdateCourseHandler(updateCourseSvc *domain.UpdateCourseSvc, uow domain.UnitOfWork) *UpdateCourseHandler {
+func NewUpdateCourseHandler(uow domain.UnitOfWork) *UpdateCourseHandler {
 	return &UpdateCourseHandler{
-		updateCourseSvc: updateCourseSvc,
-		uow:             uow,
+		uow: uow,
 	}
 }
 
@@ -46,14 +44,21 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			return err
 		}
 
-		if err := h.updateCourseSvc.Handle(&domain.UpdateCourse{
-			Course:       course,
-			Title:        cmd.Title,
-			Price:        float64(cmd.Price),
-			Overview:     cmd.Overview,
-			Introduction: domain.NewCourseLandingPageIntroduction(cmd.Introduction.VideoUrl),
-		}); err != nil {
-			return err
+		if cmd.Title != "" {
+			if err := course.SetTitle(cmd.Title); err != nil {
+				return err
+			}
+		}
+		if cmd.Price != 0 {
+			if err := course.SetPrice(float64(cmd.Price)); err != nil {
+				return err
+			}
+		}
+		if cmd.Overview != "" {
+			course.SetOverview(cmd.Overview)
+		}
+		if cmd.IntroductionVideoKey != "" {
+			course.SetIntroductionVideoKey(cmd.IntroductionVideoKey)
 		}
 
 		return repoRegistry.Course().Save(ctx, course)

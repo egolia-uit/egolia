@@ -59,8 +59,6 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	unitOfWork := repo.NewUnitOfWork(db)
-	moveLessonHandler := app.NewMoveLessonHandler(moveLessonSvc, unitOfWork)
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
 	if err != nil {
@@ -68,13 +66,13 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
+	unitOfWork := repo.NewUnitOfWork(db, objectstorageS3)
+	moveLessonHandler := app.NewMoveLessonHandler(moveLessonSvc, unitOfWork)
 	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
-	createCourseSvc := domain.NewCreateCourseSvc()
-	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
+	createCourseHandler := app.NewCreateCourseHandler(unitOfWork)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
 	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
-	updateCourseSvc := domain.NewUpdateCourseSvc()
-	updateCourseHandler := app.NewUpdateCourseHandler(updateCourseSvc, unitOfWork)
+	updateCourseHandler := app.NewUpdateCourseHandler(unitOfWork)
 	enrollInCourseSvc := domain.NewEnrollInCourseSvc()
 	enrollInCourseHandler := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork)
 	finishCourseSvc := domain.NewFinishCourseSvc()

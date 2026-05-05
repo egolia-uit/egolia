@@ -89,15 +89,12 @@ export type CourseSection = {
     courseId: CourseId;
 };
 
-export type CourseSectionPropertiesId = string;
-
 export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
 
 export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
 
 export type CourseLesson = {
     readonly id: string;
-    sectionId?: CourseSectionPropertiesId;
     title: string;
     readonly order?: string;
     lessonType: CourseLessonType;

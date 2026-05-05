@@ -298,19 +298,17 @@ func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateC
 	if request.Body.Overview != nil {
 		overview = *request.Body.Overview
 	}
-	introduction := app.CourseLandingPageIntroduction{}
+	var introductionVideoKey string
 	if request.Body.Introduction != nil {
-		introduction = app.CourseLandingPageIntroduction{
-			VideoUrl: request.Body.Introduction.VideoUrl,
-		}
+		introductionVideoKey = request.Body.Introduction.VideoUrl
 	}
 
 	if err := h.App.Cmds.UpdateCourse.Handle(ctx, &app.UpdateCourse{
-		CourseID:     courseID,
-		Title:        request.Body.Title,
-		Price:        request.Body.Price,
-		Overview:     overview,
-		Introduction: introduction,
+		CourseID:             courseID,
+		Title:                request.Body.Title,
+		Price:                request.Body.Price,
+		Overview:             overview,
+		IntroductionVideoKey: introductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}

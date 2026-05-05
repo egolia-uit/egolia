@@ -10,7 +10,6 @@ import (
 
 type Lesson struct {
 	ID          uuid.UUID         `gorm:"type:uuid;primaryKey"`
-	SectionID   uuid.UUID         `gorm:"type:uuid;not null"`
 	Title       string            `gorm:"type:varchar(255);not null"`
 	SortOrder   string            `gorm:"column:sort_order;type:text;not null;default:''"`
 	LessonType  domain.LessonType `gorm:"column:lesson_type;type:varchar(50);not null"`
@@ -28,7 +27,6 @@ func LessonFromDomain(l domain.Lesson) *Lesson {
 	case *domain.VideoLesson:
 		return &Lesson{
 			ID:         l.ID(),
-			SectionID:  l.SectionID(),
 			Title:      l.Title(),
 			SortOrder:  l.Order(),
 			LessonType: domain.LessonTypeVideo,
@@ -49,7 +47,6 @@ func LessonFromDomain(l domain.Lesson) *Lesson {
 		}
 		return &Lesson{
 			ID:          l.ID(),
-			SectionID:   l.SectionID(),
 			Title:       l.Title(),
 			SortOrder:   l.Order(),
 			LessonType:  domain.LessonTypeTest,
@@ -75,7 +72,6 @@ func (m *Lesson) ToDomain() domain.Lesson {
 		}
 		return domain.UnmarshalVideoLesson(
 			m.ID,
-			m.SectionID,
 			m.SortOrder,
 			m.Title,
 			m.VideoLesson.VideoKey,
@@ -90,8 +86,11 @@ func (m *Lesson) ToDomain() domain.Lesson {
 			questions = append(questions, m.TestLesson.Questions[i].ToDomain())
 		}
 		return domain.UnmarshalTestLesson(
-			m.ID, m.SectionID, m.SortOrder, m.Title,
-			m.TestLesson.Type, questions,
+			m.ID,
+			m.SortOrder,
+			m.Title,
+			m.TestLesson.Type,
+			questions,
 		)
 	}
 	return nil
