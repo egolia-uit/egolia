@@ -4,6 +4,7 @@
 REDOCLY_TELEMETRY = "off"
 REDOCLY_SUPPRESS_UPDATE_NOTICE = "true"
 NEXT_TELEMETRY_DISABLED = "1"
+'_'.path.paths = ["./scripts/"]
 
 [tools]
 "go:github.com/goforj/wire/cmd/wire" = "v1.2.0"
@@ -12,6 +13,7 @@ buf = "1.65.0"
 pnpm = "10.28.2"
 "npm:skills" = "latest"
 mockery = "3.7.0"
+yt-dlp = { version = "2026.03.17", rename_exe = "yt-dlp" }
 
 [tools.ffmpeg]
 version = "8.1.0"
