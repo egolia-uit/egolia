@@ -11,6 +11,8 @@ patch:
   summary: Edit test lesson
   operationId: editTestLesson
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
   requestBody:
     required: true

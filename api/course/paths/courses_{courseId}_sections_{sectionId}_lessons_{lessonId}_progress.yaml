@@ -11,6 +11,8 @@ get:
   summary: Get lesson progress
   operationId: getLessonProgress
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
   responses:
     200:

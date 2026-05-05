@@ -11,6 +11,7 @@ post:
   summary: Move section
   operationId: moveSection
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
   requestBody:
     required: true

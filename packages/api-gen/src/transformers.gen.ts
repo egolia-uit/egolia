@@ -2,17 +2,27 @@
 
 import type { CheckoutCourseResponse, CommentOnPostResponse, CreatePostResponse, GetCertificateByIdResponse, GetCourseDetailResponse, GetCourseLandingPageResponse, GetInstructorCoursesResponse, GetLessonCommentsResponse, GetMyCertificatesResponse, GetMyEnrolledCoursesResponse, GetPlatformRevenueAnalyticsResponse, GetPostByIdResponse, GetPostCommentsResponse, GetPublishedCoursesResponse, GetSystemCoursesResponse, GetTransactionsResponse, GetUploadVideoLessonUrlResponse, ReplyCommentResponse, SearchCoursesResponse, SearchPostsResponse, UpdateCommentResponse, UpdatePostResponse } from './types.gen';
 
+const courseCertificateSchemaResponseTransformer = (data: any) => {
+    data.issuedAt = new Date(data.issuedAt);
+    return data;
+};
+
+export const getCertificateByIdResponseTransformer = async (data: any): Promise<GetCertificateByIdResponse> => {
+    data.data = courseCertificateSchemaResponseTransformer(data.data);
+    return data;
+};
+
+export const getMyCertificatesResponseTransformer = async (data: any): Promise<GetMyCertificatesResponse> => {
+    data.data = data.data.map((item: any) => courseCertificateSchemaResponseTransformer(item));
+    return data;
+};
+
 const courseCourseSchemaResponseTransformer = (data: any) => {
     data.price = BigInt(data.price.toString());
     return data;
 };
 
-export const searchCoursesResponseTransformer = async (data: any): Promise<SearchCoursesResponse> => {
-    data.data = data.data.map((item: any) => courseCourseSchemaResponseTransformer(item));
-    return data;
-};
-
-export const getSystemCoursesResponseTransformer = async (data: any): Promise<GetSystemCoursesResponse> => {
+export const getInstructorCoursesResponseTransformer = async (data: any): Promise<GetInstructorCoursesResponse> => {
     data.data = data.data.map((item: any) => courseCourseSchemaResponseTransformer(item));
     return data;
 };
@@ -22,7 +32,7 @@ export const getPublishedCoursesResponseTransformer = async (data: any): Promise
     return data;
 };
 
-export const getInstructorCoursesResponseTransformer = async (data: any): Promise<GetInstructorCoursesResponse> => {
+export const getSystemCoursesResponseTransformer = async (data: any): Promise<GetSystemCoursesResponse> => {
     data.data = data.data.map((item: any) => courseCourseSchemaResponseTransformer(item));
     return data;
 };
@@ -47,8 +57,8 @@ export const getMyEnrolledCoursesResponseTransformer = async (data: any): Promis
     return data;
 };
 
-export const getUploadVideoLessonUrlResponseTransformer = async (data: any): Promise<GetUploadVideoLessonUrlResponse> => {
-    data.expiresAt = new Date(data.expiresAt);
+export const searchCoursesResponseTransformer = async (data: any): Promise<SearchCoursesResponse> => {
+    data.data = data.data.map((item: any) => courseCourseSchemaResponseTransformer(item));
     return data;
 };
 
@@ -62,18 +72,8 @@ export const getLessonCommentsResponseTransformer = async (data: any): Promise<G
     return data;
 };
 
-const courseCertificateSchemaResponseTransformer = (data: any) => {
-    data.issuedAt = new Date(data.issuedAt);
-    return data;
-};
-
-export const getMyCertificatesResponseTransformer = async (data: any): Promise<GetMyCertificatesResponse> => {
-    data.data = data.data.map((item: any) => courseCertificateSchemaResponseTransformer(item));
-    return data;
-};
-
-export const getCertificateByIdResponseTransformer = async (data: any): Promise<GetCertificateByIdResponse> => {
-    data.data = courseCertificateSchemaResponseTransformer(data.data);
+export const getUploadVideoLessonUrlResponseTransformer = async (data: any): Promise<GetUploadVideoLessonUrlResponse> => {
+    data.expiresAt = new Date(data.expiresAt);
     return data;
 };
 

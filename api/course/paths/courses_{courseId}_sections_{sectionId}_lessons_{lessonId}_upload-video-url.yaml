@@ -11,6 +11,8 @@ post:
   summary: Get upload video lesson URL
   operationId: getUploadVideoLessonUrl
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
   requestBody:
     required: true

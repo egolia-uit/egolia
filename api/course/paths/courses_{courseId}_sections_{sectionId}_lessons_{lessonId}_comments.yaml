@@ -11,6 +11,8 @@ get:
   summary: Get lesson comments
   operationId: getLessonComments
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
   responses:
     200:
@@ -48,6 +50,8 @@ post:
   summary: Comment on lesson
   operationId: commentOnLesson
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
   requestBody:
     required: true

@@ -11,6 +11,8 @@ put:
   summary: Save test lesson progress
   operationId: saveTestLessonProgress
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
   requestBody:
     required: true
