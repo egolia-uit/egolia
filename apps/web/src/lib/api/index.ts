@@ -14,6 +14,7 @@ client.interceptors.request.use(async (config) => {
     console.warn('Failed to attach token', error);
   }
 
-  return config;
+  // KHÔNG return config ở đây nữa
 });
+
 export const apiClient = client;
