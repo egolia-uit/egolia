@@ -10,6 +10,7 @@ import (
 
 type Lesson struct {
 	ID          uuid.UUID         `gorm:"type:uuid;primaryKey"`
+	SectionID   uuid.UUID         `gorm:"type:uuid;not null"`
 	Title       string            `gorm:"type:varchar(255);not null"`
 	SortOrder   string            `gorm:"column:sort_order;type:text;not null;default:''"`
 	LessonType  domain.LessonType `gorm:"column:lesson_type;type:varchar(50);not null"`
@@ -22,11 +23,12 @@ type Lesson struct {
 
 func (Lesson) TableName() string { return "lessons" }
 
-func LessonFromDomain(l domain.Lesson) *Lesson {
+func LessonFromDomain(l domain.Lesson, sectionID uuid.UUID) *Lesson {
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:
 		return &Lesson{
 			ID:         l.ID(),
+			SectionID:  sectionID,
 			Title:      l.Title(),
 			SortOrder:  l.Order(),
 			LessonType: domain.LessonTypeVideo,
@@ -47,6 +49,7 @@ func LessonFromDomain(l domain.Lesson) *Lesson {
 		}
 		return &Lesson{
 			ID:          l.ID(),
+			SectionID:   sectionID,
 			Title:       l.Title(),
 			SortOrder:   l.Order(),
 			LessonType:  domain.LessonTypeTest,

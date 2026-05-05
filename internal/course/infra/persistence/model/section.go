@@ -30,7 +30,7 @@ func SectionFromDomain(s *domain.Section) *Section {
 
 	lessons := make([]Lesson, 0, len(s.Lessons()))
 	for _, l := range s.Lessons() {
-		if lm := LessonFromDomain(l); lm != nil {
+		if lm := LessonFromDomain(l, s.ID()); lm != nil {
 			lessons = append(lessons, *lm)
 		}
 	}

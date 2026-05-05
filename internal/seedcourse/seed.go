@@ -28,7 +28,9 @@ func NewSeed(db *gorm.DB, cfg *Config) (*Seed, error) {
 
 func (s *Seed) Run(ctx context.Context) error {
 	courses := s.createCourses()
-	return s.db.WithContext(ctx).
-		Save(courses).
-		Commit().Error
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		tx.Session(&gorm.Session{FullSaveAssociations: true}).
+			Save(courses)
+		return nil
+	})
 }
