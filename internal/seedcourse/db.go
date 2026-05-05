@@ -3,13 +3,12 @@ package seedcourse
 import (
 	"log/slog"
 
-	"github.com/egolia-uit/egolia/internal/course/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func NewDB(
-	cfg *config.Config,
+	cfg *Config,
 ) (*gorm.DB, func(), error) {
 	db, err := gorm.Open(postgres.Open(cfg.Database.GetDSN()))
 	if err != nil {

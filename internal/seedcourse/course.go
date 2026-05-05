@@ -65,82 +65,84 @@ import (
 // }
 
 // TODO: SortOrder to become int, later
-var courses = []model.Course{
-	{
-		ID:                   uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-		OriginalCourseID:     uuid.MustParse("00000000-0000-0000-0000-000000000000"), // TODO: wtf?
-		Title:                "FlowChart - Chuyên đề Lưu đồ Thuật toán",
-		InstructorID:         "120",
-		Status:               domain.CourseStatusApproved,
-		Price:                120000,
-		Overview:             "FlowChart - Chuyên đề Lưu đồ Thuật toán",
-		Hidden:               false,
-		IntroductionVideoKey: "https://www.youtube.com/playlist?list=PLjzaUXKQiFUQLytVOdvOy9GEA3GeLjWWk",
-		Sections: []model.Section{
-			{
-				ID:        uuid.MustParse("00000000-0000-0000-0000-000000000011"),
-				CourseID:  uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-				Title:     "Intro",
-				SortOrder: "1",
-				Lessons: []model.Lesson{
-					{
-						ID:         uuid.MustParse("00000000-0000-0000-0000-000000000111"),
-						Title:      "LĐTT Lý thuyết Lưu đồ Thuật toán",
-						SortOrder:  "1",
-						LessonType: domain.LessonTypeVideo,
-						VideoLesson: &model.VideoLesson{
-							LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000111"),
-							VideoKey: "",
-							Duration: int64((7*time.Minute + 23*time.Second) / time.Second),
+func (s *Seed) createCourses() []model.Course {
+	return []model.Course{
+		{
+			ID:                   uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+			OriginalCourseID:     uuid.MustParse("00000000-0000-0000-0000-000000000000"), // TODO: wtf?
+			Title:                "FlowChart - Chuyên đề Lưu đồ Thuật toán",
+			InstructorID:         "120",
+			Status:               domain.CourseStatusApproved,
+			Price:                120000,
+			Overview:             "FlowChart - Chuyên đề Lưu đồ Thuật toán",
+			Hidden:               false,
+			IntroductionVideoKey: s.publicObjectStorageURL.JoinPath(s.objectStorageBucket, "flowchart_intro.mp4").String(),
+			Sections: []model.Section{
+				{
+					ID:        uuid.MustParse("00000000-0000-0000-0000-000000000011"),
+					CourseID:  uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					Title:     "Intro",
+					SortOrder: "1",
+					Lessons: []model.Lesson{
+						{
+							ID:         uuid.MustParse("00000000-0000-0000-0000-000000000111"),
+							Title:      "LĐTT Lý thuyết Lưu đồ Thuật toán",
+							SortOrder:  "1",
+							LessonType: domain.LessonTypeVideo,
+							VideoLesson: &model.VideoLesson{
+								LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000111"),
+								VideoKey: "",
+								Duration: int64((7*time.Minute + 23*time.Second) / time.Second),
+							},
+							TestLesson: nil,
+							CreatedAt:  time.Now(),
+							UpdatedAt:  time.Now(),
+							DeletedAt:  gorm.DeletedAt{},
 						},
-						TestLesson: nil,
-						CreatedAt:  time.Now(),
-						UpdatedAt:  time.Now(),
-						DeletedAt:  gorm.DeletedAt{},
-					},
-					{
-						ID:          uuid.MustParse("00000000-0000-0000-0000-000000000112"),
-						Title:       "Đay là cái gì",
-						SortOrder:   "2",
-						LessonType:  domain.LessonTypeTest,
-						VideoLesson: nil,
-						TestLesson: &model.TestLesson{
-							LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000112"),
-							Type:     domain.SingleChoice,
-							Questions: []model.TestQuestion{
-								{
-									ID:           uuid.MustParse("00000000-0000-0000-0000-0000000001121"),
-									TestLessonID: uuid.MustParse("00000000-0000-0000-0000-000000000112"),
-									Question:     "FlowChart là gì?",
-									Answers: []model.TestAnswer{
-										{
-											ID:         uuid.MustParse("00000000-0000-0000-0000-00000000011211"),
-											QuestionID: uuid.MustParse("00000000-0000-0000-0000-0000000001121"),
-											Answer:     "Biểu đồ thể hiện luồng điều khiển của thuật toán",
-											IsCorrect:  true,
-										},
-										{
-											ID:         uuid.MustParse("00000000-0000-0000-0000-00000000011212"),
-											QuestionID: uuid.MustParse("00000000-0000-0000-0000-0000000001121"),
-											Answer:     "Một loại sơ đồ dùng để thiết kế giao diện người dùng",
-											IsCorrect:  false,
+						{
+							ID:          uuid.MustParse("00000000-0000-0000-0000-000000000112"),
+							Title:       "Đay là cái gì",
+							SortOrder:   "2",
+							LessonType:  domain.LessonTypeTest,
+							VideoLesson: nil,
+							TestLesson: &model.TestLesson{
+								LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000112"),
+								Type:     domain.SingleChoice,
+								Questions: []model.TestQuestion{
+									{
+										ID:           uuid.MustParse("00000000-0000-0000-0000-000000001121"),
+										TestLessonID: uuid.MustParse("00000000-0000-0000-0000-000000000112"),
+										Question:     "FlowChart là gì?",
+										Answers: []model.TestAnswer{
+											{
+												ID:         uuid.MustParse("00000000-0000-0000-0000-000000011211"),
+												QuestionID: uuid.MustParse("00000000-0000-0000-0000-000000001121"),
+												Answer:     "Biểu đồ thể hiện luồng điều khiển của thuật toán",
+												IsCorrect:  true,
+											},
+											{
+												ID:         uuid.MustParse("00000000-0000-0000-0000-000000011212"),
+												QuestionID: uuid.MustParse("00000000-0000-0000-0000-000000001121"),
+												Answer:     "Một loại sơ đồ dùng để thiết kế giao diện người dùng",
+												IsCorrect:  false,
+											},
 										},
 									},
 								},
 							},
+							CreatedAt: time.Now(),
+							UpdatedAt: time.Now(),
+							DeletedAt: gorm.DeletedAt{},
 						},
-						CreatedAt: time.Now(),
-						UpdatedAt: time.Now(),
-						DeletedAt: gorm.DeletedAt{},
 					},
+					CreatedAt: time.Now(),
+					UpdatedAt: time.Now(),
+					DeletedAt: gorm.DeletedAt{},
 				},
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-				DeletedAt: gorm.DeletedAt{},
 			},
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			DeletedAt: gorm.DeletedAt{},
 		},
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		DeletedAt: gorm.DeletedAt{},
-	},
+	}
 }

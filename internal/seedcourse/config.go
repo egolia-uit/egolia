@@ -11,10 +11,12 @@ import (
 )
 
 type Config struct {
-	Database commonconfig.SQL `json:"database" mapstructure:"database" validate:"required" yaml:"database"`
+	Database               commonconfig.SQL `json:"database"                  mapstructure:"database"                  validate:"required"     yaml:"database"`
+	PublicObjectStorageURL string           `json:"public_object_storage_url" mapstructure:"public_object_storage_url" validate:"required,url" yaml:"public_object_storage_url"`
+	ObjectStorageBucket    string           `json:"object_storage_bucket"     mapstructure:"object_storage_bucket"     validate:"required"     yaml:"object_storage_bucket"`
 }
 
-func New(
+func NewConfig(
 	validate *validator.Validate,
 	viper *viper.Viper,
 ) (*Config, error) {
