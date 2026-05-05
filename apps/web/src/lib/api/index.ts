@@ -3,12 +3,11 @@ import { authClient } from '../auth';
 
 client.interceptors.request.use(async (config) => {
   try {
-    const session = await authClient.getSession();
-    const { accessToken } = await authClient.getAccessToken({
+    const { data } = await authClient.getAccessToken({
       providerId: 'authentik',
     });
-    if (accessToken) {
-      config.headers.set('Authorization', `Bearer ${accessToken}`);
+    if (data?.accessToken) {
+      config.headers.set('Authorization', `Bearer ${data.accessToken}`);
     }
   } catch (error) {
     console.warn('Failed to attach token', error);
