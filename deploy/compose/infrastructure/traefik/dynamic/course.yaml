@@ -40,7 +40,7 @@ http:
       priority: 70
       middlewares:
         - cors
-        - protect-instructor
+        - protect-instructor-or-admin
 
     course-http-public:
       entryPoints:

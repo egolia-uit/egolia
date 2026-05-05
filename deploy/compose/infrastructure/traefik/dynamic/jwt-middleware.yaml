@@ -19,15 +19,16 @@ http:
           issuers: *issuers
           headerMap: *headerMap
           require:
-            $or:
-              - instructor
+            roles:
               - admin
 
-    protect-instructor:
+    protect-instructor-or-admin:
       plugin:
         jwt:
           issuers: *issuers
           headerMap: *headerMap
           require:
             roles:
-              - instructor
+              $or:
+                - instructor
+                - admin
