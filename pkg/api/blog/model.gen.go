@@ -32,102 +32,6 @@ func (e OrderQuery) Valid() bool {
 	}
 }
 
-// Defines values for UnauthorizedErrorType.
-const (
-	UnauthorizedErrorTypeExtractToken UnauthorizedErrorType = "ExtractToken"
-	UnauthorizedErrorTypeFetchJWKS    UnauthorizedErrorType = "FetchJWKS"
-	UnauthorizedErrorTypeOPA          UnauthorizedErrorType = "OPA"
-	UnauthorizedErrorTypeVerifyToken  UnauthorizedErrorType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UnauthorizedErrorType enum.
-func (e UnauthorizedErrorType) Valid() bool {
-	switch e {
-	case UnauthorizedErrorTypeExtractToken:
-		return true
-	case UnauthorizedErrorTypeFetchJWKS:
-		return true
-	case UnauthorizedErrorTypeOPA:
-		return true
-	case UnauthorizedErrorTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for DeleteComment401JSONResponseBodyType.
-const (
-	DeleteComment401JSONResponseBodyTypeExtractToken DeleteComment401JSONResponseBodyType = "ExtractToken"
-	DeleteComment401JSONResponseBodyTypeFetchJWKS    DeleteComment401JSONResponseBodyType = "FetchJWKS"
-	DeleteComment401JSONResponseBodyTypeOPA          DeleteComment401JSONResponseBodyType = "OPA"
-	DeleteComment401JSONResponseBodyTypeVerifyToken  DeleteComment401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the DeleteComment401JSONResponseBodyType enum.
-func (e DeleteComment401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case DeleteComment401JSONResponseBodyTypeExtractToken:
-		return true
-	case DeleteComment401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case DeleteComment401JSONResponseBodyTypeOPA:
-		return true
-	case DeleteComment401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for UpdateComment401JSONResponseBodyType.
-const (
-	UpdateComment401JSONResponseBodyTypeExtractToken UpdateComment401JSONResponseBodyType = "ExtractToken"
-	UpdateComment401JSONResponseBodyTypeFetchJWKS    UpdateComment401JSONResponseBodyType = "FetchJWKS"
-	UpdateComment401JSONResponseBodyTypeOPA          UpdateComment401JSONResponseBodyType = "OPA"
-	UpdateComment401JSONResponseBodyTypeVerifyToken  UpdateComment401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UpdateComment401JSONResponseBodyType enum.
-func (e UpdateComment401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case UpdateComment401JSONResponseBodyTypeExtractToken:
-		return true
-	case UpdateComment401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case UpdateComment401JSONResponseBodyTypeOPA:
-		return true
-	case UpdateComment401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ReplyComment401JSONResponseBodyType.
-const (
-	ReplyComment401JSONResponseBodyTypeExtractToken ReplyComment401JSONResponseBodyType = "ExtractToken"
-	ReplyComment401JSONResponseBodyTypeFetchJWKS    ReplyComment401JSONResponseBodyType = "FetchJWKS"
-	ReplyComment401JSONResponseBodyTypeOPA          ReplyComment401JSONResponseBodyType = "OPA"
-	ReplyComment401JSONResponseBodyTypeVerifyToken  ReplyComment401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the ReplyComment401JSONResponseBodyType enum.
-func (e ReplyComment401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case ReplyComment401JSONResponseBodyTypeExtractToken:
-		return true
-	case ReplyComment401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case ReplyComment401JSONResponseBodyTypeOPA:
-		return true
-	case ReplyComment401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for SearchPostsParamsOrder.
 const (
 	SearchPostsParamsOrderAsc  SearchPostsParamsOrder = "asc"
@@ -140,174 +44,6 @@ func (e SearchPostsParamsOrder) Valid() bool {
 	case SearchPostsParamsOrderAsc:
 		return true
 	case SearchPostsParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SearchPosts401JSONResponseBodyType.
-const (
-	SearchPosts401JSONResponseBodyTypeExtractToken SearchPosts401JSONResponseBodyType = "ExtractToken"
-	SearchPosts401JSONResponseBodyTypeFetchJWKS    SearchPosts401JSONResponseBodyType = "FetchJWKS"
-	SearchPosts401JSONResponseBodyTypeOPA          SearchPosts401JSONResponseBodyType = "OPA"
-	SearchPosts401JSONResponseBodyTypeVerifyToken  SearchPosts401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the SearchPosts401JSONResponseBodyType enum.
-func (e SearchPosts401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case SearchPosts401JSONResponseBodyTypeExtractToken:
-		return true
-	case SearchPosts401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case SearchPosts401JSONResponseBodyTypeOPA:
-		return true
-	case SearchPosts401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreatePost401JSONResponseBodyType.
-const (
-	CreatePost401JSONResponseBodyTypeExtractToken CreatePost401JSONResponseBodyType = "ExtractToken"
-	CreatePost401JSONResponseBodyTypeFetchJWKS    CreatePost401JSONResponseBodyType = "FetchJWKS"
-	CreatePost401JSONResponseBodyTypeOPA          CreatePost401JSONResponseBodyType = "OPA"
-	CreatePost401JSONResponseBodyTypeVerifyToken  CreatePost401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the CreatePost401JSONResponseBodyType enum.
-func (e CreatePost401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case CreatePost401JSONResponseBodyTypeExtractToken:
-		return true
-	case CreatePost401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case CreatePost401JSONResponseBodyTypeOPA:
-		return true
-	case CreatePost401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for DeletePost401JSONResponseBodyType.
-const (
-	DeletePost401JSONResponseBodyTypeExtractToken DeletePost401JSONResponseBodyType = "ExtractToken"
-	DeletePost401JSONResponseBodyTypeFetchJWKS    DeletePost401JSONResponseBodyType = "FetchJWKS"
-	DeletePost401JSONResponseBodyTypeOPA          DeletePost401JSONResponseBodyType = "OPA"
-	DeletePost401JSONResponseBodyTypeVerifyToken  DeletePost401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the DeletePost401JSONResponseBodyType enum.
-func (e DeletePost401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case DeletePost401JSONResponseBodyTypeExtractToken:
-		return true
-	case DeletePost401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case DeletePost401JSONResponseBodyTypeOPA:
-		return true
-	case DeletePost401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetPostById401JSONResponseBodyType.
-const (
-	GetPostById401JSONResponseBodyTypeExtractToken GetPostById401JSONResponseBodyType = "ExtractToken"
-	GetPostById401JSONResponseBodyTypeFetchJWKS    GetPostById401JSONResponseBodyType = "FetchJWKS"
-	GetPostById401JSONResponseBodyTypeOPA          GetPostById401JSONResponseBodyType = "OPA"
-	GetPostById401JSONResponseBodyTypeVerifyToken  GetPostById401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetPostById401JSONResponseBodyType enum.
-func (e GetPostById401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetPostById401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetPostById401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetPostById401JSONResponseBodyTypeOPA:
-		return true
-	case GetPostById401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for UpdatePost401JSONResponseBodyType.
-const (
-	UpdatePost401JSONResponseBodyTypeExtractToken UpdatePost401JSONResponseBodyType = "ExtractToken"
-	UpdatePost401JSONResponseBodyTypeFetchJWKS    UpdatePost401JSONResponseBodyType = "FetchJWKS"
-	UpdatePost401JSONResponseBodyTypeOPA          UpdatePost401JSONResponseBodyType = "OPA"
-	UpdatePost401JSONResponseBodyTypeVerifyToken  UpdatePost401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UpdatePost401JSONResponseBodyType enum.
-func (e UpdatePost401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case UpdatePost401JSONResponseBodyTypeExtractToken:
-		return true
-	case UpdatePost401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case UpdatePost401JSONResponseBodyTypeOPA:
-		return true
-	case UpdatePost401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetPostComments401JSONResponseBodyType.
-const (
-	GetPostComments401JSONResponseBodyTypeExtractToken GetPostComments401JSONResponseBodyType = "ExtractToken"
-	GetPostComments401JSONResponseBodyTypeFetchJWKS    GetPostComments401JSONResponseBodyType = "FetchJWKS"
-	GetPostComments401JSONResponseBodyTypeOPA          GetPostComments401JSONResponseBodyType = "OPA"
-	GetPostComments401JSONResponseBodyTypeVerifyToken  GetPostComments401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetPostComments401JSONResponseBodyType enum.
-func (e GetPostComments401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetPostComments401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetPostComments401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetPostComments401JSONResponseBodyTypeOPA:
-		return true
-	case GetPostComments401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CommentOnPost401JSONResponseBodyType.
-const (
-	ExtractToken CommentOnPost401JSONResponseBodyType = "ExtractToken"
-	FetchJWKS    CommentOnPost401JSONResponseBodyType = "FetchJWKS"
-	OPA          CommentOnPost401JSONResponseBodyType = "OPA"
-	VerifyToken  CommentOnPost401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the CommentOnPost401JSONResponseBodyType enum.
-func (e CommentOnPost401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case ExtractToken:
-		return true
-	case FetchJWKS:
-		return true
-	case OPA:
-		return true
-	case VerifyToken:
 		return true
 	default:
 		return false
@@ -400,35 +136,14 @@ type InternalServerError = Error
 // NotFoundError defines model for NotFoundError.
 type NotFoundError = Error
 
-// UnauthorizedError The error response body returned when JWT validation or OPA authorization fails.
-type UnauthorizedError struct {
-	// CustomMessage An optional, developer-defined message, often populated by OPA policy violations.
-	CustomMessage *string `json:"custom_message"`
-
-	// Details A descriptive message providing technical context for the failure.
-	Details string `json:"details"`
-
-	// Type The category of the error encountered during the middleware lifecycle.
-	Type UnauthorizedErrorType `json:"type"`
-}
-
-// UnauthorizedErrorType The category of the error encountered during the middleware lifecycle.
-type UnauthorizedErrorType string
+// UnauthorizedError defines model for UnauthorizedError.
+type UnauthorizedError = map[string]interface{}
 
 // oIDCContextKey is the context key for OIDC security scheme
 type oIDCContextKey string
 
 // oauth2ContextKey is the context key for Oauth2 security scheme
 type oauth2ContextKey string
-
-// DeleteComment401JSONResponseBodyType defines parameters for DeleteComment.
-type DeleteComment401JSONResponseBodyType string
-
-// UpdateComment401JSONResponseBodyType defines parameters for UpdateComment.
-type UpdateComment401JSONResponseBodyType string
-
-// ReplyComment401JSONResponseBodyType defines parameters for ReplyComment.
-type ReplyComment401JSONResponseBodyType string
 
 // SearchPostsParams defines parameters for SearchPosts.
 type SearchPostsParams struct {
@@ -451,33 +166,12 @@ type SearchPostsParams struct {
 // SearchPostsParamsOrder defines parameters for SearchPosts.
 type SearchPostsParamsOrder string
 
-// SearchPosts401JSONResponseBodyType defines parameters for SearchPosts.
-type SearchPosts401JSONResponseBodyType string
-
-// CreatePost401JSONResponseBodyType defines parameters for CreatePost.
-type CreatePost401JSONResponseBodyType string
-
-// DeletePost401JSONResponseBodyType defines parameters for DeletePost.
-type DeletePost401JSONResponseBodyType string
-
-// GetPostById401JSONResponseBodyType defines parameters for GetPostById.
-type GetPostById401JSONResponseBodyType string
-
 // UpdatePostJSONBody defines parameters for UpdatePost.
 type UpdatePostJSONBody struct {
 	Content string   `json:"content"`
 	Tags    []string `json:"tags"`
 	Title   string   `json:"title"`
 }
-
-// UpdatePost401JSONResponseBodyType defines parameters for UpdatePost.
-type UpdatePost401JSONResponseBodyType string
-
-// GetPostComments401JSONResponseBodyType defines parameters for GetPostComments.
-type GetPostComments401JSONResponseBodyType string
-
-// CommentOnPost401JSONResponseBodyType defines parameters for CommentOnPost.
-type CommentOnPost401JSONResponseBodyType string
 
 // UpdateCommentJSONRequestBody defines body for UpdateComment for application/json ContentType.
 type UpdateCommentJSONRequestBody = Comment

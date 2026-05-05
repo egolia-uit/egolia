@@ -556,21 +556,10 @@ export type SearchCoursesErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -609,21 +598,10 @@ export type CreateCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -670,21 +648,10 @@ export type GetSystemCoursesErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -783,21 +750,10 @@ export type GetInstructorCoursesErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -842,21 +798,10 @@ export type DeleteCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -898,21 +843,10 @@ export type GetCourseDetailErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -956,21 +890,10 @@ export type UpdateCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1012,21 +935,10 @@ export type EnrollInCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1066,21 +978,10 @@ export type GetCourseProgressErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1124,21 +1025,10 @@ export type FinishCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1183,21 +1073,10 @@ export type ReviewCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1237,21 +1116,10 @@ export type BookmarkCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1291,21 +1159,10 @@ export type UnbookmarkCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1347,21 +1204,10 @@ export type HideCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1403,21 +1249,10 @@ export type UnhideCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1461,21 +1296,10 @@ export type TriggerLearningReminderErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1554,21 +1378,10 @@ export type ApproveCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1612,21 +1425,10 @@ export type DeclineCourseErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1679,21 +1481,10 @@ export type GetMyEnrolledCoursesErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Internal Server Error response
@@ -1732,21 +1523,10 @@ export type CreateSectionErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1786,21 +1566,10 @@ export type DeleteSectionErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1844,21 +1613,10 @@ export type UpdateSectionTitleErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1908,21 +1666,10 @@ export type MoveSectionErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -1975,21 +1722,10 @@ export type CreateLessonErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2025,21 +1761,10 @@ export type DeleteLessonErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2081,21 +1806,10 @@ export type GetLessonDetailErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2139,21 +1853,10 @@ export type EditVideoLessonErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2195,21 +1898,10 @@ export type EditTestLessonErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2253,21 +1945,10 @@ export type GetUploadVideoLessonUrlErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2316,21 +1997,10 @@ export type CreateTestErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2370,21 +2040,10 @@ export type GetLessonProgressErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2428,21 +2087,10 @@ export type SaveVideoLessonProgressErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2484,21 +2132,10 @@ export type SaveTestLessonProgressErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2542,21 +2179,10 @@ export type MarkLessonAsCompletedErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2605,21 +2231,10 @@ export type MoveLessonErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2655,21 +2270,10 @@ export type GetLessonCommentsData = {
 
 export type GetLessonCommentsErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2715,21 +2319,10 @@ export type CommentOnLessonErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2774,21 +2367,10 @@ export type ReplyLessonCommentErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2839,21 +2421,10 @@ export type GetMyCertificatesErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Internal Server Error response
@@ -2890,21 +2461,10 @@ export type GetCertificateByIdErrors = {
      */
     400: CourseError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2946,21 +2506,10 @@ export type CheckoutCourseErrors = {
      */
     400: BillingError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -2995,21 +2544,10 @@ export type GetPlatformRevenueAnalyticsData = {
 
 export type GetPlatformRevenueAnalyticsErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -3059,21 +2597,10 @@ export type GetTransactionsData = {
 
 export type GetTransactionsErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Internal Server Error response
@@ -3113,21 +2640,10 @@ export type CompleteTransactionErrors = {
      */
     400: BillingError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Internal Server Error response
@@ -3176,21 +2692,10 @@ export type SearchPostsData = {
 
 export type SearchPostsErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Internal Server Error response
@@ -3225,21 +2730,10 @@ export type CreatePostErrors = {
      */
     400: BlogError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Internal Server Error response
@@ -3272,21 +2766,10 @@ export type DeletePostData = {
 
 export type DeletePostErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -3327,21 +2810,10 @@ export type GetPostByIdData = {
 
 export type GetPostByIdErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Not Found Error response
@@ -3386,21 +2858,10 @@ export type UpdatePostErrors = {
      */
     400: BlogError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -3441,21 +2902,10 @@ export type GetPostCommentsData = {
 
 export type GetPostCommentsErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Not Found Error response
@@ -3498,21 +2948,10 @@ export type CommentOnPostErrors = {
      */
     400: BlogError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Not Found Error response
@@ -3549,21 +2988,10 @@ export type DeleteCommentData = {
 
 export type DeleteCommentErrors = {
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -3608,21 +3036,10 @@ export type UpdateCommentErrors = {
      */
     400: BlogError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Forbidden Error response
@@ -3667,21 +3084,10 @@ export type ReplyCommentErrors = {
      */
     400: BlogError;
     /**
-     * The error response body returned when JWT validation or OPA authorization fails.
+     * Unauthorized Error response
      */
     401: {
-        /**
-         * The category of the error encountered during the middleware lifecycle.
-         */
-        type: 'ExtractToken' | 'VerifyToken' | 'FetchJWKS' | 'OPA';
-        /**
-         * A descriptive message providing technical context for the failure.
-         */
-        details: string;
-        /**
-         * An optional, developer-defined message, often populated by OPA policy violations.
-         */
-        custom_message: string | null;
+        [key: string]: unknown;
     };
     /**
      * Not Found Error response

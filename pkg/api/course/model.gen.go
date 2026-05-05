@@ -91,78 +91,6 @@ func (e OrderQuery) Valid() bool {
 	}
 }
 
-// Defines values for UnauthorizedErrorType.
-const (
-	UnauthorizedErrorTypeExtractToken UnauthorizedErrorType = "ExtractToken"
-	UnauthorizedErrorTypeFetchJWKS    UnauthorizedErrorType = "FetchJWKS"
-	UnauthorizedErrorTypeOPA          UnauthorizedErrorType = "OPA"
-	UnauthorizedErrorTypeVerifyToken  UnauthorizedErrorType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UnauthorizedErrorType enum.
-func (e UnauthorizedErrorType) Valid() bool {
-	switch e {
-	case UnauthorizedErrorTypeExtractToken:
-		return true
-	case UnauthorizedErrorTypeFetchJWKS:
-		return true
-	case UnauthorizedErrorTypeOPA:
-		return true
-	case UnauthorizedErrorTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ApproveCourse401JSONResponseBodyType.
-const (
-	ApproveCourse401JSONResponseBodyTypeExtractToken ApproveCourse401JSONResponseBodyType = "ExtractToken"
-	ApproveCourse401JSONResponseBodyTypeFetchJWKS    ApproveCourse401JSONResponseBodyType = "FetchJWKS"
-	ApproveCourse401JSONResponseBodyTypeOPA          ApproveCourse401JSONResponseBodyType = "OPA"
-	ApproveCourse401JSONResponseBodyTypeVerifyToken  ApproveCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the ApproveCourse401JSONResponseBodyType enum.
-func (e ApproveCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case ApproveCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case ApproveCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case ApproveCourse401JSONResponseBodyTypeOPA:
-		return true
-	case ApproveCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for DeclineCourse401JSONResponseBodyType.
-const (
-	DeclineCourse401JSONResponseBodyTypeExtractToken DeclineCourse401JSONResponseBodyType = "ExtractToken"
-	DeclineCourse401JSONResponseBodyTypeFetchJWKS    DeclineCourse401JSONResponseBodyType = "FetchJWKS"
-	DeclineCourse401JSONResponseBodyTypeOPA          DeclineCourse401JSONResponseBodyType = "OPA"
-	DeclineCourse401JSONResponseBodyTypeVerifyToken  DeclineCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the DeclineCourse401JSONResponseBodyType enum.
-func (e DeclineCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case DeclineCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case DeclineCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case DeclineCourse401JSONResponseBodyTypeOPA:
-		return true
-	case DeclineCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for GetMyEnrolledCoursesParamsOrder.
 const (
 	GetMyEnrolledCoursesParamsOrderAsc  GetMyEnrolledCoursesParamsOrder = "asc"
@@ -175,30 +103,6 @@ func (e GetMyEnrolledCoursesParamsOrder) Valid() bool {
 	case GetMyEnrolledCoursesParamsOrderAsc:
 		return true
 	case GetMyEnrolledCoursesParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetMyEnrolledCourses401JSONResponseBodyType.
-const (
-	GetMyEnrolledCourses401JSONResponseBodyTypeExtractToken GetMyEnrolledCourses401JSONResponseBodyType = "ExtractToken"
-	GetMyEnrolledCourses401JSONResponseBodyTypeFetchJWKS    GetMyEnrolledCourses401JSONResponseBodyType = "FetchJWKS"
-	GetMyEnrolledCourses401JSONResponseBodyTypeOPA          GetMyEnrolledCourses401JSONResponseBodyType = "OPA"
-	GetMyEnrolledCourses401JSONResponseBodyTypeVerifyToken  GetMyEnrolledCourses401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetMyEnrolledCourses401JSONResponseBodyType enum.
-func (e GetMyEnrolledCourses401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetMyEnrolledCourses401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetMyEnrolledCourses401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetMyEnrolledCourses401JSONResponseBodyTypeOPA:
-		return true
-	case GetMyEnrolledCourses401JSONResponseBodyTypeVerifyToken:
 		return true
 	default:
 		return false
@@ -223,54 +127,6 @@ func (e GetMyCertificatesParamsOrder) Valid() bool {
 	}
 }
 
-// Defines values for GetMyCertificates401JSONResponseBodyType.
-const (
-	GetMyCertificates401JSONResponseBodyTypeExtractToken GetMyCertificates401JSONResponseBodyType = "ExtractToken"
-	GetMyCertificates401JSONResponseBodyTypeFetchJWKS    GetMyCertificates401JSONResponseBodyType = "FetchJWKS"
-	GetMyCertificates401JSONResponseBodyTypeOPA          GetMyCertificates401JSONResponseBodyType = "OPA"
-	GetMyCertificates401JSONResponseBodyTypeVerifyToken  GetMyCertificates401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetMyCertificates401JSONResponseBodyType enum.
-func (e GetMyCertificates401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetMyCertificates401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetMyCertificates401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetMyCertificates401JSONResponseBodyTypeOPA:
-		return true
-	case GetMyCertificates401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetCertificateById401JSONResponseBodyType.
-const (
-	GetCertificateById401JSONResponseBodyTypeExtractToken GetCertificateById401JSONResponseBodyType = "ExtractToken"
-	GetCertificateById401JSONResponseBodyTypeFetchJWKS    GetCertificateById401JSONResponseBodyType = "FetchJWKS"
-	GetCertificateById401JSONResponseBodyTypeOPA          GetCertificateById401JSONResponseBodyType = "OPA"
-	GetCertificateById401JSONResponseBodyTypeVerifyToken  GetCertificateById401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetCertificateById401JSONResponseBodyType enum.
-func (e GetCertificateById401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetCertificateById401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetCertificateById401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetCertificateById401JSONResponseBodyTypeOPA:
-		return true
-	case GetCertificateById401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for SearchCoursesParamsOrder.
 const (
 	SearchCoursesParamsOrderAsc  SearchCoursesParamsOrder = "asc"
@@ -289,54 +145,6 @@ func (e SearchCoursesParamsOrder) Valid() bool {
 	}
 }
 
-// Defines values for SearchCourses401JSONResponseBodyType.
-const (
-	SearchCourses401JSONResponseBodyTypeExtractToken SearchCourses401JSONResponseBodyType = "ExtractToken"
-	SearchCourses401JSONResponseBodyTypeFetchJWKS    SearchCourses401JSONResponseBodyType = "FetchJWKS"
-	SearchCourses401JSONResponseBodyTypeOPA          SearchCourses401JSONResponseBodyType = "OPA"
-	SearchCourses401JSONResponseBodyTypeVerifyToken  SearchCourses401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the SearchCourses401JSONResponseBodyType enum.
-func (e SearchCourses401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case SearchCourses401JSONResponseBodyTypeExtractToken:
-		return true
-	case SearchCourses401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case SearchCourses401JSONResponseBodyTypeOPA:
-		return true
-	case SearchCourses401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreateCourse401JSONResponseBodyType.
-const (
-	CreateCourse401JSONResponseBodyTypeExtractToken CreateCourse401JSONResponseBodyType = "ExtractToken"
-	CreateCourse401JSONResponseBodyTypeFetchJWKS    CreateCourse401JSONResponseBodyType = "FetchJWKS"
-	CreateCourse401JSONResponseBodyTypeOPA          CreateCourse401JSONResponseBodyType = "OPA"
-	CreateCourse401JSONResponseBodyTypeVerifyToken  CreateCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the CreateCourse401JSONResponseBodyType enum.
-func (e CreateCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case CreateCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case CreateCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case CreateCourse401JSONResponseBodyTypeOPA:
-		return true
-	case CreateCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for GetInstructorCoursesParamsOrder.
 const (
 	GetInstructorCoursesParamsOrderAsc  GetInstructorCoursesParamsOrder = "asc"
@@ -349,30 +157,6 @@ func (e GetInstructorCoursesParamsOrder) Valid() bool {
 	case GetInstructorCoursesParamsOrderAsc:
 		return true
 	case GetInstructorCoursesParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetInstructorCourses401JSONResponseBodyType.
-const (
-	GetInstructorCourses401JSONResponseBodyTypeExtractToken GetInstructorCourses401JSONResponseBodyType = "ExtractToken"
-	GetInstructorCourses401JSONResponseBodyTypeFetchJWKS    GetInstructorCourses401JSONResponseBodyType = "FetchJWKS"
-	GetInstructorCourses401JSONResponseBodyTypeOPA          GetInstructorCourses401JSONResponseBodyType = "OPA"
-	GetInstructorCourses401JSONResponseBodyTypeVerifyToken  GetInstructorCourses401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetInstructorCourses401JSONResponseBodyType enum.
-func (e GetInstructorCourses401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetInstructorCourses401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetInstructorCourses401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetInstructorCourses401JSONResponseBodyTypeOPA:
-		return true
-	case GetInstructorCourses401JSONResponseBodyTypeVerifyToken:
 		return true
 	default:
 		return false
@@ -409,774 +193,6 @@ func (e GetSystemCoursesParamsOrder) Valid() bool {
 	case GetSystemCoursesParamsOrderAsc:
 		return true
 	case GetSystemCoursesParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetSystemCourses401JSONResponseBodyType.
-const (
-	GetSystemCourses401JSONResponseBodyTypeExtractToken GetSystemCourses401JSONResponseBodyType = "ExtractToken"
-	GetSystemCourses401JSONResponseBodyTypeFetchJWKS    GetSystemCourses401JSONResponseBodyType = "FetchJWKS"
-	GetSystemCourses401JSONResponseBodyTypeOPA          GetSystemCourses401JSONResponseBodyType = "OPA"
-	GetSystemCourses401JSONResponseBodyTypeVerifyToken  GetSystemCourses401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetSystemCourses401JSONResponseBodyType enum.
-func (e GetSystemCourses401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetSystemCourses401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetSystemCourses401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetSystemCourses401JSONResponseBodyTypeOPA:
-		return true
-	case GetSystemCourses401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for DeleteCourse401JSONResponseBodyType.
-const (
-	DeleteCourse401JSONResponseBodyTypeExtractToken DeleteCourse401JSONResponseBodyType = "ExtractToken"
-	DeleteCourse401JSONResponseBodyTypeFetchJWKS    DeleteCourse401JSONResponseBodyType = "FetchJWKS"
-	DeleteCourse401JSONResponseBodyTypeOPA          DeleteCourse401JSONResponseBodyType = "OPA"
-	DeleteCourse401JSONResponseBodyTypeVerifyToken  DeleteCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the DeleteCourse401JSONResponseBodyType enum.
-func (e DeleteCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case DeleteCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case DeleteCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case DeleteCourse401JSONResponseBodyTypeOPA:
-		return true
-	case DeleteCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for UpdateCourse401JSONResponseBodyType.
-const (
-	UpdateCourse401JSONResponseBodyTypeExtractToken UpdateCourse401JSONResponseBodyType = "ExtractToken"
-	UpdateCourse401JSONResponseBodyTypeFetchJWKS    UpdateCourse401JSONResponseBodyType = "FetchJWKS"
-	UpdateCourse401JSONResponseBodyTypeOPA          UpdateCourse401JSONResponseBodyType = "OPA"
-	UpdateCourse401JSONResponseBodyTypeVerifyToken  UpdateCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UpdateCourse401JSONResponseBodyType enum.
-func (e UpdateCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case UpdateCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case UpdateCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case UpdateCourse401JSONResponseBodyTypeOPA:
-		return true
-	case UpdateCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for BookmarkCourse401JSONResponseBodyType.
-const (
-	BookmarkCourse401JSONResponseBodyTypeExtractToken BookmarkCourse401JSONResponseBodyType = "ExtractToken"
-	BookmarkCourse401JSONResponseBodyTypeFetchJWKS    BookmarkCourse401JSONResponseBodyType = "FetchJWKS"
-	BookmarkCourse401JSONResponseBodyTypeOPA          BookmarkCourse401JSONResponseBodyType = "OPA"
-	BookmarkCourse401JSONResponseBodyTypeVerifyToken  BookmarkCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the BookmarkCourse401JSONResponseBodyType enum.
-func (e BookmarkCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case BookmarkCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case BookmarkCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case BookmarkCourse401JSONResponseBodyTypeOPA:
-		return true
-	case BookmarkCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetCourseDetail401JSONResponseBodyType.
-const (
-	GetCourseDetail401JSONResponseBodyTypeExtractToken GetCourseDetail401JSONResponseBodyType = "ExtractToken"
-	GetCourseDetail401JSONResponseBodyTypeFetchJWKS    GetCourseDetail401JSONResponseBodyType = "FetchJWKS"
-	GetCourseDetail401JSONResponseBodyTypeOPA          GetCourseDetail401JSONResponseBodyType = "OPA"
-	GetCourseDetail401JSONResponseBodyTypeVerifyToken  GetCourseDetail401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetCourseDetail401JSONResponseBodyType enum.
-func (e GetCourseDetail401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetCourseDetail401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetCourseDetail401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetCourseDetail401JSONResponseBodyTypeOPA:
-		return true
-	case GetCourseDetail401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for EnrollInCourse401JSONResponseBodyType.
-const (
-	EnrollInCourse401JSONResponseBodyTypeExtractToken EnrollInCourse401JSONResponseBodyType = "ExtractToken"
-	EnrollInCourse401JSONResponseBodyTypeFetchJWKS    EnrollInCourse401JSONResponseBodyType = "FetchJWKS"
-	EnrollInCourse401JSONResponseBodyTypeOPA          EnrollInCourse401JSONResponseBodyType = "OPA"
-	EnrollInCourse401JSONResponseBodyTypeVerifyToken  EnrollInCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the EnrollInCourse401JSONResponseBodyType enum.
-func (e EnrollInCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case EnrollInCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case EnrollInCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case EnrollInCourse401JSONResponseBodyTypeOPA:
-		return true
-	case EnrollInCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for FinishCourse401JSONResponseBodyType.
-const (
-	FinishCourse401JSONResponseBodyTypeExtractToken FinishCourse401JSONResponseBodyType = "ExtractToken"
-	FinishCourse401JSONResponseBodyTypeFetchJWKS    FinishCourse401JSONResponseBodyType = "FetchJWKS"
-	FinishCourse401JSONResponseBodyTypeOPA          FinishCourse401JSONResponseBodyType = "OPA"
-	FinishCourse401JSONResponseBodyTypeVerifyToken  FinishCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the FinishCourse401JSONResponseBodyType enum.
-func (e FinishCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case FinishCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case FinishCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case FinishCourse401JSONResponseBodyTypeOPA:
-		return true
-	case FinishCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for HideCourse401JSONResponseBodyType.
-const (
-	HideCourse401JSONResponseBodyTypeExtractToken HideCourse401JSONResponseBodyType = "ExtractToken"
-	HideCourse401JSONResponseBodyTypeFetchJWKS    HideCourse401JSONResponseBodyType = "FetchJWKS"
-	HideCourse401JSONResponseBodyTypeOPA          HideCourse401JSONResponseBodyType = "OPA"
-	HideCourse401JSONResponseBodyTypeVerifyToken  HideCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the HideCourse401JSONResponseBodyType enum.
-func (e HideCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case HideCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case HideCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case HideCourse401JSONResponseBodyTypeOPA:
-		return true
-	case HideCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetCourseProgress401JSONResponseBodyType.
-const (
-	GetCourseProgress401JSONResponseBodyTypeExtractToken GetCourseProgress401JSONResponseBodyType = "ExtractToken"
-	GetCourseProgress401JSONResponseBodyTypeFetchJWKS    GetCourseProgress401JSONResponseBodyType = "FetchJWKS"
-	GetCourseProgress401JSONResponseBodyTypeOPA          GetCourseProgress401JSONResponseBodyType = "OPA"
-	GetCourseProgress401JSONResponseBodyTypeVerifyToken  GetCourseProgress401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetCourseProgress401JSONResponseBodyType enum.
-func (e GetCourseProgress401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetCourseProgress401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetCourseProgress401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetCourseProgress401JSONResponseBodyTypeOPA:
-		return true
-	case GetCourseProgress401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ReviewCourse401JSONResponseBodyType.
-const (
-	ReviewCourse401JSONResponseBodyTypeExtractToken ReviewCourse401JSONResponseBodyType = "ExtractToken"
-	ReviewCourse401JSONResponseBodyTypeFetchJWKS    ReviewCourse401JSONResponseBodyType = "FetchJWKS"
-	ReviewCourse401JSONResponseBodyTypeOPA          ReviewCourse401JSONResponseBodyType = "OPA"
-	ReviewCourse401JSONResponseBodyTypeVerifyToken  ReviewCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the ReviewCourse401JSONResponseBodyType enum.
-func (e ReviewCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case ReviewCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case ReviewCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case ReviewCourse401JSONResponseBodyTypeOPA:
-		return true
-	case ReviewCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for TriggerLearningReminder401JSONResponseBodyType.
-const (
-	TriggerLearningReminder401JSONResponseBodyTypeExtractToken TriggerLearningReminder401JSONResponseBodyType = "ExtractToken"
-	TriggerLearningReminder401JSONResponseBodyTypeFetchJWKS    TriggerLearningReminder401JSONResponseBodyType = "FetchJWKS"
-	TriggerLearningReminder401JSONResponseBodyTypeOPA          TriggerLearningReminder401JSONResponseBodyType = "OPA"
-	TriggerLearningReminder401JSONResponseBodyTypeVerifyToken  TriggerLearningReminder401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the TriggerLearningReminder401JSONResponseBodyType enum.
-func (e TriggerLearningReminder401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case TriggerLearningReminder401JSONResponseBodyTypeExtractToken:
-		return true
-	case TriggerLearningReminder401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case TriggerLearningReminder401JSONResponseBodyTypeOPA:
-		return true
-	case TriggerLearningReminder401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for UnbookmarkCourse401JSONResponseBodyType.
-const (
-	UnbookmarkCourse401JSONResponseBodyTypeExtractToken UnbookmarkCourse401JSONResponseBodyType = "ExtractToken"
-	UnbookmarkCourse401JSONResponseBodyTypeFetchJWKS    UnbookmarkCourse401JSONResponseBodyType = "FetchJWKS"
-	UnbookmarkCourse401JSONResponseBodyTypeOPA          UnbookmarkCourse401JSONResponseBodyType = "OPA"
-	UnbookmarkCourse401JSONResponseBodyTypeVerifyToken  UnbookmarkCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UnbookmarkCourse401JSONResponseBodyType enum.
-func (e UnbookmarkCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case UnbookmarkCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case UnbookmarkCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case UnbookmarkCourse401JSONResponseBodyTypeOPA:
-		return true
-	case UnbookmarkCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for UnhideCourse401JSONResponseBodyType.
-const (
-	UnhideCourse401JSONResponseBodyTypeExtractToken UnhideCourse401JSONResponseBodyType = "ExtractToken"
-	UnhideCourse401JSONResponseBodyTypeFetchJWKS    UnhideCourse401JSONResponseBodyType = "FetchJWKS"
-	UnhideCourse401JSONResponseBodyTypeOPA          UnhideCourse401JSONResponseBodyType = "OPA"
-	UnhideCourse401JSONResponseBodyTypeVerifyToken  UnhideCourse401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UnhideCourse401JSONResponseBodyType enum.
-func (e UnhideCourse401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case UnhideCourse401JSONResponseBodyTypeExtractToken:
-		return true
-	case UnhideCourse401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case UnhideCourse401JSONResponseBodyTypeOPA:
-		return true
-	case UnhideCourse401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ReplyLessonComment401JSONResponseBodyType.
-const (
-	ReplyLessonComment401JSONResponseBodyTypeExtractToken ReplyLessonComment401JSONResponseBodyType = "ExtractToken"
-	ReplyLessonComment401JSONResponseBodyTypeFetchJWKS    ReplyLessonComment401JSONResponseBodyType = "FetchJWKS"
-	ReplyLessonComment401JSONResponseBodyTypeOPA          ReplyLessonComment401JSONResponseBodyType = "OPA"
-	ReplyLessonComment401JSONResponseBodyTypeVerifyToken  ReplyLessonComment401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the ReplyLessonComment401JSONResponseBodyType enum.
-func (e ReplyLessonComment401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case ReplyLessonComment401JSONResponseBodyTypeExtractToken:
-		return true
-	case ReplyLessonComment401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case ReplyLessonComment401JSONResponseBodyTypeOPA:
-		return true
-	case ReplyLessonComment401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreateLesson401JSONResponseBodyType.
-const (
-	CreateLesson401JSONResponseBodyTypeExtractToken CreateLesson401JSONResponseBodyType = "ExtractToken"
-	CreateLesson401JSONResponseBodyTypeFetchJWKS    CreateLesson401JSONResponseBodyType = "FetchJWKS"
-	CreateLesson401JSONResponseBodyTypeOPA          CreateLesson401JSONResponseBodyType = "OPA"
-	CreateLesson401JSONResponseBodyTypeVerifyToken  CreateLesson401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the CreateLesson401JSONResponseBodyType enum.
-func (e CreateLesson401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case CreateLesson401JSONResponseBodyTypeExtractToken:
-		return true
-	case CreateLesson401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case CreateLesson401JSONResponseBodyTypeOPA:
-		return true
-	case CreateLesson401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for DeleteLesson401JSONResponseBodyType.
-const (
-	DeleteLesson401JSONResponseBodyTypeExtractToken DeleteLesson401JSONResponseBodyType = "ExtractToken"
-	DeleteLesson401JSONResponseBodyTypeFetchJWKS    DeleteLesson401JSONResponseBodyType = "FetchJWKS"
-	DeleteLesson401JSONResponseBodyTypeOPA          DeleteLesson401JSONResponseBodyType = "OPA"
-	DeleteLesson401JSONResponseBodyTypeVerifyToken  DeleteLesson401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the DeleteLesson401JSONResponseBodyType enum.
-func (e DeleteLesson401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case DeleteLesson401JSONResponseBodyTypeExtractToken:
-		return true
-	case DeleteLesson401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case DeleteLesson401JSONResponseBodyTypeOPA:
-		return true
-	case DeleteLesson401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetLessonDetail401JSONResponseBodyType.
-const (
-	GetLessonDetail401JSONResponseBodyTypeExtractToken GetLessonDetail401JSONResponseBodyType = "ExtractToken"
-	GetLessonDetail401JSONResponseBodyTypeFetchJWKS    GetLessonDetail401JSONResponseBodyType = "FetchJWKS"
-	GetLessonDetail401JSONResponseBodyTypeOPA          GetLessonDetail401JSONResponseBodyType = "OPA"
-	GetLessonDetail401JSONResponseBodyTypeVerifyToken  GetLessonDetail401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetLessonDetail401JSONResponseBodyType enum.
-func (e GetLessonDetail401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetLessonDetail401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetLessonDetail401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetLessonDetail401JSONResponseBodyTypeOPA:
-		return true
-	case GetLessonDetail401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetLessonComments401JSONResponseBodyType.
-const (
-	GetLessonComments401JSONResponseBodyTypeExtractToken GetLessonComments401JSONResponseBodyType = "ExtractToken"
-	GetLessonComments401JSONResponseBodyTypeFetchJWKS    GetLessonComments401JSONResponseBodyType = "FetchJWKS"
-	GetLessonComments401JSONResponseBodyTypeOPA          GetLessonComments401JSONResponseBodyType = "OPA"
-	GetLessonComments401JSONResponseBodyTypeVerifyToken  GetLessonComments401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetLessonComments401JSONResponseBodyType enum.
-func (e GetLessonComments401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetLessonComments401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetLessonComments401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetLessonComments401JSONResponseBodyTypeOPA:
-		return true
-	case GetLessonComments401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CommentOnLesson401JSONResponseBodyType.
-const (
-	CommentOnLesson401JSONResponseBodyTypeExtractToken CommentOnLesson401JSONResponseBodyType = "ExtractToken"
-	CommentOnLesson401JSONResponseBodyTypeFetchJWKS    CommentOnLesson401JSONResponseBodyType = "FetchJWKS"
-	CommentOnLesson401JSONResponseBodyTypeOPA          CommentOnLesson401JSONResponseBodyType = "OPA"
-	CommentOnLesson401JSONResponseBodyTypeVerifyToken  CommentOnLesson401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the CommentOnLesson401JSONResponseBodyType enum.
-func (e CommentOnLesson401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case CommentOnLesson401JSONResponseBodyTypeExtractToken:
-		return true
-	case CommentOnLesson401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case CommentOnLesson401JSONResponseBodyTypeOPA:
-		return true
-	case CommentOnLesson401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for MarkLessonAsCompleted401JSONResponseBodyType.
-const (
-	MarkLessonAsCompleted401JSONResponseBodyTypeExtractToken MarkLessonAsCompleted401JSONResponseBodyType = "ExtractToken"
-	MarkLessonAsCompleted401JSONResponseBodyTypeFetchJWKS    MarkLessonAsCompleted401JSONResponseBodyType = "FetchJWKS"
-	MarkLessonAsCompleted401JSONResponseBodyTypeOPA          MarkLessonAsCompleted401JSONResponseBodyType = "OPA"
-	MarkLessonAsCompleted401JSONResponseBodyTypeVerifyToken  MarkLessonAsCompleted401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the MarkLessonAsCompleted401JSONResponseBodyType enum.
-func (e MarkLessonAsCompleted401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case MarkLessonAsCompleted401JSONResponseBodyTypeExtractToken:
-		return true
-	case MarkLessonAsCompleted401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case MarkLessonAsCompleted401JSONResponseBodyTypeOPA:
-		return true
-	case MarkLessonAsCompleted401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for MoveLesson401JSONResponseBodyType.
-const (
-	MoveLesson401JSONResponseBodyTypeExtractToken MoveLesson401JSONResponseBodyType = "ExtractToken"
-	MoveLesson401JSONResponseBodyTypeFetchJWKS    MoveLesson401JSONResponseBodyType = "FetchJWKS"
-	MoveLesson401JSONResponseBodyTypeOPA          MoveLesson401JSONResponseBodyType = "OPA"
-	MoveLesson401JSONResponseBodyTypeVerifyToken  MoveLesson401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the MoveLesson401JSONResponseBodyType enum.
-func (e MoveLesson401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case MoveLesson401JSONResponseBodyTypeExtractToken:
-		return true
-	case MoveLesson401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case MoveLesson401JSONResponseBodyTypeOPA:
-		return true
-	case MoveLesson401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetLessonProgress401JSONResponseBodyType.
-const (
-	GetLessonProgress401JSONResponseBodyTypeExtractToken GetLessonProgress401JSONResponseBodyType = "ExtractToken"
-	GetLessonProgress401JSONResponseBodyTypeFetchJWKS    GetLessonProgress401JSONResponseBodyType = "FetchJWKS"
-	GetLessonProgress401JSONResponseBodyTypeOPA          GetLessonProgress401JSONResponseBodyType = "OPA"
-	GetLessonProgress401JSONResponseBodyTypeVerifyToken  GetLessonProgress401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetLessonProgress401JSONResponseBodyType enum.
-func (e GetLessonProgress401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetLessonProgress401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetLessonProgress401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetLessonProgress401JSONResponseBodyTypeOPA:
-		return true
-	case GetLessonProgress401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for EditTestLesson401JSONResponseBodyType.
-const (
-	EditTestLesson401JSONResponseBodyTypeExtractToken EditTestLesson401JSONResponseBodyType = "ExtractToken"
-	EditTestLesson401JSONResponseBodyTypeFetchJWKS    EditTestLesson401JSONResponseBodyType = "FetchJWKS"
-	EditTestLesson401JSONResponseBodyTypeOPA          EditTestLesson401JSONResponseBodyType = "OPA"
-	EditTestLesson401JSONResponseBodyTypeVerifyToken  EditTestLesson401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the EditTestLesson401JSONResponseBodyType enum.
-func (e EditTestLesson401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case EditTestLesson401JSONResponseBodyTypeExtractToken:
-		return true
-	case EditTestLesson401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case EditTestLesson401JSONResponseBodyTypeOPA:
-		return true
-	case EditTestLesson401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SaveTestLessonProgress401JSONResponseBodyType.
-const (
-	SaveTestLessonProgress401JSONResponseBodyTypeExtractToken SaveTestLessonProgress401JSONResponseBodyType = "ExtractToken"
-	SaveTestLessonProgress401JSONResponseBodyTypeFetchJWKS    SaveTestLessonProgress401JSONResponseBodyType = "FetchJWKS"
-	SaveTestLessonProgress401JSONResponseBodyTypeOPA          SaveTestLessonProgress401JSONResponseBodyType = "OPA"
-	SaveTestLessonProgress401JSONResponseBodyTypeVerifyToken  SaveTestLessonProgress401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the SaveTestLessonProgress401JSONResponseBodyType enum.
-func (e SaveTestLessonProgress401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case SaveTestLessonProgress401JSONResponseBodyTypeExtractToken:
-		return true
-	case SaveTestLessonProgress401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case SaveTestLessonProgress401JSONResponseBodyTypeOPA:
-		return true
-	case SaveTestLessonProgress401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreateTest401JSONResponseBodyType.
-const (
-	CreateTest401JSONResponseBodyTypeExtractToken CreateTest401JSONResponseBodyType = "ExtractToken"
-	CreateTest401JSONResponseBodyTypeFetchJWKS    CreateTest401JSONResponseBodyType = "FetchJWKS"
-	CreateTest401JSONResponseBodyTypeOPA          CreateTest401JSONResponseBodyType = "OPA"
-	CreateTest401JSONResponseBodyTypeVerifyToken  CreateTest401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the CreateTest401JSONResponseBodyType enum.
-func (e CreateTest401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case CreateTest401JSONResponseBodyTypeExtractToken:
-		return true
-	case CreateTest401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case CreateTest401JSONResponseBodyTypeOPA:
-		return true
-	case CreateTest401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetUploadVideoLessonUrl401JSONResponseBodyType.
-const (
-	GetUploadVideoLessonUrl401JSONResponseBodyTypeExtractToken GetUploadVideoLessonUrl401JSONResponseBodyType = "ExtractToken"
-	GetUploadVideoLessonUrl401JSONResponseBodyTypeFetchJWKS    GetUploadVideoLessonUrl401JSONResponseBodyType = "FetchJWKS"
-	GetUploadVideoLessonUrl401JSONResponseBodyTypeOPA          GetUploadVideoLessonUrl401JSONResponseBodyType = "OPA"
-	GetUploadVideoLessonUrl401JSONResponseBodyTypeVerifyToken  GetUploadVideoLessonUrl401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the GetUploadVideoLessonUrl401JSONResponseBodyType enum.
-func (e GetUploadVideoLessonUrl401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case GetUploadVideoLessonUrl401JSONResponseBodyTypeExtractToken:
-		return true
-	case GetUploadVideoLessonUrl401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case GetUploadVideoLessonUrl401JSONResponseBodyTypeOPA:
-		return true
-	case GetUploadVideoLessonUrl401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for EditVideoLesson401JSONResponseBodyType.
-const (
-	EditVideoLesson401JSONResponseBodyTypeExtractToken EditVideoLesson401JSONResponseBodyType = "ExtractToken"
-	EditVideoLesson401JSONResponseBodyTypeFetchJWKS    EditVideoLesson401JSONResponseBodyType = "FetchJWKS"
-	EditVideoLesson401JSONResponseBodyTypeOPA          EditVideoLesson401JSONResponseBodyType = "OPA"
-	EditVideoLesson401JSONResponseBodyTypeVerifyToken  EditVideoLesson401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the EditVideoLesson401JSONResponseBodyType enum.
-func (e EditVideoLesson401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case EditVideoLesson401JSONResponseBodyTypeExtractToken:
-		return true
-	case EditVideoLesson401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case EditVideoLesson401JSONResponseBodyTypeOPA:
-		return true
-	case EditVideoLesson401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SaveVideoLessonProgress401JSONResponseBodyType.
-const (
-	SaveVideoLessonProgress401JSONResponseBodyTypeExtractToken SaveVideoLessonProgress401JSONResponseBodyType = "ExtractToken"
-	SaveVideoLessonProgress401JSONResponseBodyTypeFetchJWKS    SaveVideoLessonProgress401JSONResponseBodyType = "FetchJWKS"
-	SaveVideoLessonProgress401JSONResponseBodyTypeOPA          SaveVideoLessonProgress401JSONResponseBodyType = "OPA"
-	SaveVideoLessonProgress401JSONResponseBodyTypeVerifyToken  SaveVideoLessonProgress401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the SaveVideoLessonProgress401JSONResponseBodyType enum.
-func (e SaveVideoLessonProgress401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case SaveVideoLessonProgress401JSONResponseBodyTypeExtractToken:
-		return true
-	case SaveVideoLessonProgress401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case SaveVideoLessonProgress401JSONResponseBodyTypeOPA:
-		return true
-	case SaveVideoLessonProgress401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreateSection401JSONResponseBodyType.
-const (
-	CreateSection401JSONResponseBodyTypeExtractToken CreateSection401JSONResponseBodyType = "ExtractToken"
-	CreateSection401JSONResponseBodyTypeFetchJWKS    CreateSection401JSONResponseBodyType = "FetchJWKS"
-	CreateSection401JSONResponseBodyTypeOPA          CreateSection401JSONResponseBodyType = "OPA"
-	CreateSection401JSONResponseBodyTypeVerifyToken  CreateSection401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the CreateSection401JSONResponseBodyType enum.
-func (e CreateSection401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case CreateSection401JSONResponseBodyTypeExtractToken:
-		return true
-	case CreateSection401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case CreateSection401JSONResponseBodyTypeOPA:
-		return true
-	case CreateSection401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for DeleteSection401JSONResponseBodyType.
-const (
-	DeleteSection401JSONResponseBodyTypeExtractToken DeleteSection401JSONResponseBodyType = "ExtractToken"
-	DeleteSection401JSONResponseBodyTypeFetchJWKS    DeleteSection401JSONResponseBodyType = "FetchJWKS"
-	DeleteSection401JSONResponseBodyTypeOPA          DeleteSection401JSONResponseBodyType = "OPA"
-	DeleteSection401JSONResponseBodyTypeVerifyToken  DeleteSection401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the DeleteSection401JSONResponseBodyType enum.
-func (e DeleteSection401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case DeleteSection401JSONResponseBodyTypeExtractToken:
-		return true
-	case DeleteSection401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case DeleteSection401JSONResponseBodyTypeOPA:
-		return true
-	case DeleteSection401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for UpdateSectionTitle401JSONResponseBodyType.
-const (
-	UpdateSectionTitle401JSONResponseBodyTypeExtractToken UpdateSectionTitle401JSONResponseBodyType = "ExtractToken"
-	UpdateSectionTitle401JSONResponseBodyTypeFetchJWKS    UpdateSectionTitle401JSONResponseBodyType = "FetchJWKS"
-	UpdateSectionTitle401JSONResponseBodyTypeOPA          UpdateSectionTitle401JSONResponseBodyType = "OPA"
-	UpdateSectionTitle401JSONResponseBodyTypeVerifyToken  UpdateSectionTitle401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the UpdateSectionTitle401JSONResponseBodyType enum.
-func (e UpdateSectionTitle401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case UpdateSectionTitle401JSONResponseBodyTypeExtractToken:
-		return true
-	case UpdateSectionTitle401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case UpdateSectionTitle401JSONResponseBodyTypeOPA:
-		return true
-	case UpdateSectionTitle401JSONResponseBodyTypeVerifyToken:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for MoveSection401JSONResponseBodyType.
-const (
-	MoveSection401JSONResponseBodyTypeExtractToken MoveSection401JSONResponseBodyType = "ExtractToken"
-	MoveSection401JSONResponseBodyTypeFetchJWKS    MoveSection401JSONResponseBodyType = "FetchJWKS"
-	MoveSection401JSONResponseBodyTypeOPA          MoveSection401JSONResponseBodyType = "OPA"
-	MoveSection401JSONResponseBodyTypeVerifyToken  MoveSection401JSONResponseBodyType = "VerifyToken"
-)
-
-// Valid indicates whether the value is a known member of the MoveSection401JSONResponseBodyType enum.
-func (e MoveSection401JSONResponseBodyType) Valid() bool {
-	switch e {
-	case MoveSection401JSONResponseBodyTypeExtractToken:
-		return true
-	case MoveSection401JSONResponseBodyTypeFetchJWKS:
-		return true
-	case MoveSection401JSONResponseBodyTypeOPA:
-		return true
-	case MoveSection401JSONResponseBodyTypeVerifyToken:
 		return true
 	default:
 		return false
@@ -1454,20 +470,8 @@ type InternalServerError = Error
 // NotFoundError defines model for NotFoundError.
 type NotFoundError = Error
 
-// UnauthorizedError The error response body returned when JWT validation or OPA authorization fails.
-type UnauthorizedError struct {
-	// CustomMessage An optional, developer-defined message, often populated by OPA policy violations.
-	CustomMessage *string `json:"custom_message"`
-
-	// Details A descriptive message providing technical context for the failure.
-	Details string `json:"details"`
-
-	// Type The category of the error encountered during the middleware lifecycle.
-	Type UnauthorizedErrorType `json:"type"`
-}
-
-// UnauthorizedErrorType The category of the error encountered during the middleware lifecycle.
-type UnauthorizedErrorType string
+// UnauthorizedError defines model for UnauthorizedError.
+type UnauthorizedError = map[string]interface{}
 
 // oIDCContextKey is the context key for OIDC security scheme
 type oIDCContextKey string
@@ -1475,16 +479,10 @@ type oIDCContextKey string
 // oauth2ContextKey is the context key for Oauth2 security scheme
 type oauth2ContextKey string
 
-// ApproveCourse401JSONResponseBodyType defines parameters for ApproveCourse.
-type ApproveCourse401JSONResponseBodyType string
-
 // DeclineCourseJSONBody defines parameters for DeclineCourse.
 type DeclineCourseJSONBody struct {
 	Reason *string `json:"reason,omitempty"`
 }
-
-// DeclineCourse401JSONResponseBodyType defines parameters for DeclineCourse.
-type DeclineCourse401JSONResponseBodyType string
 
 // GetMyEnrolledCoursesParams defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParams struct {
@@ -1501,9 +499,6 @@ type GetMyEnrolledCoursesParams struct {
 // GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParamsOrder string
 
-// GetMyEnrolledCourses401JSONResponseBodyType defines parameters for GetMyEnrolledCourses.
-type GetMyEnrolledCourses401JSONResponseBodyType string
-
 // GetMyCertificatesParams defines parameters for GetMyCertificates.
 type GetMyCertificatesParams struct {
 	// Page Page number for pagination
@@ -1518,12 +513,6 @@ type GetMyCertificatesParams struct {
 
 // GetMyCertificatesParamsOrder defines parameters for GetMyCertificates.
 type GetMyCertificatesParamsOrder string
-
-// GetMyCertificates401JSONResponseBodyType defines parameters for GetMyCertificates.
-type GetMyCertificates401JSONResponseBodyType string
-
-// GetCertificateById401JSONResponseBodyType defines parameters for GetCertificateById.
-type GetCertificateById401JSONResponseBodyType string
 
 // SearchCoursesParams defines parameters for SearchCourses.
 type SearchCoursesParams struct {
@@ -1546,12 +535,6 @@ type SearchCoursesParams struct {
 // SearchCoursesParamsOrder defines parameters for SearchCourses.
 type SearchCoursesParamsOrder string
 
-// SearchCourses401JSONResponseBodyType defines parameters for SearchCourses.
-type SearchCourses401JSONResponseBodyType string
-
-// CreateCourse401JSONResponseBodyType defines parameters for CreateCourse.
-type CreateCourse401JSONResponseBodyType string
-
 // GetInstructorCoursesParams defines parameters for GetInstructorCourses.
 type GetInstructorCoursesParams struct {
 	// Page Page number for pagination
@@ -1566,9 +549,6 @@ type GetInstructorCoursesParams struct {
 
 // GetInstructorCoursesParamsOrder defines parameters for GetInstructorCourses.
 type GetInstructorCoursesParamsOrder string
-
-// GetInstructorCourses401JSONResponseBodyType defines parameters for GetInstructorCourses.
-type GetInstructorCourses401JSONResponseBodyType string
 
 // GetPublishedCoursesParams defines parameters for GetPublishedCourses.
 type GetPublishedCoursesParams struct {
@@ -1600,63 +580,21 @@ type GetSystemCoursesParams struct {
 // GetSystemCoursesParamsOrder defines parameters for GetSystemCourses.
 type GetSystemCoursesParamsOrder string
 
-// GetSystemCourses401JSONResponseBodyType defines parameters for GetSystemCourses.
-type GetSystemCourses401JSONResponseBodyType string
-
-// DeleteCourse401JSONResponseBodyType defines parameters for DeleteCourse.
-type DeleteCourse401JSONResponseBodyType string
-
-// UpdateCourse401JSONResponseBodyType defines parameters for UpdateCourse.
-type UpdateCourse401JSONResponseBodyType string
-
-// BookmarkCourse401JSONResponseBodyType defines parameters for BookmarkCourse.
-type BookmarkCourse401JSONResponseBodyType string
-
-// GetCourseDetail401JSONResponseBodyType defines parameters for GetCourseDetail.
-type GetCourseDetail401JSONResponseBodyType string
-
-// EnrollInCourse401JSONResponseBodyType defines parameters for EnrollInCourse.
-type EnrollInCourse401JSONResponseBodyType string
-
-// FinishCourse401JSONResponseBodyType defines parameters for FinishCourse.
-type FinishCourse401JSONResponseBodyType string
-
-// HideCourse401JSONResponseBodyType defines parameters for HideCourse.
-type HideCourse401JSONResponseBodyType string
-
-// GetCourseProgress401JSONResponseBodyType defines parameters for GetCourseProgress.
-type GetCourseProgress401JSONResponseBodyType string
-
 // ReviewCourseJSONBody defines parameters for ReviewCourse.
 type ReviewCourseJSONBody struct {
 	Comment string `json:"comment"`
 	Rating  int32  `json:"rating"`
 }
 
-// ReviewCourse401JSONResponseBodyType defines parameters for ReviewCourse.
-type ReviewCourse401JSONResponseBodyType string
-
 // TriggerLearningReminderJSONBody defines parameters for TriggerLearningReminder.
 type TriggerLearningReminderJSONBody struct {
 	DryRun *bool `json:"dryRun,omitempty"`
 }
 
-// TriggerLearningReminder401JSONResponseBodyType defines parameters for TriggerLearningReminder.
-type TriggerLearningReminder401JSONResponseBodyType string
-
-// UnbookmarkCourse401JSONResponseBodyType defines parameters for UnbookmarkCourse.
-type UnbookmarkCourse401JSONResponseBodyType string
-
-// UnhideCourse401JSONResponseBodyType defines parameters for UnhideCourse.
-type UnhideCourse401JSONResponseBodyType string
-
 // ReplyLessonCommentJSONBody defines parameters for ReplyLessonComment.
 type ReplyLessonCommentJSONBody struct {
 	Content Content `json:"content"`
 }
-
-// ReplyLessonComment401JSONResponseBodyType defines parameters for ReplyLessonComment.
-type ReplyLessonComment401JSONResponseBodyType string
 
 // CreateLessonJSONBody defines parameters for CreateLesson.
 type CreateLessonJSONBody struct {
@@ -1664,28 +602,10 @@ type CreateLessonJSONBody struct {
 	Video *VideoLesson `json:"video,omitempty"`
 }
 
-// CreateLesson401JSONResponseBodyType defines parameters for CreateLesson.
-type CreateLesson401JSONResponseBodyType string
-
-// DeleteLesson401JSONResponseBodyType defines parameters for DeleteLesson.
-type DeleteLesson401JSONResponseBodyType string
-
-// GetLessonDetail401JSONResponseBodyType defines parameters for GetLessonDetail.
-type GetLessonDetail401JSONResponseBodyType string
-
-// GetLessonComments401JSONResponseBodyType defines parameters for GetLessonComments.
-type GetLessonComments401JSONResponseBodyType string
-
 // CommentOnLessonJSONBody defines parameters for CommentOnLesson.
 type CommentOnLessonJSONBody struct {
 	Content Content `json:"content"`
 }
-
-// CommentOnLesson401JSONResponseBodyType defines parameters for CommentOnLesson.
-type CommentOnLesson401JSONResponseBodyType string
-
-// MarkLessonAsCompleted401JSONResponseBodyType defines parameters for MarkLessonAsCompleted.
-type MarkLessonAsCompleted401JSONResponseBodyType string
 
 // MoveLessonJSONBody defines parameters for MoveLesson.
 type MoveLessonJSONBody struct {
@@ -1700,40 +620,16 @@ type moveAfterLesson struct {
 	Type LessonType         `json:"type"`
 }
 
-// MoveLesson401JSONResponseBodyType defines parameters for MoveLesson.
-type MoveLesson401JSONResponseBodyType string
-
-// GetLessonProgress401JSONResponseBodyType defines parameters for GetLessonProgress.
-type GetLessonProgress401JSONResponseBodyType string
-
-// EditTestLesson401JSONResponseBodyType defines parameters for EditTestLesson.
-type EditTestLesson401JSONResponseBodyType string
-
-// SaveTestLessonProgress401JSONResponseBodyType defines parameters for SaveTestLessonProgress.
-type SaveTestLessonProgress401JSONResponseBodyType string
-
 // CreateTestJSONBody defines parameters for CreateTest.
 type CreateTestJSONBody struct {
 	Questions []TestQuestion `json:"questions"`
 	Type      TestLessonType `json:"type"`
 }
 
-// CreateTest401JSONResponseBodyType defines parameters for CreateTest.
-type CreateTest401JSONResponseBodyType string
-
 // GetUploadVideoLessonUrlJSONBody defines parameters for GetUploadVideoLessonUrl.
 type GetUploadVideoLessonUrlJSONBody struct {
 	VideoFilename string `json:"videoFilename"`
 }
-
-// GetUploadVideoLessonUrl401JSONResponseBodyType defines parameters for GetUploadVideoLessonUrl.
-type GetUploadVideoLessonUrl401JSONResponseBodyType string
-
-// EditVideoLesson401JSONResponseBodyType defines parameters for EditVideoLesson.
-type EditVideoLesson401JSONResponseBodyType string
-
-// SaveVideoLessonProgress401JSONResponseBodyType defines parameters for SaveVideoLessonProgress.
-type SaveVideoLessonProgress401JSONResponseBodyType string
 
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
@@ -1742,19 +638,10 @@ type CreateSectionJSONBody struct {
 	Title    string        `json:"title"`
 }
 
-// CreateSection401JSONResponseBodyType defines parameters for CreateSection.
-type CreateSection401JSONResponseBodyType string
-
-// DeleteSection401JSONResponseBodyType defines parameters for DeleteSection.
-type DeleteSection401JSONResponseBodyType string
-
 // UpdateSectionTitleJSONBody defines parameters for UpdateSectionTitle.
 type UpdateSectionTitleJSONBody struct {
 	Title string `json:"title"`
 }
-
-// UpdateSectionTitle401JSONResponseBodyType defines parameters for UpdateSectionTitle.
-type UpdateSectionTitle401JSONResponseBodyType string
 
 // MoveSectionJSONBody defines parameters for MoveSection.
 type MoveSectionJSONBody struct {
@@ -1766,9 +653,6 @@ type MoveSectionJSONBody struct {
 	// SectionId ID of the section to move (must match the sectionId path parameter)
 	SectionId openapi_types.UUID `json:"sectionId"`
 }
-
-// MoveSection401JSONResponseBodyType defines parameters for MoveSection.
-type MoveSection401JSONResponseBodyType string
 
 // DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
 type DeclineCourseJSONRequestBody DeclineCourseJSONBody
