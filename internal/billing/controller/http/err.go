@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/egolia-uit/egolia/internal/billing/errs"
-	"github.com/egolia-uit/egolia/pkg/api/course"
+	"github.com/egolia-uit/egolia/pkg/api/billing"
 	"github.com/gin-gonic/gin"
 	ginmiddleware "github.com/oapi-codegen/gin-middleware"
 )
@@ -52,7 +52,7 @@ func ginMiddlewareErrorHandler(c *gin.Context, message string, statusCode int) {
 		code = errs.CodeInternal.String()
 	}
 
-	response := course.Error{
+	response := billing.Error{
 		Code:     code,
 		Message:  message,
 		MoreInfo: nil,
@@ -62,55 +62,40 @@ func ginMiddlewareErrorHandler(c *gin.Context, message string, statusCode int) {
 
 var _ ginmiddleware.ErrorHandler = ginMiddlewareErrorHandler
 
-// This is mostly for badRequest handling
-func serverErrorHandler(c *gin.Context, err error, statusCode int) {
-	if statusCode != http.StatusBadRequest {
-		return
-	}
-	response := course.Error{
+func strictHandlerRequestErrorHandler(c *gin.Context, err error) {
+	response := billing.Error{
 		Code:     errs.CodeInvalid.String(),
 		Message:  err.Error(),
+		MoreInfo: nil,
+	}
+	c.JSON(http.StatusBadRequest, response)
+}
+
+func strictHandlerError(c *gin.Context, err error) {
+	var message string
+	var code string
+	var statusCode int
+	if cerr, ok := errors.AsType[errs.Error](err); ok {
+		message, code, statusCode = strictServerToHTTPErr(cerr)
+	} else {
+		message = "internal server error occured, please check log from server"
+		code = errs.CodeInternal.String()
+		statusCode = 500
+	}
+	response := billing.Error{
+		Code:     code,
+		Message:  message,
 		MoreInfo: nil,
 	}
 
 	c.JSON(statusCode, response)
 }
 
-// Register after routing, handling business error
-func StrictHandlerErrorMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Next()
-
-		if len(c.Errors) == 0 {
-			return
-		}
-
-		err := c.Errors.Last().Err
-
-		statusCode := c.Writer.Status()
-		// The codegen already ensure setting this appropriately for err
-		// Just for ensure
-		if statusCode == http.StatusOK || statusCode == 0 {
-			statusCode = http.StatusInternalServerError
-		}
-
-		// This handle for if we already return strict struct already, then don't
-		if c.Writer.Written() {
-			return
-		}
-
-		message := err.Error()
-		code := ""
-		if cerr, ok := errors.AsType[errs.Error](err); ok {
-			message, code, statusCode = strictServerToHTTPErr(cerr)
-		}
-
-		response := course.Error{
-			Code:     code,
-			Message:  message,
-			MoreInfo: nil,
-		}
-
-		c.JSON(statusCode, response)
+func strictHandlerResponseErrorHandler(c *gin.Context, err error) {
+	response := billing.Error{
+		Code:     errs.CodeInternal.String(),
+		Message:  err.Error(),
+		MoreInfo: nil,
 	}
+	c.JSON(http.StatusInternalServerError, response)
 }
