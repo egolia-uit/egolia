@@ -16,7 +16,7 @@ mockery = "3.7.0"
 yt-dlp = { version = "2026.03.17", rename_exe = "yt-dlp" }
 
 [tools.ffmpeg]
-version = "8.1.0"
+version = "latest"
 os = ["linux", "darwin"]
 
 [shell_alias]

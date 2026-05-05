@@ -29,6 +29,7 @@ mkdir -p "$DOWNLOAD_DIR"
 
 printf "%s\n" "${video_list[@]}" | yt-dlp \
   -f 'worstvideo[height<=480]+worstaudio/worst' \
+  --js-runtimes node \
   --concurrent-fragments 4 \
   --download-archive "$ARCHIVE_FILE" \
   --paths "$DOWNLOAD_DIR" \
