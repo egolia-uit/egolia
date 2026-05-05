@@ -2,6 +2,7 @@ package model
 
 import (
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
@@ -13,7 +14,7 @@ type Section struct {
 	ID        uuid.UUID      `gorm:"type:uuid;primaryKey"`
 	CourseID  uuid.UUID      `gorm:"type:uuid;not null"`
 	Title     string         `gorm:"type:varchar(255);not null"`
-	SortOrder string         `gorm:"column:sort_order;type:text;not null;default:''"`
+	SortOrder int            `gorm:"column:sort_order;type:integer;not null;default:0"`
 	Lessons   []Lesson       `gorm:"foreignKey:SectionID"`
 	CreatedAt time.Time      `gorm:"autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime"`
@@ -39,7 +40,7 @@ func SectionFromDomain(s *domain.Section) *Section {
 		ID:        s.ID(),
 		CourseID:  s.CourseID(),
 		Title:     s.Title(),
-		SortOrder: s.Order(),
+		SortOrder: func() int { n, _ := strconv.Atoi(s.Order()); return n }(),
 		Lessons:   lessons,
 		CreatedAt: time.Time{},
 		UpdatedAt: time.Time{},
@@ -63,5 +64,5 @@ func (m *Section) ToDomain() *domain.Section {
 		return lessons[i].Order() < lessons[j].Order()
 	})
 
-	return domain.UnmarshalSection(m.ID, m.CourseID, m.Title, m.SortOrder, deletedAt, lessons)
+	return domain.UnmarshalSection(m.ID, m.CourseID, m.Title, strconv.Itoa(m.SortOrder), deletedAt, lessons)
 }

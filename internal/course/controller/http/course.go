@@ -38,9 +38,10 @@ func (h *StrictHandler) SearchCourses(ctx context.Context, request course.Search
 			instructorIDs = append(instructorIDs, id.String())
 		}
 	}
-	order := app.SearchCoursesOrderDesc
+	var order *app.SearchCoursesOrder
 	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
+		o := app.SearchCoursesOrder(*request.Params.Order)
+		order = &o
 	}
 
 	result, err := h.App.Queries.SearchCourses.Handle(ctx, &app.SearchCourses{
@@ -51,8 +52,8 @@ func (h *StrictHandler) SearchCourses(ctx context.Context, request course.Search
 			Limit: limit,
 		},
 		Order:  order,
-		Hidden: false,
-		Status: app.CourseStatusApproved,
+		Hidden: nil,
+		Status: nil,
 	})
 	if err != nil {
 		return nil, err

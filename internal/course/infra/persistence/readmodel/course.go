@@ -3,6 +3,7 @@ package readmodel
 import (
 	"context"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/app"
@@ -49,6 +50,20 @@ func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCo
 
 	if params.Query != "" {
 		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
+	}
+	if len(params.InstructorIDs) > 0 {
+		q = q.Where("full_course_content->>'instructor_id' IN ?", params.InstructorIDs)
+	}
+	if params.Hidden != nil {
+		q = q.Where("(full_course_content->>'hidden')::boolean = ?", *params.Hidden)
+	}
+	if params.Status != nil {
+		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
+	}
+	if params.Order != nil && *params.Order == app.SearchCoursesOrderAsc {
+		q = q.Order("published_at ASC")
+	} else {
+		q = q.Order("published_at DESC")
 	}
 
 	var total int64
@@ -195,7 +210,7 @@ func toAppSectionItem(courseID uuid.UUID, s *model.ReadCourseSectionContent) app
 		ID:       s.ID,
 		CourseID: courseID,
 		Title:    s.Title,
-		Order:    s.SortOrder,
+		Order:    strconv.Itoa(s.SortOrder),
 		Lessons:  lessons,
 	}
 }
@@ -205,7 +220,7 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 		ID:         l.ID,
 		Title:      l.Title,
 		LessonType: app.LessonType(l.LessonType),
-		Order:      l.SortOrder,
+		Order:      strconv.Itoa(l.SortOrder),
 	}
 	switch app.LessonType(l.LessonType) {
 	case app.LessonTypeVideo:

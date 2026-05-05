@@ -3,6 +3,7 @@ package readmodel
 import (
 	"context"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/app"
@@ -44,7 +45,7 @@ func (r *LessonReadRepo) GetVideoLessonDetail(ctx context.Context, params *app.G
 			ID:         m.ID,
 			Title:      m.Title,
 			LessonType: app.LessonTypeVideo,
-			Order:      m.SortOrder,
+			Order:      strconv.Itoa(m.SortOrder),
 		},
 		VideoURL: m.VideoLesson.VideoKey,
 		Duration: time.Duration(m.VideoLesson.Duration) * time.Second,
@@ -90,7 +91,7 @@ func (r *LessonReadRepo) GetTestLessonDetail(ctx context.Context, params *app.Ge
 			ID:         m.ID,
 			Title:      m.Title,
 			LessonType: app.LessonTypeTest,
-			Order:      m.SortOrder,
+			Order:      strconv.Itoa(m.SortOrder),
 		},
 		TestLessonType: app.TestLessonType(m.TestLesson.Type),
 		Questions:      questions,

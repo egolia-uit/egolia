@@ -1,6 +1,7 @@
 package model
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
@@ -24,7 +25,7 @@ type ReadCourseQuestionContent struct {
 type ReadCourseLessonContent struct {
 	ID         uuid.UUID                   `json:"id"`
 	Title      string                      `json:"title"`
-	SortOrder  string                      `json:"sort_order"`
+	SortOrder  int                         `json:"sort_order"`
 	LessonType string                      `json:"lesson_type"`
 	VideoKey   *string                     `json:"video_key,omitempty"`
 	Duration   *int64                      `json:"duration_seconds,omitempty"`
@@ -35,7 +36,7 @@ type ReadCourseLessonContent struct {
 type ReadCourseSectionContent struct {
 	ID        uuid.UUID                 `json:"id"`
 	Title     string                    `json:"title"`
-	SortOrder string                    `json:"sort_order"`
+	SortOrder int                       `json:"sort_order"`
 	Lessons   []ReadCourseLessonContent `json:"lessons"`
 }
 
@@ -104,19 +105,21 @@ func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
 	for _, l := range s.Lessons() {
 		lessons = append(lessons, buildLessonContent(l))
 	}
+	n, _ := strconv.Atoi(s.Order())
 	return ReadCourseSectionContent{
 		ID:        s.ID(),
 		Title:     s.Title(),
-		SortOrder: s.Order(),
+		SortOrder: n,
 		Lessons:   lessons,
 	}
 }
 
 func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
+	lessonOrder, _ := strconv.Atoi(l.Order())
 	base := ReadCourseLessonContent{
 		ID:         l.ID(),
 		Title:      l.Title(),
-		SortOrder:  l.Order(),
+		SortOrder:  lessonOrder,
 		LessonType: "",
 		VideoKey:   nil,
 		Duration:   nil,
