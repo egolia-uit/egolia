@@ -11,7 +11,10 @@ NEXT_TELEMETRY_DISABLED = "1"
 buf = "1.65.0"
 pnpm = "10.28.2"
 "npm:skills" = "latest"
-ffmpeg = "8.1.0"
+
+[tools.ffmpeg]
+version = "8.1.0"
+os = ["linux", "darwin"]
 
 [shell_alias]
 compose = "docker compose"
