@@ -33,10 +33,16 @@
       "get": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -110,10 +116,16 @@
       "post": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -158,10 +170,16 @@
       "get": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -199,10 +217,16 @@
       "put": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -282,10 +306,16 @@
       "delete": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -321,10 +351,16 @@
       "get": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -373,10 +409,16 @@
       "post": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -429,10 +471,16 @@
       "put": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -486,10 +534,16 @@
       "delete": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -525,10 +579,16 @@
       "post": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -580,36 +640,45 @@
   },
   "components": {
     "securitySchemes": {
-      "AuthorizationCodeOauth2": {
+      "OIDC": {
+        "type": "openIdConnect",
+        "openIdConnectUrl": "http://authentik.egolia.localhost/application/o/api-web/.well-known/openid-configuration",
+        "description": "OpenID Connect Security Scheme",
+        "x-defaultClientId": "api-web",
+        "x-scalar-client-id": "api-web"
+      },
+      "Oauth2": {
         "type": "oauth2",
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {
-              "openid": "Required for OIDC",
-              "profile": "Access to user profile"
-            },
-            "x-defaultClientId": "api-web",
-            "x-scalar-client-id": "api-web",
-            "x-usePkce": true,
-            "x-scalar-credentials-location": "header"
-          }
-        }
-      },
-      "PasswordOauth2": {
-        "type": "oauth2",
-        "description": "OAuth2 Security Scheme",
-        "flows": {
-          "password": {
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
+            "authorizationUrl": "http://authentik.notopia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
             "scopes": {
               "openid": "OpenID Connect scope",
               "email": "Email scope",
               "profile": "Profile scope",
               "entitlements": "Entitlements scope"
             },
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-usePkce": "SHA-256",
+            "x-scalar-credentials-location": "header"
+          },
+          "password": {
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
+            "x-default-scopes": [
+              "openid",
+              "profile",
+              "email",
+              "entitlements"
+            ],
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"
@@ -866,44 +935,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "type": "object",
-              "description": "The error response body returned when JWT validation or OPA authorization fails.",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "description": "The category of the error encountered during the middleware lifecycle.",
-                  "enum": [
-                    "ExtractToken",
-                    "VerifyToken",
-                    "FetchJWKS",
-                    "OPA"
-                  ],
-                  "example": "ExtractToken"
-                },
-                "details": {
-                  "type": "string",
-                  "description": "A descriptive message providing technical context for the failure.",
-                  "x-examples": [
-                    "token not found",
-                    "Authorization header is empty",
-                    "token is expired",
-                    "failed to fetch JWKS",
-                    "opa policy denied"
-                  ],
-                  "example": "token not found"
-                },
-                "custom_message": {
-                  "type": "string",
-                  "nullable": true,
-                  "description": "An optional, developer-defined message, often populated by OPA policy violations.",
-                  "example": "User does not have the required 'admin' role."
-                }
-              },
-              "required": [
-                "type",
-                "details",
-                "custom_message"
-              ]
+              "type": "object"
             }
           }
         }

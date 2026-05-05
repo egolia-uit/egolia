@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	AuthorizationCodeOauth2Scopes = "AuthorizationCodeOauth2.Scopes"
-	PasswordOauth2Scopes          = "PasswordOauth2.Scopes"
+	OIDCScopes   = "OIDC.Scopes"
+	Oauth2Scopes = "Oauth2.Scopes"
 )
 
 // Defines values for TransactionStatus.

@@ -171,9 +171,9 @@ func (siw *ServerInterfaceWrapper) ApproveCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -199,9 +199,9 @@ func (siw *ServerInterfaceWrapper) DeclineCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -218,9 +218,9 @@ func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
 
 	var err error
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetMyEnrolledCoursesParams
@@ -264,9 +264,9 @@ func (siw *ServerInterfaceWrapper) GetMyCertificates(c *gin.Context) {
 
 	var err error
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetMyCertificatesParams
@@ -319,9 +319,9 @@ func (siw *ServerInterfaceWrapper) GetCertificateById(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -338,9 +338,9 @@ func (siw *ServerInterfaceWrapper) SearchCourses(c *gin.Context) {
 
 	var err error
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params SearchCoursesParams
@@ -398,9 +398,9 @@ func (siw *ServerInterfaceWrapper) SearchCourses(c *gin.Context) {
 // CreateCourse operation middleware
 func (siw *ServerInterfaceWrapper) CreateCourse(c *gin.Context) {
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -426,9 +426,9 @@ func (siw *ServerInterfaceWrapper) GetInstructorCourses(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetInstructorCoursesParams
@@ -472,9 +472,9 @@ func (siw *ServerInterfaceWrapper) GetPublishedCourses(c *gin.Context) {
 
 	var err error
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetPublishedCoursesParams
@@ -518,9 +518,9 @@ func (siw *ServerInterfaceWrapper) GetSystemCourses(c *gin.Context) {
 
 	var err error
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetSystemCoursesParams
@@ -573,9 +573,9 @@ func (siw *ServerInterfaceWrapper) DeleteCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -601,9 +601,9 @@ func (siw *ServerInterfaceWrapper) UpdateCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -629,9 +629,9 @@ func (siw *ServerInterfaceWrapper) BookmarkCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -657,9 +657,9 @@ func (siw *ServerInterfaceWrapper) GetCourseDetail(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -685,9 +685,9 @@ func (siw *ServerInterfaceWrapper) EnrollInCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -713,9 +713,9 @@ func (siw *ServerInterfaceWrapper) FinishCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -741,9 +741,9 @@ func (siw *ServerInterfaceWrapper) HideCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -793,9 +793,9 @@ func (siw *ServerInterfaceWrapper) GetCourseProgress(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -821,9 +821,9 @@ func (siw *ServerInterfaceWrapper) ReviewCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -849,9 +849,9 @@ func (siw *ServerInterfaceWrapper) TriggerLearningReminder(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -877,9 +877,9 @@ func (siw *ServerInterfaceWrapper) UnbookmarkCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -905,9 +905,9 @@ func (siw *ServerInterfaceWrapper) UnhideCourse(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -933,9 +933,9 @@ func (siw *ServerInterfaceWrapper) ReplyLessonComment(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -950,9 +950,9 @@ func (siw *ServerInterfaceWrapper) ReplyLessonComment(c *gin.Context) {
 // CreateLesson operation middleware
 func (siw *ServerInterfaceWrapper) CreateLesson(c *gin.Context) {
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -978,9 +978,9 @@ func (siw *ServerInterfaceWrapper) DeleteLesson(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1006,9 +1006,9 @@ func (siw *ServerInterfaceWrapper) GetLessonDetail(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1034,9 +1034,9 @@ func (siw *ServerInterfaceWrapper) GetLessonComments(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1062,9 +1062,9 @@ func (siw *ServerInterfaceWrapper) CommentOnLesson(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1090,9 +1090,9 @@ func (siw *ServerInterfaceWrapper) MarkLessonAsCompleted(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1118,9 +1118,9 @@ func (siw *ServerInterfaceWrapper) MoveLesson(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1146,9 +1146,9 @@ func (siw *ServerInterfaceWrapper) GetLessonProgress(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1174,9 +1174,9 @@ func (siw *ServerInterfaceWrapper) EditTestLesson(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1202,9 +1202,9 @@ func (siw *ServerInterfaceWrapper) SaveTestLessonProgress(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1230,9 +1230,9 @@ func (siw *ServerInterfaceWrapper) CreateTest(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1258,9 +1258,9 @@ func (siw *ServerInterfaceWrapper) GetUploadVideoLessonUrl(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1286,9 +1286,9 @@ func (siw *ServerInterfaceWrapper) EditVideoLesson(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1314,9 +1314,9 @@ func (siw *ServerInterfaceWrapper) SaveVideoLessonProgress(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1331,9 +1331,9 @@ func (siw *ServerInterfaceWrapper) SaveVideoLessonProgress(c *gin.Context) {
 // CreateSection operation middleware
 func (siw *ServerInterfaceWrapper) CreateSection(c *gin.Context) {
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1359,9 +1359,9 @@ func (siw *ServerInterfaceWrapper) DeleteSection(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1387,9 +1387,9 @@ func (siw *ServerInterfaceWrapper) UpdateSectionTitle(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -1415,9 +1415,9 @@ func (siw *ServerInterfaceWrapper) MoveSection(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)

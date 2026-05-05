@@ -63,10 +63,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -115,10 +121,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -206,10 +218,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -273,10 +291,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -334,10 +358,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -408,10 +438,16 @@
       "delete": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -450,10 +486,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -507,10 +549,16 @@
       "patch": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -559,10 +607,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -611,10 +665,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -668,10 +728,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -710,10 +776,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -790,10 +862,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -842,10 +920,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -884,10 +968,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -926,10 +1016,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -968,10 +1064,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1070,10 +1172,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1112,10 +1220,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1171,10 +1285,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1235,10 +1355,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1312,10 +1438,16 @@
       "delete": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1352,10 +1484,16 @@
       "patch": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1415,10 +1553,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1523,10 +1667,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1585,10 +1735,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1640,10 +1796,16 @@
       "delete": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1682,10 +1844,16 @@
       "patch": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1734,10 +1902,16 @@
       "patch": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1786,10 +1960,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1875,10 +2055,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -1953,10 +2139,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2010,10 +2202,16 @@
       "put": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2062,10 +2260,16 @@
       "put": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2129,10 +2333,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2171,10 +2381,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2257,10 +2473,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2312,10 +2534,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2382,10 +2610,16 @@
       "post": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2452,10 +2686,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2516,10 +2756,16 @@
       "get": {
         "security": [
           {
-            "course_AuthorizationCodeOauth2": []
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "course_PasswordOauth2": []
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2573,10 +2819,16 @@
       "post": {
         "security": [
           {
-            "billing_AuthorizationCodeOauth2": []
+            "billing_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "billing_PasswordOauth2": []
+            "billing_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2624,10 +2876,16 @@
       "get": {
         "security": [
           {
-            "billing_AuthorizationCodeOauth2": []
+            "billing_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "billing_PasswordOauth2": []
+            "billing_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2684,10 +2942,16 @@
       "get": {
         "security": [
           {
-            "billing_AuthorizationCodeOauth2": []
+            "billing_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "billing_PasswordOauth2": []
+            "billing_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2763,10 +3027,16 @@
       "get": {
         "security": [
           {
-            "billing_AuthorizationCodeOauth2": []
+            "billing_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "billing_PasswordOauth2": []
+            "billing_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2799,10 +3069,16 @@
       "get": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2876,10 +3152,16 @@
       "post": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2924,10 +3206,16 @@
       "get": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -2965,10 +3253,16 @@
       "put": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -3048,10 +3342,16 @@
       "delete": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -3087,10 +3387,16 @@
       "get": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -3139,10 +3445,16 @@
       "post": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -3195,10 +3507,16 @@
       "put": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -3252,10 +3570,16 @@
       "delete": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -3291,10 +3615,16 @@
       "post": {
         "security": [
           {
-            "blog_AuthorizationCodeOauth2": []
+            "blog_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "blog_PasswordOauth2": []
+            "blog_OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -3346,108 +3676,135 @@
   },
   "components": {
     "securitySchemes": {
-      "course_AuthorizationCodeOauth2": {
+      "course_OIDC": {
+        "type": "openIdConnect",
+        "openIdConnectUrl": "http://authentik.egolia.localhost/application/o/api-web/.well-known/openid-configuration",
+        "description": "OpenID Connect Security Scheme",
+        "x-defaultClientId": "api-web",
+        "x-scalar-client-id": "api-web"
+      },
+      "course_Oauth2": {
         "type": "oauth2",
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {
-              "openid": "Required for OIDC",
-              "profile": "Access to user profile"
-            },
-            "x-defaultClientId": "api-web",
-            "x-scalar-client-id": "api-web",
-            "x-usePkce": true,
-            "x-scalar-credentials-location": "header"
-          }
-        }
-      },
-      "course_PasswordOauth2": {
-        "type": "oauth2",
-        "description": "OAuth2 Security Scheme",
-        "flows": {
-          "password": {
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
+            "authorizationUrl": "http://authentik.notopia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
             "scopes": {
               "openid": "OpenID Connect scope",
               "email": "Email scope",
               "profile": "Profile scope",
               "entitlements": "Entitlements scope"
             },
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-usePkce": "SHA-256",
+            "x-scalar-credentials-location": "header"
+          },
+          "password": {
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
+            "x-default-scopes": [
+              "openid",
+              "profile",
+              "email",
+              "entitlements"
+            ],
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"
           }
         }
       },
-      "billing_AuthorizationCodeOauth2": {
+      "billing_OIDC": {
+        "type": "openIdConnect",
+        "openIdConnectUrl": "http://authentik.egolia.localhost/application/o/api-web/.well-known/openid-configuration",
+        "description": "OpenID Connect Security Scheme",
+        "x-defaultClientId": "api-web",
+        "x-scalar-client-id": "api-web"
+      },
+      "billing_Oauth2": {
         "type": "oauth2",
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {
-              "openid": "Required for OIDC",
-              "profile": "Access to user profile"
-            },
-            "x-defaultClientId": "api-web",
-            "x-scalar-client-id": "api-web",
-            "x-usePkce": true,
-            "x-scalar-credentials-location": "header"
-          }
-        }
-      },
-      "billing_PasswordOauth2": {
-        "type": "oauth2",
-        "description": "OAuth2 Security Scheme",
-        "flows": {
-          "password": {
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
+            "authorizationUrl": "http://authentik.notopia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
             "scopes": {
               "openid": "OpenID Connect scope",
               "email": "Email scope",
               "profile": "Profile scope",
               "entitlements": "Entitlements scope"
             },
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-usePkce": "SHA-256",
+            "x-scalar-credentials-location": "header"
+          },
+          "password": {
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
+            "x-default-scopes": [
+              "openid",
+              "profile",
+              "email",
+              "entitlements"
+            ],
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"
           }
         }
       },
-      "blog_AuthorizationCodeOauth2": {
+      "blog_OIDC": {
+        "type": "openIdConnect",
+        "openIdConnectUrl": "http://authentik.egolia.localhost/application/o/api-web/.well-known/openid-configuration",
+        "description": "OpenID Connect Security Scheme",
+        "x-defaultClientId": "api-web",
+        "x-scalar-client-id": "api-web"
+      },
+      "blog_Oauth2": {
         "type": "oauth2",
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {
-              "openid": "Required for OIDC",
-              "profile": "Access to user profile"
-            },
-            "x-defaultClientId": "api-web",
-            "x-scalar-client-id": "api-web",
-            "x-usePkce": true,
-            "x-scalar-credentials-location": "header"
-          }
-        }
-      },
-      "blog_PasswordOauth2": {
-        "type": "oauth2",
-        "description": "OAuth2 Security Scheme",
-        "flows": {
-          "password": {
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
+            "authorizationUrl": "http://authentik.notopia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
             "scopes": {
               "openid": "OpenID Connect scope",
               "email": "Email scope",
               "profile": "Profile scope",
               "entitlements": "Entitlements scope"
             },
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-usePkce": "SHA-256",
+            "x-scalar-credentials-location": "header"
+          },
+          "password": {
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
+            "x-default-scopes": [
+              "openid",
+              "profile",
+              "email",
+              "entitlements"
+            ],
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"

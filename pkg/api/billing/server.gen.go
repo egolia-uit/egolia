@@ -44,9 +44,9 @@ func (siw *ServerInterfaceWrapper) GetPlatformRevenueAnalytics(c *gin.Context) {
 
 	var err error
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetPlatformRevenueAnalyticsParams
@@ -94,9 +94,9 @@ func (siw *ServerInterfaceWrapper) GetPlatformRevenueAnalytics(c *gin.Context) {
 // CheckoutCourse operation middleware
 func (siw *ServerInterfaceWrapper) CheckoutCourse(c *gin.Context) {
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -113,9 +113,9 @@ func (siw *ServerInterfaceWrapper) GetTransactions(c *gin.Context) {
 
 	var err error
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetTransactionsParams
@@ -184,9 +184,9 @@ func (siw *ServerInterfaceWrapper) CompleteTransaction(c *gin.Context) {
 		return
 	}
 
-	c.Set(AuthorizationCodeOauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
 
-	c.Set(PasswordOauth2Scopes, []string{})
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
