@@ -58,6 +58,8 @@ pkg/                            # Go packages
 
 ### Go
 
+- If need to read any library docs, use `go doc` cli
+  > Ex: `go doc https://github.com/data-dog/go-sqlmock`
 - Use GORM
 - `course` project apply clean architecture, CQRS, DDD
   - Domain model, repository in `internal/{projectName}/domain`
@@ -73,11 +75,13 @@ pkg/                            # Go packages
   - Use `slog.*Context` to add context info (mostly from otel) into log
   - Use debug, info for app handler (core layer for those not follow clean architecture), and under infrastructure logic
   - Use warn only for skipping logic, or retry logic. Warn and error log must suppress the return error. If return error, do not log error
+- For testing, use `test-go` skill
 
 ### Infrastructure
 
 - Compose file in `./deploy/compose/compose.yaml`, which include all services, databases,...
 - Note that our service don't run inside container, but directly on host
+- Mostly use PostgreSQL for database
 
 #### Authentik
 
