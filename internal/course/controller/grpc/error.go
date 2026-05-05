@@ -75,7 +75,7 @@ func toGRPCError(err error) error {
 		case errs.CodeLessonGenerateOrderFailed:
 			return status.Error(codes.FailedPrecondition, cerr.Error())
 
-		case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson:
+		case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson, errs.CodeObjectStorageFailToRetrieveDownloadURLForVideoLesson:
 			return status.Error(codes.Internal, cerr.Error())
 		case errs.CodeCourseNotFound:
 			return status.Error(codes.NotFound, cerr.Error())

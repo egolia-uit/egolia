@@ -593,7 +593,7 @@
             },
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
-            "x-usePkce": "SHA-256",
+            "x-usePkce": true,
             "x-scalar-credentials-location": "header"
           }
         }

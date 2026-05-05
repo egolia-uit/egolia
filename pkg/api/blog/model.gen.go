@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	Oauth2Scopes = "Oauth2.Scopes"
+	AuthorizationCodeOauth2Scopes = "AuthorizationCodeOauth2.Scopes"
+	PasswordOauth2Scopes          = "PasswordOauth2.Scopes"
 )
 
 // Defines values for OrderQuery.
