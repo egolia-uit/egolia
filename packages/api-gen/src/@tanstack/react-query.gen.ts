@@ -39,14 +39,14 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
-export const searchCoursesQueryKey = (options?: Options<SearchCoursesData>) => createQueryKey('searchCourses', options);
+export const getCertificateByIdQueryKey = (options: Options<GetCertificateByIdData>) => createQueryKey('getCertificateById', options);
 
 /**
- * Search courses
+ * Get certificate by id
  */
-export const searchCoursesOptions = (options?: Options<SearchCoursesData>) => queryOptions<SearchCoursesResponse, SearchCoursesError, SearchCoursesResponse, ReturnType<typeof searchCoursesQueryKey>>({
+export const getCertificateByIdOptions = (options: Options<GetCertificateByIdData>) => queryOptions<GetCertificateByIdResponse, GetCertificateByIdError, GetCertificateByIdResponse, ReturnType<typeof getCertificateByIdQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await searchCourses({
+        const { data } = await getCertificateById({
             ...options,
             ...queryKey[0],
             signal,
@@ -54,7 +54,25 @@ export const searchCoursesOptions = (options?: Options<SearchCoursesData>) => qu
         });
         return data;
     },
-    queryKey: searchCoursesQueryKey(options)
+    queryKey: getCertificateByIdQueryKey(options)
+});
+
+export const getMyCertificatesQueryKey = (options?: Options<GetMyCertificatesData>) => createQueryKey('getMyCertificates', options);
+
+/**
+ * Get my certificates
+ */
+export const getMyCertificatesOptions = (options?: Options<GetMyCertificatesData>) => queryOptions<GetMyCertificatesResponse, GetMyCertificatesError, GetMyCertificatesResponse, ReturnType<typeof getMyCertificatesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMyCertificates({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMyCertificatesQueryKey(options)
 });
 
 const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>>(queryKey: QueryKey<Options>, page: K) => {
@@ -86,23 +104,23 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
     return params as unknown as typeof page;
 };
 
-export const searchCoursesInfiniteQueryKey = (options?: Options<SearchCoursesData>): QueryKey<Options<SearchCoursesData>> => createQueryKey('searchCourses', options, true);
+export const getMyCertificatesInfiniteQueryKey = (options?: Options<GetMyCertificatesData>): QueryKey<Options<GetMyCertificatesData>> => createQueryKey('getMyCertificates', options, true);
 
 /**
- * Search courses
+ * Get my certificates
  */
-export const searchCoursesInfiniteOptions = (options?: Options<SearchCoursesData>) => infiniteQueryOptions<SearchCoursesResponse, SearchCoursesError, InfiniteData<SearchCoursesResponse>, QueryKey<Options<SearchCoursesData>>, number | Pick<QueryKey<Options<SearchCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+export const getMyCertificatesInfiniteOptions = (options?: Options<GetMyCertificatesData>) => infiniteQueryOptions<GetMyCertificatesResponse, GetMyCertificatesError, InfiniteData<GetMyCertificatesResponse>, QueryKey<Options<GetMyCertificatesData>>, number | Pick<QueryKey<Options<GetMyCertificatesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
 // @ts-ignore
 {
     queryFn: async ({ pageParam, queryKey, signal }) => {
         // @ts-ignore
-        const page: Pick<QueryKey<Options<SearchCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+        const page: Pick<QueryKey<Options<GetMyCertificatesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
             query: {
                 page: pageParam
             }
         };
         const params = createInfiniteParams(queryKey, page);
-        const { data } = await searchCourses({
+        const { data } = await getMyCertificates({
             ...options,
             ...params,
             signal,
@@ -110,114 +128,7 @@ export const searchCoursesInfiniteOptions = (options?: Options<SearchCoursesData
         });
         return data;
     },
-    queryKey: searchCoursesInfiniteQueryKey(options)
-});
-
-/**
- * Create course
- */
-export const createCourseMutation = (options?: Partial<Options<CreateCourseData>>): UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> => {
-    const mutationOptions: UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await createCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getSystemCoursesQueryKey = (options?: Options<GetSystemCoursesData>) => createQueryKey('getSystemCourses', options);
-
-/**
- * Get system courses
- */
-export const getSystemCoursesOptions = (options?: Options<GetSystemCoursesData>) => queryOptions<GetSystemCoursesResponse, GetSystemCoursesError, GetSystemCoursesResponse, ReturnType<typeof getSystemCoursesQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getSystemCourses({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getSystemCoursesQueryKey(options)
-});
-
-export const getSystemCoursesInfiniteQueryKey = (options?: Options<GetSystemCoursesData>): QueryKey<Options<GetSystemCoursesData>> => createQueryKey('getSystemCourses', options, true);
-
-/**
- * Get system courses
- */
-export const getSystemCoursesInfiniteOptions = (options?: Options<GetSystemCoursesData>) => infiniteQueryOptions<GetSystemCoursesResponse, GetSystemCoursesError, InfiniteData<GetSystemCoursesResponse>, QueryKey<Options<GetSystemCoursesData>>, number | Pick<QueryKey<Options<GetSystemCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<GetSystemCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            query: {
-                page: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await getSystemCourses({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getSystemCoursesInfiniteQueryKey(options)
-});
-
-export const getPublishedCoursesQueryKey = (options?: Options<GetPublishedCoursesData>) => createQueryKey('getPublishedCourses', options);
-
-/**
- * Get published courses
- */
-export const getPublishedCoursesOptions = (options?: Options<GetPublishedCoursesData>) => queryOptions<GetPublishedCoursesResponse, GetPublishedCoursesError, GetPublishedCoursesResponse, ReturnType<typeof getPublishedCoursesQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getPublishedCourses({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getPublishedCoursesQueryKey(options)
-});
-
-export const getPublishedCoursesInfiniteQueryKey = (options?: Options<GetPublishedCoursesData>): QueryKey<Options<GetPublishedCoursesData>> => createQueryKey('getPublishedCourses', options, true);
-
-/**
- * Get published courses
- */
-export const getPublishedCoursesInfiniteOptions = (options?: Options<GetPublishedCoursesData>) => infiniteQueryOptions<GetPublishedCoursesResponse, GetPublishedCoursesError, InfiniteData<GetPublishedCoursesResponse>, QueryKey<Options<GetPublishedCoursesData>>, number | Pick<QueryKey<Options<GetPublishedCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<GetPublishedCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            query: {
-                page: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await getPublishedCourses({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getPublishedCoursesInfiniteQueryKey(options)
+    queryKey: getMyCertificatesInfiniteQueryKey(options)
 });
 
 export const getInstructorCoursesQueryKey = (options: Options<GetInstructorCoursesData>) => createQueryKey('getInstructorCourses', options);
@@ -269,13 +180,154 @@ export const getInstructorCoursesInfiniteOptions = (options: Options<GetInstruct
     queryKey: getInstructorCoursesInfiniteQueryKey(options)
 });
 
+export const getPublishedCoursesQueryKey = (options?: Options<GetPublishedCoursesData>) => createQueryKey('getPublishedCourses', options);
+
 /**
- * Delete course
+ * Get published courses
  */
-export const deleteCourseMutation = (options?: Partial<Options<DeleteCourseData>>): UseMutationOptions<DeleteCourseResponse, DeleteCourseError, Options<DeleteCourseData>> => {
-    const mutationOptions: UseMutationOptions<DeleteCourseResponse, DeleteCourseError, Options<DeleteCourseData>> = {
+export const getPublishedCoursesOptions = (options?: Options<GetPublishedCoursesData>) => queryOptions<GetPublishedCoursesResponse, GetPublishedCoursesError, GetPublishedCoursesResponse, ReturnType<typeof getPublishedCoursesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPublishedCourses({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPublishedCoursesQueryKey(options)
+});
+
+export const getPublishedCoursesInfiniteQueryKey = (options?: Options<GetPublishedCoursesData>): QueryKey<Options<GetPublishedCoursesData>> => createQueryKey('getPublishedCourses', options, true);
+
+/**
+ * Get published courses
+ */
+export const getPublishedCoursesInfiniteOptions = (options?: Options<GetPublishedCoursesData>) => infiniteQueryOptions<GetPublishedCoursesResponse, GetPublishedCoursesError, InfiniteData<GetPublishedCoursesResponse>, QueryKey<Options<GetPublishedCoursesData>>, number | Pick<QueryKey<Options<GetPublishedCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetPublishedCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getPublishedCourses({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPublishedCoursesInfiniteQueryKey(options)
+});
+
+export const getSystemCoursesQueryKey = (options?: Options<GetSystemCoursesData>) => createQueryKey('getSystemCourses', options);
+
+/**
+ * Get system courses
+ */
+export const getSystemCoursesOptions = (options?: Options<GetSystemCoursesData>) => queryOptions<GetSystemCoursesResponse, GetSystemCoursesError, GetSystemCoursesResponse, ReturnType<typeof getSystemCoursesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getSystemCourses({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSystemCoursesQueryKey(options)
+});
+
+export const getSystemCoursesInfiniteQueryKey = (options?: Options<GetSystemCoursesData>): QueryKey<Options<GetSystemCoursesData>> => createQueryKey('getSystemCourses', options, true);
+
+/**
+ * Get system courses
+ */
+export const getSystemCoursesInfiniteOptions = (options?: Options<GetSystemCoursesData>) => infiniteQueryOptions<GetSystemCoursesResponse, GetSystemCoursesError, InfiniteData<GetSystemCoursesResponse>, QueryKey<Options<GetSystemCoursesData>>, number | Pick<QueryKey<Options<GetSystemCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetSystemCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await getSystemCourses({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSystemCoursesInfiniteQueryKey(options)
+});
+
+/**
+ * Approve course
+ */
+export const approveCourseMutation = (options?: Partial<Options<ApproveCourseData>>): UseMutationOptions<ApproveCourseResponse, ApproveCourseError, Options<ApproveCourseData>> => {
+    const mutationOptions: UseMutationOptions<ApproveCourseResponse, ApproveCourseError, Options<ApproveCourseData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await deleteCourse({
+            const { data } = await approveCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update course
+ */
+export const updateCourseMutation = (options?: Partial<Options<UpdateCourseData>>): UseMutationOptions<UpdateCourseResponse, UpdateCourseError, Options<UpdateCourseData>> => {
+    const mutationOptions: UseMutationOptions<UpdateCourseResponse, UpdateCourseError, Options<UpdateCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Bookmark course
+ */
+export const bookmarkCourseMutation = (options?: Partial<Options<BookmarkCourseData>>): UseMutationOptions<unknown, BookmarkCourseError, Options<BookmarkCourseData>> => {
+    const mutationOptions: UseMutationOptions<unknown, BookmarkCourseError, Options<BookmarkCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await bookmarkCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Decline course
+ */
+export const declineCourseMutation = (options?: Partial<Options<DeclineCourseData>>): UseMutationOptions<DeclineCourseResponse, DeclineCourseError, Options<DeclineCourseData>> => {
+    const mutationOptions: UseMutationOptions<DeclineCourseResponse, DeclineCourseError, Options<DeclineCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await declineCourse({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -305,23 +357,6 @@ export const getCourseDetailOptions = (options: Options<GetCourseDetailData>) =>
 });
 
 /**
- * Update course
- */
-export const updateCourseMutation = (options?: Partial<Options<UpdateCourseData>>): UseMutationOptions<UpdateCourseResponse, UpdateCourseError, Options<UpdateCourseData>> => {
-    const mutationOptions: UseMutationOptions<UpdateCourseResponse, UpdateCourseError, Options<UpdateCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await updateCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
  * Enroll in course
  */
 export const enrollInCourseMutation = (options?: Partial<Options<EnrollInCourseData>>): UseMutationOptions<unknown, EnrollInCourseError, Options<EnrollInCourseData>> => {
@@ -337,24 +372,6 @@ export const enrollInCourseMutation = (options?: Partial<Options<EnrollInCourseD
     };
     return mutationOptions;
 };
-
-export const getCourseProgressQueryKey = (options: Options<GetCourseProgressData>) => createQueryKey('getCourseProgress', options);
-
-/**
- * Get course progress
- */
-export const getCourseProgressOptions = (options: Options<GetCourseProgressData>) => queryOptions<GetCourseProgressResponse, GetCourseProgressError, GetCourseProgressResponse, ReturnType<typeof getCourseProgressQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getCourseProgress({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCourseProgressQueryKey(options)
-});
 
 /**
  * Finish course
@@ -374,97 +391,12 @@ export const finishCourseMutation = (options?: Partial<Options<FinishCourseData>
 };
 
 /**
- * Review course
- */
-export const reviewCourseMutation = (options?: Partial<Options<ReviewCourseData>>): UseMutationOptions<unknown, ReviewCourseError, Options<ReviewCourseData>> => {
-    const mutationOptions: UseMutationOptions<unknown, ReviewCourseError, Options<ReviewCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await reviewCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Bookmark course
- */
-export const bookmarkCourseMutation = (options?: Partial<Options<BookmarkCourseData>>): UseMutationOptions<unknown, BookmarkCourseError, Options<BookmarkCourseData>> => {
-    const mutationOptions: UseMutationOptions<unknown, BookmarkCourseError, Options<BookmarkCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await bookmarkCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Unbookmark course
- */
-export const unbookmarkCourseMutation = (options?: Partial<Options<UnbookmarkCourseData>>): UseMutationOptions<UnbookmarkCourseResponse, UnbookmarkCourseError, Options<UnbookmarkCourseData>> => {
-    const mutationOptions: UseMutationOptions<UnbookmarkCourseResponse, UnbookmarkCourseError, Options<UnbookmarkCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await unbookmarkCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
  * Hide course
  */
 export const hideCourseMutation = (options?: Partial<Options<HideCourseData>>): UseMutationOptions<HideCourseResponse, HideCourseError, Options<HideCourseData>> => {
     const mutationOptions: UseMutationOptions<HideCourseResponse, HideCourseError, Options<HideCourseData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await hideCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Unhide course
- */
-export const unhideCourseMutation = (options?: Partial<Options<UnhideCourseData>>): UseMutationOptions<UnhideCourseResponse, UnhideCourseError, Options<UnhideCourseData>> => {
-    const mutationOptions: UseMutationOptions<UnhideCourseResponse, UnhideCourseError, Options<UnhideCourseData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await unhideCourse({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Trigger learning reminder
- */
-export const triggerLearningReminderMutation = (options?: Partial<Options<TriggerLearningReminderData>>): UseMutationOptions<TriggerLearningReminderResponse, TriggerLearningReminderError, Options<TriggerLearningReminderData>> => {
-    const mutationOptions: UseMutationOptions<TriggerLearningReminderResponse, TriggerLearningReminderError, Options<TriggerLearningReminderData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await triggerLearningReminder({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -493,13 +425,31 @@ export const getCourseLandingPageOptions = (options: Options<GetCourseLandingPag
     queryKey: getCourseLandingPageQueryKey(options)
 });
 
+export const getCourseProgressQueryKey = (options: Options<GetCourseProgressData>) => createQueryKey('getCourseProgress', options);
+
 /**
- * Approve course
+ * Get course progress
  */
-export const approveCourseMutation = (options?: Partial<Options<ApproveCourseData>>): UseMutationOptions<ApproveCourseResponse, ApproveCourseError, Options<ApproveCourseData>> => {
-    const mutationOptions: UseMutationOptions<ApproveCourseResponse, ApproveCourseError, Options<ApproveCourseData>> = {
+export const getCourseProgressOptions = (options: Options<GetCourseProgressData>) => queryOptions<GetCourseProgressResponse, GetCourseProgressError, GetCourseProgressResponse, ReturnType<typeof getCourseProgressQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getCourseProgress({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCourseProgressQueryKey(options)
+});
+
+/**
+ * Review course
+ */
+export const reviewCourseMutation = (options?: Partial<Options<ReviewCourseData>>): UseMutationOptions<unknown, ReviewCourseError, Options<ReviewCourseData>> => {
+    const mutationOptions: UseMutationOptions<unknown, ReviewCourseError, Options<ReviewCourseData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await approveCourse({
+            const { data } = await reviewCourse({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -511,12 +461,63 @@ export const approveCourseMutation = (options?: Partial<Options<ApproveCourseDat
 };
 
 /**
- * Decline course
+ * Trigger learning reminder
  */
-export const declineCourseMutation = (options?: Partial<Options<DeclineCourseData>>): UseMutationOptions<DeclineCourseResponse, DeclineCourseError, Options<DeclineCourseData>> => {
-    const mutationOptions: UseMutationOptions<DeclineCourseResponse, DeclineCourseError, Options<DeclineCourseData>> = {
+export const triggerLearningReminderMutation = (options?: Partial<Options<TriggerLearningReminderData>>): UseMutationOptions<TriggerLearningReminderResponse, TriggerLearningReminderError, Options<TriggerLearningReminderData>> => {
+    const mutationOptions: UseMutationOptions<TriggerLearningReminderResponse, TriggerLearningReminderError, Options<TriggerLearningReminderData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await declineCourse({
+            const { data } = await triggerLearningReminder({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Unbookmark course
+ */
+export const unbookmarkCourseMutation = (options?: Partial<Options<UnbookmarkCourseData>>): UseMutationOptions<UnbookmarkCourseResponse, UnbookmarkCourseError, Options<UnbookmarkCourseData>> => {
+    const mutationOptions: UseMutationOptions<UnbookmarkCourseResponse, UnbookmarkCourseError, Options<UnbookmarkCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await unbookmarkCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Unhide course
+ */
+export const unhideCourseMutation = (options?: Partial<Options<UnhideCourseData>>): UseMutationOptions<UnhideCourseResponse, UnhideCourseError, Options<UnhideCourseData>> => {
+    const mutationOptions: UseMutationOptions<UnhideCourseResponse, UnhideCourseError, Options<UnhideCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await unhideCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete course
+ */
+export const deleteCourseMutation = (options?: Partial<Options<DeleteCourseData>>): UseMutationOptions<DeleteCourseResponse, DeleteCourseError, Options<DeleteCourseData>> => {
+    const mutationOptions: UseMutationOptions<DeleteCourseResponse, DeleteCourseError, Options<DeleteCourseData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteCourse({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -572,13 +573,92 @@ export const getMyEnrolledCoursesInfiniteOptions = (options?: Options<GetMyEnrol
     queryKey: getMyEnrolledCoursesInfiniteQueryKey(options)
 });
 
+export const searchCoursesQueryKey = (options?: Options<SearchCoursesData>) => createQueryKey('searchCourses', options);
+
 /**
- * Create section
+ * Search courses
  */
-export const createSectionMutation = (options?: Partial<Options<CreateSectionData>>): UseMutationOptions<unknown, CreateSectionError, Options<CreateSectionData>> => {
-    const mutationOptions: UseMutationOptions<unknown, CreateSectionError, Options<CreateSectionData>> = {
+export const searchCoursesOptions = (options?: Options<SearchCoursesData>) => queryOptions<SearchCoursesResponse, SearchCoursesError, SearchCoursesResponse, ReturnType<typeof searchCoursesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await searchCourses({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchCoursesQueryKey(options)
+});
+
+export const searchCoursesInfiniteQueryKey = (options?: Options<SearchCoursesData>): QueryKey<Options<SearchCoursesData>> => createQueryKey('searchCourses', options, true);
+
+/**
+ * Search courses
+ */
+export const searchCoursesInfiniteOptions = (options?: Options<SearchCoursesData>) => infiniteQueryOptions<SearchCoursesResponse, SearchCoursesError, InfiniteData<SearchCoursesResponse>, QueryKey<Options<SearchCoursesData>>, number | Pick<QueryKey<Options<SearchCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<SearchCoursesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await searchCourses({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: searchCoursesInfiniteQueryKey(options)
+});
+
+/**
+ * Create course
+ */
+export const createCourseMutation = (options?: Partial<Options<CreateCourseData>>): UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> => {
+    const mutationOptions: UseMutationOptions<unknown, CreateCourseError, Options<CreateCourseData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await createSection({
+            const { data } = await createCourse({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reply lesson comment
+ */
+export const replyLessonCommentMutation = (options?: Partial<Options<ReplyLessonCommentData>>): UseMutationOptions<unknown, ReplyLessonCommentError, Options<ReplyLessonCommentData>> => {
+    const mutationOptions: UseMutationOptions<unknown, ReplyLessonCommentError, Options<ReplyLessonCommentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await replyLessonComment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Move section
+ */
+export const moveSectionMutation = (options?: Partial<Options<MoveSectionData>>): UseMutationOptions<MoveSectionResponse, MoveSectionError, Options<MoveSectionData>> => {
+    const mutationOptions: UseMutationOptions<MoveSectionResponse, MoveSectionError, Options<MoveSectionData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await moveSection({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -624,218 +704,12 @@ export const updateSectionTitleMutation = (options?: Partial<Options<UpdateSecti
 };
 
 /**
- * Move section
+ * Create section
  */
-export const moveSectionMutation = (options?: Partial<Options<MoveSectionData>>): UseMutationOptions<MoveSectionResponse, MoveSectionError, Options<MoveSectionData>> => {
-    const mutationOptions: UseMutationOptions<MoveSectionResponse, MoveSectionError, Options<MoveSectionData>> = {
+export const createSectionMutation = (options?: Partial<Options<CreateSectionData>>): UseMutationOptions<unknown, CreateSectionError, Options<CreateSectionData>> => {
+    const mutationOptions: UseMutationOptions<unknown, CreateSectionError, Options<CreateSectionData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await moveSection({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Create lesson
- */
-export const createLessonMutation = (options?: Partial<Options<CreateLessonData>>): UseMutationOptions<unknown, CreateLessonError, Options<CreateLessonData>> => {
-    const mutationOptions: UseMutationOptions<unknown, CreateLessonError, Options<CreateLessonData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await createLesson({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Delete lesson
- */
-export const deleteLessonMutation = (options?: Partial<Options<DeleteLessonData>>): UseMutationOptions<DeleteLessonResponse, DeleteLessonError, Options<DeleteLessonData>> => {
-    const mutationOptions: UseMutationOptions<DeleteLessonResponse, DeleteLessonError, Options<DeleteLessonData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await deleteLesson({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getLessonDetailQueryKey = (options: Options<GetLessonDetailData>) => createQueryKey('getLessonDetail', options);
-
-/**
- * Get lesson detail
- */
-export const getLessonDetailOptions = (options: Options<GetLessonDetailData>) => queryOptions<GetLessonDetailResponse, GetLessonDetailError, GetLessonDetailResponse, ReturnType<typeof getLessonDetailQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getLessonDetail({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getLessonDetailQueryKey(options)
-});
-
-/**
- * Edit video lesson
- */
-export const editVideoLessonMutation = (options?: Partial<Options<EditVideoLessonData>>): UseMutationOptions<EditVideoLessonResponse, EditVideoLessonError, Options<EditVideoLessonData>> => {
-    const mutationOptions: UseMutationOptions<EditVideoLessonResponse, EditVideoLessonError, Options<EditVideoLessonData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await editVideoLesson({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Edit test lesson
- */
-export const editTestLessonMutation = (options?: Partial<Options<EditTestLessonData>>): UseMutationOptions<EditTestLessonResponse, EditTestLessonError, Options<EditTestLessonData>> => {
-    const mutationOptions: UseMutationOptions<EditTestLessonResponse, EditTestLessonError, Options<EditTestLessonData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await editTestLesson({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Get upload video lesson URL
- */
-export const getUploadVideoLessonUrlMutation = (options?: Partial<Options<GetUploadVideoLessonUrlData>>): UseMutationOptions<GetUploadVideoLessonUrlResponse, GetUploadVideoLessonUrlError, Options<GetUploadVideoLessonUrlData>> => {
-    const mutationOptions: UseMutationOptions<GetUploadVideoLessonUrlResponse, GetUploadVideoLessonUrlError, Options<GetUploadVideoLessonUrlData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await getUploadVideoLessonUrl({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Create test
- */
-export const createTestMutation = (options?: Partial<Options<CreateTestData>>): UseMutationOptions<unknown, CreateTestError, Options<CreateTestData>> => {
-    const mutationOptions: UseMutationOptions<unknown, CreateTestError, Options<CreateTestData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await createTest({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getLessonProgressQueryKey = (options: Options<GetLessonProgressData>) => createQueryKey('getLessonProgress', options);
-
-/**
- * Get lesson progress
- */
-export const getLessonProgressOptions = (options: Options<GetLessonProgressData>) => queryOptions<GetLessonProgressResponse, GetLessonProgressError, GetLessonProgressResponse, ReturnType<typeof getLessonProgressQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getLessonProgress({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getLessonProgressQueryKey(options)
-});
-
-/**
- * Save video lesson progress
- */
-export const saveVideoLessonProgressMutation = (options?: Partial<Options<SaveVideoLessonProgressData>>): UseMutationOptions<SaveVideoLessonProgressResponse, SaveVideoLessonProgressError, Options<SaveVideoLessonProgressData>> => {
-    const mutationOptions: UseMutationOptions<SaveVideoLessonProgressResponse, SaveVideoLessonProgressError, Options<SaveVideoLessonProgressData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await saveVideoLessonProgress({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Save test lesson progress
- */
-export const saveTestLessonProgressMutation = (options?: Partial<Options<SaveTestLessonProgressData>>): UseMutationOptions<SaveTestLessonProgressResponse, SaveTestLessonProgressError, Options<SaveTestLessonProgressData>> => {
-    const mutationOptions: UseMutationOptions<SaveTestLessonProgressResponse, SaveTestLessonProgressError, Options<SaveTestLessonProgressData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await saveTestLessonProgress({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Mark lesson as completed
- */
-export const markLessonAsCompletedMutation = (options?: Partial<Options<MarkLessonAsCompletedData>>): UseMutationOptions<MarkLessonAsCompletedResponse, MarkLessonAsCompletedError, Options<MarkLessonAsCompletedData>> => {
-    const mutationOptions: UseMutationOptions<MarkLessonAsCompletedResponse, MarkLessonAsCompletedError, Options<MarkLessonAsCompletedData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await markLessonAsCompleted({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Move lesson
- */
-export const moveLessonMutation = (options?: Partial<Options<MoveLessonData>>): UseMutationOptions<unknown, MoveLessonError, Options<MoveLessonData>> => {
-    const mutationOptions: UseMutationOptions<unknown, MoveLessonError, Options<MoveLessonData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await moveLesson({
+            const { data } = await createSection({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -882,12 +756,12 @@ export const commentOnLessonMutation = (options?: Partial<Options<CommentOnLesso
 };
 
 /**
- * Reply lesson comment
+ * Mark lesson as completed
  */
-export const replyLessonCommentMutation = (options?: Partial<Options<ReplyLessonCommentData>>): UseMutationOptions<unknown, ReplyLessonCommentError, Options<ReplyLessonCommentData>> => {
-    const mutationOptions: UseMutationOptions<unknown, ReplyLessonCommentError, Options<ReplyLessonCommentData>> = {
+export const markLessonAsCompletedMutation = (options?: Partial<Options<MarkLessonAsCompletedData>>): UseMutationOptions<MarkLessonAsCompletedResponse, MarkLessonAsCompletedError, Options<MarkLessonAsCompletedData>> => {
+    const mutationOptions: UseMutationOptions<MarkLessonAsCompletedResponse, MarkLessonAsCompletedError, Options<MarkLessonAsCompletedData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await replyLessonComment({
+            const { data } = await markLessonAsCompleted({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -898,14 +772,31 @@ export const replyLessonCommentMutation = (options?: Partial<Options<ReplyLesson
     return mutationOptions;
 };
 
-export const getMyCertificatesQueryKey = (options?: Options<GetMyCertificatesData>) => createQueryKey('getMyCertificates', options);
+/**
+ * Move lesson
+ */
+export const moveLessonMutation = (options?: Partial<Options<MoveLessonData>>): UseMutationOptions<unknown, MoveLessonError, Options<MoveLessonData>> => {
+    const mutationOptions: UseMutationOptions<unknown, MoveLessonError, Options<MoveLessonData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await moveLesson({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getLessonProgressQueryKey = (options: Options<GetLessonProgressData>) => createQueryKey('getLessonProgress', options);
 
 /**
- * Get my certificates
+ * Get lesson progress
  */
-export const getMyCertificatesOptions = (options?: Options<GetMyCertificatesData>) => queryOptions<GetMyCertificatesResponse, GetMyCertificatesError, GetMyCertificatesResponse, ReturnType<typeof getMyCertificatesQueryKey>>({
+export const getLessonProgressOptions = (options: Options<GetLessonProgressData>) => queryOptions<GetLessonProgressResponse, GetLessonProgressError, GetLessonProgressResponse, ReturnType<typeof getLessonProgressQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getMyCertificates({
+        const { data } = await getLessonProgress({
             ...options,
             ...queryKey[0],
             signal,
@@ -913,44 +804,136 @@ export const getMyCertificatesOptions = (options?: Options<GetMyCertificatesData
         });
         return data;
     },
-    queryKey: getMyCertificatesQueryKey(options)
+    queryKey: getLessonProgressQueryKey(options)
 });
 
-export const getMyCertificatesInfiniteQueryKey = (options?: Options<GetMyCertificatesData>): QueryKey<Options<GetMyCertificatesData>> => createQueryKey('getMyCertificates', options, true);
+/**
+ * Save test lesson progress
+ */
+export const saveTestLessonProgressMutation = (options?: Partial<Options<SaveTestLessonProgressData>>): UseMutationOptions<SaveTestLessonProgressResponse, SaveTestLessonProgressError, Options<SaveTestLessonProgressData>> => {
+    const mutationOptions: UseMutationOptions<SaveTestLessonProgressResponse, SaveTestLessonProgressError, Options<SaveTestLessonProgressData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await saveTestLessonProgress({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 /**
- * Get my certificates
+ * Edit test lesson
  */
-export const getMyCertificatesInfiniteOptions = (options?: Options<GetMyCertificatesData>) => infiniteQueryOptions<GetMyCertificatesResponse, GetMyCertificatesError, InfiniteData<GetMyCertificatesResponse>, QueryKey<Options<GetMyCertificatesData>>, number | Pick<QueryKey<Options<GetMyCertificatesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<GetMyCertificatesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            query: {
-                page: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await getMyCertificates({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getMyCertificatesInfiniteQueryKey(options)
-});
-
-export const getCertificateByIdQueryKey = (options: Options<GetCertificateByIdData>) => createQueryKey('getCertificateById', options);
+export const editTestLessonMutation = (options?: Partial<Options<EditTestLessonData>>): UseMutationOptions<EditTestLessonResponse, EditTestLessonError, Options<EditTestLessonData>> => {
+    const mutationOptions: UseMutationOptions<EditTestLessonResponse, EditTestLessonError, Options<EditTestLessonData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await editTestLesson({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 /**
- * Get certificate by id
+ * Create test
  */
-export const getCertificateByIdOptions = (options: Options<GetCertificateByIdData>) => queryOptions<GetCertificateByIdResponse, GetCertificateByIdError, GetCertificateByIdResponse, ReturnType<typeof getCertificateByIdQueryKey>>({
+export const createTestMutation = (options?: Partial<Options<CreateTestData>>): UseMutationOptions<unknown, CreateTestError, Options<CreateTestData>> => {
+    const mutationOptions: UseMutationOptions<unknown, CreateTestError, Options<CreateTestData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createTest({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Get upload video lesson URL
+ */
+export const getUploadVideoLessonUrlMutation = (options?: Partial<Options<GetUploadVideoLessonUrlData>>): UseMutationOptions<GetUploadVideoLessonUrlResponse, GetUploadVideoLessonUrlError, Options<GetUploadVideoLessonUrlData>> => {
+    const mutationOptions: UseMutationOptions<GetUploadVideoLessonUrlResponse, GetUploadVideoLessonUrlError, Options<GetUploadVideoLessonUrlData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await getUploadVideoLessonUrl({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Save video lesson progress
+ */
+export const saveVideoLessonProgressMutation = (options?: Partial<Options<SaveVideoLessonProgressData>>): UseMutationOptions<SaveVideoLessonProgressResponse, SaveVideoLessonProgressError, Options<SaveVideoLessonProgressData>> => {
+    const mutationOptions: UseMutationOptions<SaveVideoLessonProgressResponse, SaveVideoLessonProgressError, Options<SaveVideoLessonProgressData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await saveVideoLessonProgress({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Edit video lesson
+ */
+export const editVideoLessonMutation = (options?: Partial<Options<EditVideoLessonData>>): UseMutationOptions<EditVideoLessonResponse, EditVideoLessonError, Options<EditVideoLessonData>> => {
+    const mutationOptions: UseMutationOptions<EditVideoLessonResponse, EditVideoLessonError, Options<EditVideoLessonData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await editVideoLesson({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete lesson
+ */
+export const deleteLessonMutation = (options?: Partial<Options<DeleteLessonData>>): UseMutationOptions<DeleteLessonResponse, DeleteLessonError, Options<DeleteLessonData>> => {
+    const mutationOptions: UseMutationOptions<DeleteLessonResponse, DeleteLessonError, Options<DeleteLessonData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteLesson({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getLessonDetailQueryKey = (options: Options<GetLessonDetailData>) => createQueryKey('getLessonDetail', options);
+
+/**
+ * Get lesson detail
+ */
+export const getLessonDetailOptions = (options: Options<GetLessonDetailData>) => queryOptions<GetLessonDetailResponse, GetLessonDetailError, GetLessonDetailResponse, ReturnType<typeof getLessonDetailQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getCertificateById({
+        const { data } = await getLessonDetail({
             ...options,
             ...queryKey[0],
             signal,
@@ -958,8 +941,25 @@ export const getCertificateByIdOptions = (options: Options<GetCertificateByIdDat
         });
         return data;
     },
-    queryKey: getCertificateByIdQueryKey(options)
+    queryKey: getLessonDetailQueryKey(options)
 });
+
+/**
+ * Create lesson
+ */
+export const createLessonMutation = (options?: Partial<Options<CreateLessonData>>): UseMutationOptions<unknown, CreateLessonError, Options<CreateLessonData>> => {
+    const mutationOptions: UseMutationOptions<unknown, CreateLessonError, Options<CreateLessonData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createLesson({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 /**
  * Checkout course

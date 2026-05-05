@@ -10,6 +10,9 @@ post:
     - Lesson
   summary: Create lesson
   operationId: createLesson
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
   requestBody:
     required: true
     content:

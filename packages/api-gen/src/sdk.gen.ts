@@ -6,7 +6,7 @@ import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
 import { checkoutCourseResponseTransformer, commentOnPostResponseTransformer, createPostResponseTransformer, getCertificateByIdResponseTransformer, getCourseDetailResponseTransformer, getCourseLandingPageResponseTransformer, getInstructorCoursesResponseTransformer, getLessonCommentsResponseTransformer, getMyCertificatesResponseTransformer, getMyEnrolledCoursesResponseTransformer, getPlatformRevenueAnalyticsResponseTransformer, getPostByIdResponseTransformer, getPostCommentsResponseTransformer, getPublishedCoursesResponseTransformer, getSystemCoursesResponseTransformer, getTransactionsResponseTransformer, getUploadVideoLessonUrlResponseTransformer, replyCommentResponseTransformer, searchCoursesResponseTransformer, searchPostsResponseTransformer, updateCommentResponseTransformer, updatePostResponseTransformer } from './transformers.gen';
 import type { ApproveCourseData, ApproveCourseErrors, ApproveCourseResponses, BookmarkCourseData, BookmarkCourseErrors, BookmarkCourseResponses, CheckoutCourseData, CheckoutCourseErrors, CheckoutCourseResponses, CommentOnLessonData, CommentOnLessonErrors, CommentOnLessonResponses, CommentOnPostData, CommentOnPostErrors, CommentOnPostResponses, CompleteTransactionData, CompleteTransactionErrors, CompleteTransactionResponses, CreateCourseData, CreateCourseErrors, CreateCourseResponses, CreateLessonData, CreateLessonErrors, CreateLessonResponses, CreatePostData, CreatePostErrors, CreatePostResponses, CreateSectionData, CreateSectionErrors, CreateSectionResponses, CreateTestData, CreateTestErrors, CreateTestResponses, DeclineCourseData, DeclineCourseErrors, DeclineCourseResponses, DeleteCommentData, DeleteCommentErrors, DeleteCommentResponses, DeleteCourseData, DeleteCourseErrors, DeleteCourseResponses, DeleteLessonData, DeleteLessonErrors, DeleteLessonResponses, DeletePostData, DeletePostErrors, DeletePostResponses, DeleteSectionData, DeleteSectionErrors, DeleteSectionResponses, EditTestLessonData, EditTestLessonErrors, EditTestLessonResponses, EditVideoLessonData, EditVideoLessonErrors, EditVideoLessonResponses, EnrollInCourseData, EnrollInCourseErrors, EnrollInCourseResponses, FinishCourseData, FinishCourseErrors, FinishCourseResponses, GetCertificateByIdData, GetCertificateByIdErrors, GetCertificateByIdResponses, GetCourseDetailData, GetCourseDetailErrors, GetCourseDetailResponses, GetCourseLandingPageData, GetCourseLandingPageErrors, GetCourseLandingPageResponses, GetCourseProgressData, GetCourseProgressErrors, GetCourseProgressResponses, GetInstructorCoursesData, GetInstructorCoursesErrors, GetInstructorCoursesResponses, GetLessonCommentsData, GetLessonCommentsErrors, GetLessonCommentsResponses, GetLessonDetailData, GetLessonDetailErrors, GetLessonDetailResponses, GetLessonProgressData, GetLessonProgressErrors, GetLessonProgressResponses, GetMyCertificatesData, GetMyCertificatesErrors, GetMyCertificatesResponses, GetMyEnrolledCoursesData, GetMyEnrolledCoursesErrors, GetMyEnrolledCoursesResponses, GetPlatformRevenueAnalyticsData, GetPlatformRevenueAnalyticsErrors, GetPlatformRevenueAnalyticsResponses, GetPostByIdData, GetPostByIdErrors, GetPostByIdResponses, GetPostCommentsData, GetPostCommentsErrors, GetPostCommentsResponses, GetPublishedCoursesData, GetPublishedCoursesErrors, GetPublishedCoursesResponses, GetSystemCoursesData, GetSystemCoursesErrors, GetSystemCoursesResponses, GetTransactionsData, GetTransactionsErrors, GetTransactionsResponses, GetUploadVideoLessonUrlData, GetUploadVideoLessonUrlErrors, GetUploadVideoLessonUrlResponses, HideCourseData, HideCourseErrors, HideCourseResponses, MarkLessonAsCompletedData, MarkLessonAsCompletedErrors, MarkLessonAsCompletedResponses, MoveLessonData, MoveLessonErrors, MoveLessonResponses, MoveSectionData, MoveSectionErrors, MoveSectionResponses, ReplyCommentData, ReplyCommentErrors, ReplyCommentResponses, ReplyLessonCommentData, ReplyLessonCommentErrors, ReplyLessonCommentResponses, ReviewCourseData, ReviewCourseErrors, ReviewCourseResponses, SaveTestLessonProgressData, SaveTestLessonProgressErrors, SaveTestLessonProgressResponses, SaveVideoLessonProgressData, SaveVideoLessonProgressErrors, SaveVideoLessonProgressResponses, SearchCoursesData, SearchCoursesErrors, SearchCoursesResponses, SearchPostsData, SearchPostsErrors, SearchPostsResponses, TriggerLearningReminderData, TriggerLearningReminderErrors, TriggerLearningReminderResponses, UnbookmarkCourseData, UnbookmarkCourseErrors, UnbookmarkCourseResponses, UnhideCourseData, UnhideCourseErrors, UnhideCourseResponses, UpdateCommentData, UpdateCommentErrors, UpdateCommentResponses, UpdateCourseData, UpdateCourseErrors, UpdateCourseResponses, UpdatePostData, UpdatePostErrors, UpdatePostResponses, UpdateSectionTitleData, UpdateSectionTitleErrors, UpdateSectionTitleResponses } from './types.gen';
-import { zApproveCoursePath, zApproveCourseResponse, zBookmarkCoursePath, zCheckoutCourseBody, zCheckoutCourseResponse, zCommentOnLessonBody, zCommentOnLessonPath, zCommentOnPostBody, zCommentOnPostPath, zCommentOnPostResponse, zCompleteTransactionPath, zCompleteTransactionResponse, zCreateCourseBody, zCreateLessonBody, zCreatePostBody, zCreatePostResponse, zCreateSectionBody, zCreateTestBody, zCreateTestPath, zDeclineCourseBody, zDeclineCoursePath, zDeclineCourseResponse, zDeleteCommentPath, zDeleteCommentResponse, zDeleteCoursePath, zDeleteCourseResponse, zDeleteLessonPath, zDeleteLessonResponse, zDeletePostPath, zDeletePostResponse, zDeleteSectionPath, zDeleteSectionResponse, zEditTestLessonBody, zEditTestLessonPath, zEditTestLessonResponse, zEditVideoLessonBody, zEditVideoLessonPath, zEditVideoLessonResponse, zEnrollInCoursePath, zFinishCoursePath, zFinishCourseResponse, zGetCertificateByIdPath, zGetCertificateByIdResponse, zGetCourseDetailPath, zGetCourseDetailResponse, zGetCourseLandingPagePath, zGetCourseLandingPageResponse, zGetCourseProgressPath, zGetCourseProgressResponse, zGetInstructorCoursesPath, zGetInstructorCoursesQuery, zGetInstructorCoursesResponse, zGetLessonCommentsPath, zGetLessonCommentsResponse, zGetLessonDetailPath, zGetLessonDetailResponse, zGetLessonProgressPath, zGetLessonProgressResponse, zGetMyCertificatesQuery, zGetMyCertificatesResponse, zGetMyEnrolledCoursesQuery, zGetMyEnrolledCoursesResponse, zGetPlatformRevenueAnalyticsQuery, zGetPlatformRevenueAnalyticsResponse, zGetPostByIdPath, zGetPostByIdResponse, zGetPostCommentsPath, zGetPostCommentsResponse, zGetPublishedCoursesQuery, zGetPublishedCoursesResponse, zGetSystemCoursesQuery, zGetSystemCoursesResponse, zGetTransactionsQuery, zGetTransactionsResponse, zGetUploadVideoLessonUrlBody, zGetUploadVideoLessonUrlPath, zGetUploadVideoLessonUrlResponse, zHideCoursePath, zHideCourseResponse, zMarkLessonAsCompletedPath, zMarkLessonAsCompletedResponse, zMoveLessonBody, zMoveLessonPath, zMoveSectionBody, zMoveSectionPath, zMoveSectionResponse, zReplyCommentBody, zReplyCommentPath, zReplyCommentResponse, zReplyLessonCommentBody, zReplyLessonCommentPath, zReviewCourseBody, zReviewCoursePath, zSaveTestLessonProgressBody, zSaveTestLessonProgressPath, zSaveTestLessonProgressResponse, zSaveVideoLessonProgressBody, zSaveVideoLessonProgressPath, zSaveVideoLessonProgressResponse, zSearchCoursesQuery, zSearchCoursesResponse, zSearchPostsQuery, zSearchPostsResponse, zTriggerLearningReminderBody, zTriggerLearningReminderPath, zTriggerLearningReminderResponse, zUnbookmarkCoursePath, zUnbookmarkCourseResponse, zUnhideCoursePath, zUnhideCourseResponse, zUpdateCommentBody, zUpdateCommentPath, zUpdateCommentResponse, zUpdateCourseBody, zUpdateCoursePath, zUpdateCourseResponse, zUpdatePostBody, zUpdatePostPath, zUpdatePostResponse, zUpdateSectionTitleBody, zUpdateSectionTitlePath } from './zod.gen';
+import { zApproveCoursePath, zApproveCourseResponse, zBookmarkCoursePath, zCheckoutCourseBody, zCheckoutCourseResponse, zCommentOnLessonBody, zCommentOnLessonPath, zCommentOnPostBody, zCommentOnPostPath, zCommentOnPostResponse, zCompleteTransactionPath, zCompleteTransactionResponse, zCreateCourseBody, zCreateLessonBody, zCreateLessonPath, zCreatePostBody, zCreatePostResponse, zCreateSectionBody, zCreateSectionPath, zCreateTestBody, zCreateTestPath, zDeclineCourseBody, zDeclineCoursePath, zDeclineCourseResponse, zDeleteCommentPath, zDeleteCommentResponse, zDeleteCoursePath, zDeleteCourseResponse, zDeleteLessonPath, zDeleteLessonResponse, zDeletePostPath, zDeletePostResponse, zDeleteSectionPath, zDeleteSectionResponse, zEditTestLessonBody, zEditTestLessonPath, zEditTestLessonResponse, zEditVideoLessonBody, zEditVideoLessonPath, zEditVideoLessonResponse, zEnrollInCoursePath, zFinishCoursePath, zFinishCourseResponse, zGetCertificateByIdPath, zGetCertificateByIdResponse, zGetCourseDetailPath, zGetCourseDetailResponse, zGetCourseLandingPagePath, zGetCourseLandingPageResponse, zGetCourseProgressPath, zGetCourseProgressResponse, zGetInstructorCoursesPath, zGetInstructorCoursesQuery, zGetInstructorCoursesResponse, zGetLessonCommentsPath, zGetLessonCommentsResponse, zGetLessonDetailPath, zGetLessonDetailResponse, zGetLessonProgressPath, zGetLessonProgressResponse, zGetMyCertificatesQuery, zGetMyCertificatesResponse, zGetMyEnrolledCoursesQuery, zGetMyEnrolledCoursesResponse, zGetPlatformRevenueAnalyticsQuery, zGetPlatformRevenueAnalyticsResponse, zGetPostByIdPath, zGetPostByIdResponse, zGetPostCommentsPath, zGetPostCommentsResponse, zGetPublishedCoursesQuery, zGetPublishedCoursesResponse, zGetSystemCoursesQuery, zGetSystemCoursesResponse, zGetTransactionsQuery, zGetTransactionsResponse, zGetUploadVideoLessonUrlBody, zGetUploadVideoLessonUrlPath, zGetUploadVideoLessonUrlResponse, zHideCoursePath, zHideCourseResponse, zMarkLessonAsCompletedPath, zMarkLessonAsCompletedResponse, zMoveLessonBody, zMoveLessonPath, zMoveSectionBody, zMoveSectionPath, zMoveSectionResponse, zReplyCommentBody, zReplyCommentPath, zReplyCommentResponse, zReplyLessonCommentBody, zReplyLessonCommentPath, zReviewCourseBody, zReviewCoursePath, zSaveTestLessonProgressBody, zSaveTestLessonProgressPath, zSaveTestLessonProgressResponse, zSaveVideoLessonProgressBody, zSaveVideoLessonProgressPath, zSaveVideoLessonProgressResponse, zSearchCoursesQuery, zSearchCoursesResponse, zSearchPostsQuery, zSearchPostsResponse, zTriggerLearningReminderBody, zTriggerLearningReminderPath, zTriggerLearningReminderResponse, zUnbookmarkCoursePath, zUnbookmarkCourseResponse, zUnhideCoursePath, zUnhideCourseResponse, zUpdateCommentBody, zUpdateCommentPath, zUpdateCommentResponse, zUpdateCourseBody, zUpdateCoursePath, zUpdateCourseResponse, zUpdatePostBody, zUpdatePostPath, zUpdatePostResponse, zUpdateSectionTitleBody, zUpdateSectionTitlePath } from './zod.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -23,68 +23,34 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 /**
- * Search courses
+ * Get certificate by id
  */
-export const searchCourses = <ThrowOnError extends boolean = false>(options?: Options<SearchCoursesData, ThrowOnError>) => (options?.client ?? client).get<SearchCoursesResponses, SearchCoursesErrors, ThrowOnError>({
+export const getCertificateById = <ThrowOnError extends boolean = false>(options: Options<GetCertificateByIdData, ThrowOnError>) => (options.client ?? client).get<GetCertificateByIdResponses, GetCertificateByIdErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
         body: z.never().optional(),
-        path: z.never().optional(),
-        query: zSearchCoursesQuery.optional()
-    }).parseAsync(data),
-    responseTransformer: searchCoursesResponseTransformer,
-    responseValidator: async (data) => await zSearchCoursesResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses',
-    ...options
-});
-
-/**
- * Create course
- */
-export const createCourse = <ThrowOnError extends boolean = false>(options: Options<CreateCourseData, ThrowOnError>) => (options.client ?? client).post<CreateCourseResponses, CreateCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zCreateCourseBody,
-        path: z.never().optional(),
+        path: zGetCertificateByIdPath,
         query: z.never().optional()
     }).parseAsync(data),
+    responseTransformer: getCertificateByIdResponseTransformer,
+    responseValidator: async (data) => await zGetCertificateByIdResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Get system courses
- */
-export const getSystemCourses = <ThrowOnError extends boolean = false>(options?: Options<GetSystemCoursesData, ThrowOnError>) => (options?.client ?? client).get<GetSystemCoursesResponses, GetSystemCoursesErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: z.never().optional(),
-        query: zGetSystemCoursesQuery.optional()
-    }).parseAsync(data),
-    responseTransformer: getSystemCoursesResponseTransformer,
-    responseValidator: async (data) => await zGetSystemCoursesResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses-system',
+    url: '/course/certificates/{certificateId}',
     ...options
 });
 
 /**
- * Get published courses
+ * Get my certificates
  */
-export const getPublishedCourses = <ThrowOnError extends boolean = false>(options?: Options<GetPublishedCoursesData, ThrowOnError>) => (options?.client ?? client).get<GetPublishedCoursesResponses, GetPublishedCoursesErrors, ThrowOnError>({
+export const getMyCertificates = <ThrowOnError extends boolean = false>(options?: Options<GetMyCertificatesData, ThrowOnError>) => (options?.client ?? client).get<GetMyCertificatesResponses, GetMyCertificatesErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
         body: z.never().optional(),
         path: z.never().optional(),
-        query: zGetPublishedCoursesQuery.optional()
+        query: zGetMyCertificatesQuery.optional()
     }).parseAsync(data),
-    responseTransformer: getPublishedCoursesResponseTransformer,
-    responseValidator: async (data) => await zGetPublishedCoursesResponse.parseAsync(data),
+    responseTransformer: getMyCertificatesResponseTransformer,
+    responseValidator: async (data) => await zGetMyCertificatesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses-published',
+    url: '/course/certificates/me',
     ...options
 });
 
@@ -102,38 +68,54 @@ export const getInstructorCourses = <ThrowOnError extends boolean = false>(optio
     responseTransformer: getInstructorCoursesResponseTransformer,
     responseValidator: async (data) => await zGetInstructorCoursesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses-by-instructor/{instructorId}',
+    url: '/course/courses-by-instructor/{instructorId}',
     ...options
 });
 
 /**
- * Delete course
+ * Get published courses
  */
-export const deleteCourse = <ThrowOnError extends boolean = false>(options: Options<DeleteCourseData, ThrowOnError>) => (options.client ?? client).delete<DeleteCourseResponses, DeleteCourseErrors, ThrowOnError>({
+export const getPublishedCourses = <ThrowOnError extends boolean = false>(options?: Options<GetPublishedCoursesData, ThrowOnError>) => (options?.client ?? client).get<GetPublishedCoursesResponses, GetPublishedCoursesErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
         body: z.never().optional(),
-        path: zDeleteCoursePath,
-        query: z.never().optional()
+        path: z.never().optional(),
+        query: zGetPublishedCoursesQuery.optional()
     }).parseAsync(data),
-    responseValidator: async (data) => await zDeleteCourseResponse.parseAsync(data),
+    responseTransformer: getPublishedCoursesResponseTransformer,
+    responseValidator: async (data) => await zGetPublishedCoursesResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}',
+    url: '/course/courses-published',
     ...options
 });
 
 /**
- * Get course detail
+ * Get system courses
  */
-export const getCourseDetail = <ThrowOnError extends boolean = false>(options: Options<GetCourseDetailData, ThrowOnError>) => (options.client ?? client).get<GetCourseDetailResponses, GetCourseDetailErrors, ThrowOnError>({
+export const getSystemCourses = <ThrowOnError extends boolean = false>(options?: Options<GetSystemCoursesData, ThrowOnError>) => (options?.client ?? client).get<GetSystemCoursesResponses, GetSystemCoursesErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
         body: z.never().optional(),
-        path: zGetCourseDetailPath,
+        path: z.never().optional(),
+        query: zGetSystemCoursesQuery.optional()
+    }).parseAsync(data),
+    responseTransformer: getSystemCoursesResponseTransformer,
+    responseValidator: async (data) => await zGetSystemCoursesResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses-system',
+    ...options
+});
+
+/**
+ * Approve course
+ */
+export const approveCourse = <ThrowOnError extends boolean = false>(options: Options<ApproveCourseData, ThrowOnError>) => (options.client ?? client).post<ApproveCourseResponses, ApproveCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zApproveCoursePath,
         query: z.never().optional()
     }).parseAsync(data),
-    responseTransformer: getCourseDetailResponseTransformer,
-    responseValidator: async (data) => await zGetCourseDetailResponse.parseAsync(data),
+    responseValidator: async (data) => await zApproveCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/detail',
+    url: '/course/courses/{courseId}/approve',
     ...options
 });
 
@@ -148,69 +130,7 @@ export const updateCourse = <ThrowOnError extends boolean = false>(options: Opti
     }).parseAsync(data),
     responseValidator: async (data) => await zUpdateCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/basic-info',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Enroll in course
- */
-export const enrollInCourse = <ThrowOnError extends boolean = false>(options: Options<EnrollInCourseData, ThrowOnError>) => (options.client ?? client).post<EnrollInCourseResponses, EnrollInCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zEnrollInCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/enroll',
-    ...options
-});
-
-/**
- * Get course progress
- */
-export const getCourseProgress = <ThrowOnError extends boolean = false>(options: Options<GetCourseProgressData, ThrowOnError>) => (options.client ?? client).get<GetCourseProgressResponses, GetCourseProgressErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zGetCourseProgressPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zGetCourseProgressResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/progress',
-    ...options
-});
-
-/**
- * Finish course
- */
-export const finishCourse = <ThrowOnError extends boolean = false>(options: Options<FinishCourseData, ThrowOnError>) => (options.client ?? client).post<FinishCourseResponses, FinishCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zFinishCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zFinishCourseResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/finish',
-    ...options
-});
-
-/**
- * Review course
- */
-export const reviewCourse = <ThrowOnError extends boolean = false>(options: Options<ReviewCourseData, ThrowOnError>) => (options.client ?? client).post<ReviewCourseResponses, ReviewCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zReviewCourseBody,
-        path: zReviewCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/reviews',
+    url: '/course/courses/{courseId}/basic-info',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -228,101 +148,7 @@ export const bookmarkCourse = <ThrowOnError extends boolean = false>(options: Op
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/bookmark',
-    ...options
-});
-
-/**
- * Unbookmark course
- */
-export const unbookmarkCourse = <ThrowOnError extends boolean = false>(options: Options<UnbookmarkCourseData, ThrowOnError>) => (options.client ?? client).post<UnbookmarkCourseResponses, UnbookmarkCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zUnbookmarkCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zUnbookmarkCourseResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/unbookmark',
-    ...options
-});
-
-/**
- * Hide course
- */
-export const hideCourse = <ThrowOnError extends boolean = false>(options: Options<HideCourseData, ThrowOnError>) => (options.client ?? client).post<HideCourseResponses, HideCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zHideCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zHideCourseResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/hide',
-    ...options
-});
-
-/**
- * Unhide course
- */
-export const unhideCourse = <ThrowOnError extends boolean = false>(options: Options<UnhideCourseData, ThrowOnError>) => (options.client ?? client).post<UnhideCourseResponses, UnhideCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zUnhideCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zUnhideCourseResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/unhide',
-    ...options
-});
-
-/**
- * Trigger learning reminder
- */
-export const triggerLearningReminder = <ThrowOnError extends boolean = false>(options: Options<TriggerLearningReminderData, ThrowOnError>) => (options.client ?? client).post<TriggerLearningReminderResponses, TriggerLearningReminderErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zTriggerLearningReminderBody.optional(),
-        path: zTriggerLearningReminderPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zTriggerLearningReminderResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/courses/{courseId}/trigger-learning-reminder',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Get course landing page
- */
-export const getCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<GetCourseLandingPageData, ThrowOnError>) => (options.client ?? client).get<GetCourseLandingPageResponses, GetCourseLandingPageErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zGetCourseLandingPagePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseTransformer: getCourseLandingPageResponseTransformer,
-    responseValidator: async (data) => await zGetCourseLandingPageResponse.parseAsync(data),
-    url: '/course/instructor/courses/{courseId}/landing',
-    ...options
-});
-
-/**
- * Approve course
- */
-export const approveCourse = <ThrowOnError extends boolean = false>(options: Options<ApproveCourseData, ThrowOnError>) => (options.client ?? client).post<ApproveCourseResponses, ApproveCourseErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zApproveCoursePath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zApproveCourseResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/admin/courses/{courseId}/approve',
+    url: '/course/courses/{courseId}/bookmark',
     ...options
 });
 
@@ -337,12 +163,184 @@ export const declineCourse = <ThrowOnError extends boolean = false>(options: Opt
     }).parseAsync(data),
     responseValidator: async (data) => await zDeclineCourseResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/admin/courses/{courseId}/decline',
+    url: '/course/courses/{courseId}/decline',
     ...options,
     headers: {
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * Get course detail
+ */
+export const getCourseDetail = <ThrowOnError extends boolean = false>(options: Options<GetCourseDetailData, ThrowOnError>) => (options.client ?? client).get<GetCourseDetailResponses, GetCourseDetailErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zGetCourseDetailPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseTransformer: getCourseDetailResponseTransformer,
+    responseValidator: async (data) => await zGetCourseDetailResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/detail',
+    ...options
+});
+
+/**
+ * Enroll in course
+ */
+export const enrollInCourse = <ThrowOnError extends boolean = false>(options: Options<EnrollInCourseData, ThrowOnError>) => (options.client ?? client).post<EnrollInCourseResponses, EnrollInCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zEnrollInCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/enroll',
+    ...options
+});
+
+/**
+ * Finish course
+ */
+export const finishCourse = <ThrowOnError extends boolean = false>(options: Options<FinishCourseData, ThrowOnError>) => (options.client ?? client).post<FinishCourseResponses, FinishCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zFinishCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zFinishCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/finish',
+    ...options
+});
+
+/**
+ * Hide course
+ */
+export const hideCourse = <ThrowOnError extends boolean = false>(options: Options<HideCourseData, ThrowOnError>) => (options.client ?? client).post<HideCourseResponses, HideCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zHideCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zHideCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/hide',
+    ...options
+});
+
+/**
+ * Get course landing page
+ */
+export const getCourseLandingPage = <ThrowOnError extends boolean = false>(options: Options<GetCourseLandingPageData, ThrowOnError>) => (options.client ?? client).get<GetCourseLandingPageResponses, GetCourseLandingPageErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zGetCourseLandingPagePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseTransformer: getCourseLandingPageResponseTransformer,
+    responseValidator: async (data) => await zGetCourseLandingPageResponse.parseAsync(data),
+    url: '/course/courses/{courseId}/landing',
+    ...options
+});
+
+/**
+ * Get course progress
+ */
+export const getCourseProgress = <ThrowOnError extends boolean = false>(options: Options<GetCourseProgressData, ThrowOnError>) => (options.client ?? client).get<GetCourseProgressResponses, GetCourseProgressErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zGetCourseProgressPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zGetCourseProgressResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/progress',
+    ...options
+});
+
+/**
+ * Review course
+ */
+export const reviewCourse = <ThrowOnError extends boolean = false>(options: Options<ReviewCourseData, ThrowOnError>) => (options.client ?? client).post<ReviewCourseResponses, ReviewCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zReviewCourseBody,
+        path: zReviewCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/reviews',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Trigger learning reminder
+ */
+export const triggerLearningReminder = <ThrowOnError extends boolean = false>(options: Options<TriggerLearningReminderData, ThrowOnError>) => (options.client ?? client).post<TriggerLearningReminderResponses, TriggerLearningReminderErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zTriggerLearningReminderBody.optional(),
+        path: zTriggerLearningReminderPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zTriggerLearningReminderResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/trigger-learning-reminder',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Unbookmark course
+ */
+export const unbookmarkCourse = <ThrowOnError extends boolean = false>(options: Options<UnbookmarkCourseData, ThrowOnError>) => (options.client ?? client).post<UnbookmarkCourseResponses, UnbookmarkCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zUnbookmarkCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zUnbookmarkCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/unbookmark',
+    ...options
+});
+
+/**
+ * Unhide course
+ */
+export const unhideCourse = <ThrowOnError extends boolean = false>(options: Options<UnhideCourseData, ThrowOnError>) => (options.client ?? client).post<UnhideCourseResponses, UnhideCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zUnhideCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zUnhideCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/unhide',
+    ...options
+});
+
+/**
+ * Delete course
+ */
+export const deleteCourse = <ThrowOnError extends boolean = false>(options: Options<DeleteCourseData, ThrowOnError>) => (options.client ?? client).delete<DeleteCourseResponses, DeleteCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zDeleteCoursePath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zDeleteCourseResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}',
+    ...options
 });
 
 /**
@@ -362,16 +360,32 @@ export const getMyEnrolledCourses = <ThrowOnError extends boolean = false>(optio
 });
 
 /**
- * Create section
+ * Search courses
  */
-export const createSection = <ThrowOnError extends boolean = false>(options: Options<CreateSectionData, ThrowOnError>) => (options.client ?? client).post<CreateSectionResponses, CreateSectionErrors, ThrowOnError>({
+export const searchCourses = <ThrowOnError extends boolean = false>(options?: Options<SearchCoursesData, ThrowOnError>) => (options?.client ?? client).get<SearchCoursesResponses, SearchCoursesErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
-        body: zCreateSectionBody,
+        body: z.never().optional(),
+        path: z.never().optional(),
+        query: zSearchCoursesQuery.optional()
+    }).parseAsync(data),
+    responseTransformer: searchCoursesResponseTransformer,
+    responseValidator: async (data) => await zSearchCoursesResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses',
+    ...options
+});
+
+/**
+ * Create course
+ */
+export const createCourse = <ThrowOnError extends boolean = false>(options: Options<CreateCourseData, ThrowOnError>) => (options.client ?? client).post<CreateCourseResponses, CreateCourseErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zCreateCourseBody,
         path: z.never().optional(),
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/sections',
+    url: '/course/courses',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -380,31 +394,16 @@ export const createSection = <ThrowOnError extends boolean = false>(options: Opt
 });
 
 /**
- * Delete section
+ * Reply lesson comment
  */
-export const deleteSection = <ThrowOnError extends boolean = false>(options: Options<DeleteSectionData, ThrowOnError>) => (options.client ?? client).delete<DeleteSectionResponses, DeleteSectionErrors, ThrowOnError>({
+export const replyLessonComment = <ThrowOnError extends boolean = false>(options: Options<ReplyLessonCommentData, ThrowOnError>) => (options.client ?? client).post<ReplyLessonCommentResponses, ReplyLessonCommentErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zDeleteSectionPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zDeleteSectionResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/sections/{sectionId}',
-    ...options
-});
-
-/**
- * Update section
- */
-export const updateSectionTitle = <ThrowOnError extends boolean = false>(options: Options<UpdateSectionTitleData, ThrowOnError>) => (options.client ?? client).patch<UpdateSectionTitleResponses, UpdateSectionTitleErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zUpdateSectionTitleBody,
-        path: zUpdateSectionTitlePath,
+        body: zReplyLessonCommentBody,
+        path: zReplyLessonCommentPath,
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/sections/{sectionId}',
+    url: '/course/lesson-comments/{commentId}/reply',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -423,7 +422,7 @@ export const moveSection = <ThrowOnError extends boolean = false>(options: Optio
     }).parseAsync(data),
     responseValidator: async (data) => await zMoveSectionResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/sections/{sectionId}/move',
+    url: '/course/courses/{courseId}/sections/{sectionId}/move',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -432,65 +431,31 @@ export const moveSection = <ThrowOnError extends boolean = false>(options: Optio
 });
 
 /**
- * Create lesson
+ * Delete section
  */
-export const createLesson = <ThrowOnError extends boolean = false>(options: Options<CreateLessonData, ThrowOnError>) => (options.client ?? client).post<CreateLessonResponses, CreateLessonErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zCreateLessonBody,
-        path: z.never().optional(),
-        query: z.never().optional()
-    }).parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Delete lesson
- */
-export const deleteLesson = <ThrowOnError extends boolean = false>(options: Options<DeleteLessonData, ThrowOnError>) => (options.client ?? client).delete<DeleteLessonResponses, DeleteLessonErrors, ThrowOnError>({
+export const deleteSection = <ThrowOnError extends boolean = false>(options: Options<DeleteSectionData, ThrowOnError>) => (options.client ?? client).delete<DeleteSectionResponses, DeleteSectionErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
         body: z.never().optional(),
-        path: zDeleteLessonPath,
+        path: zDeleteSectionPath,
         query: z.never().optional()
     }).parseAsync(data),
-    responseValidator: async (data) => await zDeleteLessonResponse.parseAsync(data),
+    responseValidator: async (data) => await zDeleteSectionResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}',
+    url: '/course/courses/{courseId}/sections/{sectionId}',
     ...options
 });
 
 /**
- * Get lesson detail
+ * Update section
  */
-export const getLessonDetail = <ThrowOnError extends boolean = false>(options: Options<GetLessonDetailData, ThrowOnError>) => (options.client ?? client).get<GetLessonDetailResponses, GetLessonDetailErrors, ThrowOnError>({
+export const updateSectionTitle = <ThrowOnError extends boolean = false>(options: Options<UpdateSectionTitleData, ThrowOnError>) => (options.client ?? client).patch<UpdateSectionTitleResponses, UpdateSectionTitleErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zGetLessonDetailPath,
+        body: zUpdateSectionTitleBody,
+        path: zUpdateSectionTitlePath,
         query: z.never().optional()
     }).parseAsync(data),
-    responseValidator: async (data) => await zGetLessonDetailResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}',
-    ...options
-});
-
-/**
- * Edit video lesson
- */
-export const editVideoLesson = <ThrowOnError extends boolean = false>(options: Options<EditVideoLessonData, ThrowOnError>) => (options.client ?? client).patch<EditVideoLessonResponses, EditVideoLessonErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zEditVideoLessonBody,
-        path: zEditVideoLessonPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zEditVideoLessonResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/video',
+    url: '/course/courses/{courseId}/sections/{sectionId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -499,141 +464,16 @@ export const editVideoLesson = <ThrowOnError extends boolean = false>(options: O
 });
 
 /**
- * Edit test lesson
+ * Create section
  */
-export const editTestLesson = <ThrowOnError extends boolean = false>(options: Options<EditTestLessonData, ThrowOnError>) => (options.client ?? client).patch<EditTestLessonResponses, EditTestLessonErrors, ThrowOnError>({
+export const createSection = <ThrowOnError extends boolean = false>(options: Options<CreateSectionData, ThrowOnError>) => (options.client ?? client).post<CreateSectionResponses, CreateSectionErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
-        body: zEditTestLessonBody,
-        path: zEditTestLessonPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zEditTestLessonResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/test',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Get upload video lesson URL
- */
-export const getUploadVideoLessonUrl = <ThrowOnError extends boolean = false>(options: Options<GetUploadVideoLessonUrlData, ThrowOnError>) => (options.client ?? client).post<GetUploadVideoLessonUrlResponses, GetUploadVideoLessonUrlErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zGetUploadVideoLessonUrlBody,
-        path: zGetUploadVideoLessonUrlPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseTransformer: getUploadVideoLessonUrlResponseTransformer,
-    responseValidator: async (data) => await zGetUploadVideoLessonUrlResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/upload-video-url',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Create test
- */
-export const createTest = <ThrowOnError extends boolean = false>(options: Options<CreateTestData, ThrowOnError>) => (options.client ?? client).post<CreateTestResponses, CreateTestErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zCreateTestBody,
-        path: zCreateTestPath,
+        body: zCreateSectionBody,
+        path: zCreateSectionPath,
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/tests',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Get lesson progress
- */
-export const getLessonProgress = <ThrowOnError extends boolean = false>(options: Options<GetLessonProgressData, ThrowOnError>) => (options.client ?? client).get<GetLessonProgressResponses, GetLessonProgressErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zGetLessonProgressPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zGetLessonProgressResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/progress',
-    ...options
-});
-
-/**
- * Save video lesson progress
- */
-export const saveVideoLessonProgress = <ThrowOnError extends boolean = false>(options: Options<SaveVideoLessonProgressData, ThrowOnError>) => (options.client ?? client).put<SaveVideoLessonProgressResponses, SaveVideoLessonProgressErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zSaveVideoLessonProgressBody,
-        path: zSaveVideoLessonProgressPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zSaveVideoLessonProgressResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/video-progress',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Save test lesson progress
- */
-export const saveTestLessonProgress = <ThrowOnError extends boolean = false>(options: Options<SaveTestLessonProgressData, ThrowOnError>) => (options.client ?? client).put<SaveTestLessonProgressResponses, SaveTestLessonProgressErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zSaveTestLessonProgressBody,
-        path: zSaveTestLessonProgressPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zSaveTestLessonProgressResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/test-progress',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * Mark lesson as completed
- */
-export const markLessonAsCompleted = <ThrowOnError extends boolean = false>(options: Options<MarkLessonAsCompletedData, ThrowOnError>) => (options.client ?? client).post<MarkLessonAsCompletedResponses, MarkLessonAsCompletedErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zMarkLessonAsCompletedPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    responseValidator: async (data) => await zMarkLessonAsCompletedResponse.parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/mark-completed',
-    ...options
-});
-
-/**
- * Move lesson
- */
-export const moveLesson = <ThrowOnError extends boolean = false>(options: Options<MoveLessonData, ThrowOnError>) => (options.client ?? client).post<MoveLessonResponses, MoveLessonErrors, ThrowOnError>({
-    requestValidator: async (data) => await z.object({
-        body: zMoveLessonBody,
-        path: zMoveLessonPath,
-        query: z.never().optional()
-    }).parseAsync(data),
-    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/move',
+    url: '/course/courses/{courseId}/sections',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -653,7 +493,7 @@ export const getLessonComments = <ThrowOnError extends boolean = false>(options:
     responseTransformer: getLessonCommentsResponseTransformer,
     responseValidator: async (data) => await zGetLessonCommentsResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/comments',
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments',
     ...options
 });
 
@@ -667,7 +507,7 @@ export const commentOnLesson = <ThrowOnError extends boolean = false>(options: O
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lessons/{lessonId}/comments',
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -676,16 +516,31 @@ export const commentOnLesson = <ThrowOnError extends boolean = false>(options: O
 });
 
 /**
- * Reply lesson comment
+ * Mark lesson as completed
  */
-export const replyLessonComment = <ThrowOnError extends boolean = false>(options: Options<ReplyLessonCommentData, ThrowOnError>) => (options.client ?? client).post<ReplyLessonCommentResponses, ReplyLessonCommentErrors, ThrowOnError>({
+export const markLessonAsCompleted = <ThrowOnError extends boolean = false>(options: Options<MarkLessonAsCompletedData, ThrowOnError>) => (options.client ?? client).post<MarkLessonAsCompletedResponses, MarkLessonAsCompletedErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
-        body: zReplyLessonCommentBody,
-        path: zReplyLessonCommentPath,
+        body: z.never().optional(),
+        path: zMarkLessonAsCompletedPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zMarkLessonAsCompletedResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/mark-completed',
+    ...options
+});
+
+/**
+ * Move lesson
+ */
+export const moveLesson = <ThrowOnError extends boolean = false>(options: Options<MoveLessonData, ThrowOnError>) => (options.client ?? client).post<MoveLessonResponses, MoveLessonErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zMoveLessonBody,
+        path: zMoveLessonPath,
         query: z.never().optional()
     }).parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/lesson-comments/{commentId}/reply',
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/move',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -694,35 +549,180 @@ export const replyLessonComment = <ThrowOnError extends boolean = false>(options
 });
 
 /**
- * Get my certificates
+ * Get lesson progress
  */
-export const getMyCertificates = <ThrowOnError extends boolean = false>(options?: Options<GetMyCertificatesData, ThrowOnError>) => (options?.client ?? client).get<GetMyCertificatesResponses, GetMyCertificatesErrors, ThrowOnError>({
+export const getLessonProgress = <ThrowOnError extends boolean = false>(options: Options<GetLessonProgressData, ThrowOnError>) => (options.client ?? client).get<GetLessonProgressResponses, GetLessonProgressErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
         body: z.never().optional(),
-        path: z.never().optional(),
-        query: zGetMyCertificatesQuery.optional()
+        path: zGetLessonProgressPath,
+        query: z.never().optional()
     }).parseAsync(data),
-    responseTransformer: getMyCertificatesResponseTransformer,
-    responseValidator: async (data) => await zGetMyCertificatesResponse.parseAsync(data),
+    responseValidator: async (data) => await zGetLessonProgressResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/certificates/me',
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress',
     ...options
 });
 
 /**
- * Get certificate by id
+ * Save test lesson progress
  */
-export const getCertificateById = <ThrowOnError extends boolean = false>(options: Options<GetCertificateByIdData, ThrowOnError>) => (options.client ?? client).get<GetCertificateByIdResponses, GetCertificateByIdErrors, ThrowOnError>({
+export const saveTestLessonProgress = <ThrowOnError extends boolean = false>(options: Options<SaveTestLessonProgressData, ThrowOnError>) => (options.client ?? client).put<SaveTestLessonProgressResponses, SaveTestLessonProgressErrors, ThrowOnError>({
     requestValidator: async (data) => await z.object({
-        body: z.never().optional(),
-        path: zGetCertificateByIdPath,
+        body: zSaveTestLessonProgressBody,
+        path: zSaveTestLessonProgressPath,
         query: z.never().optional()
     }).parseAsync(data),
-    responseTransformer: getCertificateByIdResponseTransformer,
-    responseValidator: async (data) => await zGetCertificateByIdResponse.parseAsync(data),
+    responseValidator: async (data) => await zSaveTestLessonProgressResponse.parseAsync(data),
     security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
-    url: '/course/instructor/certificates/{certificateId}',
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Edit test lesson
+ */
+export const editTestLesson = <ThrowOnError extends boolean = false>(options: Options<EditTestLessonData, ThrowOnError>) => (options.client ?? client).patch<EditTestLessonResponses, EditTestLessonErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zEditTestLessonBody,
+        path: zEditTestLessonPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zEditTestLessonResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Create test
+ */
+export const createTest = <ThrowOnError extends boolean = false>(options: Options<CreateTestData, ThrowOnError>) => (options.client ?? client).post<CreateTestResponses, CreateTestErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zCreateTestBody,
+        path: zCreateTestPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get upload video lesson URL
+ */
+export const getUploadVideoLessonUrl = <ThrowOnError extends boolean = false>(options: Options<GetUploadVideoLessonUrlData, ThrowOnError>) => (options.client ?? client).post<GetUploadVideoLessonUrlResponses, GetUploadVideoLessonUrlErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zGetUploadVideoLessonUrlBody,
+        path: zGetUploadVideoLessonUrlPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseTransformer: getUploadVideoLessonUrlResponseTransformer,
+    responseValidator: async (data) => await zGetUploadVideoLessonUrlResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Save video lesson progress
+ */
+export const saveVideoLessonProgress = <ThrowOnError extends boolean = false>(options: Options<SaveVideoLessonProgressData, ThrowOnError>) => (options.client ?? client).put<SaveVideoLessonProgressResponses, SaveVideoLessonProgressErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zSaveVideoLessonProgressBody,
+        path: zSaveVideoLessonProgressPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zSaveVideoLessonProgressResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Edit video lesson
+ */
+export const editVideoLesson = <ThrowOnError extends boolean = false>(options: Options<EditVideoLessonData, ThrowOnError>) => (options.client ?? client).patch<EditVideoLessonResponses, EditVideoLessonErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zEditVideoLessonBody,
+        path: zEditVideoLessonPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zEditVideoLessonResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Delete lesson
+ */
+export const deleteLesson = <ThrowOnError extends boolean = false>(options: Options<DeleteLessonData, ThrowOnError>) => (options.client ?? client).delete<DeleteLessonResponses, DeleteLessonErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zDeleteLessonPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zDeleteLessonResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}',
     ...options
+});
+
+/**
+ * Get lesson detail
+ */
+export const getLessonDetail = <ThrowOnError extends boolean = false>(options: Options<GetLessonDetailData, ThrowOnError>) => (options.client ?? client).get<GetLessonDetailResponses, GetLessonDetailErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: z.never().optional(),
+        path: zGetLessonDetailPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    responseValidator: async (data) => await zGetLessonDetailResponse.parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}',
+    ...options
+});
+
+/**
+ * Create lesson
+ */
+export const createLesson = <ThrowOnError extends boolean = false>(options: Options<CreateLessonData, ThrowOnError>) => (options.client ?? client).post<CreateLessonResponses, CreateLessonErrors, ThrowOnError>({
+    requestValidator: async (data) => await z.object({
+        body: zCreateLessonBody,
+        path: zCreateLessonPath,
+        query: z.never().optional()
+    }).parseAsync(data),
+    security: [{ scheme: 'bearer', type: 'http' }, { scheme: 'bearer', type: 'http' }],
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
 });
 
 /**

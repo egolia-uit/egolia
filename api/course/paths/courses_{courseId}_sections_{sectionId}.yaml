@@ -11,6 +11,7 @@ delete:
   summary: Delete section
   operationId: deleteSection
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
   responses:
     204:
@@ -39,6 +40,7 @@ patch:
   summary: Update section
   operationId: updateSectionTitle
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
   requestBody:
     required: true
