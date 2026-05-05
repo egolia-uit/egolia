@@ -1,7 +1,11 @@
 post:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Lesson
   summary: Create test

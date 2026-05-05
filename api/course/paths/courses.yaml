@@ -1,7 +1,11 @@
 post:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Course
   summary: Create course
@@ -33,8 +37,12 @@ post:
 
 get:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Course
   summary: Search courses

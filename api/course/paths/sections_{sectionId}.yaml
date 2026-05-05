@@ -1,7 +1,11 @@
 delete:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Section
   summary: Delete section
@@ -24,8 +28,12 @@ delete:
 
 patch:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Section
   summary: Update section

@@ -1,7 +1,11 @@
 get:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Comment
   summary: Get post comments
@@ -31,8 +35,12 @@ get:
 
 post:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Comment
   summary: Comment on post

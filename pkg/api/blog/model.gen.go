@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	OIDCScopes   = "OIDC.Scopes"
 	Oauth2Scopes = "Oauth2.Scopes"
 )
 

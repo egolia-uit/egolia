@@ -33,10 +33,16 @@
       "post": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -84,10 +90,16 @@
       "get": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -144,10 +156,16 @@
       "get": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -223,10 +241,16 @@
       "get": {
         "security": [
           {
-            "AuthorizationCodeOauth2": []
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
           },
           {
-            "PasswordOauth2": []
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
           }
         ],
         "tags": [
@@ -258,36 +282,45 @@
   },
   "components": {
     "securitySchemes": {
-      "AuthorizationCodeOauth2": {
+      "OIDC": {
+        "type": "openIdConnect",
+        "openIdConnectUrl": "http://authentik.egolia.localhost/application/o/api-web/.well-known/openid-configuration",
+        "description": "OpenID Connect Security Scheme",
+        "x-defaultClientId": "api-web",
+        "x-scalar-client-id": "api-web"
+      },
+      "Oauth2": {
         "type": "oauth2",
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
-            "scopes": {
-              "openid": "Required for OIDC",
-              "profile": "Access to user profile"
-            },
-            "x-defaultClientId": "api-web",
-            "x-scalar-client-id": "api-web",
-            "x-usePkce": "SHA-256",
-            "x-scalar-credentials-location": "header"
-          }
-        }
-      },
-      "PasswordOauth2": {
-        "type": "oauth2",
-        "description": "OAuth2 Security Scheme",
-        "flows": {
-          "password": {
-            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
+            "authorizationUrl": "http://authentik.notopia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
             "scopes": {
               "openid": "OpenID Connect scope",
               "email": "Email scope",
               "profile": "Profile scope",
               "entitlements": "Entitlements scope"
             },
+            "x-defaultClientId": "api-web",
+            "x-scalar-client-id": "api-web",
+            "x-usePkce": "SHA-256",
+            "x-scalar-credentials-location": "header"
+          },
+          "password": {
+            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
+            "scopes": {
+              "openid": "OpenID Connect scope",
+              "email": "Email scope",
+              "profile": "Profile scope",
+              "entitlements": "Entitlements scope"
+            },
+            "x-default-scopes": [
+              "openid",
+              "profile",
+              "email",
+              "entitlements"
+            ],
             "x-defaultClientId": "api-web",
             "x-scalar-client-id": "api-web",
             "x-scalar-credentials-location": "body"
