@@ -6,14 +6,18 @@ type Cmds struct {
 	CreateCourse            *CreateCourseHandler
 	DeleteCourse            *DeleteCourseHandler
 	UpdateCourse            *UpdateCourseHandler
+	EnrollInCourse          *EnrollInCourseHandler
+	FinishCourse            *FinishCourseHandler
+	ReviewCourse            *ReviewCourseHandler
 }
 
 type Queries struct {
-	GetCourseDetail *GetCourseDetailHandler
-	GetCourse       *GetCourseHandler
-	GetLessonDetail *GetLessonDetailHandler
-	SearchCourses   *SearchCoursesHandler
-	GetCourses      *GetCoursesHandler
+	GetCourseDetail      *GetCourseDetailHandler
+	GetCourse            *GetCourseHandler
+	GetLessonDetail      *GetLessonDetailHandler
+	SearchCourses        *SearchCoursesHandler
+	GetCourses           *GetCoursesHandler
+	GetInstructorCourses *GetInstructorCoursesHandler
 }
 
 type App struct {

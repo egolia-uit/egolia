@@ -92,7 +92,8 @@ func toGRPCError(err error) error {
 			return status.Error(codes.PermissionDenied, cerr.Error())
 		case errs.CodeCourseNotApproved:
 			return status.Error(codes.PermissionDenied, cerr.Error())
-
+		case errs.CodeObjectStorageFailToRetrieveDownloadURLForVideoLesson:
+			return status.Error(codes.Internal, cerr.Error())
 		default:
 			return status.Error(codes.Unknown, cerr.Error())
 		}

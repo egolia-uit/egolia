@@ -6,4 +6,8 @@ var ProviderSet = wire.NewSet(
 	NewCreateCourseSvc,
 	NewDeleteCourseSvc,
 	NewMoveLessonSvc,
+	NewEnrollInCourseSvc,
+	NewUpdateCourseSvc,
+	NewFinishCourseSvc,
+	NewReviewCourseSvc,
 )

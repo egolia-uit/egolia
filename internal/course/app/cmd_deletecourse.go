@@ -12,8 +12,7 @@ import (
 
 type DeleteCourse struct {
 	CourseID uuid.UUID
-	ActorID  uuid.UUID
-	IsAdmin  bool
+	ActorID  string
 }
 
 type DeleteCourseHandler struct {
@@ -32,14 +31,9 @@ func NewDeleteCourseHandler(
 }
 
 func (h *DeleteCourseHandler) Handle(ctx context.Context, cmd *DeleteCourse) error {
-	if h.uow == nil {
-		return errs.NewInternal("unit of work is required")
-	}
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID:        cmd.CourseID,
-			SectionID: uuid.Nil,
-			LessonID:  uuid.Nil,
+			ID: cmd.CourseID,
 		}, true)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -47,15 +41,13 @@ func (h *DeleteCourseHandler) Handle(ctx context.Context, cmd *DeleteCourse) err
 			}
 			return err
 		}
-		if !cmd.IsAdmin && course.InstructorID() != cmd.ActorID {
-			return errs.NewInstructorPermissionDenied(cmd.ActorID, cmd.CourseID)
-		}
 		if err := h.deleteCourseSvc.Handle(ctx, &domain.DeleteCourse{
 			Course:         course,
 			EnrollmentRepo: repoRegistry.Enrollment(),
 		}); err != nil {
 			return err
 		}
-		return repoRegistry.Course().Save(ctx, course)
+		// return repoRegistry.Course().Save(ctx, course)
+		return nil
 	})
 }

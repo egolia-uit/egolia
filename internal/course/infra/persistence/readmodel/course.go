@@ -93,10 +93,10 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (
 func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses) (*app.Paginated[app.Course], error) {
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
 
-	if params.Status != "" {
-		q = q.Where("full_course_content->>'status' = ?", string(params.Status))
+	if params.Status != nil && *params.Status != "" {
+		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
 	}
-	if params.Hidden {
+	if params.Hidden != nil && *params.Hidden {
 		q = q.Where("(full_course_content->>'hidden')::boolean = true")
 	}
 
@@ -125,6 +125,21 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 	return &app.Paginated[app.Course]{
 		Data:       courses,
 		Pagination: buildPagination(params.Paginate.Page, params.Paginate.Limit, int(total)),
+	}, nil
+}
+
+func (r *CourseReadRepo) GetInstructorCourses(ctx context.Context, params *app.GetInstructorCourses) (*app.Paginated[app.Course], error) {
+	// unimplemented
+	return &app.Paginated[app.Course]{
+		Data: nil,
+		Pagination: app.Pagination{
+			Page:       params.Paginate.Page,
+			Limit:      params.Paginate.Limit,
+			Total:      0,
+			TotalPages: 0,
+			HasNext:    false,
+			HasPrev:    false,
+		},
 	}, nil
 }
 

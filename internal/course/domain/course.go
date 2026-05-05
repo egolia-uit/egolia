@@ -357,7 +357,7 @@ type Course struct {
 	originalCourseID uuid.UUID
 	hidden           bool
 	title            string
-	instructorID     uuid.UUID
+	instructorID     string
 	status           CourseStatus
 	price            float64
 	overview         string
@@ -374,7 +374,7 @@ func NewCourse(
 	id uuid.UUID,
 	title string,
 	originalCourseID uuid.UUID,
-	instructorID uuid.UUID,
+	instructorID string,
 	status CourseStatus,
 	price float64,
 	overview string,
@@ -423,7 +423,7 @@ func UnmarshalCourse(
 	id uuid.UUID,
 	originalCourseID uuid.UUID,
 	title string,
-	instructorID uuid.UUID,
+	instructorID string,
 	status CourseStatus,
 	price float64,
 	overview string,
@@ -489,7 +489,7 @@ func (c *Course) SetTitle(title string) {
 	c.title = title
 }
 
-func (c *Course) InstructorID() uuid.UUID {
+func (c *Course) InstructorID() string {
 	return c.instructorID
 }
 

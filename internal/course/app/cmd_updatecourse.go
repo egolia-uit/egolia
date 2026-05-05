@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"errors"
-	"strings"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -13,8 +12,6 @@ import (
 
 type UpdateCourse struct {
 	CourseID     uuid.UUID
-	ActorID      uuid.UUID
-	IsAdmin      bool
 	Title        string
 	Price        int64
 	Overview     string
@@ -22,12 +19,14 @@ type UpdateCourse struct {
 }
 
 type UpdateCourseHandler struct {
-	uow domain.UnitOfWork
+	updateCourseSvc *domain.UpdateCourseSvc
+	uow             domain.UnitOfWork
 }
 
-func NewUpdateCourseHandler(uow domain.UnitOfWork) *UpdateCourseHandler {
+func NewUpdateCourseHandler(updateCourseSvc *domain.UpdateCourseSvc, uow domain.UnitOfWork) *UpdateCourseHandler {
 	return &UpdateCourseHandler{
-		uow: uow,
+		updateCourseSvc: updateCourseSvc,
+		uow:             uow,
 	}
 }
 
@@ -36,19 +35,9 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 		return errs.NewInternal("unit of work is required")
 	}
 
-	title := strings.TrimSpace(cmd.Title)
-	if title == "" {
-		return errs.NewInvalid("title is required")
-	}
-	if cmd.Price < 0 {
-		return errs.NewInvalid("price must be greater than or equal to 0")
-	}
-
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID:        cmd.CourseID,
-			SectionID: uuid.Nil,
-			LessonID:  uuid.Nil,
+			ID: cmd.CourseID,
 		}, true)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -56,14 +45,16 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 			return err
 		}
-		if !cmd.IsAdmin && course.InstructorID() != cmd.ActorID {
-			return errs.NewInstructorPermissionDenied(cmd.ActorID, cmd.CourseID)
-		}
 
-		course.SetTitle(title)
-		course.SetPrice(float64(cmd.Price))
-		course.SetOverview(strings.TrimSpace(cmd.Overview))
-		course.SetIntroduction(domain.NewCourseLandingPageIntroduction(cmd.Introduction.VideoUrl))
+		if err := h.updateCourseSvc.Handle(&domain.UpdateCourse{
+			Course:       course,
+			Title:        cmd.Title,
+			Price:        float64(cmd.Price),
+			Overview:     cmd.Overview,
+			Introduction: domain.NewCourseLandingPageIntroduction(cmd.Introduction.VideoUrl),
+		}); err != nil {
+			return err
+		}
 
 		return repoRegistry.Course().Save(ctx, course)
 	})

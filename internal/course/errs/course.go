@@ -146,12 +146,12 @@ func NewSectionInvalid(field, message string) *SectionInvalid {
 }
 
 type InstructorPermissionDenied struct {
-	InstructorID uuid.UUID
+	InstructorID string
 	CourseID     uuid.UUID
 	Err
 }
 
-func NewInstructorPermissionDenied(instructorID, courseID uuid.UUID) *InstructorPermissionDenied {
+func NewInstructorPermissionDenied(instructorID string, courseID uuid.UUID) *InstructorPermissionDenied {
 	return &InstructorPermissionDenied{
 		InstructorID: instructorID,
 		CourseID:     courseID,

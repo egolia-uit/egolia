@@ -3,8 +3,8 @@ package app
 import "context"
 
 type GetCourses struct {
-	Status   CourseStatus
-	Hidden   bool
+	Status   *CourseStatus
+	Hidden   *bool
 	Paginate PaginationParams
 	Order    SearchCoursesOrder
 }

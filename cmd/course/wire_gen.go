@@ -73,13 +73,25 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
 	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
-	updateCourseHandler := app.NewUpdateCourseHandler(unitOfWork)
+	updateCourseSvc := domain.NewUpdateCourseSvc()
+	updateCourseHandler := app.NewUpdateCourseHandler(updateCourseSvc, unitOfWork)
+	enrollInCourseSvc := domain.NewEnrollInCourseSvc()
+	enrollInCourseHandler := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork)
+	finishCourseSvc := domain.NewFinishCourseSvc()
+	finishCourseHandler := app.NewFinishCourseHandler(finishCourseSvc, unitOfWork)
+	enrollmentRepo := repo.NewEnrollmentRepo(db)
+	reviewRepo := repo.NewReviewRepo(db)
+	reviewCourseSvc := domain.NewReviewCourseSvc(enrollmentRepo, reviewRepo)
+	reviewCourseHandler := app.NewReviewCourseHandler(reviewCourseSvc, unitOfWork)
 	cmds := &app.Cmds{
 		MoveLesson:              moveLessonHandler,
 		GetUploadVideoLessonURL: getUploadVideoLessonURLHandler,
 		CreateCourse:            createCourseHandler,
 		DeleteCourse:            deleteCourseHandler,
 		UpdateCourse:            updateCourseHandler,
+		EnrollInCourse:          enrollInCourseHandler,
+		FinishCourse:            finishCourseHandler,
+		ReviewCourse:            reviewCourseHandler,
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db)
 	getCourseDetailHandler := app.NewGetCourseDetailHandler(courseReadRepo)
@@ -88,12 +100,14 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getLessonDetailHandler := app.NewGetLessonDetailHandler(lessonReadRepo)
 	searchCoursesHandler := app.NewSearchCoursesHandler(courseReadRepo)
 	getCoursesHandler := app.NewGetCoursesHandler(courseReadRepo)
+	getInstructorCoursesHandler := app.NewGetInstructorCoursesHandler(courseReadRepo)
 	queries := &app.Queries{
-		GetCourseDetail: getCourseDetailHandler,
-		GetCourse:       getCourseHandler,
-		GetLessonDetail: getLessonDetailHandler,
-		SearchCourses:   searchCoursesHandler,
-		GetCourses:      getCoursesHandler,
+		GetCourseDetail:      getCourseDetailHandler,
+		GetCourse:            getCourseHandler,
+		GetLessonDetail:      getLessonDetailHandler,
+		SearchCourses:        searchCoursesHandler,
+		GetCourses:           getCoursesHandler,
+		GetInstructorCourses: getInstructorCoursesHandler,
 	}
 	appApp := &app.App{
 		Cmds:    cmds,
