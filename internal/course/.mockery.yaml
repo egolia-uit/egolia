@@ -1,0 +1,11 @@
+template: testify
+dir: '{{ .InterfaceDir }}'
+filename: mock.go
+pkgname: '{{ .SrcPackageName }}'
+packages:
+  github.com/egolia-uit/egolia/internal/course/app:
+    config:
+      include-interface-regex: '^(ObjectStorageSvc|IdentityService)$'
+  github.com/egolia-uit/egolia/internal/course/domain:
+    config:
+      include-interface-regex: '^(.*Repo|UnitOfWork|RepoRegistry)$'

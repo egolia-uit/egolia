@@ -1,0 +1,8 @@
+template: testify
+dir: '{{ .InterfaceDir }}'
+filename: mock.go
+pkgname: '{{ .SrcPackageName }}'
+packages:
+  github.com/egolia-uit/egolia/internal/billing/core:
+    config:
+      include-interface-regex: '^(CourseSvc|IdentitySvc)$'

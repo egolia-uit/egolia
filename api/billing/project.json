@@ -73,7 +73,7 @@
     },
     "gen:gomodel": {
       "inputs": ["{projectRoot}/oapi-codegen-model.yaml", "openapiFiles"],
-      "outputs": ["{workspaceRoot}/pkg/api/billing/billingmodel.gen.go"],
+      "outputs": ["{workspaceRoot}/pkg/api/billing/model.gen.go"],
       "executor": "nx:run-commands",
       "options": {
         "command": "oapi-codegen --config ./oapi-codegen-model.yaml ../bundled/billing.json",
@@ -83,7 +83,7 @@
     },
     "gen:goserver": {
       "inputs": ["{projectRoot}/oapi-codegen-server.yaml", "openapiFiles"],
-      "outputs": ["{workspaceRoot}/pkg/api/billing/billingserver.gen.go"],
+      "outputs": ["{workspaceRoot}/pkg/api/billing/server.gen.go"],
       "executor": "nx:run-commands",
       "options": {
         "command": "oapi-codegen --config ./oapi-codegen-server.yaml ../bundled/billing.json",

@@ -226,16 +226,7 @@ type ForbiddenErrorJSONResponse Error
 
 type InternalServerErrorJSONResponse Error
 
-type UnauthorizedErrorJSONResponse struct {
-	// CustomMessage An optional, developer-defined message, often populated by OPA policy violations.
-	CustomMessage *string `json:"custom_message"`
-
-	// Details A descriptive message providing technical context for the failure.
-	Details string `json:"details"`
-
-	// Type The category of the error encountered during the middleware lifecycle.
-	Type UnauthorizedErrorJSONResponseBodyType `json:"type"`
-}
+type UnauthorizedErrorJSONResponse map[string]interface{}
 
 type GetPlatformRevenueAnalyticsRequestObject struct {
 	Params GetPlatformRevenueAnalyticsParams
