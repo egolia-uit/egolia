@@ -71,7 +71,9 @@ func (siw *ServerInterfaceWrapper) DeleteComment(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -97,7 +99,9 @@ func (siw *ServerInterfaceWrapper) UpdateComment(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -123,7 +127,9 @@ func (siw *ServerInterfaceWrapper) ReplyComment(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -140,7 +146,9 @@ func (siw *ServerInterfaceWrapper) SearchPosts(c *gin.Context) {
 
 	var err error
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params SearchPostsParams
@@ -198,7 +206,9 @@ func (siw *ServerInterfaceWrapper) SearchPosts(c *gin.Context) {
 // CreatePost operation middleware
 func (siw *ServerInterfaceWrapper) CreatePost(c *gin.Context) {
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -224,7 +234,9 @@ func (siw *ServerInterfaceWrapper) DeletePost(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -250,7 +262,9 @@ func (siw *ServerInterfaceWrapper) GetPostById(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -276,7 +290,9 @@ func (siw *ServerInterfaceWrapper) UpdatePost(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -302,7 +318,9 @@ func (siw *ServerInterfaceWrapper) GetPostComments(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -328,7 +346,9 @@ func (siw *ServerInterfaceWrapper) CommentOnPost(c *gin.Context) {
 		return
 	}
 
-	c.Set(Oauth2Scopes, []string{})
+	c.Set(Oauth2Scopes, []string{"openid", "entitlements"})
+
+	c.Set(OIDCScopes, []string{"openid", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)

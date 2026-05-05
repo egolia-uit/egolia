@@ -1,7 +1,11 @@
 get:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Post
   summary: Get post detail
@@ -24,8 +28,12 @@ get:
 
 put:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Post
   summary: Update post
@@ -77,8 +85,12 @@ put:
 
 delete:
   security:
-    - AuthorizationCodeOauth2: []
-    - PasswordOauth2: []
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
   tags:
     - Post
   summary: Delete post
