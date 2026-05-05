@@ -1,0 +1,31 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "internal/billing",
+  "projectType": "library",
+  "tags": ["scope:library", "type:go"],
+  "namedInputs": {
+    "mock": ["{projectRoot}/core/*svc.go"],
+    "test": ["{projectRoot}/**/*_test.go"]
+  },
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "inputs": ["goFiles", "test"],
+      "options": {
+        "command": "go test -v -covermode=atomic ./...",
+        "cwd": "{projectRoot}",
+        "forwardAllArgs": true
+      }
+    },
+    "gen:mockery": {
+      "executor": "nx:run-commands",
+      "inputs": ["mock"],
+      "outputs": ["{projectRoot}/**/mock.go"],
+      "options": {
+        "command": "mockery",
+        "cwd": "{projectRoot}"
+      }
+    }
+  },
+  "implicitDependencies": ["pkg"]
+}
