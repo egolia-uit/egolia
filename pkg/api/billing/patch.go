@@ -1,3 +1,0 @@
-package billing
-
-type UnauthorizedErrorJSONResponseType UnauthorizedErrorType

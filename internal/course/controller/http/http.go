@@ -48,7 +48,12 @@ var ProvideStrictHandler = NewStrictHandler
 func NewHandler(
 	strictServer IStrictHandler,
 ) IHandler {
-	return course.NewStrictHandler(strictServer, nil)
+	options := course.StrictGinServerOptions{
+		RequestErrorHandlerFunc:  strictHandlerRequestErrorHandler,
+		HandlerErrorFunc:         strictHandlerError,
+		ResponseErrorHandlerFunc: strictHandlerResponseErrorHandler,
+	}
+	return course.NewStrictHandlerWithOptions(strictServer, nil, options)
 }
 
 var ProvideHandler = NewHandler
@@ -82,12 +87,7 @@ func RegisterRoutes(
 	{
 		api.Use(commonhttp.GatewayUserAuth())
 		api.Use(validateHandler)
-		api.Use(StrictHandlerErrorMiddleware())
-		//exhaustruct:ignore
-		options := course.GinServerOptions{
-			ErrorHandler: serverErrorHandler,
-		}
-		course.RegisterHandlersWithOptions(api, handler, options)
+		course.RegisterHandlers(api, handler)
 	}
 	e.GET("/course/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
