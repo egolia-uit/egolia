@@ -13,6 +13,6 @@ var ProviderSet = wire.NewSet(
 	seedcourse.ProviderSet,
 )
 
-func InitializeServer(ctx context.Context) (*seedcourse.Seed, func(), error) {
+func InitializeSeed(ctx context.Context) (*seedcourse.Seed, func(), error) {
 	panic(wire.Build(ProviderSet))
 }

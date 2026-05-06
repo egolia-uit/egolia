@@ -13,16 +13,16 @@ func main() {
 		return
 	}
 	ctx := context.Background()
-	server, cleanup, err := InitializeServer(ctx)
+	seed, cleanup, err := InitializeSeed(ctx)
 	if err != nil {
-		slog.Error("failed to initialize server", slog.Any("error", err))
+		slog.Error("failed to initialize seed", slog.Any("error", err))
 		if cleanup != nil {
 			cleanup()
 		}
 		return
 	}
 	defer cleanup()
-	if err := server.Run(ctx); err != nil {
+	if err := seed.Run(ctx); err != nil {
 		slog.Error("server encountered an error", slog.Any("error", err))
 	}
 }
