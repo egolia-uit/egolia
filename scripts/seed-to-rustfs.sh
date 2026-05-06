@@ -1,5 +1,55 @@
 #!/usr/bin/env bash
 
+BUCKET="course"
+ALIAS="egolia-local"
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Uploads seed videos to the storage service.
+
+Options:
+  -b, --bucket [NAME]        Specify the target bucket (default: "course")
+  -a, --alias [NAME]         Specify the storage alias (default: "egolia-local")
+  -h, --help                 Display this help message and exit
+
+Note:
+  If an alias/bucket other than 'egolia-local' is used, you must ensure
+  the target exists or is created manually, as the script's automatic
+  configuration is tailored for the local environment.
+
+  Ex: rc alias set \
+        --insecure \
+        egolia \
+        http://rustfs.publicdomain.com \
+        "\${RUSTFS_ACCESS_KEY}" \
+        "\${RUSTFS_SECRET_KEY}"
+    And later run with '--alias egolia'
+EOF
+  exit 0
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --bucket | -b)
+    BUCKET="$2"
+    shift 2
+    ;;
+  --alias | -a)
+    ALIAS="$2"
+    shift 2
+    ;;
+  --help | -h)
+    usage
+    ;;
+  *)
+    echo "Unknown option: $1" >&2
+    exit 1
+    ;;
+  esac
+done
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 VIDEOS_DIR="$REPO_ROOT/tmp/seed-videos"
@@ -18,12 +68,15 @@ declare -A video_map=(
   ['Mảng Một Chiều (Phần 1) [GGiQHDyUa8I].mp4']='video-lessons/00000000-0000-0000-0000-000000000011'
 )
 
-rc alias set \
-  --insecure \
-  egolia \
-  http://rustfs.egolia.localhost \
-  "${RUSTFS_ACCESS_KEY:-egoliauit}" \
-  "${RUSTFS_SECRET_KEY:-egoliauit}"
+if [[ $ALIAS != "egolia-local" ]]; then
+  echo "Force creating alias '$ALIAS'..."
+  rc alias set \
+    --insecure \
+    "$ALIAS" \
+    http://rustfs.egolia.localhost \
+    "${RUSTFS_ACCESS_KEY:-egoliauit}" \
+    "${RUSTFS_SECRET_KEY:-egoliauit}"
+fi
 
 for filename in "${!video_map[@]}"; do
   remote_path="${video_map[$filename]}"
@@ -35,7 +88,7 @@ for filename in "${!video_map[@]}"; do
     rc cp \
       --content-type 'video/mp4' \
       "$local_file" \
-      "egolia/course/$remote_path"
+      "${ALIAS}/${BUCKET}/${remote_path}"
   else
     echo "Warning: Local file not found: $local_file"
   fi
