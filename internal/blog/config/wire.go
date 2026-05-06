@@ -13,5 +13,5 @@ var ProviderSet = wire.NewSet(
 		"Authentik",
 		"Services",
 	),
-	NewViper,
+	ProvideViper,
 )

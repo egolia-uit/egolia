@@ -32,10 +32,10 @@ func New(
 	validate *validator.Validate,
 	viper *viper.Viper,
 ) (*Config, error) {
-	viper.SetEnvPrefix("egolia_billing")
+	viper.SetEnvPrefix("egolia_blog")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	viper.SetConfigName("billing.egolia.config")
+	viper.SetConfigName("blog.egolia.config")
 	viper.AddConfigPath(".")
 
 	commonconfig.ServerAddressViperSetDefault(viper, "server.http", 8083)
