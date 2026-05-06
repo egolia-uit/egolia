@@ -40,65 +40,109 @@ user: User {
   }
 }
 
-gateway: Gateway {
-  icon: https://cdn.simpleicons.org/traefikproxy/04a5e5
+istio_system: Istio System {
+  ingress: Ingress {
+    icon: https://cdn.simpleicons.org/istio/04a5e5
+  }
+  waypoint: Waypoint {
+    icon: https://cdn.simpleicons.org/istio/04a5e5
+  }
+  ztunnel: ZTunnel {
+    icon: https://cdn.simpleicons.org/istio/04a5e5
+  }
 }
 
-apps: Apps {
+web: Web {
   web: Web {
     icon: https://cdn.simpleicons.org/nextdotjs/4c4f69
   }
 }
 
-services: Services {
-  identity_provider: Identity Provider {
+course: Course {
+  course: course {
+    icon: https://cdn.simpleicons.org/go/04a5e5
+  }
+  database: Database {
+    icon: https://cdn.simpleicons.org/postgresql/7287fd
+  }
+  course -> database
+}
+
+billing: Billing {
+  billing: Billing {
+    icon: https://cdn.simpleicons.org/go/04a5e5
+  }
+  database: Database {
+    icon: https://cdn.simpleicons.org/postgresql/7287fd
+  }
+  billing -> database
+}
+
+blog: Blog {
+  blog: Blog {
+    icon: https://cdn.simpleicons.org/go/04a5e5
+  }
+  database: Database {
+    icon: https://cdn.simpleicons.org/postgresql/7287fd
+  }
+  blog -> database
+}
+
+authentik: Authentik {
+  authentik: Authentik {
     icon: https://cdn.simpleicons.org/authentik/fe640b
   }
+  database: Database {
+    icon: https://cdn.simpleicons.org/postgresql/7287fd
+  }
+  authentik -> database
+}
 
-  object_storage: Object Storage {
+rustfs: RustFS {
+  rustfs: RustFS {
     icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/rustfs.svg
-  }
-
-  event_bus: Event Bus {
-    message_broker: Message Broker {
-      icon: https://raw.githubusercontent.com/redpanda-data/redpanda/d17f36726370db7c7044cb12ecc1c46841e8bfa6/docs/icon-redpanda.svg
-    }
-  }
-
-  monotoring: Monitoring {
-    alloy: Alloy {
-      icon: https://raw.githubusercontent.com/grafana/alloy/refs/heads/main/docs/sources/assets/alloy_icon_orange.svg
-    }
-    prometheus: Prometheus {
-      icon: https://raw.githubusercontent.com/prometheus/prometheus/refs/heads/main/documentation/images/prometheus-logo.svg
-    }
-    loki: Loki {
-      icon: https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/app/plugins/datasource/loki/img/loki_icon.svg
-    }
-    tempo: Tempo {
-      icon: https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/app/plugins/datasource/tempo/img/tempo_logo.svg
-    }
-    grafana: Grafana {
-      icon: https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/img/grafana_icon.svg
-    }
-    alloy -> prometheus
-    alloy -> loki
-    alloy -> tempo
-    prometheus <- grafana
-    loki <- grafana
-    tempo <- grafana
   }
 }
 
-user.browser -> gateway
+monotoring: Monitoring {
+  alloy: Alloy {
+    icon: https://raw.githubusercontent.com/grafana/alloy/refs/heads/main/docs/sources/assets/alloy_icon_orange.svg
+  }
+  prometheus: Prometheus {
+    icon: https://raw.githubusercontent.com/prometheus/prometheus/refs/heads/main/documentation/images/prometheus-logo.svg
+  }
+  loki: Loki {
+    icon: https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/app/plugins/datasource/loki/img/loki_icon.svg
+  }
+  tempo: Tempo {
+    icon: https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/app/plugins/datasource/tempo/img/tempo_logo.svg
+  }
+  grafana: Grafana {
+    icon: https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/img/grafana_icon.svg
+  }
+  alloy -> prometheus
+  alloy -> loki
+  alloy -> tempo
+  prometheus <- grafana
+  loki <- grafana
+  tempo <- grafana
+}
 
-apps -> services.identity_provider
-apps -> services.object_storage
+user.browser -> istio_system
 
-gateway -> apps
-gateway -> services.identity_provider
-gateway -> services.object_storage
-gateway -> services.monotoring
+istio_system -> web
+istio_system -> course
+istio_system -> billing
+istio_system -> blog
+istio_system -> authentik
+istio_system -> rustfs
+istio_system -> monotoring
+
+billing -> authentik
+blog -> authentik
+
+course -> rustfs
+blog -> rustfs
 
 style.border-radius: 15
 *.style.border-radius: 15
