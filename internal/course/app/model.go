@@ -34,20 +34,17 @@ const (
 	CourseStatusRejected CourseStatus = "rejected"
 )
 
-type CourseLandingPageIntroduction struct {
-	VideoUrl string
-}
-
 type Course struct {
-	ID               uuid.UUID
-	OriginalCourseID uuid.UUID
-	Hidden           bool
-	Title            string
-	InstructorID     string
-	Status           CourseStatus
-	Price            int64
-	Overview         string
-	Introduction     CourseLandingPageIntroduction
+	ID                   uuid.UUID
+	OriginalCourseID     uuid.UUID
+	Hidden               bool
+	Title                string
+	InstructorID         string
+	Status               CourseStatus
+	Price                int64
+	Overview             string
+	IntroductionVideoKey *string
+	IntroductionVideoURL *string
 }
 
 type Section struct {

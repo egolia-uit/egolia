@@ -109,24 +109,6 @@ func (e GetMyCertificatesParamsOrder) Valid() bool {
 	}
 }
 
-// Defines values for SearchCoursesParamsOrder.
-const (
-	SearchCoursesParamsOrderAsc  SearchCoursesParamsOrder = "asc"
-	SearchCoursesParamsOrderDesc SearchCoursesParamsOrder = "desc"
-)
-
-// Valid indicates whether the value is a known member of the SearchCoursesParamsOrder enum.
-func (e SearchCoursesParamsOrder) Valid() bool {
-	switch e {
-	case SearchCoursesParamsOrderAsc:
-		return true
-	case SearchCoursesParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for GetPublishedCoursesParamsOrder.
 const (
 	GetPublishedCoursesParamsOrderAsc  GetPublishedCoursesParamsOrder = "asc"
@@ -215,18 +197,14 @@ type Course struct {
 	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	InstructorId     *PropertiesId                  `json:"instructorId,omitempty"`
-	Introduction     *CourseLandingPageIntroduction `json:"introduction,omitempty"`
-	OriginalCourseId *openapi_types.UUID            `json:"originalCourseId,omitempty"`
-	Overview         *string                        `json:"overview,omitempty"`
-	Price            int64                          `json:"price"`
-	Status           *CourseStatus                  `json:"status,omitempty"`
-	Title            string                         `json:"title"`
-}
-
-// CourseLandingPageIntroduction defines model for .
-type CourseLandingPageIntroduction struct {
-	VideoUrl string `json:"videoUrl"`
+	InstructorId         *PropertiesId       `json:"instructorId,omitempty"`
+	IntroductionVideoKey *string             `json:"introductionVideoKey,omitempty"`
+	IntroductionVideoUrl *string             `json:"introductionVideoUrl,omitempty"`
+	OriginalCourseId     *openapi_types.UUID `json:"originalCourseId,omitempty"`
+	Overview             *string             `json:"overview,omitempty"`
+	Price                int64               `json:"price"`
+	Status               *CourseStatus       `json:"status,omitempty"`
+	Title                string              `json:"title"`
 }
 
 // CourseDetail defines model for CourseDetail.
@@ -235,14 +213,15 @@ type CourseDetail struct {
 	Id     *openapi_types.UUID `json:"id,omitempty"`
 
 	// InstructorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	InstructorId     *PropertiesId                  `json:"instructorId,omitempty"`
-	Introduction     *CourseLandingPageIntroduction `json:"introduction,omitempty"`
-	OriginalCourseId *openapi_types.UUID            `json:"originalCourseId,omitempty"`
-	Overview         *string                        `json:"overview,omitempty"`
-	Price            int64                          `json:"price"`
-	Sections         []CourseDetailSectionItem      `json:"sections"`
-	Status           *CourseStatus                  `json:"status,omitempty"`
-	Title            string                         `json:"title"`
+	InstructorId         *PropertiesId             `json:"instructorId,omitempty"`
+	IntroductionVideoKey *string                   `json:"introductionVideoKey,omitempty"`
+	IntroductionVideoUrl *string                   `json:"introductionVideoUrl,omitempty"`
+	OriginalCourseId     *openapi_types.UUID       `json:"originalCourseId,omitempty"`
+	Overview             *string                   `json:"overview,omitempty"`
+	Price                int64                     `json:"price"`
+	Sections             []CourseDetailSectionItem `json:"sections"`
+	Status               *CourseStatus             `json:"status,omitempty"`
+	Title                string                    `json:"title"`
 }
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
@@ -434,6 +413,9 @@ type CommentIdPath = openapi_types.UUID
 // CourseIdPath defines model for courseIdPath.
 type CourseIdPath = openapi_types.UUID
 
+// InstructorIdQuery defines model for instructorIdQuery.
+type InstructorIdQuery = string
+
 // LessonIdPath defines model for lessonIdPath.
 type LessonIdPath = openapi_types.UUID
 
@@ -485,29 +467,10 @@ type GetMyCertificatesParams struct {
 // GetMyCertificatesParamsOrder defines parameters for GetMyCertificates.
 type GetMyCertificatesParamsOrder string
 
-// SearchCoursesParams defines parameters for SearchCourses.
-type SearchCoursesParams struct {
-	// Q Search term for course title or description
-	Q *string `form:"q,omitempty" json:"q,omitempty"`
-
-	// InstructorId Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
-	InstructorId *[]openapi_types.UUID `form:"instructorId,omitempty" json:"instructorId,omitempty"`
-
-	// Page Page number for pagination
-	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
-
-	// Limit Number of items per page
-	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Order Sort order
-	Order *SearchCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
-}
-
-// SearchCoursesParamsOrder defines parameters for SearchCourses.
-type SearchCoursesParamsOrder string
-
 // GetPublishedCoursesParams defines parameters for GetPublishedCourses.
 type GetPublishedCoursesParams struct {
+	InstructorId *InstructorIdQuery `form:"instructorId,omitempty" json:"instructorId,omitempty"`
+
 	// Page Page number for pagination
 	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
 

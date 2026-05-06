@@ -72,12 +72,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	createCourseHandler := app.NewCreateCourseHandler(unitOfWork)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
 	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
-<<<<<<< HEAD
-	updateCourseSvc := domain.NewUpdateCourseSvc()
-	updateCourseHandler := app.NewUpdateCourseHandler(updateCourseSvc, unitOfWork)
-=======
 	updateCourseHandler := app.NewUpdateCourseHandler(unitOfWork)
->>>>>>> origin/kevinnitro/meeting-x
 	enrollInCourseSvc := domain.NewEnrollInCourseSvc()
 	enrollInCourseHandler := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork)
 	finishCourseSvc := domain.NewFinishCourseSvc()

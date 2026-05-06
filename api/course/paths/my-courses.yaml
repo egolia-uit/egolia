@@ -10,9 +10,11 @@ get:
     - Course
   summary: Get my courses
   operationId: getMyCourses
-  description: >
+  description: |
     - display courses of the authenticated instructor .
-    - authenticated: instructor,admin.
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml

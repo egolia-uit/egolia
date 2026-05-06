@@ -18,65 +18,6 @@ func (h *StrictHandler) GetCertificateById(ctx context.Context, request course.G
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) SearchCourses(ctx context.Context, request course.SearchCoursesRequestObject) (course.SearchCoursesResponseObject, error) {
-	page := 1
-	if request.Params.Page != nil {
-		page = *request.Params.Page
-	}
-	limit := 20
-	if request.Params.Limit != nil {
-		limit = *request.Params.Limit
-	}
-	query := ""
-	if request.Params.Q != nil {
-		query = *request.Params.Q
-	}
-	instructorIDs := []string(nil)
-	if request.Params.InstructorId != nil {
-		instructorIDs = make([]string, 0, len(*request.Params.InstructorId))
-		for _, id := range *request.Params.InstructorId {
-			instructorIDs = append(instructorIDs, id.String())
-		}
-	}
-	var order *app.SearchCoursesOrder
-	if request.Params.Order != nil {
-		o := app.SearchCoursesOrder(*request.Params.Order)
-		order = &o
-	}
-
-	result, err := h.App.Queries.SearchCourses.Handle(ctx, &app.SearchCourses{
-		Query:         query,
-		InstructorIDs: instructorIDs,
-		Paginate: app.PaginationParams{
-			Page:  page,
-			Limit: limit,
-		},
-		Order:  order,
-		Hidden: nil,
-		Status: nil,
-	})
-	if err != nil {
-		return nil, err
-	}
-	courses := make([]course.Course, 0, len(result.Data))
-	for i := range result.Data {
-		courses = append(courses, *courseToDTO(&result.Data[i]))
-	}
-
-	pagination := result.Pagination
-	return course.SearchCourses200JSONResponse{
-		Data: courses,
-		Pagination: course.Pagination{
-			Page:       pagination.Page,
-			Limit:      pagination.Limit,
-			Total:      pagination.Total,
-			TotalPages: pagination.TotalPages,
-			HasNext:    pagination.HasNext,
-			HasPrev:    pagination.HasPrev,
-		},
-	}, nil
-}
-
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
 	user, ok := commonHTTP.UserFromContext(ctx)
 
@@ -96,20 +37,18 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 	if request.Body.Overview != nil {
 		overview = *request.Body.Overview
 	}
-	introduction := app.CourseLandingPageIntroduction{}
-	if request.Body.Introduction != nil {
-		introduction = app.CourseLandingPageIntroduction{
-			VideoUrl: request.Body.Introduction.VideoUrl,
-		}
+	introductionVideoKey := (*string)(nil)
+	if request.Body.IntroductionVideoKey != nil {
+		introductionVideoKey = request.Body.IntroductionVideoKey
 	}
 
 	if err := h.App.Cmds.CreateCourse.Handle(ctx, &app.CreateCourse{
-		ID:           courseID,
-		Title:        request.Body.Title,
-		InstructorID: userID,
-		Price:        request.Body.Price,
-		Overview:     overview,
-		Introduction: introduction,
+		ID:                   courseID,
+		Title:                request.Body.Title,
+		InstructorID:         userID,
+		Price:                request.Body.Price,
+		Overview:             overview,
+		IntroductionVideoKey: *introductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}
@@ -133,6 +72,11 @@ func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.
 	if request.Params.Limit != nil {
 		limit = *request.Params.Limit
 	}
+
+	instructorID := (*string)(nil)
+	if request.Params.InstructorId != nil {
+		instructorID = request.Params.InstructorId
+	}
 	order := app.SearchCoursesOrderDesc
 	if request.Params.Order != nil {
 		order = app.SearchCoursesOrder(*request.Params.Order)
@@ -141,6 +85,7 @@ func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.
 	courseStatus := app.CourseStatusApproved
 
 	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
+		InstructorID: instructorID,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,
@@ -250,9 +195,10 @@ func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateC
 	if request.Body.Overview != nil {
 		overview = *request.Body.Overview
 	}
-	var introductionVideoKey string
-	if request.Body.Introduction != nil {
-		introductionVideoKey = request.Body.Introduction.VideoUrl
+
+	introductionVideoKey := (*string)(nil)
+	if request.Body.IntroductionVideoKey != nil {
+		introductionVideoKey = request.Body.IntroductionVideoKey
 	}
 
 	if err := h.App.Cmds.UpdateCourse.Handle(ctx, &app.UpdateCourse{
@@ -260,7 +206,7 @@ func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateC
 		Title:                request.Body.Title,
 		Price:                request.Body.Price,
 		Overview:             overview,
-		IntroductionVideoKey: introductionVideoKey,
+		IntroductionVideoKey: *introductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}

@@ -77,9 +77,7 @@ export type CourseCourse = {
     instructorId?: CoursePropertiesId;
     status?: CourseCourseStatus;
     overview?: string;
-    introduction?: {
-        videoUrl: string;
-    };
+    readonly introductionVideoUrl?: string;
 };
 
 export type CourseSection = {
@@ -343,9 +341,7 @@ export type CourseCourseWritable = {
     title: string;
     price: bigint;
     overview?: string;
-    introduction?: {
-        videoUrl: string;
-    };
+    introductionVideoKey?: string;
 };
 
 export type CourseSectionWritable = {
@@ -450,6 +446,8 @@ export const CourseOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
  * Sort order
  */
 export type CourseOrderQuery = typeof CourseOrderQuery[keyof typeof CourseOrderQuery];
+
+export type CourseInstructorIdQuery = string;
 
 /**
  * Unique identifier of the course
@@ -681,6 +679,7 @@ export type GetPublishedCoursesData = {
     body?: never;
     path?: never;
     query?: {
+        instructorId?: string;
         /**
          * Page number for pagination
          */
@@ -1448,69 +1447,6 @@ export type GetMyEnrolledCoursesResponses = {
 };
 
 export type GetMyEnrolledCoursesResponse = GetMyEnrolledCoursesResponses[keyof GetMyEnrolledCoursesResponses];
-
-export type SearchCoursesData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Search term for course title or description
-         */
-        q?: string;
-        /**
-         * Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
-         */
-        instructorId?: Array<string>;
-        /**
-         * Page number for pagination
-         */
-        page?: number;
-        /**
-         * Number of items per page
-         */
-        limit?: number;
-        /**
-         * Sort order
-         */
-        order?: 'asc' | 'desc';
-    };
-    url: '/course/courses';
-};
-
-export type SearchCoursesErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type SearchCoursesError = SearchCoursesErrors[keyof SearchCoursesErrors];
-
-export type SearchCoursesResponses = {
-    /**
-     * Search results for courses
-     */
-    200: {
-        data: Array<CourseCourse>;
-        pagination: CoursePagination;
-    };
-};
-
-export type SearchCoursesResponse = SearchCoursesResponses[keyof SearchCoursesResponses];
 
 export type CreateCourseData = {
     body: CourseCourseWritable;

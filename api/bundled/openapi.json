@@ -213,7 +213,7 @@
         ],
         "summary": "Get my courses",
         "operationId": "getMyCourses",
-        "description": "- display courses of the authenticated instructor . - authenticated: instructor,admin.\n",
+        "description": "- display courses of the authenticated instructor .\n- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/course_pageQuery"
@@ -271,26 +271,17 @@
     },
     "/course/courses-published": {
       "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
+        "security": [],
         "tags": [
           "Course"
         ],
         "summary": "Get published courses",
         "operationId": "getPublishedCourses",
+        "description": "- public\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_instructorIdQuery"
+          },
           {
             "$ref": "#/components/parameters/course_pageQuery"
           },
@@ -357,6 +348,7 @@
         ],
         "summary": "Get system courses",
         "operationId": "getSystemCourses",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/course_pageQuery"
@@ -430,6 +422,7 @@
         ],
         "summary": "Approve course",
         "operationId": "approveCourse",
+        "description": "- authenticated:\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/course_courseIdPath"
@@ -458,7 +451,7 @@
       }
     },
     "/course/courses/{courseId}/basic-info": {
-      "patch": {
+      "put": {
         "security": [
           {
             "course_Oauth2": [
@@ -478,6 +471,7 @@
         ],
         "summary": "Update course",
         "operationId": "updateCourse",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/course_courseIdPath"
@@ -1272,101 +1266,6 @@
                   "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000"
                 },
                 "required": true
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      },
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Search courses",
-        "operationId": "searchCourses",
-        "parameters": [
-          {
-            "name": "q",
-            "in": "query",
-            "required": false,
-            "description": "Search term for course title or description",
-            "schema": {
-              "type": "string",
-              "example": "golang"
-            }
-          },
-          {
-            "name": "instructorId",
-            "in": "query",
-            "description": "Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)",
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          },
-          {
-            "$ref": "#/components/parameters/course_pageQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_limitQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_orderQuery"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Search results for courses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/course_Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/course_Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
               }
             }
           },
@@ -3859,6 +3758,15 @@
           "example": "desc"
         }
       },
+      "course_instructorIdQuery": {
+        "name": "instructorId",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "string",
+          "example": "123"
+        }
+      },
       "course_courseIdPath": {
         "name": "courseId",
         "in": "path",
@@ -4175,19 +4083,16 @@
             "type": "string",
             "example": "Learn practical Go backend concepts in this beginner-friendly course."
           },
-          "introduction": {
-            "type": "object",
-            "x-go-type-name": "CourseLandingPageIntroduction",
-            "properties": {
-              "videoUrl": {
-                "type": "string",
-                "format": "uri",
-                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
-              }
-            },
-            "required": [
-              "videoUrl"
-            ]
+          "introductionVideoUrl": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+            "readOnly": true
+          },
+          "introductionVideoKey": {
+            "type": "string",
+            "example": "videos/course-intro.mp4",
+            "writeOnly": true
           }
         },
         "required": [

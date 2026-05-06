@@ -94,18 +94,16 @@ func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
 
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 	return &course.CourseDetail{
-		Id:               (*types.UUID)(&result.Course.ID),
-		Title:            result.Course.Title,
-		InstructorId:     &result.Course.InstructorID,
-		OriginalCourseId: (*types.UUID)(&result.Course.OriginalCourseID),
-		Price:            result.Course.Price,
-		Overview:         &result.Course.Overview,
-		Hidden:           &result.Course.Hidden,
-		Status:           (*course.CourseStatus)(&result.Course.Status),
-		Introduction: &course.CourseLandingPageIntroduction{
-			VideoUrl: result.Course.Introduction.VideoUrl,
-		},
-		Sections: sectionItemsToDTO(result.Sections),
+		Id:                   (*types.UUID)(&result.Course.ID),
+		Title:                result.Course.Title,
+		InstructorId:         &result.Course.InstructorID,
+		OriginalCourseId:     (*types.UUID)(&result.Course.OriginalCourseID),
+		Price:                result.Course.Price,
+		Overview:             &result.Course.Overview,
+		Hidden:               &result.Course.Hidden,
+		Status:               (*course.CourseStatus)(&result.Course.Status),
+		IntroductionVideoUrl: result.Course.IntroductionVideoURL,
+		Sections:             sectionItemsToDTO(result.Sections),
 	}
 }
 
@@ -138,17 +136,15 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 
 func courseToDTO(c *app.Course) *course.Course {
 	dto := &course.Course{
-		Id:               (*types.UUID)(&c.ID),
-		Title:            c.Title,
-		InstructorId:     &c.InstructorID,
-		OriginalCourseId: (*types.UUID)(&c.OriginalCourseID),
-		Price:            c.Price,
-		Overview:         &c.Overview,
-		Hidden:           &c.Hidden,
-		Status:           (*course.CourseStatus)(&c.Status),
-		Introduction: &course.CourseLandingPageIntroduction{
-			VideoUrl: c.Introduction.VideoUrl,
-		},
+		Id:                   (*types.UUID)(&c.ID),
+		Title:                c.Title,
+		InstructorId:         &c.InstructorID,
+		OriginalCourseId:     (*types.UUID)(&c.OriginalCourseID),
+		Price:                c.Price,
+		Overview:             &c.Overview,
+		Hidden:               &c.Hidden,
+		Status:               (*course.CourseStatus)(&c.Status),
+		IntroductionVideoUrl: c.IntroductionVideoURL,
 	}
 	return dto
 }

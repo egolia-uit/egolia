@@ -1,6 +1,5 @@
 name: instructorId
-in: path
-required: true
+in: query
 schema:
   type: string
   format: string

@@ -176,17 +176,15 @@ func buildPagination(page, limit, total int) app.Pagination {
 
 func toAppCourse(m *model.ReadCourse) *app.Course {
 	return &app.Course{
-		ID:               m.CourseID,
-		OriginalCourseID: uuid.Nil,
-		Hidden:           false,
-		Title:            m.FullCourseContent.Title,
-		InstructorID:     m.FullCourseContent.InstructorID,
-		Status:           app.CourseStatus(m.FullCourseContent.Status),
-		Price:            int64(m.Price),
-		Overview:         m.FullCourseContent.Overview,
-		Introduction: app.CourseLandingPageIntroduction{
-			VideoUrl: m.FullCourseContent.IntroVideoURL,
-		},
+		ID:                   m.CourseID,
+		OriginalCourseID:     uuid.Nil,
+		Hidden:               false,
+		Title:                m.FullCourseContent.Title,
+		InstructorID:         m.FullCourseContent.InstructorID,
+		Status:               app.CourseStatus(m.FullCourseContent.Status),
+		Price:                int64(m.Price),
+		Overview:             m.FullCourseContent.Overview,
+		IntroductionVideoURL: &m.FullCourseContent.IntroVideoURL,
 	}
 }
 

@@ -19,14 +19,12 @@ type UpdateCourse struct {
 }
 
 type UpdateCourseHandler struct {
-	updateCourseSvc *domain.UpdateCourseSvc
-	uow             domain.UnitOfWork
+	uow domain.UnitOfWork
 }
 
-func NewUpdateCourseHandler(updateCourseSvc *domain.UpdateCourseSvc, uow domain.UnitOfWork) *UpdateCourseHandler {
+func NewUpdateCourseHandler(uow domain.UnitOfWork) *UpdateCourseHandler {
 	return &UpdateCourseHandler{
-		updateCourseSvc: updateCourseSvc,
-		uow:             uow,
+		uow: uow,
 	}
 }
 

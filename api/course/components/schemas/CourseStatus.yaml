@@ -3,6 +3,5 @@ enum:
   - draft
   - pending
   - approved
-  # - declined
 default: draft
 example: draft

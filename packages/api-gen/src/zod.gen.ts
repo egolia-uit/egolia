@@ -46,9 +46,7 @@ export const zCourseCourse = z.object({
     instructorId: zCoursePropertiesId.optional(),
     status: zCourseCourseStatus.optional(),
     overview: z.string().optional(),
-    introduction: z.object({
-        videoUrl: z.url()
-    }).optional()
+    introductionVideoUrl: z.url().readonly().optional()
 });
 
 export const zCourseSection = z.object({
@@ -255,9 +253,7 @@ export const zCourseCourseWritable = z.object({
     title: z.string(),
     price: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
     overview: z.string().optional(),
-    introduction: z.object({
-        videoUrl: z.url()
-    }).optional()
+    introductionVideoKey: z.string().optional()
 });
 
 export const zCourseSectionWritable = z.object({
@@ -364,6 +360,8 @@ export const zCourseLimitQuery = z.int().gte(1).lte(100).default(20);
  */
 export const zCourseOrderQuery = z.enum(['asc', 'desc']).default('desc');
 
+export const zCourseInstructorIdQuery = z.string();
+
 /**
  * Unique identifier of the course
  */
@@ -463,6 +461,7 @@ export const zGetMyCoursesResponse = z.object({
 });
 
 export const zGetPublishedCoursesQuery = z.object({
+    instructorId: z.string().optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
     order: z.enum(['asc', 'desc']).optional().default('desc')
@@ -623,22 +622,6 @@ export const zGetMyEnrolledCoursesQuery = z.object({
  * My enrolled courses
  */
 export const zGetMyEnrolledCoursesResponse = z.object({
-    data: z.array(zCourseCourse),
-    pagination: zCoursePagination
-});
-
-export const zSearchCoursesQuery = z.object({
-    q: z.string().optional(),
-    instructorId: z.array(z.uuid()).optional(),
-    page: z.int().gte(1).optional().default(1),
-    limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional().default('desc')
-});
-
-/**
- * Search results for courses
- */
-export const zSearchCoursesResponse = z.object({
     data: z.array(zCourseCourse),
     pagination: zCoursePagination
 });

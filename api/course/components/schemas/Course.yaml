@@ -7,7 +7,6 @@ properties:
     example: 123e4567-e89b-12d3-a456-426614174000
     readOnly: true
 
-  # originalCourseId readonly, dùng để lưu id của course gốc khi có duplicate course
   originalCourseId:
     type: string
     format: uuid
@@ -42,16 +41,16 @@ properties:
     type: string
     example: Learn practical Go backend concepts in this beginner-friendly course.
 
-  introduction:
-    type: object
-    x-go-type-name: CourseLandingPageIntroduction
-    properties:
-      videoUrl:
-        type: string
-        format: uri
-        example: https://cdn.egolia.localhost/videos/course-intro.mp4
-    required:
-      - videoUrl
+  introductionVideoUrl:
+    type: string
+    format: uri
+    example: https://cdn.egolia.localhost/videos/course-intro.mp4
+    readOnly: true
+
+  introductionVideoKey:
+    type: string
+    example: videos/course-intro.mp4
+    writeOnly: true
 
 required:
   - title
