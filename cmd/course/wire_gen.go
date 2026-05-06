@@ -69,7 +69,14 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
 	createCourseSvc := domain.NewCreateCourseSvc()
-	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
+	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	tracer := app.NewTracer(tracerProvider)
+	createCourseCmd := app.NewCreateCourseHandler(createCourseSvc, unitOfWork, logger, tracer)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
 	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
 	updateCourseSvc := domain.NewUpdateCourseSvc()
@@ -85,7 +92,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	cmds := &app.Cmds{
 		MoveLesson:              moveLessonHandler,
 		GetUploadVideoLessonURL: getUploadVideoLessonURLHandler,
-		CreateCourse:            createCourseHandler,
+		CreateCourse:            createCourseCmd,
 		DeleteCourse:            deleteCourseHandler,
 		UpdateCourse:            updateCourseHandler,
 		EnrollInCourse:          enrollInCourseHandler,
@@ -115,24 +122,16 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	server := &configConfig.Server
 	strictHandler := http.NewStrictHandler(appApp, server)
 	serverInterface := http.NewHandler(strictHandler)
-	httpHTTP, cleanup3, err := http.New(ctx, engine, serverInterface, server, logger)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	serviceServer := grpc.NewServiceServer(appApp)
-	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
-	grpcGRPC, cleanup4, err := grpc.New(ctx, serviceServer, server, loggingLogger)
+	httpHTTP, cleanup4, err := http.New(ctx, engine, serverInterface, server, logger)
 	if err != nil {
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	healthHealth := health.New(server)
-	pg := persistence.NewPG(db)
-	meterProvider, cleanup5, err := otel.NewMeterProvider(ctx, resource)
+	serviceServer := grpc.NewServiceServer(appApp)
+	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
+	grpcGRPC, cleanup5, err := grpc.New(ctx, serviceServer, server, loggingLogger)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -140,7 +139,9 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	tracerProvider, cleanup6, err := otel.NewTracerProvider(ctx, resource)
+	healthHealth := health.New(server)
+	pg := persistence.NewPG(db)
+	meterProvider, cleanup6, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup5()
 		cleanup4()

@@ -3,7 +3,7 @@ package app
 type Cmds struct {
 	MoveLesson              *MoveLessonHandler
 	GetUploadVideoLessonURL *GetUploadVideoLessonURLHandler
-	CreateCourse            *CreateCourseHandler
+	CreateCourse            CreateCourseCmd
 	DeleteCourse            *DeleteCourseHandler
 	UpdateCourse            *UpdateCourseHandler
 	EnrollInCourse          *EnrollInCourseHandler
