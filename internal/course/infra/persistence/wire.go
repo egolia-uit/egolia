@@ -16,7 +16,6 @@ var ReadModelProviderSet = wire.NewSet(
 	wire.Bind(new(app.SearchCoursesReadModel), new(*readmodel.CourseReadRepo)),
 	wire.Bind(new(app.GetCourseDetailReadModel), new(*readmodel.CourseReadRepo)),
 	wire.Bind(new(app.GetLessonDetailReadModel), new(*readmodel.LessonReadRepo)),
-	wire.Bind(new(app.GetInstructorCoursesReadModel), new(*readmodel.CourseReadRepo)),
 )
 
 var RepoProviderSet = wire.NewSet(

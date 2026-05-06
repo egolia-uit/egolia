@@ -174,7 +174,7 @@
         }
       }
     },
-    "/course/courses-by-instructor/{instructorId}": {
+    "/course/my-courses": {
       "get": {
         "security": [
           {
@@ -193,13 +193,10 @@
         "tags": [
           "Course"
         ],
-        "summary": "Get instructor courses",
-        "operationId": "getInstructorCourses",
-        "description": "Maybe removed or used in the future",
+        "summary": "Get my courses",
+        "operationId": "getMyCourses",
+        "description": "- display courses of the authenticated instructor . - authenticated: instructor,admin.\n",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/instructorIdPath"
-          },
           {
             "$ref": "#/components/parameters/pageQuery"
           },
@@ -212,7 +209,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Courses by instructor",
+            "description": "My courses",
             "content": {
               "application/json": {
                 "schema": {
@@ -2894,16 +2891,6 @@
           ],
           "default": "desc",
           "example": "desc"
-        }
-      },
-      "instructorIdPath": {
-        "name": "instructorId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "123e4567-e89b-12d3-a456-426614174000"
         }
       },
       "courseIdPath": {

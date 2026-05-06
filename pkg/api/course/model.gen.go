@@ -127,24 +127,6 @@ func (e SearchCoursesParamsOrder) Valid() bool {
 	}
 }
 
-// Defines values for GetInstructorCoursesParamsOrder.
-const (
-	GetInstructorCoursesParamsOrderAsc  GetInstructorCoursesParamsOrder = "asc"
-	GetInstructorCoursesParamsOrderDesc GetInstructorCoursesParamsOrder = "desc"
-)
-
-// Valid indicates whether the value is a known member of the GetInstructorCoursesParamsOrder enum.
-func (e GetInstructorCoursesParamsOrder) Valid() bool {
-	switch e {
-	case GetInstructorCoursesParamsOrderAsc:
-		return true
-	case GetInstructorCoursesParamsOrderDesc:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for GetPublishedCoursesParamsOrder.
 const (
 	GetPublishedCoursesParamsOrderAsc  GetPublishedCoursesParamsOrder = "asc"
@@ -193,6 +175,24 @@ func (e GetMyEnrolledCoursesParamsOrder) Valid() bool {
 	case GetMyEnrolledCoursesParamsOrderAsc:
 		return true
 	case GetMyEnrolledCoursesParamsOrderDesc:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for GetMyCoursesParamsOrder.
+const (
+	GetMyCoursesParamsOrderAsc  GetMyCoursesParamsOrder = "asc"
+	GetMyCoursesParamsOrderDesc GetMyCoursesParamsOrder = "desc"
+)
+
+// Valid indicates whether the value is a known member of the GetMyCoursesParamsOrder enum.
+func (e GetMyCoursesParamsOrder) Valid() bool {
+	switch e {
+	case GetMyCoursesParamsOrderAsc:
+		return true
+	case GetMyCoursesParamsOrderDesc:
 		return true
 	default:
 		return false
@@ -440,9 +440,6 @@ type CommentIdPath = openapi_types.UUID
 // CourseIdPath defines model for courseIdPath.
 type CourseIdPath = openapi_types.UUID
 
-// InstructorIdPath defines model for instructorIdPath.
-type InstructorIdPath = openapi_types.UUID
-
 // LessonIdPath defines model for lessonIdPath.
 type LessonIdPath = openapi_types.UUID
 
@@ -514,21 +511,6 @@ type SearchCoursesParams struct {
 
 // SearchCoursesParamsOrder defines parameters for SearchCourses.
 type SearchCoursesParamsOrder string
-
-// GetInstructorCoursesParams defines parameters for GetInstructorCourses.
-type GetInstructorCoursesParams struct {
-	// Page Page number for pagination
-	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
-
-	// Limit Number of items per page
-	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Order Sort order
-	Order *GetInstructorCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
-}
-
-// GetInstructorCoursesParamsOrder defines parameters for GetInstructorCourses.
-type GetInstructorCoursesParamsOrder string
 
 // GetPublishedCoursesParams defines parameters for GetPublishedCourses.
 type GetPublishedCoursesParams struct {
@@ -653,6 +635,21 @@ type TriggerLearningReminderJSONBody struct {
 type ReplyLessonCommentJSONBody struct {
 	Content Content `json:"content"`
 }
+
+// GetMyCoursesParams defines parameters for GetMyCourses.
+type GetMyCoursesParams struct {
+	// Page Page number for pagination
+	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
+
+	// Limit Number of items per page
+	Limit *LimitQuery `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Order Sort order
+	Order *GetMyCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+}
+
+// GetMyCoursesParamsOrder defines parameters for GetMyCourses.
+type GetMyCoursesParamsOrder string
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course

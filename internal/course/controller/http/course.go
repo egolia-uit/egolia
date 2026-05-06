@@ -119,57 +119,8 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 	}, nil
 }
 
-func (h *StrictHandler) GetInstructorCourses(ctx context.Context, request course.GetInstructorCoursesRequestObject) (course.GetInstructorCoursesResponseObject, error) {
-	//  TODO: only allow instructor or admin to access this endpoint
-	user, ok := commonHTTP.UserFromContext(ctx)
-	if !ok {
-		return nil, errs.Unauthorized
-	}
-	instructorID := user.ID
-	page := 1
-	if request.Params.Page != nil {
-		page = *request.Params.Page
-	}
-	limit := 20
-	if request.Params.Limit != nil {
-		limit = *request.Params.Limit
-	}
-	order := app.SearchCoursesOrderDesc
-	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
-	}
-	courseStatus := app.CourseStatusApproved
-
-	result, err := h.App.Queries.GetInstructorCourses.Handle(ctx, &app.GetInstructorCourses{
-		InstructorID: instructorID,
-		Paginate: app.PaginationParams{
-			Page:  page,
-			Limit: limit,
-		},
-		Order:  order,
-		Status: &courseStatus,
-		Hidden: nil,
-	})
-	if err != nil {
-		return nil, err
-	}
-	courses := make([]course.Course, 0, len(result.Data))
-	for i := range result.Data {
-		courses = append(courses, *courseToDTO(&result.Data[i]))
-	}
-
-	pagination := result.Pagination
-	return course.GetInstructorCourses200JSONResponse{
-		Data: courses,
-		Pagination: course.Pagination{
-			Page:       pagination.Page,
-			Limit:      pagination.Limit,
-			Total:      pagination.Total,
-			TotalPages: pagination.TotalPages,
-			HasNext:    pagination.HasNext,
-			HasPrev:    pagination.HasPrev,
-		},
-	}, nil
+func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCoursesRequestObject) (course.GetMyCoursesResponseObject, error) {
+	panic("unimplemented")
 }
 
 func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.GetPublishedCoursesRequestObject) (course.GetPublishedCoursesResponseObject, error) {

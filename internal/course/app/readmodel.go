@@ -23,6 +23,3 @@ type GetLessonDetailReadModel interface {
 type GetCoursesReadModel interface {
 	GetCourses(ctx context.Context, params *GetCourses) (*Paginated[Course], error)
 }
-type GetInstructorCoursesReadModel interface {
-	GetInstructorCourses(ctx context.Context, params *GetInstructorCourses) (*Paginated[Course], error)
-}

@@ -8,17 +8,18 @@ get:
         - entitlements
   tags:
     - Course
-  summary: Get instructor courses
-  operationId: getInstructorCourses
-  description: Maybe removed or used in the future
+  summary: Get my courses
+  operationId: getMyCourses
+  description: >
+    - display courses of the authenticated instructor .
+    - authenticated: instructor,admin.
   parameters:
-    - $ref: ../components/parameters/instructorIdPath.yaml
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml
     - $ref: ../../common/components/parameters/orderQuery.yaml
   responses:
     200:
-      description: Courses by instructor
+      description: My courses
       content:
         application/json:
           schema:

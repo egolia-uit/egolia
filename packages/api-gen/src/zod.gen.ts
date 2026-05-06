@@ -367,8 +367,6 @@ export const zCourseLimitQuery = z.int().gte(1).lte(100).default(20);
  */
 export const zCourseOrderQuery = z.enum(['asc', 'desc']).default('desc');
 
-export const zCourseInstructorIdPath = z.uuid();
-
 /**
  * Unique identifier of the course
  */
@@ -453,20 +451,16 @@ export const zGetMyCertificatesResponse = z.object({
     pagination: zCoursePagination
 });
 
-export const zGetInstructorCoursesPath = z.object({
-    instructorId: z.uuid()
-});
-
-export const zGetInstructorCoursesQuery = z.object({
+export const zGetMyCoursesQuery = z.object({
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
     order: z.enum(['asc', 'desc']).optional().default('desc')
 });
 
 /**
- * Courses by instructor
+ * My courses
  */
-export const zGetInstructorCoursesResponse = z.object({
+export const zGetMyCoursesResponse = z.object({
     data: z.array(zCourseCourse),
     pagination: zCoursePagination
 });

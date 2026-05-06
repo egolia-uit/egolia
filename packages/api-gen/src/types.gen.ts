@@ -454,8 +454,6 @@ export const CourseOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
  */
 export type CourseOrderQuery = typeof CourseOrderQuery[keyof typeof CourseOrderQuery];
 
-export type CourseInstructorIdPath = string;
-
 /**
  * Unique identifier of the course
  */
@@ -623,11 +621,9 @@ export type GetMyCertificatesResponses = {
 
 export type GetMyCertificatesResponse = GetMyCertificatesResponses[keyof GetMyCertificatesResponses];
 
-export type GetInstructorCoursesData = {
+export type GetMyCoursesData = {
     body?: never;
-    path: {
-        instructorId: string;
-    };
+    path?: never;
     query?: {
         /**
          * Page number for pagination
@@ -642,10 +638,10 @@ export type GetInstructorCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/courses-by-instructor/{instructorId}';
+    url: '/course/my-courses';
 };
 
-export type GetInstructorCoursesErrors = {
+export type GetMyCoursesErrors = {
     /**
      * Bad Request Error response
      */
@@ -670,11 +666,11 @@ export type GetInstructorCoursesErrors = {
     500: CourseError;
 };
 
-export type GetInstructorCoursesError = GetInstructorCoursesErrors[keyof GetInstructorCoursesErrors];
+export type GetMyCoursesError = GetMyCoursesErrors[keyof GetMyCoursesErrors];
 
-export type GetInstructorCoursesResponses = {
+export type GetMyCoursesResponses = {
     /**
-     * Courses by instructor
+     * My courses
      */
     200: {
         data: Array<CourseCourse>;
@@ -682,7 +678,7 @@ export type GetInstructorCoursesResponses = {
     };
 };
 
-export type GetInstructorCoursesResponse = GetInstructorCoursesResponses[keyof GetInstructorCoursesResponses];
+export type GetMyCoursesResponse = GetMyCoursesResponses[keyof GetMyCoursesResponses];
 
 export type GetPublishedCoursesData = {
     body?: never;
