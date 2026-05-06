@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -15,6 +16,8 @@ type EnrollInCourse struct {
 	ActorID  string
 }
 
+type EnrollInCourseCmd Cmd[EnrollInCourse]
+
 type EnrollInCourseHandler struct {
 	enrollInCourseSvc *domain.EnrollInCourseSvc
 	uow               domain.UnitOfWork
@@ -23,12 +26,17 @@ type EnrollInCourseHandler struct {
 func NewEnrollInCourseHandler(
 	enrollInCourseSvc *domain.EnrollInCourseSvc,
 	uow domain.UnitOfWork,
-) *EnrollInCourseHandler {
-	return &EnrollInCourseHandler{
+	logger *slog.Logger,
+	tracer Tracer,
+) EnrollInCourseCmd {
+	handler := &EnrollInCourseHandler{
 		enrollInCourseSvc: enrollInCourseSvc,
 		uow:               uow,
 	}
+	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
+
+var _ Cmd[EnrollInCourse] = (*EnrollInCourseHandler)(nil)
 
 func (h *EnrollInCourseHandler) Handle(ctx context.Context, cmd *EnrollInCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

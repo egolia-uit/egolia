@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/google/uuid"
@@ -14,17 +15,22 @@ type ReviewCourse struct {
 	Rating   int32
 }
 
+type ReviewCourseCmd Cmd[ReviewCourse]
+
 type ReviewCourseHandler struct {
 	reviewCourseSvc *domain.ReviewCourseSvc
 	uow             domain.UnitOfWork
 }
 
-func NewReviewCourseHandler(reviewCourseSvc *domain.ReviewCourseSvc, uow domain.UnitOfWork) *ReviewCourseHandler {
-	return &ReviewCourseHandler{
+func NewReviewCourseHandler(reviewCourseSvc *domain.ReviewCourseSvc, uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) ReviewCourseCmd {
+	handler := &ReviewCourseHandler{
 		reviewCourseSvc: reviewCourseSvc,
 		uow:             uow,
 	}
+	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
+
+var _ Cmd[ReviewCourse] = (*ReviewCourseHandler)(nil)
 
 func (h *ReviewCourseHandler) Handle(ctx context.Context, cmd *ReviewCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

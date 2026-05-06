@@ -29,9 +29,10 @@ func (ss *ServiceServer) GetCourseTitlesByIds(ctx context.Context, params *pb.Ge
 }
 
 func (ss *ServiceServer) GetCourse(ctx context.Context, params *pb.GetCourseRequest) (*pb.GetCourseResponse, error) {
-	course, err := ss.app.Queries.GetCourse.Handle(ctx, app.GetCourse{
+	query := &app.GetCourse{
 		CourseID: params.Id,
-	})
+	}
+	course, err := ss.app.Queries.GetCourse.Handle(ctx, query)
 	if err != nil {
 		return nil, err
 	}
