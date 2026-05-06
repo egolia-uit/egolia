@@ -89,15 +89,10 @@ export type CourseSection = {
     courseId: CourseId;
 };
 
-export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
-
-export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
-
 export type CourseLesson = {
     readonly id: string;
     title: string;
     readonly order?: string;
-    lessonType: CourseLessonType;
 };
 
 export type CourseCourseDetailSectionItem = CourseSection & {
@@ -129,6 +124,10 @@ export type CourseLessonComment = {
     createdAt: Date;
     parentCommentId?: string | null;
 };
+
+export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
+
+export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
 
 export type CourseLessonProgress = {
     readonly id: string;
@@ -164,16 +163,22 @@ export type CourseTestQuestion = {
 };
 
 export type CourseTestLesson = CourseLesson & {
+    lessonType: 'test';
     type: 'multipleChoice' | 'singleChoice';
     questions: Array<unknown>;
 };
 
 export type CourseVideoLesson = CourseLesson & {
+    lessonType: 'video';
     readonly videoUrl: string;
     duration: bigint;
 };
 
-export type CourseLessonDetail = CourseVideoLesson | CourseTestLesson;
+export type CourseLessonDetail = ({
+    lessonType: 'course_VideoLesson';
+} & CourseVideoLesson) | ({
+    lessonType: 'course_TestLesson';
+} & CourseTestLesson);
 
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
@@ -404,16 +409,22 @@ export type CourseTestQuestionWritable = {
 };
 
 export type CourseTestLessonWritable = CourseLessonWritable & {
+    lessonType: 'test';
     type: 'multipleChoice' | 'singleChoice';
     questions: Array<unknown>;
 };
 
 export type CourseVideoLessonWritable = CourseLessonWritable & {
+    lessonType: 'video';
     videoKey: string;
     duration: bigint;
 };
 
-export type CourseLessonDetailWritable = CourseVideoLessonWritable | CourseTestLessonWritable;
+export type CourseLessonDetailWritable = ({
+    lessonType: 'course_VideoLessonWritable';
+} & CourseVideoLessonWritable) | ({
+    lessonType: 'course_TestLessonWritable';
+} & CourseTestLessonWritable);
 
 export type BillingTransactionWritable = {
     courseId: string;

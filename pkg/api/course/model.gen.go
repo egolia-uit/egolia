@@ -5,6 +5,7 @@ package course
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/oapi-codegen/runtime"
@@ -55,6 +56,21 @@ func (e LessonType) Valid() bool {
 	}
 }
 
+// Defines values for TestLessonLessonType.
+const (
+	TestLessonLessonTypeTest TestLessonLessonType = "test"
+)
+
+// Valid indicates whether the value is a known member of the TestLessonLessonType enum.
+func (e TestLessonLessonType) Valid() bool {
+	switch e {
+	case TestLessonLessonTypeTest:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TestLessonType.
 const (
 	TestLessonTypeMultipleChoice TestLessonType = "multipleChoice"
@@ -67,6 +83,21 @@ func (e TestLessonType) Valid() bool {
 	case TestLessonTypeMultipleChoice:
 		return true
 	case TestLessonTypeSingleChoice:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for VideoLessonLessonType.
+const (
+	VideoLessonLessonTypeVideo VideoLessonLessonType = "video"
+)
+
+// Valid indicates whether the value is a known member of the VideoLessonLessonType enum.
+func (e VideoLessonLessonType) Valid() bool {
+	switch e {
+	case VideoLessonLessonTypeVideo:
 		return true
 	default:
 		return false
@@ -283,10 +314,9 @@ type Error struct {
 
 // Lesson defines model for Lesson.
 type Lesson struct {
-	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
-	Title      string              `json:"title"`
+	Id    *openapi_types.UUID `json:"id,omitempty"`
+	Order *string             `json:"order,omitempty"`
+	Title string              `json:"title"`
 }
 
 // LessonComment defines model for LessonComment.
@@ -365,13 +395,16 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
-	Questions  []TestQuestion      `json:"questions"`
-	Title      string              `json:"title"`
-	Type       TestLessonType      `json:"type"`
+	Id         *openapi_types.UUID  `json:"id,omitempty"`
+	LessonType TestLessonLessonType `json:"lessonType"`
+	Order      *string              `json:"order,omitempty"`
+	Questions  []TestQuestion       `json:"questions"`
+	Title      string               `json:"title"`
+	Type       TestLessonType       `json:"type"`
 }
+
+// TestLessonLessonType defines model for TestLesson.LessonType.
+type TestLessonLessonType string
 
 // TestLessonType defines model for TestLesson.Type.
 type TestLessonType string
@@ -396,14 +429,17 @@ type TestQuestion struct {
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	Duration   int64               `json:"duration"`
-	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
-	Title      string              `json:"title"`
-	VideoKey   *string             `json:"videoKey,omitempty"`
-	VideoUrl   *string             `json:"videoUrl,omitempty"`
+	Duration   int64                 `json:"duration"`
+	Id         *openapi_types.UUID   `json:"id,omitempty"`
+	LessonType VideoLessonLessonType `json:"lessonType"`
+	Order      *string               `json:"order,omitempty"`
+	Title      string                `json:"title"`
+	VideoKey   *string               `json:"videoKey,omitempty"`
+	VideoUrl   *string               `json:"videoUrl,omitempty"`
 }
+
+// VideoLessonLessonType defines model for VideoLesson.LessonType.
+type VideoLessonLessonType string
 
 // VideoLessonProgress defines model for VideoLessonProgress.
 type VideoLessonProgress struct {
@@ -711,6 +747,7 @@ func (t LessonDetail) AsVideoLesson() (VideoLesson, error) {
 
 // FromVideoLesson overwrites any union data inside the LessonDetail as the provided VideoLesson
 func (t *LessonDetail) FromVideoLesson(v VideoLesson) error {
+	v.LessonType = "VideoLesson"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -718,6 +755,7 @@ func (t *LessonDetail) FromVideoLesson(v VideoLesson) error {
 
 // MergeVideoLesson performs a merge with any union data inside the LessonDetail, using the provided VideoLesson
 func (t *LessonDetail) MergeVideoLesson(v VideoLesson) error {
+	v.LessonType = "VideoLesson"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -737,6 +775,7 @@ func (t LessonDetail) AsTestLesson() (TestLesson, error) {
 
 // FromTestLesson overwrites any union data inside the LessonDetail as the provided TestLesson
 func (t *LessonDetail) FromTestLesson(v TestLesson) error {
+	v.LessonType = "TestLesson"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -744,6 +783,7 @@ func (t *LessonDetail) FromTestLesson(v TestLesson) error {
 
 // MergeTestLesson performs a merge with any union data inside the LessonDetail, using the provided TestLesson
 func (t *LessonDetail) MergeTestLesson(v TestLesson) error {
+	v.LessonType = "TestLesson"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -752,6 +792,29 @@ func (t *LessonDetail) MergeTestLesson(v TestLesson) error {
 	merged, err := runtime.JSONMerge(t.union, b)
 	t.union = merged
 	return err
+}
+
+func (t LessonDetail) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"lessonType"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t LessonDetail) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "TestLesson":
+		return t.AsTestLesson()
+	case "VideoLesson":
+		return t.AsVideoLesson()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
 }
 
 func (t LessonDetail) MarshalJSON() ([]byte, error) {

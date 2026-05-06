@@ -1,3 +1,5 @@
 oneOf:
   - $ref: ./VideoLesson.yaml
   - $ref: ./TestLesson.yaml
+discriminator:
+  propertyName: lessonType

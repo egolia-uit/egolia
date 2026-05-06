@@ -4334,14 +4334,6 @@
           "title"
         ]
       },
-      "course_LessonType": {
-        "type": "string",
-        "enum": [
-          "video",
-          "test"
-        ],
-        "example": "video"
-      },
       "course_Lesson": {
         "type": "object",
         "properties": {
@@ -4359,16 +4351,11 @@
             "type": "string",
             "example": "a",
             "readOnly": true
-          },
-          "lessonType": {
-            "$ref": "#/components/schemas/course_LessonType",
-            "readOnly": true
           }
         },
         "required": [
           "id",
-          "title",
-          "lessonType"
+          "title"
         ]
       },
       "course_CourseDetailSectionItem": {
@@ -4510,6 +4497,14 @@
           "content",
           "createdAt"
         ]
+      },
+      "course_LessonType": {
+        "type": "string",
+        "enum": [
+          "video",
+          "test"
+        ],
+        "example": "video"
       },
       "course_LessonProgress": {
         "type": "object",
@@ -4662,11 +4657,14 @@
           },
           {
             "type": "object",
-            "required": [
-              "type",
-              "questions"
-            ],
             "properties": {
+              "lessonType": {
+                "type": "string",
+                "enum": [
+                  "test"
+                ],
+                "example": "test"
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -4682,7 +4680,12 @@
                   "$ref": "#/components/schemas/course_TestQuestion"
                 }
               }
-            }
+            },
+            "required": [
+              "lessonType",
+              "type",
+              "questions"
+            ]
           }
         ]
       },
@@ -4694,6 +4697,13 @@
           {
             "type": "object",
             "properties": {
+              "lessonType": {
+                "type": "string",
+                "enum": [
+                  "video"
+                ],
+                "example": "video"
+              },
               "videoKey": {
                 "type": "string",
                 "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
@@ -4712,6 +4722,7 @@
               }
             },
             "required": [
+              "lessonType",
               "videoKey",
               "videoUrl",
               "duration"
@@ -4727,7 +4738,10 @@
           {
             "$ref": "#/components/schemas/course_TestLesson"
           }
-        ]
+        ],
+        "discriminator": {
+          "propertyName": "lessonType"
+        }
       },
       "billing_id": {
         "type": "string",

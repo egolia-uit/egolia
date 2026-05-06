@@ -16,11 +16,6 @@ properties:
     example: a
     readOnly: true
 
-  lessonType:
-    $ref: ./LessonType.yaml
-    readOnly: true
-
 required:
   - id
   - title
-  - lessonType
