@@ -52,23 +52,13 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
 	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
 	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc)
-	moveLessonSvc := domain.NewMoveLessonSvc()
+	createCourseSvc := domain.NewCreateCourseSvc()
 	db, cleanup2, err := persistence.NewDB(ctx, configConfig, logger)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	unitOfWork := repo.NewUnitOfWork(db)
-	moveLessonHandler := app.NewMoveLessonHandler(moveLessonSvc, unitOfWork)
-	s3 := &configConfig.S3
-	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
-	createCourseSvc := domain.NewCreateCourseSvc()
 	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
 		cleanup2()
@@ -78,42 +68,53 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	tracer := app.NewTracer(tracerProvider)
 	createCourseCmd := app.NewCreateCourseHandler(createCourseSvc, unitOfWork, logger, tracer)
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
-	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
-	updateCourseSvc := domain.NewUpdateCourseSvc()
-	updateCourseHandler := app.NewUpdateCourseHandler(updateCourseSvc, unitOfWork)
+	deleteCourseCmd := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork, logger, tracer)
 	enrollInCourseSvc := domain.NewEnrollInCourseSvc()
-	enrollInCourseHandler := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork)
+	enrollInCourseCmd := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork, logger, tracer)
 	finishCourseSvc := domain.NewFinishCourseSvc()
-	finishCourseHandler := app.NewFinishCourseHandler(finishCourseSvc, unitOfWork)
+	finishCourseCmd := app.NewFinishCourseHandler(finishCourseSvc, unitOfWork, logger, tracer)
+	moveLessonSvc := domain.NewMoveLessonSvc()
+	moveLessonCmd := app.NewMoveLessonHandler(moveLessonSvc, unitOfWork, logger, tracer)
 	enrollmentRepo := repo.NewEnrollmentRepo(db)
 	reviewRepo := repo.NewReviewRepo(db)
 	reviewCourseSvc := domain.NewReviewCourseSvc(enrollmentRepo, reviewRepo)
-	reviewCourseHandler := app.NewReviewCourseHandler(reviewCourseSvc, unitOfWork)
+	reviewCourseCmd := app.NewReviewCourseHandler(reviewCourseSvc, unitOfWork, logger, tracer)
+	updateCourseSvc := domain.NewUpdateCourseSvc()
+	updateCourseCmd := app.NewUpdateCourseHandler(updateCourseSvc, unitOfWork, logger, tracer)
 	cmds := &app.Cmds{
-		MoveLesson:              moveLessonHandler,
-		GetUploadVideoLessonURL: getUploadVideoLessonURLHandler,
-		CreateCourse:            createCourseCmd,
-		DeleteCourse:            deleteCourseHandler,
-		UpdateCourse:            updateCourseHandler,
-		EnrollInCourse:          enrollInCourseHandler,
-		FinishCourse:            finishCourseHandler,
-		ReviewCourse:            reviewCourseHandler,
+		CreateCourse:   createCourseCmd,
+		DeleteCourse:   deleteCourseCmd,
+		EnrollInCourse: enrollInCourseCmd,
+		FinishCourse:   finishCourseCmd,
+		MoveLesson:     moveLessonCmd,
+		ReviewCourse:   reviewCourseCmd,
+		UpdateCourse:   updateCourseCmd,
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db)
-	getCourseDetailHandler := app.NewGetCourseDetailHandler(courseReadRepo)
-	getCourseHandler := app.NewGetCourseHandler(courseReadRepo)
+	getCourseQuery := app.NewGetCourseHandler(courseReadRepo, logger, tracer)
+	getCourseDetailQuery := app.NewGetCourseDetailHandler(courseReadRepo, logger, tracer)
+	getCoursesQuery := app.NewGetCoursesHandler(courseReadRepo, logger, tracer)
+	getInstructorCoursesQuery := app.NewGetInstructorCoursesHandler(courseReadRepo, logger, tracer)
 	lessonReadRepo := readmodel.NewLessonReadRepo(db)
-	getLessonDetailHandler := app.NewGetLessonDetailHandler(lessonReadRepo)
-	searchCoursesHandler := app.NewSearchCoursesHandler(courseReadRepo)
-	getCoursesHandler := app.NewGetCoursesHandler(courseReadRepo)
-	getInstructorCoursesHandler := app.NewGetInstructorCoursesHandler(courseReadRepo)
+	getLessonDetailQuery := app.NewGetLessonDetailHandler(lessonReadRepo, logger, tracer)
+	s3 := &configConfig.S3
+	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	getUploadVideoLessonURLQuery := app.NewGetUploadVideoLessonURLHandler(objectstorageS3, logger, tracer)
+	searchCoursesQuery := app.NewSearchCoursesHandler(courseReadRepo, logger, tracer)
 	queries := &app.Queries{
-		GetCourseDetail:      getCourseDetailHandler,
-		GetCourse:            getCourseHandler,
-		GetLessonDetail:      getLessonDetailHandler,
-		SearchCourses:        searchCoursesHandler,
-		GetCourses:           getCoursesHandler,
-		GetInstructorCourses: getInstructorCoursesHandler,
+		GetCourse:               getCourseQuery,
+		GetCourseDetail:         getCourseDetailQuery,
+		GetCourses:              getCoursesQuery,
+		GetInstructorCourses:    getInstructorCoursesQuery,
+		GetLessonDetail:         getLessonDetailQuery,
+		GetUploadVideoLessonURL: getUploadVideoLessonURLQuery,
+		SearchCourses:           searchCoursesQuery,
 	}
 	appApp := &app.App{
 		Cmds:    cmds,
