@@ -14,6 +14,7 @@ pnpm = "10.28.2"
 "npm:skills" = "latest"
 mockery = "3.7.0"
 yt-dlp = { version = "2026.03.17", rename_exe = "yt-dlp" }
+"github:rustfs/cli" = "0.1.13"
 
 [tools.ffmpeg]
 version = "latest"

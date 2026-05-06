@@ -17,6 +17,32 @@ entries:
       identifiers:
         name: Default - RBAC - Read-only
 
+  - model: authentik_core.group
+    id: rustfs-group
+    identifiers:
+      name: RustFS
+
+  - model: authentik_core.group
+    id: egolia-group
+    identifiers:
+      name: Egolia
+
+  - model: authentik_core.group
+    id: egolia-instructor-group
+    identifiers:
+      name: Egolia Instructor
+    attrs:
+      parents:
+        - !KeyOf egolia-group
+
+  - model: authentik_core.group
+    id: egolia-admin-group
+    identifiers:
+      name: Egolia Admin
+    attrs:
+      parents:
+        - !KeyOf egolia-group
+
   - model: authentik_core.user
     identifiers:
       username: egoliauit
@@ -25,28 +51,9 @@ entries:
       email: egoliauit@egolia.com
       groups:
         - !Find [authentik_core.group, [name, authentik Admins]]
+        - !KeyOf egolia-admin-group
+        - !KeyOf rustfs-group
       password: egoliauit
-
-  - model: authentik_core.group
-    identifiers:
-      name: Egolia
-    id: egolia-group
-
-  - model: authentik_core.group
-    id: egolia-instructor
-    identifiers:
-      name: Egolia Instructor
-    attrs:
-      parents:
-        - !KeyOf egolia-group
-
-  - model: authentik_core.group
-    id: egolia-admin
-    identifiers:
-      name: Egolia Admin
-    attrs:
-      parents:
-        - !KeyOf egolia-group
 
   - model: authentik_core.user
     id: user-learner
@@ -68,7 +75,7 @@ entries:
       email: instructor@egolia.com
       password: egoliauit
       groups:
-        - !KeyOf egolia-instructor
+        - !KeyOf egolia-instructor-group
 
   - model: authentik_core.user
     id: user-admin
@@ -80,7 +87,8 @@ entries:
       email: admin@egolia.com
       password: egoliauit
       groups:
-        - !KeyOf egolia-admin
+        - !KeyOf egolia-admin-group
+        - !KeyOf rustfs-group
 
   - model: authentik_core.token
     identifiers:
