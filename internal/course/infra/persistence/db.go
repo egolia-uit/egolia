@@ -3,34 +3,40 @@ package persistence
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/config"
-	slogGorm "github.com/orandin/slog-gorm"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	gormLogger "gorm.io/gorm/logger"
+	gormSlog "gorm.io/plugin/opentelemetry/logging/slog"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
-
-func NewSlogDB(logger *slog.Logger) logger.Interface {
-	gormLogger := slogGorm.New(
-		slogGorm.WithHandler(logger.Handler()),
-		slogGorm.WithTraceAll(),
-	)
-	return gormLogger
-}
 
 func NewDB(
 	ctx context.Context,
 	cfg *config.Config,
-	logger logger.Interface,
+	logger *slog.Logger,
 ) (*gorm.DB, func(), error) {
+	gormLgr := gormLogger.New(
+		gormSlog.NewWriter(gormSlog.WithRecordStackTraceInSpan(true)),
+		gormLogger.Config{
+			SlowThreshold:        time.Millisecond,
+			LogLevel:             gormLogger.Info,
+			Colorful:             false,
+			ParameterizedQueries: true,
+		},
+	)
 	db, err := gorm.Open(
 		postgres.Open(cfg.Database.GetDSN()),
 		&gorm.Config{
-			Logger: logger,
+			Logger: gormLgr,
 		},
 	)
 	if err != nil {
+		return nil, nil, err
+	}
+	if err := db.Use(tracing.NewPlugin()); err != nil {
 		return nil, nil, err
 	}
 
