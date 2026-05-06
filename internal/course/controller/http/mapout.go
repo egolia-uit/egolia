@@ -29,8 +29,7 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 	return course.VideoLesson{
 		Id:         new(vl.GetID()),
 		Title:      vl.GetTitle(),
-		Order:      new(vl.GetOrder()),
-		LessonType: course.LessonTypeVideo,
+		LessonType: course.VideoLessonLessonTypeVideo,
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
 		VideoKey:   nil,
@@ -45,9 +44,8 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 	return course.TestLesson{
 		Id:         new(t.GetID()),
 		Title:      t.GetTitle(),
-		LessonType: course.LessonTypeTest,
+		LessonType: course.TestLessonLessonTypeTest,
 		Type:       testLessonTypeToDTO(t.TestLessonType),
-		Order:      new(t.GetOrder()),
 		Questions:  questions,
 	}
 }
@@ -116,7 +114,6 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 			Id:       (*types.UUID)(&s.ID),
 			CourseId: (*types.UUID)(&s.CourseID),
 			Title:    s.Title,
-			Order:    &s.Order,
 			Lessons:  sectionLessonsToDTO(s.Lessons),
 		})
 	}
@@ -127,10 +124,8 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 	out := make([]course.Lesson, 0, len(lessons))
 	for _, l := range lessons {
 		out = append(out, course.Lesson{
-			Id:         new(l.GetID()),
-			Title:      l.GetTitle(),
-			Order:      new(l.GetOrder()),
-			LessonType: lessonTypeToDTO(l.GetLessonType()),
+			Id:    new(l.GetID()),
+			Title: l.GetTitle(),
 		})
 	}
 	return out
@@ -138,10 +133,10 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 
 func courseToDTO(c *app.Course) *course.Course {
 	dto := &course.Course{
-		Id:               (*types.UUID)(&c.ID),
+		Id:               &c.ID,
 		Title:            c.Title,
 		InstructorId:     &c.InstructorID,
-		OriginalCourseId: (*types.UUID)(&c.OriginalCourseID),
+		OriginalCourseId: &c.OriginalCourseID,
 		Price:            c.Price,
 		Overview:         &c.Overview,
 		Hidden:           &c.Hidden,

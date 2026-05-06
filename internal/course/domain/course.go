@@ -30,15 +30,12 @@ const (
 type Lesson interface {
 	isLesson()
 	ID() uuid.UUID
-	Order() string
-	SetOrder(order string)
 	Title() string
 	SetTitle(title string)
 }
 
 type LessonBase struct {
 	id    uuid.UUID
-	order string
 	title string
 }
 
@@ -46,24 +43,20 @@ var _ Lesson = (*LessonBase)(nil)
 
 func NewLessonBase(
 	id uuid.UUID,
-	order string,
 	title string,
 ) *LessonBase {
 	return &LessonBase{
 		id:    id,
-		order: order,
 		title: title,
 	}
 }
 
 func UnmarshalLessonBase(
 	id uuid.UUID,
-	order string,
 	title string,
 ) *LessonBase {
 	return &LessonBase{
 		id:    id,
-		order: order,
 		title: title,
 	}
 }
@@ -72,14 +65,6 @@ func (l *LessonBase) isLesson() {}
 
 func (l *LessonBase) ID() uuid.UUID {
 	return l.id
-}
-
-func (l *LessonBase) Order() string {
-	return l.order
-}
-
-func (l *LessonBase) SetOrder(order string) {
-	l.order = order
 }
 
 func (l *LessonBase) Title() string {
@@ -245,13 +230,12 @@ var _ Lesson = (*TestLesson)(nil)
 func NewTestLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
-	order string,
 	title string,
 	lessonType TestLessonType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *NewLessonBase(id, order, title),
+		LessonBase: *NewLessonBase(id, title),
 		Type:       lessonType,
 		Questions:  questions,
 	}
@@ -259,13 +243,12 @@ func NewTestLesson(
 
 func UnmarshalTestLesson(
 	id uuid.UUID,
-	order string,
 	title string,
 	lessonType TestLessonType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *UnmarshalLessonBase(id, order, title),
+		LessonBase: *UnmarshalLessonBase(id, title),
 		Type:       lessonType,
 		Questions:  questions,
 	}
@@ -294,13 +277,12 @@ var _ Lesson = (*VideoLesson)(nil)
 func NewVideoLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
-	order string,
 	title string,
 	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *NewLessonBase(id, order, title),
+		LessonBase: *NewLessonBase(id, title),
 		VideoKey:   videoKey,
 		Duration:   duration,
 	}
@@ -308,13 +290,12 @@ func NewVideoLesson(
 
 func UnmarshalVideoLesson(
 	id uuid.UUID,
-	order string,
 	title string,
 	videoURL string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *UnmarshalLessonBase(id, order, title),
+		LessonBase: *UnmarshalLessonBase(id, title),
 		VideoKey:   videoURL,
 		Duration:   duration,
 	}

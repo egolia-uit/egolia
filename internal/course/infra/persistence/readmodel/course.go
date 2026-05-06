@@ -3,7 +3,6 @@ package readmodel
 import (
 	"context"
 	"errors"
-	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/app"
@@ -192,8 +191,8 @@ func toAppCourse(m *model.ReadCourse) *app.Course {
 
 func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 	sections := make([]app.CourseDetailSectionItem, 0, len(m.FullCourseContent.Sections))
-	for _, s := range m.FullCourseContent.Sections {
-		sections = append(sections, toAppSectionItem(m.CourseID, &s))
+	for i := range m.FullCourseContent.Sections {
+		sections = append(sections, toAppSectionItem(m.CourseID, &m.FullCourseContent.Sections[i]))
 	}
 	return &app.CourseDetail{
 		Course:   *toAppCourse(m),
@@ -203,14 +202,13 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 
 func toAppSectionItem(courseID uuid.UUID, s *model.ReadCourseSectionContent) app.CourseDetailSectionItem {
 	lessons := make([]app.Lesson, 0, len(s.Lessons))
-	for _, l := range s.Lessons {
-		lessons = append(lessons, toAppLesson(&l))
+	for i := range s.Lessons {
+		lessons = append(lessons, toAppLesson(&s.Lessons[i]))
 	}
 	return app.CourseDetailSectionItem{
 		ID:       s.ID,
 		CourseID: courseID,
 		Title:    s.Title,
-		Order:    strconv.Itoa(s.SortOrder),
 		Lessons:  lessons,
 	}
 }
@@ -220,7 +218,6 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 		ID:         l.ID,
 		Title:      l.Title,
 		LessonType: app.LessonType(l.LessonType),
-		Order:      strconv.Itoa(l.SortOrder),
 	}
 	switch app.LessonType(l.LessonType) {
 	case app.LessonTypeVideo:

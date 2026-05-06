@@ -29,6 +29,15 @@
       "port": 23453
     },
     {
+      "name": "Attach Seed Course",
+      "type": "go",
+      "debugAdapter": "dlv-dap",
+      "request": "attach",
+      "mode": "remote",
+      "host": "127.0.0.1",
+      "port": 33451
+    },
+    {
       "name": "Debug Web",
       "type": "node",
       "request": "launch",

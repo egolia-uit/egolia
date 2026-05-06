@@ -68,14 +68,12 @@ type Lesson interface {
 	GetID() uuid.UUID
 	GetTitle() string
 	GetLessonType() LessonType
-	GetOrder() string
 }
 
 type LessonBase struct {
 	ID         uuid.UUID
 	Title      string
 	LessonType LessonType
-	Order      string
 }
 
 var _ Lesson = (*VideoLesson)(nil)
@@ -92,10 +90,6 @@ func (l *LessonBase) GetTitle() string {
 
 func (l *LessonBase) GetLessonType() LessonType {
 	return l.LessonType
-}
-
-func (l *LessonBase) GetOrder() string {
-	return l.Order
 }
 
 type VideoLesson struct {
@@ -133,7 +127,6 @@ type CourseDetailSectionItem struct {
 	ID       uuid.UUID
 	CourseID uuid.UUID
 	Title    string
-	Order    string
 	Lessons  []Lesson
 }
 

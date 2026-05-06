@@ -9,6 +9,14 @@ services:
       RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-egoliauit}
       RUSTFS_CONSOLE_ENABLE: 'true'
       # RUSTFS_SERVER_DOMAINS: rustfs.egolia.localhost
+      RUSTFS_IDENTITY_OPENID_ENABLE: 'true'
+      RUSTFS_IDENTITY_OPENID_CONFIG_URL: http://authentik.egolia.localhost/application/o/rustfs/.well-known/openid-configuration
+      RUSTFS_IDENTITY_OPENID_CLIENT_ID: rustfs
+      RUSTFS_IDENTITY_OPENID_CLIENT_SECRET: egoliauit
+      RUSTFS_IDENTITY_OPENID_SCOPES: openid,profile,email,entitlements
+      RUSTFS_IDENTITY_OPENID_REDIRECT_URI: http://rustfs.egolia.localhost/rustfs/admin/v3/oidc/callback/authentik
+      RUSTFS_IDENTITY_OPENID_ROLE_POLICY: readwrite,consoleUser
+      RUSTFS_IDENTITY_OPENID_DISPLAY_NAME: authentik
     volumes:
       - rustfs:/data
     labels:
@@ -32,6 +40,8 @@ services:
       start_period: 10s
       start_interval: 1s
     restart: unless-stopped
+    extra_hosts:
+      - authentik.egolia.localhost:host-gateway
     depends_on:
       rustfs_volume_permission_helper:
         condition: service_completed_successfully
@@ -49,15 +59,15 @@ services:
     restart: 'no'
 
   rustfs_bucket:
-    image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+    image: rustfs/rc:v0.1.13
     container_name: egolia-rustfs_bucket
     entrypoint: > # language: sh
       /bin/sh -c '
-        until (/usr/bin/mc alias set rustfs http://rustfs:9000 ${RUSTFS_ACCESS_KEY:-egoliauit} ${RUSTFS_SECRET_KEY:-egoliauit}) do
+        until (rc alias set rustfs http://rustfs:9000 ${RUSTFS_ACCESS_KEY:-egoliauit} ${RUSTFS_SECRET_KEY:-egoliauit}) do
           sleep 1;
         done
-        /usr/bin/mc mb rustfs/course;
-        /usr/bin/mc anonymous set public rustfs/course;
+        rc mb rustfs/course;
+        rc anonymous set public rustfs/course;
       '
     restart: 'no'
     depends_on:

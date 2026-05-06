@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: Egolia - RustFS
+  labels:
+    blueprint-group: egolia
+    blueprints.goauthentik.io/description: |
+      Egolia - RustFS OAuth2 Provider and Application
+
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Provider invalidation flow
+
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Provider authorization flow (implicit consent)
+
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: System - OAuth2 Provider - Scopes
+
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Egolia - Users
+
+  - id: provider
+    model: authentik_providers_oauth2.oauth2provider
+    identifiers:
+      client_id: rustfs
+    attrs:
+      name: RustFS
+      client_secret: egoliauit
+      client_type: confidential
+      access_code_validity: minutes=10
+      access_token_validity: days=30
+      refresh_token_threshold: hours=1
+      refresh_token_validity: days=90
+      sub_mode: user_id
+      authorization_flow:
+        !Find [
+          authentik_flows.flow,
+          [slug, default-provider-authorization-implicit-consent],
+        ]
+      invalidation_flow:
+        !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+      signing_key:
+        !Find [
+          authentik_crypto.certificatekeypair,
+          [name, authentik Self-signed Certificate],
+        ]
+      property_mappings:
+        - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+        - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+        - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+        - !Find [
+            authentik_providers_oauth2.scopemapping,
+            [scope_name, entitlements],
+          ]
+      redirect_uris:
+        - url: http://rustfs.egolia.localhost/rustfs/admin/v3/oidc/callback/authentik
+          matching_mode: strict
+
+  - model: authentik_core.application
+    id: app
+    identifiers:
+      slug: rustfs
+    attrs:
+      name: RustFS
+      provider: !KeyOf provider
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      target: !KeyOf app
+      group: !Find [authentik_core.group, [name, Egolia Admin]]
+
+  - model: authentik_core.applicationentitlement
+    id: admin-entitlement
+    identifiers:
+      name: consoleAdmin
+      app: !KeyOf app
+
+  - model: authentik_core.applicationentitlement
+    id: readwrite-entitlement
+    identifiers:
+      name: readwrite
+      app: !KeyOf app
+
+  - model: authentik_core.applicationentitlement
+    id: diagnostics-entitlement
+    identifiers:
+      name: diagnostics
+      app: !KeyOf app
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      target: !KeyOf admin-entitlement
+      group: !Find [authentik_core.group, [name, Egolia Admin]]
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      target: !KeyOf readwrite-entitlement
+      group: !Find [authentik_core.group, [name, Egolia Admin]]
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      target: !KeyOf diagnostics-entitlement
+      group: !Find [authentik_core.group, [name, Egolia Admin]]

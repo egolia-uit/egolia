@@ -11,16 +11,6 @@ properties:
     type: string
     example: Introduction to Python
 
-  order:
-    type: string
-    example: a
-    readOnly: true
-
-  lessonType:
-    $ref: ./LessonType.yaml
-    readOnly: true
-
 required:
   - id
   - title
-  - lessonType

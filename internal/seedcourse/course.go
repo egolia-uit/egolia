@@ -79,16 +79,16 @@ func (s *Seed) createCourses() []model.Course {
 			IntroductionVideoKey: s.publicObjectStorageURL.JoinPath(s.objectStorageBucket, "flowchart_intro.mp4").String(),
 			Sections: []model.Section{
 				{
-					ID:        uuid.MustParse("00000000-0000-0000-0000-000000000011"),
-					CourseID:  uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-					Title:     "Intro",
-					SortOrder: 1,
+					ID:       uuid.MustParse("00000000-0000-0000-0000-000000000011"),
+					CourseID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					Title:    "Intro",
+					Index:    1,
 					Lessons: []model.Lesson{
 						{
 							ID:         uuid.MustParse("00000000-0000-0000-0000-000000000111"),
 							SectionID:  uuid.MustParse("00000000-0000-0000-0000-000000000011"),
 							Title:      "LĐTT Lý thuyết Lưu đồ Thuật toán",
-							SortOrder:  1,
+							Index:      1,
 							LessonType: domain.LessonTypeVideo,
 							VideoLesson: &model.VideoLesson{
 								LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000111"),
@@ -104,7 +104,7 @@ func (s *Seed) createCourses() []model.Course {
 							ID:          uuid.MustParse("00000000-0000-0000-0000-000000000112"),
 							SectionID:   uuid.MustParse("00000000-0000-0000-0000-000000000011"),
 							Title:       "Đay là cái gì",
-							SortOrder:   2,
+							Index:       2,
 							LessonType:  domain.LessonTypeTest,
 							VideoLesson: nil,
 							TestLesson: &model.TestLesson{

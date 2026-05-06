@@ -22,7 +22,15 @@
         "cwd": "{projectRoot}",
         "tty": true
       },
-      "dependsOn": ["gen:wire"],
+      "dependsOn": ["gen:wire"]
+    },
+    "debug": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dlv debug --headless --listen=127.0.0.1:33451 --accept-multiclient --output ./cmd/seedcourse/__debug_bin ./cmd/seedcourse/",
+        "tty": true
+      },
+      "dependsOn": ["build-deps"],
       "continuous": true
     },
     "lint": {
