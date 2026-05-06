@@ -3,6 +3,7 @@ package readmodel
 import (
 	"context"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/app"
@@ -49,6 +50,20 @@ func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCo
 
 	if params.Query != "" {
 		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
+	}
+	if len(params.InstructorIDs) > 0 {
+		q = q.Where("full_course_content->>'instructor_id' IN ?", params.InstructorIDs)
+	}
+	if params.Hidden != nil {
+		q = q.Where("(full_course_content->>'hidden')::boolean = ?", *params.Hidden)
+	}
+	if params.Status != nil {
+		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
+	}
+	if params.Order != nil && *params.Order == app.SearchCoursesOrderAsc {
+		q = q.Order("published_at ASC")
+	} else {
+		q = q.Order("published_at DESC")
 	}
 
 	var total int64
@@ -128,6 +143,21 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 	}, nil
 }
 
+func (r *CourseReadRepo) GetInstructorCourses(ctx context.Context, params *app.GetInstructorCourses) (*app.Paginated[app.Course], error) {
+	// unimplemented
+	return &app.Paginated[app.Course]{
+		Data: nil,
+		Pagination: app.Pagination{
+			Page:       params.Paginate.Page,
+			Limit:      params.Paginate.Limit,
+			Total:      0,
+			TotalPages: 0,
+			HasNext:    false,
+			HasPrev:    false,
+		},
+	}, nil
+}
+
 func buildPagination(page, limit, total int) app.Pagination {
 	totalPages := 0
 	if limit > 0 {
@@ -163,7 +193,7 @@ func toAppCourse(m *model.ReadCourse) *app.Course {
 func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 	sections := make([]app.CourseDetailSectionItem, 0, len(m.FullCourseContent.Sections))
 	for _, s := range m.FullCourseContent.Sections {
-		sections = append(sections, toAppSectionItem(m.CourseID, s))
+		sections = append(sections, toAppSectionItem(m.CourseID, &s))
 	}
 	return &app.CourseDetail{
 		Course:   *toAppCourse(m),
@@ -171,27 +201,26 @@ func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
 	}
 }
 
-func toAppSectionItem(courseID uuid.UUID, s model.ReadCourseSectionContent) app.CourseDetailSectionItem {
+func toAppSectionItem(courseID uuid.UUID, s *model.ReadCourseSectionContent) app.CourseDetailSectionItem {
 	lessons := make([]app.Lesson, 0, len(s.Lessons))
 	for _, l := range s.Lessons {
-		lessons = append(lessons, toAppLesson(s.ID, l))
+		lessons = append(lessons, toAppLesson(&l))
 	}
 	return app.CourseDetailSectionItem{
 		ID:       s.ID,
 		CourseID: courseID,
 		Title:    s.Title,
-		Order:    s.SortOrder,
+		Order:    strconv.Itoa(s.SortOrder),
 		Lessons:  lessons,
 	}
 }
 
-func toAppLesson(sectionID uuid.UUID, l model.ReadCourseLessonContent) app.Lesson {
+func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 	base := app.LessonBase{
 		ID:         l.ID,
-		SectionID:  sectionID,
 		Title:      l.Title,
 		LessonType: app.LessonType(l.LessonType),
-		Order:      l.SortOrder,
+		Order:      strconv.Itoa(l.SortOrder),
 	}
 	switch app.LessonType(l.LessonType) {
 	case app.LessonTypeVideo:

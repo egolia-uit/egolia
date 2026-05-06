@@ -1,0 +1,42 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "seedcourse",
+  "projectType": "application",
+  "tags": ["scope:service", "type:go"],
+  "targets": {
+    "gen:wire": {
+      "executor": "nx:run-commands",
+      "inputs": ["default"],
+      "outputs": ["{projectRoot}/wire_gen.go"],
+      "options": {
+        "command": "wire",
+        "cwd": "{projectRoot}"
+      },
+      "cache": false
+    },
+    "run": {
+      "executor": "nx:run-commands",
+      "inputs": ["default"],
+      "options": {
+        "command": "go run .",
+        "cwd": "{projectRoot}",
+        "tty": true
+      },
+      "dependsOn": ["gen:wire"],
+      "continuous": true
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "golangci-lint run ./cmd/seedcourse/... ./internal/seedcourse/...",
+        "forwardAllArgs": true,
+        "cwd": "{workspaceRoot}"
+      },
+      "cache": false,
+      "parallelism": false
+    },
+    "gen": {
+      "dependsOn": ["gen:wire"]
+    }
+  }
+}

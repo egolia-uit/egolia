@@ -64,7 +64,11 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 		return nil, errs.NewInternalGenerateID(err)
 	}
 	// TODO: Please check the key if it is right
-	key := fmt.Sprintf("video-lessons/%s/%s-%s", params.LessonID.String(), params.VideoFilename, id.String())
+	key := NewVideoKey(&NewVideoKeyParams{
+		ID:            id,
+		LessonID:      params.LessonID,
+		VideoFilename: params.VideoFilename,
+	})
 	presignParams := &s3.PutObjectInput{
 		Bucket: &s.bucket,
 		Key:    new(key),
@@ -81,6 +85,14 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 		VideoKey:  key,
 		ExpiresAt: expiration,
 	}, nil
+}
+
+func (s *S3) VideoKeyToURL(ctx context.Context, videoKey string) (string, error) {
+	url, err := s.getPresignedDownloadURL(ctx, videoKey)
+	if err != nil {
+		return "", err
+	}
+	return url, nil
 }
 
 func (s *S3) GetVideoLessonDuration(ctx context.Context, videoKey string) (time.Duration, error) {
@@ -111,4 +123,14 @@ func (s *S3) getPresignedDownloadURL(ctx context.Context, videoKey string) (stri
 		return "", err
 	}
 	return url.URL, nil
+}
+
+type NewVideoKeyParams struct {
+	ID            uuid.UUID
+	LessonID      uuid.UUID
+	VideoFilename string
+}
+
+func NewVideoKey(params *NewVideoKeyParams) string {
+	return fmt.Sprintf("video-lessons/%s/%s-%s", params.LessonID.String(), params.VideoFilename, params.ID.String())
 }

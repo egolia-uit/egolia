@@ -66,7 +66,6 @@ const (
 type Lesson interface {
 	isLesson()
 	GetID() uuid.UUID
-	GetSectionID() uuid.UUID
 	GetTitle() string
 	GetLessonType() LessonType
 	GetOrder() string
@@ -74,7 +73,6 @@ type Lesson interface {
 
 type LessonBase struct {
 	ID         uuid.UUID
-	SectionID  uuid.UUID
 	Title      string
 	LessonType LessonType
 	Order      string
@@ -86,10 +84,6 @@ func (l *LessonBase) isLesson() {}
 
 func (l *LessonBase) GetID() uuid.UUID {
 	return l.ID
-}
-
-func (l *LessonBase) GetSectionID() uuid.UUID {
-	return l.SectionID
 }
 
 func (l *LessonBase) GetTitle() string {

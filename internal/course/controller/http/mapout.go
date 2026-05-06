@@ -31,7 +31,6 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 		Title:      vl.GetTitle(),
 		Order:      new(vl.GetOrder()),
 		LessonType: course.LessonTypeVideo,
-		SectionId:  new(vl.GetSectionID()),
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
 		VideoKey:   nil,
@@ -48,7 +47,6 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 		Title:      t.GetTitle(),
 		LessonType: course.LessonTypeTest,
 		Type:       testLessonTypeToDTO(t.TestLessonType),
-		SectionId:  new(t.GetSectionID()),
 		Order:      new(t.GetOrder()),
 		Questions:  questions,
 	}
@@ -107,32 +105,35 @@ func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: result.Course.Introduction.VideoUrl,
 		},
-		Sections: func() []course.CourseDetailSectionItem {
-			items := make([]course.CourseDetailSectionItem, 0, len(result.Sections))
-			for _, s := range result.Sections {
-				items = append(items, course.CourseDetailSectionItem{
-					Id:       (*types.UUID)(&s.ID),
-					CourseId: (*types.UUID)(&s.CourseID),
-					Title:    s.Title,
-					Order:    &s.Order,
-					Lessons: func() []course.Lesson {
-						lessons := make([]course.Lesson, 0, len(s.Lessons))
-						for _, l := range s.Lessons {
-							lessons = append(lessons, course.Lesson{
-								Id:         new(l.GetID()),
-								Title:      l.GetTitle(),
-								Order:      new(l.GetOrder()),
-								LessonType: lessonTypeToDTO(l.GetLessonType()),
-								SectionId:  new(l.GetSectionID()),
-							})
-						}
-						return lessons
-					}(),
-				})
-			}
-			return items
-		}(),
+		Sections: sectionItemsToDTO(result.Sections),
 	}
+}
+
+func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDetailSectionItem {
+	items := make([]course.CourseDetailSectionItem, 0, len(sections))
+	for _, s := range sections {
+		items = append(items, course.CourseDetailSectionItem{
+			Id:       (*types.UUID)(&s.ID),
+			CourseId: (*types.UUID)(&s.CourseID),
+			Title:    s.Title,
+			Order:    &s.Order,
+			Lessons:  sectionLessonsToDTO(s.Lessons),
+		})
+	}
+	return items
+}
+
+func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
+	out := make([]course.Lesson, 0, len(lessons))
+	for _, l := range lessons {
+		out = append(out, course.Lesson{
+			Id:         new(l.GetID()),
+			Title:      l.GetTitle(),
+			Order:      new(l.GetOrder()),
+			LessonType: lessonTypeToDTO(l.GetLessonType()),
+		})
+	}
+	return out
 }
 
 func courseToDTO(c *app.Course) *course.Course {

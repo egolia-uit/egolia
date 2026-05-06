@@ -20,6 +20,7 @@ var ProviderSetQueries = wire.NewSet(
 	NewGetLessonDetailHandler,
 	NewSearchCoursesHandler,
 	NewGetCoursesHandler,
+	NewGetInstructorCoursesHandler,
 	wire.Struct(new(Queries), "*"),
 )
 

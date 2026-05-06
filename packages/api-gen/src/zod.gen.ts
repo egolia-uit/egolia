@@ -58,13 +58,10 @@ export const zCourseSection = z.object({
     courseId: zCourseId
 });
 
-export const zCourseSectionPropertiesId = z.uuid().readonly();
-
 export const zCourseLessonType = z.enum(['video', 'test']);
 
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
-    sectionId: zCourseSectionPropertiesId.optional(),
     title: z.string(),
     order: z.string().readonly().optional(),
     lessonType: zCourseLessonType

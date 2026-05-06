@@ -40,14 +40,18 @@
       "dependsOn": ["^build*", "^bundle*", "^gen"],
       "cache": true
     },
-    "dev": {
+    "run": {
       "configurations": {
-        "mon": {}
+        "development": {},
+        "mon": {},
+        "production": {}
       }
     },
     "debug": {
       "configurations": {
-        "mon": {}
+        "development": {},
+        "mon": {},
+        "production": {}
       }
     },
     "test": {

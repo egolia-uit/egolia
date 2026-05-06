@@ -506,6 +506,78 @@ func (_m *MockEnrollmentRepo) EXPECT() *MockEnrollmentRepo_Expecter {
 	return &MockEnrollmentRepo_Expecter{mock: &_m.Mock}
 }
 
+// ExistsByCourseAndLearner provides a mock function for the type MockEnrollmentRepo
+func (_mock *MockEnrollmentRepo) ExistsByCourseAndLearner(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error) {
+	ret := _mock.Called(ctx, courseID, learnerID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ExistsByCourseAndLearner")
+	}
+
+	var r0 bool
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, string) (bool, error)); ok {
+		return returnFunc(ctx, courseID, learnerID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, string) bool); ok {
+		r0 = returnFunc(ctx, courseID, learnerID)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uuid.UUID, string) error); ok {
+		r1 = returnFunc(ctx, courseID, learnerID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockEnrollmentRepo_ExistsByCourseAndLearner_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExistsByCourseAndLearner'
+type MockEnrollmentRepo_ExistsByCourseAndLearner_Call struct {
+	*mock.Call
+}
+
+// ExistsByCourseAndLearner is a helper method to define mock.On call
+//   - ctx context.Context
+//   - courseID uuid.UUID
+//   - learnerID string
+func (_e *MockEnrollmentRepo_Expecter) ExistsByCourseAndLearner(ctx interface{}, courseID interface{}, learnerID interface{}) *MockEnrollmentRepo_ExistsByCourseAndLearner_Call {
+	return &MockEnrollmentRepo_ExistsByCourseAndLearner_Call{Call: _e.mock.On("ExistsByCourseAndLearner", ctx, courseID, learnerID)}
+}
+
+func (_c *MockEnrollmentRepo_ExistsByCourseAndLearner_Call) Run(run func(ctx context.Context, courseID uuid.UUID, learnerID string)) *MockEnrollmentRepo_ExistsByCourseAndLearner_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *MockEnrollmentRepo_ExistsByCourseAndLearner_Call) Return(b bool, err error) *MockEnrollmentRepo_ExistsByCourseAndLearner_Call {
+	_c.Call.Return(b, err)
+	return _c
+}
+
+func (_c *MockEnrollmentRepo_ExistsByCourseAndLearner_Call) RunAndReturn(run func(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error)) *MockEnrollmentRepo_ExistsByCourseAndLearner_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ExistsByCourseID provides a mock function for the type MockEnrollmentRepo
 func (_mock *MockEnrollmentRepo) ExistsByCourseID(ctx context.Context, courseID uuid.UUID) (bool, error) {
 	ret := _mock.Called(ctx, courseID)
@@ -568,6 +640,80 @@ func (_c *MockEnrollmentRepo_ExistsByCourseID_Call) Return(b bool, err error) *M
 }
 
 func (_c *MockEnrollmentRepo_ExistsByCourseID_Call) RunAndReturn(run func(ctx context.Context, courseID uuid.UUID) (bool, error)) *MockEnrollmentRepo_ExistsByCourseID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetByCourseAndLearner provides a mock function for the type MockEnrollmentRepo
+func (_mock *MockEnrollmentRepo) GetByCourseAndLearner(ctx context.Context, params EnrollmentRepoGetByCourseAndLearner, forUpdate bool) (*Enrollment, error) {
+	ret := _mock.Called(ctx, params, forUpdate)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByCourseAndLearner")
+	}
+
+	var r0 *Enrollment
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, EnrollmentRepoGetByCourseAndLearner, bool) (*Enrollment, error)); ok {
+		return returnFunc(ctx, params, forUpdate)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, EnrollmentRepoGetByCourseAndLearner, bool) *Enrollment); ok {
+		r0 = returnFunc(ctx, params, forUpdate)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Enrollment)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, EnrollmentRepoGetByCourseAndLearner, bool) error); ok {
+		r1 = returnFunc(ctx, params, forUpdate)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockEnrollmentRepo_GetByCourseAndLearner_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByCourseAndLearner'
+type MockEnrollmentRepo_GetByCourseAndLearner_Call struct {
+	*mock.Call
+}
+
+// GetByCourseAndLearner is a helper method to define mock.On call
+//   - ctx context.Context
+//   - params EnrollmentRepoGetByCourseAndLearner
+//   - forUpdate bool
+func (_e *MockEnrollmentRepo_Expecter) GetByCourseAndLearner(ctx interface{}, params interface{}, forUpdate interface{}) *MockEnrollmentRepo_GetByCourseAndLearner_Call {
+	return &MockEnrollmentRepo_GetByCourseAndLearner_Call{Call: _e.mock.On("GetByCourseAndLearner", ctx, params, forUpdate)}
+}
+
+func (_c *MockEnrollmentRepo_GetByCourseAndLearner_Call) Run(run func(ctx context.Context, params EnrollmentRepoGetByCourseAndLearner, forUpdate bool)) *MockEnrollmentRepo_GetByCourseAndLearner_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 EnrollmentRepoGetByCourseAndLearner
+		if args[1] != nil {
+			arg1 = args[1].(EnrollmentRepoGetByCourseAndLearner)
+		}
+		var arg2 bool
+		if args[2] != nil {
+			arg2 = args[2].(bool)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *MockEnrollmentRepo_GetByCourseAndLearner_Call) Return(enrollment *Enrollment, err error) *MockEnrollmentRepo_GetByCourseAndLearner_Call {
+	_c.Call.Return(enrollment, err)
+	return _c
+}
+
+func (_c *MockEnrollmentRepo_GetByCourseAndLearner_Call) RunAndReturn(run func(ctx context.Context, params EnrollmentRepoGetByCourseAndLearner, forUpdate bool) (*Enrollment, error)) *MockEnrollmentRepo_GetByCourseAndLearner_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -960,6 +1106,78 @@ type MockReviewRepo_Expecter struct {
 
 func (_m *MockReviewRepo) EXPECT() *MockReviewRepo_Expecter {
 	return &MockReviewRepo_Expecter{mock: &_m.Mock}
+}
+
+// ExistsByCourseAndLearner provides a mock function for the type MockReviewRepo
+func (_mock *MockReviewRepo) ExistsByCourseAndLearner(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error) {
+	ret := _mock.Called(ctx, courseID, learnerID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ExistsByCourseAndLearner")
+	}
+
+	var r0 bool
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, string) (bool, error)); ok {
+		return returnFunc(ctx, courseID, learnerID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, string) bool); ok {
+		r0 = returnFunc(ctx, courseID, learnerID)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uuid.UUID, string) error); ok {
+		r1 = returnFunc(ctx, courseID, learnerID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockReviewRepo_ExistsByCourseAndLearner_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExistsByCourseAndLearner'
+type MockReviewRepo_ExistsByCourseAndLearner_Call struct {
+	*mock.Call
+}
+
+// ExistsByCourseAndLearner is a helper method to define mock.On call
+//   - ctx context.Context
+//   - courseID uuid.UUID
+//   - learnerID string
+func (_e *MockReviewRepo_Expecter) ExistsByCourseAndLearner(ctx interface{}, courseID interface{}, learnerID interface{}) *MockReviewRepo_ExistsByCourseAndLearner_Call {
+	return &MockReviewRepo_ExistsByCourseAndLearner_Call{Call: _e.mock.On("ExistsByCourseAndLearner", ctx, courseID, learnerID)}
+}
+
+func (_c *MockReviewRepo_ExistsByCourseAndLearner_Call) Run(run func(ctx context.Context, courseID uuid.UUID, learnerID string)) *MockReviewRepo_ExistsByCourseAndLearner_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *MockReviewRepo_ExistsByCourseAndLearner_Call) Return(b bool, err error) *MockReviewRepo_ExistsByCourseAndLearner_Call {
+	_c.Call.Return(b, err)
+	return _c
+}
+
+func (_c *MockReviewRepo_ExistsByCourseAndLearner_Call) RunAndReturn(run func(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error)) *MockReviewRepo_ExistsByCourseAndLearner_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // Save provides a mock function for the type MockReviewRepo

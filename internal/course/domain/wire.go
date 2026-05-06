@@ -3,11 +3,9 @@ package domain
 import "github.com/goforj/wire"
 
 var ProviderSet = wire.NewSet(
-	NewCreateCourseSvc,
 	NewDeleteCourseSvc,
 	NewMoveLessonSvc,
 	NewEnrollInCourseSvc,
-	NewUpdateCourseSvc,
 	NewFinishCourseSvc,
 	NewReviewCourseSvc,
 )
