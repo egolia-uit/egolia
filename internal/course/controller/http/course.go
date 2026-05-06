@@ -130,8 +130,10 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 	if request.Params.Order != nil {
 		order = app.SearchCoursesOrder(*request.Params.Order)
 	}
+	instructorID := (*string)(nil)
 
 	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
+		InstructorID: instructorID,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,

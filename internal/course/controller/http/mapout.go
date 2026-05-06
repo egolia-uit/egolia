@@ -103,6 +103,7 @@ func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 		Hidden:               &result.Course.Hidden,
 		Status:               (*course.CourseStatus)(&result.Course.Status),
 		IntroductionVideoUrl: result.Course.IntroductionVideoURL,
+		IntroductionVideoKey: nil,
 		Sections:             sectionItemsToDTO(result.Sections),
 	}
 }
@@ -145,6 +146,7 @@ func courseToDTO(c *app.Course) *course.Course {
 		Hidden:               &c.Hidden,
 		Status:               (*course.CourseStatus)(&c.Status),
 		IntroductionVideoUrl: c.IntroductionVideoURL,
+		IntroductionVideoKey: nil,
 	}
 	return dto
 }

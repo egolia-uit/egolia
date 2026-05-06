@@ -185,6 +185,7 @@ func toAppCourse(m *model.ReadCourse) *app.Course {
 		Price:                int64(m.Price),
 		Overview:             m.FullCourseContent.Overview,
 		IntroductionVideoURL: &m.FullCourseContent.IntroVideoURL,
+		IntroductionVideoKey: nil,
 	}
 }
 
