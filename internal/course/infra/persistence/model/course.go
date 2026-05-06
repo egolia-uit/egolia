@@ -33,8 +33,8 @@ func CourseFromDomain(c *domain.Course) *Course {
 	}
 
 	sections := make([]Section, 0, len(c.Sections()))
-	for _, s := range c.Sections() {
-		sections = append(sections, *SectionFromDomain(s))
+	for i, s := range c.Sections() {
+		sections = append(sections, *SectionFromDomain(i, s))
 	}
 
 	return &Course{

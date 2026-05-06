@@ -54,14 +54,12 @@ export const zCourseCourse = z.object({
 export const zCourseSection = z.object({
     id: z.uuid().readonly(),
     title: z.string().min(1).max(255),
-    order: z.string().readonly().optional(),
     courseId: zCourseId
 });
 
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
-    title: z.string(),
-    order: z.string().readonly().optional()
+    title: z.string()
 });
 
 export const zCourseCourseDetailSectionItem = zCourseSection.and(z.object({
@@ -144,10 +142,10 @@ export const zCourseVideoLesson = zCourseLesson.and(z.object({
 
 export const zCourseLessonDetail = z.union([
     z.object({
-        lessonType: z.literal('course_VideoLesson')
+        lessonType: z.literal('video')
     }).and(zCourseVideoLesson),
     z.object({
-        lessonType: z.literal('course_TestLesson')
+        lessonType: z.literal('test')
     }).and(zCourseTestLesson)
 ]);
 
@@ -337,10 +335,10 @@ export const zCourseVideoLessonWritable = zCourseLessonWritable.and(z.object({
 
 export const zCourseLessonDetailWritable = z.union([
     z.object({
-        lessonType: z.literal('course_VideoLessonWritable')
+        lessonType: z.literal('video')
     }).and(zCourseVideoLessonWritable),
     z.object({
-        lessonType: z.literal('course_TestLessonWritable')
+        lessonType: z.literal('test')
     }).and(zCourseTestLessonWritable)
 ]);
 

@@ -85,14 +85,12 @@ export type CourseCourse = {
 export type CourseSection = {
     readonly id: string;
     title: string;
-    readonly order?: string;
     courseId: CourseId;
 };
 
 export type CourseLesson = {
     readonly id: string;
     title: string;
-    readonly order?: string;
 };
 
 export type CourseCourseDetailSectionItem = CourseSection & {
@@ -175,9 +173,9 @@ export type CourseVideoLesson = CourseLesson & {
 };
 
 export type CourseLessonDetail = ({
-    lessonType: 'course_VideoLesson';
+    lessonType: 'video';
 } & CourseVideoLesson) | ({
-    lessonType: 'course_TestLesson';
+    lessonType: 'test';
 } & CourseTestLesson);
 
 /**
@@ -421,9 +419,9 @@ export type CourseVideoLessonWritable = CourseLessonWritable & {
 };
 
 export type CourseLessonDetailWritable = ({
-    lessonType: 'course_VideoLessonWritable';
+    lessonType: 'video';
 } & CourseVideoLessonWritable) | ({
-    lessonType: 'course_TestLessonWritable';
+    lessonType: 'test';
 } & CourseTestLessonWritable);
 
 export type BillingTransactionWritable = {

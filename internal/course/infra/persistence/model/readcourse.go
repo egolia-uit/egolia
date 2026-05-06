@@ -25,7 +25,6 @@ type ReadCourseQuestionContent struct {
 type ReadCourseLessonContent struct {
 	ID         uuid.UUID                   `json:"id"`
 	Title      string                      `json:"title"`
-	SortOrder  int                         `json:"sort_order"`
 	LessonType string                      `json:"lesson_type"`
 	VideoKey   *string                     `json:"video_key,omitempty"`
 	Duration   *int64                      `json:"duration_seconds,omitempty"`
@@ -115,11 +114,9 @@ func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
 }
 
 func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
-	lessonOrder, _ := strconv.Atoi(l.Order())
 	base := ReadCourseLessonContent{
 		ID:         l.ID(),
 		Title:      l.Title(),
-		SortOrder:  lessonOrder,
 		LessonType: "",
 		VideoKey:   nil,
 		Duration:   nil,

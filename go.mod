@@ -46,7 +46,6 @@ require (
 	gopkg.in/vansante/go-ffprobe.v2 v2.3.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
-	roci.dev/fracdex v0.0.0-20241211175510-82d7df79e312
 )
 
 require (

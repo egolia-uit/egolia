@@ -11,11 +11,6 @@ properties:
     type: string
     example: Introduction to Python
 
-  order:
-    type: string
-    example: a
-    readOnly: true
-
 required:
   - id
   - title

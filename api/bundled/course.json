@@ -3246,11 +3246,6 @@
             "maxLength": 255,
             "example": "OOP Fundamentals"
           },
-          "order": {
-            "type": "string",
-            "example": "a",
-            "readOnly": true
-          },
           "courseId": {
             "$ref": "#/components/schemas/id"
           }
@@ -3273,11 +3268,6 @@
           "title": {
             "type": "string",
             "example": "Introduction to Python"
-          },
-          "order": {
-            "type": "string",
-            "example": "a",
-            "readOnly": true
           }
         },
         "required": [
@@ -3667,7 +3657,11 @@
           }
         ],
         "discriminator": {
-          "propertyName": "lessonType"
+          "propertyName": "lessonType",
+          "mapping": {
+            "video": "#/components/schemas/VideoLesson",
+            "test": "#/components/schemas/TestLesson"
+          }
         }
       }
     },

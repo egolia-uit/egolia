@@ -29,7 +29,6 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 	return course.VideoLesson{
 		Id:         new(vl.GetID()),
 		Title:      vl.GetTitle(),
-		Order:      new(vl.GetOrder()),
 		LessonType: course.VideoLessonLessonTypeVideo,
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
@@ -47,7 +46,6 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 		Title:      t.GetTitle(),
 		LessonType: course.TestLessonLessonTypeTest,
 		Type:       testLessonTypeToDTO(t.TestLessonType),
-		Order:      new(t.GetOrder()),
 		Questions:  questions,
 	}
 }
@@ -116,7 +114,6 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 			Id:       (*types.UUID)(&s.ID),
 			CourseId: (*types.UUID)(&s.CourseID),
 			Title:    s.Title,
-			Order:    &s.Order,
 			Lessons:  sectionLessonsToDTO(s.Lessons),
 		})
 	}
@@ -129,7 +126,6 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 		out = append(out, course.Lesson{
 			Id:    new(l.GetID()),
 			Title: l.GetTitle(),
-			Order: new(l.GetOrder()),
 		})
 	}
 	return out

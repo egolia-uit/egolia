@@ -281,7 +281,6 @@ type CourseDetailSectionItem struct {
 	CourseId *Id                 `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
 	Lessons  []Lesson            `json:"lessons"`
-	Order    *string             `json:"order,omitempty"`
 	Title    string              `json:"title"`
 }
 
@@ -315,7 +314,6 @@ type Error struct {
 // Lesson defines model for Lesson.
 type Lesson struct {
 	Id    *openapi_types.UUID `json:"id,omitempty"`
-	Order *string             `json:"order,omitempty"`
 	Title string              `json:"title"`
 }
 
@@ -382,7 +380,6 @@ type Pagination struct {
 type Section struct {
 	CourseId *Id                 `json:"courseId,omitempty"`
 	Id       *openapi_types.UUID `json:"id,omitempty"`
-	Order    *string             `json:"order,omitempty"`
 	Title    string              `json:"title"`
 }
 
@@ -397,7 +394,6 @@ type TestAnswer struct {
 type TestLesson struct {
 	Id         *openapi_types.UUID  `json:"id,omitempty"`
 	LessonType TestLessonLessonType `json:"lessonType"`
-	Order      *string              `json:"order,omitempty"`
 	Questions  []TestQuestion       `json:"questions"`
 	Title      string               `json:"title"`
 	Type       TestLessonType       `json:"type"`
@@ -432,7 +428,6 @@ type VideoLesson struct {
 	Duration   int64                 `json:"duration"`
 	Id         *openapi_types.UUID   `json:"id,omitempty"`
 	LessonType VideoLessonLessonType `json:"lessonType"`
-	Order      *string               `json:"order,omitempty"`
 	Title      string                `json:"title"`
 	VideoKey   *string               `json:"videoKey,omitempty"`
 	VideoUrl   *string               `json:"videoUrl,omitempty"`
@@ -747,7 +742,7 @@ func (t LessonDetail) AsVideoLesson() (VideoLesson, error) {
 
 // FromVideoLesson overwrites any union data inside the LessonDetail as the provided VideoLesson
 func (t *LessonDetail) FromVideoLesson(v VideoLesson) error {
-	v.LessonType = "VideoLesson"
+	v.LessonType = "video"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -755,7 +750,7 @@ func (t *LessonDetail) FromVideoLesson(v VideoLesson) error {
 
 // MergeVideoLesson performs a merge with any union data inside the LessonDetail, using the provided VideoLesson
 func (t *LessonDetail) MergeVideoLesson(v VideoLesson) error {
-	v.LessonType = "VideoLesson"
+	v.LessonType = "video"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -775,7 +770,7 @@ func (t LessonDetail) AsTestLesson() (TestLesson, error) {
 
 // FromTestLesson overwrites any union data inside the LessonDetail as the provided TestLesson
 func (t *LessonDetail) FromTestLesson(v TestLesson) error {
-	v.LessonType = "TestLesson"
+	v.LessonType = "test"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -783,7 +778,7 @@ func (t *LessonDetail) FromTestLesson(v TestLesson) error {
 
 // MergeTestLesson performs a merge with any union data inside the LessonDetail, using the provided TestLesson
 func (t *LessonDetail) MergeTestLesson(v TestLesson) error {
-	v.LessonType = "TestLesson"
+	v.LessonType = "test"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -808,9 +803,9 @@ func (t LessonDetail) ValueByDiscriminator() (interface{}, error) {
 		return nil, err
 	}
 	switch discriminator {
-	case "TestLesson":
+	case "test":
 		return t.AsTestLesson()
-	case "VideoLesson":
+	case "video":
 		return t.AsVideoLesson()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
