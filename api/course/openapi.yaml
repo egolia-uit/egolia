@@ -64,10 +64,10 @@ paths:
     $ref: ./paths/courses_{courseId}_reviews.yaml
   /course/courses/{courseId}/trigger-learning-reminder:
     $ref: ./paths/courses_{courseId}_trigger-learning-reminder.yaml
-  /course/courses/{courseId}/unbookmark:
-    $ref: ./paths/courses_{courseId}_unbookmark.yaml
-  /course/courses/{courseId}/unhide:
-    $ref: ./paths/courses_{courseId}_unhide.yaml
+  # /course/courses/{courseId}/unbookmark:
+  #   $ref: ./paths/courses_{courseId}_unbookmark.yaml
+  # /course/courses/{courseId}/unhide:
+  #   $ref: ./paths/courses_{courseId}_unhide.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
   /course/courses/me/enrolled:

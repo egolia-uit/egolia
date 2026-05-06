@@ -418,14 +418,6 @@ func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request cou
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
-	return nil, errs.Unimplemented
-}
-
-func (h *StrictHandler) UnhideCourse(ctx context.Context, request course.UnhideCourseRequestObject) (course.UnhideCourseResponseObject, error) {
-	return nil, errs.Unimplemented
-}
-
 func (h *StrictHandler) ReplyLessonComment(ctx context.Context, request course.ReplyLessonCommentRequestObject) (course.ReplyLessonCommentResponseObject, error) {
 	return nil, errs.Unimplemented
 }

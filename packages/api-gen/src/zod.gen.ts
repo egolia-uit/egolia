@@ -613,24 +613,6 @@ export const zTriggerLearningReminderPath = z.object({
  */
 export const zTriggerLearningReminderResponse = z.void();
 
-export const zUnbookmarkCoursePath = z.object({
-    courseId: z.uuid()
-});
-
-/**
- * Course unbookmarked successfully
- */
-export const zUnbookmarkCourseResponse = z.void();
-
-export const zUnhideCoursePath = z.object({
-    courseId: z.uuid()
-});
-
-/**
- * Course unhidden
- */
-export const zUnhideCourseResponse = z.void();
-
 export const zDeleteCoursePath = z.object({
     courseId: z.uuid()
 });
