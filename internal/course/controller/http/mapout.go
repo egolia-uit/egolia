@@ -137,10 +137,10 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 
 func courseToDTO(c *app.Course) *course.Course {
 	dto := &course.Course{
-		Id:               (*types.UUID)(&c.ID),
+		Id:               &c.ID,
 		Title:            c.Title,
 		InstructorId:     &c.InstructorID,
-		OriginalCourseId: (*types.UUID)(&c.OriginalCourseID),
+		OriginalCourseId: &c.OriginalCourseID,
 		Price:            c.Price,
 		Overview:         &c.Overview,
 		Hidden:           &c.Hidden,
