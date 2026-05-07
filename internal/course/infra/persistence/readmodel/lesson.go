@@ -42,10 +42,8 @@ func (r *LessonReadRepo) GetVideoLessonDetail(ctx context.Context, params *app.G
 	return &app.VideoLesson{
 		LessonBase: app.LessonBase{
 			ID:         m.ID,
-			SectionID:  m.SectionID,
 			Title:      m.Title,
 			LessonType: app.LessonTypeVideo,
-			Order:      m.SortOrder,
 		},
 		VideoURL: m.VideoLesson.VideoKey,
 		Duration: time.Duration(m.VideoLesson.Duration) * time.Second,
@@ -81,7 +79,7 @@ func (r *LessonReadRepo) GetTestLessonDetail(ctx context.Context, params *app.Ge
 		}
 		questions = append(questions, app.TestQuestion{
 			ID:       q.ID,
-			Question: q.QuestionText,
+			Question: q.Question,
 			Answers:  answers,
 		})
 	}
@@ -89,10 +87,8 @@ func (r *LessonReadRepo) GetTestLessonDetail(ctx context.Context, params *app.Ge
 	return &app.TestLesson{
 		LessonBase: app.LessonBase{
 			ID:         m.ID,
-			SectionID:  m.SectionID,
 			Title:      m.Title,
 			LessonType: app.LessonTypeTest,
-			Order:      m.SortOrder,
 		},
 		TestLessonType: app.TestLessonType(m.TestLesson.Type),
 		Questions:      questions,

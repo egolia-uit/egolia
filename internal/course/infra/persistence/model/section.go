@@ -1,7 +1,6 @@
 package model
 
 import (
-	"sort"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
@@ -13,7 +12,7 @@ type Section struct {
 	ID        uuid.UUID      `gorm:"type:uuid;primaryKey"`
 	CourseID  uuid.UUID      `gorm:"type:uuid;not null"`
 	Title     string         `gorm:"type:varchar(255);not null"`
-	SortOrder string         `gorm:"column:sort_order;type:text;not null;default:''"`
+	Index     int            `gorm:"column:index;type:integer;not null;default:0"`
 	Lessons   []Lesson       `gorm:"foreignKey:SectionID"`
 	CreatedAt time.Time      `gorm:"autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime"`
@@ -22,15 +21,15 @@ type Section struct {
 
 func (Section) TableName() string { return "sections" }
 
-func SectionFromDomain(s *domain.Section) *Section {
+func SectionFromDomain(index int, s *domain.Section) *Section {
 	var deletedAt gorm.DeletedAt
 	if s.DeletedAt() != nil {
 		deletedAt = gorm.DeletedAt{Time: *s.DeletedAt(), Valid: true}
 	}
 
 	lessons := make([]Lesson, 0, len(s.Lessons()))
-	for _, l := range s.Lessons() {
-		if lm := LessonFromDomain(l); lm != nil {
+	for i, l := range s.Lessons() {
+		if lm := LessonFromDomain(i, l, s.ID()); lm != nil {
 			lessons = append(lessons, *lm)
 		}
 	}
@@ -39,7 +38,7 @@ func SectionFromDomain(s *domain.Section) *Section {
 		ID:        s.ID(),
 		CourseID:  s.CourseID(),
 		Title:     s.Title(),
-		SortOrder: s.Order(),
+		Index:     index,
 		Lessons:   lessons,
 		CreatedAt: time.Time{},
 		UpdatedAt: time.Time{},
@@ -59,9 +58,5 @@ func (m *Section) ToDomain() *domain.Section {
 			lessons = append(lessons, l)
 		}
 	}
-	sort.Slice(lessons, func(i, j int) bool {
-		return lessons[i].Order() < lessons[j].Order()
-	})
-
-	return domain.UnmarshalSection(m.ID, m.CourseID, m.Title, m.SortOrder, deletedAt, lessons)
+	return domain.UnmarshalSection(m.ID, m.CourseID, m.Title, m.Index, deletedAt, lessons)
 }

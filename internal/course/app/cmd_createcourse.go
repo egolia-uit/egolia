@@ -10,30 +10,27 @@ import (
 )
 
 type CreateCourse struct {
-	ID           uuid.UUID
-	Title        string
-	InstructorID string
-	Price        int64
-	Overview     string
-	Introduction CourseLandingPageIntroduction
+	ID                   uuid.UUID
+	Title                string
+	InstructorID         string
+	Price                int64
+	Overview             string
+	IntroductionVideoKey string
 }
 
 type CreateCourseCmd Cmd[CreateCourse]
 
 type CreateCourseHandler struct {
-	createCourseSvc *domain.CreateCourseSvc
-	uow             domain.UnitOfWork
+	uow domain.UnitOfWork
 }
 
 func NewCreateCourseHandler(
-	createCourseSvc *domain.CreateCourseSvc,
 	uow domain.UnitOfWork,
 	logger *slog.Logger,
 	tracer Tracer,
 ) CreateCourseCmd {
 	handler := &CreateCourseHandler{
-		createCourseSvc: createCourseSvc,
-		uow:             uow,
+		uow: uow,
 	}
 	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
@@ -41,16 +38,14 @@ func NewCreateCourseHandler(
 var _ Cmd[CreateCourse] = (*CreateCourseHandler)(nil)
 
 func (h *CreateCourseHandler) Handle(ctx context.Context, cmd *CreateCourse) error {
-	course, err := h.createCourseSvc.Handle(&domain.CreateCourse{
-		ID:               cmd.ID,
-		Title:            cmd.Title,
-		OriginalCourseID: uuid.Nil,
-		InstructorID:     cmd.InstructorID,
-		Price:            float64(cmd.Price),
-		Overview:         cmd.Overview,
-		Hidden:           false,
-		Introduction:     domain.NewCourseLandingPageIntroduction(cmd.Introduction.VideoUrl),
-	})
+	course, err := domain.NewCourse(
+		cmd.ID,
+		cmd.Title,
+		cmd.InstructorID,
+		float64(cmd.Price),
+		cmd.Overview,
+		cmd.IntroductionVideoKey,
+	)
 	if err != nil {
 		return err
 	}

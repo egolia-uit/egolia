@@ -17,7 +17,7 @@ type Course struct {
 	Price                float64             `gorm:"not null;default:0"`
 	Overview             string              `gorm:"type:text;not null;default:''"`
 	Hidden               bool                `gorm:"not null;default:false"`
-	IntroductionVideoURL string              `gorm:"column:introduction_video_url;type:text;not null;default:''"`
+	IntroductionVideoKey string              `gorm:"column:introduction_video_key;type:text;not null;default:''"`
 	Sections             []Section           `gorm:"foreignKey:CourseID"`
 	CreatedAt            time.Time           `gorm:"autoCreateTime"`
 	UpdatedAt            time.Time           `gorm:"autoUpdateTime"`
@@ -33,8 +33,8 @@ func CourseFromDomain(c *domain.Course) *Course {
 	}
 
 	sections := make([]Section, 0, len(c.Sections()))
-	for _, s := range c.Sections() {
-		sections = append(sections, *SectionFromDomain(s))
+	for i, s := range c.Sections() {
+		sections = append(sections, *SectionFromDomain(i, s))
 	}
 
 	return &Course{
@@ -46,7 +46,7 @@ func CourseFromDomain(c *domain.Course) *Course {
 		Price:                c.Price(),
 		Overview:             c.Overview(),
 		Hidden:               c.Hidden(),
-		IntroductionVideoURL: c.Introduction().VideoURL(),
+		IntroductionVideoKey: c.IntroductionVideoKey(),
 		Sections:             sections,
 		CreatedAt:            time.Time{},
 		UpdatedAt:            time.Time{},
@@ -61,8 +61,6 @@ func (m *Course) ToDomain() *domain.Course {
 	}
 
 	instructorID := m.InstructorID
-	intro := domain.NewCourseLandingPageIntroduction(m.IntroductionVideoURL)
-
 	sections := make([]*domain.Section, 0, len(m.Sections))
 	for i := range m.Sections {
 		sections = append(sections, m.Sections[i].ToDomain())
@@ -77,7 +75,7 @@ func (m *Course) ToDomain() *domain.Course {
 		m.Price,
 		m.Overview,
 		m.Hidden,
-		intro,
+		m.IntroductionVideoKey,
 		deletedAt,
 		sections,
 	)

@@ -24,7 +24,6 @@ type ReadCourseQuestionContent struct {
 type ReadCourseLessonContent struct {
 	ID         uuid.UUID                   `json:"id"`
 	Title      string                      `json:"title"`
-	SortOrder  string                      `json:"sort_order"`
 	LessonType string                      `json:"lesson_type"`
 	VideoKey   *string                     `json:"video_key,omitempty"`
 	Duration   *int64                      `json:"duration_seconds,omitempty"`
@@ -35,7 +34,7 @@ type ReadCourseLessonContent struct {
 type ReadCourseSectionContent struct {
 	ID        uuid.UUID                 `json:"id"`
 	Title     string                    `json:"title"`
-	SortOrder string                    `json:"sort_order"`
+	SortOrder int                       `json:"sort_order"`
 	Lessons   []ReadCourseLessonContent `json:"lessons"`
 }
 
@@ -55,13 +54,25 @@ type ReadCourse struct {
 	CourseID          uuid.UUID         `gorm:"type:uuid;primaryKey;column:course_id"`
 	Title             string            `gorm:"type:varchar(255);not null"`
 	Price             float64           `gorm:"not null;default:0"`
+	Hidden            bool              `gorm:"column:hidden;not null;default:false"`
 	FullCourseContent ReadCourseContent `gorm:"column:full_course_content;serializer:json;type:jsonb;not null"`
 	PublishedAt       *time.Time        `gorm:"column:published_at"`
 }
 
 func (ReadCourse) TableName() string { return "read_courses" }
 
-func ReadCourseFromDomain(c *domain.Course) *ReadCourse {
+func ReadCourseFromDomain(
+	c *domain.Course,
+	videoKeyToURL func(videoKey string) (string, error),
+) (*ReadCourse, error) {
+	var videoURL string
+	if key := c.IntroductionVideoKey(); key != "" {
+		var err error
+		videoURL, err = videoKeyToURL(key)
+		if err != nil {
+			return nil, err
+		}
+	}
 	sections := make([]ReadCourseSectionContent, 0, len(c.Sections()))
 	for _, s := range c.Sections() {
 		sections = append(sections, buildSectionContent(s))
@@ -73,7 +84,7 @@ func ReadCourseFromDomain(c *domain.Course) *ReadCourse {
 		Status:        string(c.Status()),
 		Price:         c.Price(),
 		Overview:      c.Overview(),
-		IntroVideoURL: c.Introduction().VideoURL(),
+		IntroVideoURL: videoURL,
 		Sections:      sections,
 	}
 
@@ -87,9 +98,10 @@ func ReadCourseFromDomain(c *domain.Course) *ReadCourse {
 		CourseID:          c.ID(),
 		Title:             c.Title(),
 		Price:             c.Price(),
+		Hidden:            c.Hidden(),
 		FullCourseContent: content,
 		PublishedAt:       publishedAt,
-	}
+	}, nil
 }
 
 func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
@@ -109,7 +121,6 @@ func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
 	base := ReadCourseLessonContent{
 		ID:         l.ID(),
 		Title:      l.Title(),
-		SortOrder:  l.Order(),
 		LessonType: "",
 		VideoKey:   nil,
 		Duration:   nil,

@@ -3246,11 +3246,6 @@
             "maxLength": 255,
             "example": "OOP Fundamentals"
           },
-          "order": {
-            "type": "string",
-            "example": "a",
-            "readOnly": true
-          },
           "courseId": {
             "$ref": "#/components/schemas/id"
           }
@@ -3261,20 +3256,6 @@
           "title"
         ]
       },
-      "Section_properties-id": {
-        "type": "string",
-        "format": "uuid",
-        "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
-        "readOnly": true
-      },
-      "LessonType": {
-        "type": "string",
-        "enum": [
-          "video",
-          "test"
-        ],
-        "example": "video"
-      },
       "Lesson": {
         "type": "object",
         "properties": {
@@ -3284,27 +3265,14 @@
             "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
             "readOnly": true
           },
-          "sectionId": {
-            "$ref": "#/components/schemas/Section_properties-id"
-          },
           "title": {
             "type": "string",
             "example": "Introduction to Python"
-          },
-          "order": {
-            "type": "string",
-            "example": "a",
-            "readOnly": true
-          },
-          "lessonType": {
-            "$ref": "#/components/schemas/LessonType",
-            "readOnly": true
           }
         },
         "required": [
           "id",
-          "title",
-          "lessonType"
+          "title"
         ]
       },
       "CourseDetailSectionItem": {
@@ -3446,6 +3414,14 @@
           "content",
           "createdAt"
         ]
+      },
+      "LessonType": {
+        "type": "string",
+        "enum": [
+          "video",
+          "test"
+        ],
+        "example": "video"
       },
       "LessonProgress": {
         "type": "object",
@@ -3598,11 +3574,14 @@
           },
           {
             "type": "object",
-            "required": [
-              "type",
-              "questions"
-            ],
             "properties": {
+              "lessonType": {
+                "type": "string",
+                "enum": [
+                  "test"
+                ],
+                "example": "test"
+              },
               "type": {
                 "type": "string",
                 "enum": [
@@ -3618,7 +3597,12 @@
                   "$ref": "#/components/schemas/TestQuestion"
                 }
               }
-            }
+            },
+            "required": [
+              "lessonType",
+              "type",
+              "questions"
+            ]
           }
         ]
       },
@@ -3630,6 +3614,13 @@
           {
             "type": "object",
             "properties": {
+              "lessonType": {
+                "type": "string",
+                "enum": [
+                  "video"
+                ],
+                "example": "video"
+              },
               "videoKey": {
                 "type": "string",
                 "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
@@ -3648,6 +3639,7 @@
               }
             },
             "required": [
+              "lessonType",
               "videoKey",
               "videoUrl",
               "duration"
@@ -3663,7 +3655,14 @@
           {
             "$ref": "#/components/schemas/TestLesson"
           }
-        ]
+        ],
+        "discriminator": {
+          "propertyName": "lessonType",
+          "mapping": {
+            "video": "#/components/schemas/VideoLesson",
+            "test": "#/components/schemas/TestLesson"
+          }
+        }
       }
     },
     "responses": {

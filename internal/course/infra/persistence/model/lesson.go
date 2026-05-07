@@ -12,7 +12,7 @@ type Lesson struct {
 	ID          uuid.UUID         `gorm:"type:uuid;primaryKey"`
 	SectionID   uuid.UUID         `gorm:"type:uuid;not null"`
 	Title       string            `gorm:"type:varchar(255);not null"`
-	SortOrder   string            `gorm:"column:sort_order;type:text;not null;default:''"`
+	Index       int               `gorm:"column:index;type:integer;not null;default:0"`
 	LessonType  domain.LessonType `gorm:"column:lesson_type;type:varchar(50);not null"`
 	VideoLesson *VideoLesson      `gorm:"foreignKey:LessonID"`
 	TestLesson  *TestLesson       `gorm:"foreignKey:LessonID"`
@@ -23,14 +23,14 @@ type Lesson struct {
 
 func (Lesson) TableName() string { return "lessons" }
 
-func LessonFromDomain(l domain.Lesson) *Lesson {
+func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:
 		return &Lesson{
 			ID:         l.ID(),
-			SectionID:  l.SectionID(),
+			SectionID:  sectionID,
 			Title:      l.Title(),
-			SortOrder:  l.Order(),
+			Index:      index,
 			LessonType: domain.LessonTypeVideo,
 			VideoLesson: &VideoLesson{
 				LessonID: l.ID(),
@@ -49,9 +49,9 @@ func LessonFromDomain(l domain.Lesson) *Lesson {
 		}
 		return &Lesson{
 			ID:          l.ID(),
-			SectionID:   l.SectionID(),
+			SectionID:   sectionID,
 			Title:       l.Title(),
-			SortOrder:   l.Order(),
+			Index:       index,
 			LessonType:  domain.LessonTypeTest,
 			VideoLesson: nil,
 			TestLesson: &TestLesson{
@@ -75,8 +75,6 @@ func (m *Lesson) ToDomain() domain.Lesson {
 		}
 		return domain.UnmarshalVideoLesson(
 			m.ID,
-			m.SectionID,
-			m.SortOrder,
 			m.Title,
 			m.VideoLesson.VideoKey,
 			time.Duration(m.VideoLesson.Duration)*time.Second,
@@ -90,8 +88,10 @@ func (m *Lesson) ToDomain() domain.Lesson {
 			questions = append(questions, m.TestLesson.Questions[i].ToDomain())
 		}
 		return domain.UnmarshalTestLesson(
-			m.ID, m.SectionID, m.SortOrder, m.Title,
-			m.TestLesson.Type, questions,
+			m.ID,
+			m.Title,
+			m.TestLesson.Type,
+			questions,
 		)
 	}
 	return nil

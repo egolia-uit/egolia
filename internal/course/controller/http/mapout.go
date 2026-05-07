@@ -4,6 +4,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
+	"github.com/google/uuid"
 	"github.com/oapi-codegen/runtime/types"
 )
 
@@ -29,9 +30,7 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 	return course.VideoLesson{
 		Id:         new(vl.GetID()),
 		Title:      vl.GetTitle(),
-		Order:      new(vl.GetOrder()),
-		LessonType: course.LessonTypeVideo,
-		SectionId:  new(vl.GetSectionID()),
+		LessonType: course.VideoLessonLessonTypeVideo,
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
 		VideoKey:   nil,
@@ -46,10 +45,8 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 	return course.TestLesson{
 		Id:         new(t.GetID()),
 		Title:      t.GetTitle(),
-		LessonType: course.LessonTypeTest,
+		LessonType: course.TestLessonLessonTypeTest,
 		Type:       testLessonTypeToDTO(t.TestLessonType),
-		SectionId:  new(t.GetSectionID()),
-		Order:      new(t.GetOrder()),
 		Questions:  questions,
 	}
 }
@@ -95,11 +92,11 @@ func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
 }
 
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
-	return &course.CourseDetail{
+	dto := &course.CourseDetail{
 		Id:               (*types.UUID)(&result.Course.ID),
 		Title:            result.Course.Title,
 		InstructorId:     &result.Course.InstructorID,
-		OriginalCourseId: (*types.UUID)(&result.Course.OriginalCourseID),
+		OriginalCourseId: nil,
 		Price:            result.Course.Price,
 		Overview:         &result.Course.Overview,
 		Hidden:           &result.Course.Hidden,
@@ -107,40 +104,45 @@ func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: result.Course.Introduction.VideoUrl,
 		},
-		Sections: func() []course.CourseDetailSectionItem {
-			items := make([]course.CourseDetailSectionItem, 0, len(result.Sections))
-			for _, s := range result.Sections {
-				items = append(items, course.CourseDetailSectionItem{
-					Id:       (*types.UUID)(&s.ID),
-					CourseId: (*types.UUID)(&s.CourseID),
-					Title:    s.Title,
-					Order:    &s.Order,
-					Lessons: func() []course.Lesson {
-						lessons := make([]course.Lesson, 0, len(s.Lessons))
-						for _, l := range s.Lessons {
-							lessons = append(lessons, course.Lesson{
-								Id:         new(l.GetID()),
-								Title:      l.GetTitle(),
-								Order:      new(l.GetOrder()),
-								LessonType: lessonTypeToDTO(l.GetLessonType()),
-								SectionId:  new(l.GetSectionID()),
-							})
-						}
-						return lessons
-					}(),
-				})
-			}
-			return items
-		}(),
+		Sections: sectionItemsToDTO(result.Sections),
 	}
+	if result.Course.OriginalCourseID != uuid.Nil {
+		originalID := types.UUID(result.Course.OriginalCourseID)
+		dto.OriginalCourseId = &originalID
+	}
+	return dto
+}
+
+func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDetailSectionItem {
+	items := make([]course.CourseDetailSectionItem, 0, len(sections))
+	for _, s := range sections {
+		items = append(items, course.CourseDetailSectionItem{
+			Id:       (*types.UUID)(&s.ID),
+			CourseId: (*types.UUID)(&s.CourseID),
+			Title:    s.Title,
+			Lessons:  sectionLessonsToDTO(s.Lessons),
+		})
+	}
+	return items
+}
+
+func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
+	out := make([]course.Lesson, 0, len(lessons))
+	for _, l := range lessons {
+		out = append(out, course.Lesson{
+			Id:    new(l.GetID()),
+			Title: l.GetTitle(),
+		})
+	}
+	return out
 }
 
 func courseToDTO(c *app.Course) *course.Course {
 	dto := &course.Course{
-		Id:               (*types.UUID)(&c.ID),
+		Id:               &c.ID,
 		Title:            c.Title,
 		InstructorId:     &c.InstructorID,
-		OriginalCourseId: (*types.UUID)(&c.OriginalCourseID),
+		OriginalCourseId: nil,
 		Price:            c.Price,
 		Overview:         &c.Overview,
 		Hidden:           &c.Hidden,
@@ -148,6 +150,9 @@ func courseToDTO(c *app.Course) *course.Course {
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: c.Introduction.VideoUrl,
 		},
+	}
+	if c.OriginalCourseID != uuid.Nil {
+		dto.OriginalCourseId = &c.OriginalCourseID
 	}
 	return dto
 }

@@ -38,9 +38,10 @@ func (h *StrictHandler) SearchCourses(ctx context.Context, request course.Search
 			instructorIDs = append(instructorIDs, id.String())
 		}
 	}
-	order := app.SearchCoursesOrderDesc
+	var order *app.SearchCoursesOrder
 	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
+		o := app.SearchCoursesOrder(*request.Params.Order)
+		order = &o
 	}
 
 	result, err := h.App.Queries.SearchCourses.Handle(ctx, &app.SearchCourses{
@@ -51,8 +52,8 @@ func (h *StrictHandler) SearchCourses(ctx context.Context, request course.Search
 			Limit: limit,
 		},
 		Order:  order,
-		Hidden: false,
-		Status: app.CourseStatusApproved,
+		Hidden: nil,
+		Status: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -95,20 +96,18 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 	if request.Body.Overview != nil {
 		overview = *request.Body.Overview
 	}
-	introduction := app.CourseLandingPageIntroduction{}
+	var introductionVideoKey string
 	if request.Body.Introduction != nil {
-		introduction = app.CourseLandingPageIntroduction{
-			VideoUrl: request.Body.Introduction.VideoUrl,
-		}
+		introductionVideoKey = request.Body.Introduction.VideoUrl
 	}
 
 	if err := h.App.Cmds.CreateCourse.Handle(ctx, &app.CreateCourse{
-		ID:           courseID,
-		Title:        request.Body.Title,
-		InstructorID: userID,
-		Price:        request.Body.Price,
-		Overview:     overview,
-		Introduction: introduction,
+		ID:                   courseID,
+		Title:                request.Body.Title,
+		InstructorID:         userID,
+		Price:                request.Body.Price,
+		Overview:             overview,
+		IntroductionVideoKey: introductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}
@@ -291,26 +290,23 @@ func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.Approv
 }
 
 func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
-	// implement update course
 	courseID := request.CourseId
 
 	overview := ""
 	if request.Body.Overview != nil {
 		overview = *request.Body.Overview
 	}
-	introduction := app.CourseLandingPageIntroduction{}
+	var introductionVideoKey string
 	if request.Body.Introduction != nil {
-		introduction = app.CourseLandingPageIntroduction{
-			VideoUrl: request.Body.Introduction.VideoUrl,
-		}
+		introductionVideoKey = request.Body.Introduction.VideoUrl
 	}
 
 	if err := h.App.Cmds.UpdateCourse.Handle(ctx, &app.UpdateCourse{
-		CourseID:     courseID,
-		Title:        request.Body.Title,
-		Price:        request.Body.Price,
-		Overview:     overview,
-		Introduction: introduction,
+		CourseID:             courseID,
+		Title:                request.Body.Title,
+		Price:                request.Body.Price,
+		Overview:             overview,
+		IntroductionVideoKey: introductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}

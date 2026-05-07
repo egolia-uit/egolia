@@ -49,7 +49,6 @@ require (
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
 	gorm.io/plugin/opentelemetry v0.1.16
-	roci.dev/fracdex v0.0.0-20241211175510-82d7df79e312
 )
 
 require (

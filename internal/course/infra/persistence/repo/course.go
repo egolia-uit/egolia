@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/model"
@@ -45,7 +46,12 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 		return err
 	}
 
-	// Rebuild read_courses JSONB in the same transaction so reads are never stale.
-	readModel := model.ReadCourseFromDomain(course)
+	// Rebuild read_courses storing raw keys; URL resolution happens at read time.
+	readModel, err := model.ReadCourseFromDomain(course, func(key string) (string, error) {
+		return key, nil
+	})
+	if err != nil {
+		return fmt.Errorf("rebuild read course: %w", err)
+	}
 	return db.Save(readModel).Error
 }
