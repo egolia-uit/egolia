@@ -1,0 +1,39 @@
+type: object
+description: Represents a single review for a course.
+properties:
+  id:
+    type: string
+    format: uuid
+    readOnly: true
+    example: 8a9b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d
+
+  userId:
+    type: string
+    format: uuid
+    readOnly: true
+    example: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+
+  rating:
+    type: integer
+    format: int
+    minimum: 1
+    maximum: 5
+    example: 5
+
+  comment:
+    type: string
+    maxLength: 2000
+    example: Great course with practical examples.
+
+  createdAt:
+    type: string
+    format: date-time
+    readOnly: true
+    example: '2026-04-15T14:30:00Z'
+
+required:
+  - id
+  - userId
+  - rating
+  - comment
+  - createdAt

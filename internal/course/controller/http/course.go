@@ -169,6 +169,10 @@ func (h *StrictHandler) GetMyEnrolledCourses(ctx context.Context, request course
 	return nil, errs.Unimplemented
 }
 
+func (h *StrictHandler) GetMyBookmarkedCourses(ctx context.Context, request course.GetMyBookmarkedCoursesRequestObject) (course.GetMyBookmarkedCoursesResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
 func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteCourseRequestObject) (course.DeleteCourseResponseObject, error) {
 	user, ok := commonHTTP.UserFromContext(ctx)
 	if !ok {
@@ -219,7 +223,15 @@ func (h *StrictHandler) BookmarkCourse(ctx context.Context, request course.Bookm
 	return nil, errs.Unimplemented
 }
 
+func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
 func (h *StrictHandler) DeclineCourse(ctx context.Context, request course.DeclineCourseRequestObject) (course.DeclineCourseResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) GetCourseAnalytics(ctx context.Context, request course.GetCourseAnalyticsRequestObject) (course.GetCourseAnalyticsResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -280,11 +292,19 @@ func (h *StrictHandler) HideCourse(ctx context.Context, request course.HideCours
 	return nil, errs.Unimplemented
 }
 
+func (h *StrictHandler) UnhideCourse(ctx context.Context, request course.UnhideCourseRequestObject) (course.UnhideCourseResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
 func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course.GetCourseLandingPageRequestObject) (course.GetCourseLandingPageResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
 func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.GetCourseProgressRequestObject) (course.GetCourseProgressResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.GetCourseReviewsRequestObject) (course.GetCourseReviewsResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -312,7 +332,19 @@ func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewC
 	}, nil
 }
 
+func (h *StrictHandler) UpdateReview(ctx context.Context, request course.UpdateReviewRequestObject) (course.UpdateReviewResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) DeleteReview(ctx context.Context, request course.DeleteReviewRequestObject) (course.DeleteReviewResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
 func (h *StrictHandler) ReplyLessonComment(ctx context.Context, request course.ReplyLessonCommentRequestObject) (course.ReplyLessonCommentResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) DeleteLessonComment(ctx context.Context, request course.DeleteLessonCommentRequestObject) (course.DeleteLessonCommentResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -346,7 +378,7 @@ func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.Edit
 }
 
 func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {
-	panic("unimplemented")
+	return nil, errs.Unimplemented
 }
 
 func (h *StrictHandler) GetLessonComments(ctx context.Context, request course.GetLessonCommentsRequestObject) (course.GetLessonCommentsResponseObject, error) {
@@ -405,6 +437,10 @@ func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.Ge
 }
 
 func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) GetCourseStudents(ctx context.Context, request course.GetCourseStudentsRequestObject) (course.GetCourseStudentsResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 

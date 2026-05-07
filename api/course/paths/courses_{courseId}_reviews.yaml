@@ -1,3 +1,32 @@
+get:
+  security: []
+  tags:
+    - Course
+  summary: Get course reviews
+  operationId: getCourseReviews
+  description: |
+    - public
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../../common/components/parameters/pageQuery.yaml
+    - $ref: ../../common/components/parameters/limitQuery.yaml
+    - $ref: ../components/parameters/ratingQuery.yaml
+  responses:
+    '200':
+      description: A paginated list of course reviews.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: ../components/schemas/Review.yaml
+              pagination:
+                $ref: ../../common/components/schemas/Pagination.yaml
+    '404':
+      $ref: ../../common/components/responses/NotFoundError.yaml
 post:
   security:
     - Oauth2:

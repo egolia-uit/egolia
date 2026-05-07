@@ -1,0 +1,39 @@
+type: object
+
+properties:
+  userId:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/id
+
+  username:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/username
+
+  name:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/name
+
+  email:
+    $ref: ../../../common/components/schemas/User.yaml#/properties/email
+
+  enrolledAt:
+    type: string
+    format: date-time
+    example: 2026-04-15T14:30:00Z
+
+  progressPercentage:
+    type: number
+    format: float
+    minimum: 0
+    maximum: 100
+    example: 72.5
+
+  completed:
+    type: boolean
+    example: false
+
+required:
+  - userId
+  - username
+  - name
+  - email
+  - enrolledAt
+  - progressPercentage
+  - completed

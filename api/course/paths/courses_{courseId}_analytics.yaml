@@ -1,0 +1,40 @@
+get:
+  security:
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
+  tags:
+    - Course
+  summary: Get course analytics
+  operationId: getCourseAnalytics
+  description: |
+    - authenticated:
+      - instructor
+      - admin
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  responses:
+    200:
+      description: Course analytics
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/CourseAnalytics.yaml
+            required:
+              - data
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

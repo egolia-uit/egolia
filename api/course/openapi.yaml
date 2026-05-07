@@ -40,6 +40,16 @@ paths:
   /course/courses-system:
     $ref: ./paths/courses-system.yaml
 
+  /course/reviews/{reviewId}:
+    $ref: ./paths/reviews_{reviewId}.yaml
+
+  /course/courses/me/bookmarked:
+    $ref: ./paths/courses_me_bookmarked.yaml
+  /course/courses/me/enrolled:
+    $ref: ./paths/courses_me_enrolled.yaml
+
+  /course/courses/{courseId}/analytics:
+    $ref: ./paths/courses_{courseId}_analytics.yaml
   /course/courses/{courseId}/approve:
     $ref: ./paths/courses_{courseId}_approve.yaml
   /course/courses/{courseId}/basic-info:
@@ -62,13 +72,15 @@ paths:
     $ref: ./paths/courses_{courseId}_progress.yaml
   /course/courses/{courseId}/reviews:
     $ref: ./paths/courses_{courseId}_reviews.yaml
+  /course/courses/{courseId}/students:
+    $ref: ./paths/courses_{courseId}_students.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
-  /course/courses/me/enrolled:
-    $ref: ./paths/courses_me_enrolled.yaml
   /course/courses:
     $ref: ./paths/courses.yaml
 
+  /course/lesson-comments/{commentId}:
+    $ref: ./paths/lesson-comments_{commentId}.yaml
   /course/lesson-comments/{commentId}/reply:
     $ref: ./paths/lesson-comments_{commentId}_reply.yaml
 
