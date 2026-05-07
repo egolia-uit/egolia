@@ -427,6 +427,7 @@ func (h *StrictHandler) GetUploadVideoUrl(ctx context.Context, request course.Ge
 		ExpiresAt: result.ExpiresAt,
 	}, nil
 }
+
 func (h *StrictHandler) CreateSection(ctx context.Context, request course.CreateSectionRequestObject) (course.CreateSectionResponseObject, error) {
 	return nil, errs.Unimplemented
 }
