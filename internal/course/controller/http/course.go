@@ -328,7 +328,7 @@ func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetC
 	query := &app.GetCourseDetail{
 		CourseID: request.CourseId.String(),
 	}
-	result, err := h.App.Queries.GetCourseDetail.Handle(ctx, *query)
+	result, err := h.App.Queries.GetCourseDetail.Handle(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -538,7 +538,7 @@ func (h *StrictHandler) GetUploadVideoLessonUrl(ctx context.Context, request cou
 		LessonID:      request.LessonId,
 		VideoFilename: request.Body.VideoFilename,
 	}
-	result, err := h.App.Cmds.GetUploadVideoLessonURL.Handle(ctx, cmd)
+	result, err := h.App.Queries.GetUploadVideoLessonURL.Handle(ctx, cmd)
 	if err != nil {
 		return nil, err
 	}

@@ -25,6 +25,7 @@ var ProviderSetQueries = wire.NewSet(
 )
 
 var ProviderSet = wire.NewSet(
+	ProvideTracer,
 	ProviderSetCmds,
 	ProviderSetQueries,
 	wire.Struct(new(App), "*"),
