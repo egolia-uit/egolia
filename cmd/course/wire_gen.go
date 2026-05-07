@@ -51,7 +51,8 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
 	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
 	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
-	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc)
+	general := &configConfig.General
+	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
 	createCourseSvc := domain.NewCreateCourseSvc()
 	db, cleanup2, err := persistence.NewDB(ctx, configConfig, logger)
 	if err != nil {
