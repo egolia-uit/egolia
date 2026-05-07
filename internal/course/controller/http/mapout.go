@@ -142,7 +142,7 @@ func courseToDTO(c *app.Course) *course.Course {
 		Id:               &c.ID,
 		Title:            c.Title,
 		InstructorId:     &c.InstructorID,
-		OriginalCourseId: nil,
+		OriginalCourseId: &c.OriginalCourseID,
 		Price:            c.Price,
 		Overview:         &c.Overview,
 		Hidden:           &c.Hidden,

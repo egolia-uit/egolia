@@ -9,16 +9,50 @@ package main
 import (
 	"context"
 	"github.com/egolia-uit/egolia/internal/blog"
+	"github.com/egolia-uit/egolia/internal/blog/component"
+	"github.com/egolia-uit/egolia/internal/blog/config"
+	"github.com/egolia-uit/egolia/internal/blog/controller/health"
+	"github.com/egolia-uit/egolia/pkg/logging"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/goforj/wire"
 )
 
 // Injectors from wire.go:
 
 func InitializeServer(ctx context.Context) (*blog.Server, func(), error) {
-	server := blog.NewServer()
-	return server, func() {
+	validate := component.NewValidate()
+	viper := config.NewViper()
+	configConfig, err := config.New(validate, viper)
+	if err != nil {
+		return nil, nil, err
+	}
+	server := &configConfig.Server
+	authentik := &configConfig.Authentik
+	healthHealth := health.New(server, authentik)
+	log := &configConfig.Log
+	stdoutHandler := logging.NewStdoutHandler(log)
+	serviceName := _wireServiceNameValue
+	serviceVersion := _wireServiceVersionValue
+	resource, err := otel.NewResource(ctx, serviceName, serviceVersion)
+	if err != nil {
+		return nil, nil, err
+	}
+	loggerProvider, cleanup, err := otel.NewLoggerProvider(ctx, resource)
+	if err != nil {
+		return nil, nil, err
+	}
+	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
+	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
+	blogServer := blog.NewServer(healthHealth, logger)
+	return blogServer, func() {
+		cleanup()
 	}, nil
 }
+
+var (
+	_wireServiceNameValue    = ServiceName
+	_wireServiceVersionValue = ServiceVersion
+)
 
 // wire.go:
 

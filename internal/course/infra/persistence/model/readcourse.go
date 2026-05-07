@@ -32,10 +32,10 @@ type ReadCourseLessonContent struct {
 }
 
 type ReadCourseSectionContent struct {
-	ID        uuid.UUID                 `json:"id"`
-	Title     string                    `json:"title"`
-	SortOrder int                       `json:"sort_order"`
-	Lessons   []ReadCourseLessonContent `json:"lessons"`
+	ID      uuid.UUID                 `json:"id"`
+	Title   string                    `json:"title"`
+	Index   int                       `json:"index"`
+	Lessons []ReadCourseLessonContent `json:"lessons"`
 }
 
 type ReadCourseContent struct {
@@ -63,19 +63,10 @@ func (ReadCourse) TableName() string { return "read_courses" }
 
 func ReadCourseFromDomain(
 	c *domain.Course,
-	videoKeyToURL func(videoKey string) (string, error),
 ) (*ReadCourse, error) {
-	var videoURL string
-	if key := c.IntroductionVideoKey(); key != "" {
-		var err error
-		videoURL, err = videoKeyToURL(key)
-		if err != nil {
-			return nil, err
-		}
-	}
 	sections := make([]ReadCourseSectionContent, 0, len(c.Sections()))
-	for _, s := range c.Sections() {
-		sections = append(sections, buildSectionContent(s))
+	for i, s := range c.Sections() {
+		sections = append(sections, buildSectionContent(i, s))
 	}
 
 	content := ReadCourseContent{
@@ -84,7 +75,7 @@ func ReadCourseFromDomain(
 		Status:        string(c.Status()),
 		Price:         c.Price(),
 		Overview:      c.Overview(),
-		IntroVideoURL: videoURL,
+		IntroVideoURL: c.IntroductionVideoKey(),
 		Sections:      sections,
 	}
 
@@ -104,16 +95,16 @@ func ReadCourseFromDomain(
 	}, nil
 }
 
-func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
+func buildSectionContent(index int, s *domain.Section) ReadCourseSectionContent {
 	lessons := make([]ReadCourseLessonContent, 0, len(s.Lessons()))
 	for _, l := range s.Lessons() {
 		lessons = append(lessons, buildLessonContent(l))
 	}
 	return ReadCourseSectionContent{
-		ID:        s.ID(),
-		Title:     s.Title(),
-		SortOrder: s.Order(),
-		Lessons:   lessons,
+		ID:      s.ID(),
+		Title:   s.Title(),
+		Index:   index,
+		Lessons: lessons,
 	}
 }
 

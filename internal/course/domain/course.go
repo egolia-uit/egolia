@@ -79,7 +79,6 @@ type Section struct {
 	id        uuid.UUID
 	courseID  uuid.UUID
 	title     string
-	order     int
 	deletedAt *time.Time
 	lessons   []Lesson
 }
@@ -88,13 +87,11 @@ func NewSection(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	title string,
-	order int,
 ) *Section {
 	return &Section{
 		id:        id,
 		courseID:  courseID,
 		title:     title,
-		order:     order,
 		deletedAt: nil,
 		lessons:   []Lesson{},
 	}
@@ -104,7 +101,6 @@ func UnmarshalSection(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	title string,
-	order int,
 	deletedAt *time.Time,
 	lessons []Lesson,
 ) *Section {
@@ -115,7 +111,6 @@ func UnmarshalSection(
 		id:        id,
 		courseID:  courseID,
 		title:     title,
-		order:     order,
 		deletedAt: deletedAt,
 		lessons:   lessons,
 	}
@@ -139,14 +134,6 @@ func (s *Section) Title() string {
 
 func (s *Section) SetTitle(title string) {
 	s.title = title
-}
-
-func (s *Section) Order() int {
-	return s.order
-}
-
-func (s *Section) SetOrder(order int) {
-	s.order = order
 }
 
 func (s *Section) DeletedAt() *time.Time {

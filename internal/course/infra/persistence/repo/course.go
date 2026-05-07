@@ -46,10 +46,7 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 		return err
 	}
 
-	// Rebuild read_courses storing raw keys; URL resolution happens at read time.
-	readModel, err := model.ReadCourseFromDomain(course, func(key string) (string, error) {
-		return key, nil
-	})
+	readModel, err := model.ReadCourseFromDomain(course)
 	if err != nil {
 		return fmt.Errorf("rebuild read course: %w", err)
 	}

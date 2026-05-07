@@ -45,7 +45,7 @@ func (r *LessonReadRepo) GetVideoLessonDetail(ctx context.Context, params *app.G
 			Title:      m.Title,
 			LessonType: app.LessonTypeVideo,
 		},
-		VideoURL: m.VideoLesson.VideoKey,
+		VideoURL: m.VideoLesson.VideoKey, // TODO: transform video key to URL using objectStorageSvc
 		Duration: time.Duration(m.VideoLesson.Duration) * time.Second,
 	}, nil
 }

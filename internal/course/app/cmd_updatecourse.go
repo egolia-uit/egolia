@@ -49,7 +49,6 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 			return err
 		}
-
 		if cmd.Title != "" {
 			if err := course.SetTitle(cmd.Title); err != nil {
 				return err

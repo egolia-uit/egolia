@@ -9,16 +9,78 @@ package main
 import (
 	"context"
 	"github.com/egolia-uit/egolia/internal/billing"
+	"github.com/egolia-uit/egolia/internal/billing/component"
+	"github.com/egolia-uit/egolia/internal/billing/config"
+	"github.com/egolia-uit/egolia/internal/billing/controller/health"
+	"github.com/egolia-uit/egolia/internal/billing/controller/http"
+	"github.com/egolia-uit/egolia/internal/billing/core"
+	"github.com/egolia-uit/egolia/internal/billing/infra/identity"
+	"github.com/egolia-uit/egolia/internal/billing/infra/service"
+	"github.com/egolia-uit/egolia/pkg/common/http"
+	"github.com/egolia-uit/egolia/pkg/logging"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/goforj/wire"
 )
 
 // Injectors from wire.go:
 
 func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
-	server := billing.NewServer()
-	return server, func() {
+	validate := component.NewValidate()
+	viper := config.NewViper()
+	configConfig, err := config.New(validate, viper)
+	if err != nil {
+		return nil, nil, err
+	}
+	log := &configConfig.Log
+	stdoutHandler := logging.NewStdoutHandler(log)
+	serviceName := _wireServiceNameValue
+	serviceVersion := _wireServiceVersionValue
+	resource, err := otel.NewResource(ctx, serviceName, serviceVersion)
+	if err != nil {
+		return nil, nil, err
+	}
+	loggerProvider, cleanup, err := otel.NewLoggerProvider(ctx, resource)
+	if err != nil {
+		return nil, nil, err
+	}
+	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
+	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
+	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
+	general := &configConfig.General
+	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
+	services := &configConfig.Services
+	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
+	course, cleanup2, err := service.NewCourse(services, loggingLogger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	authentik := &configConfig.Authentik
+	identityAuthentik := identity.NewAuthentik(authentik)
+	transactionSvc := core.NewTransactionSvc(course, identityAuthentik)
+	server := &configConfig.Server
+	strictHandler := http.NewStrictHandler(transactionSvc, server)
+	serverInterface := http.NewHandler(strictHandler)
+	httpHTTP, cleanup3, err := http.New(ctx, engine, serverInterface, server, logger)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	healthHealth := health.New(server, authentik)
+	billingServer := billing.NewServer(httpHTTP, healthHealth, logger)
+	return billingServer, func() {
+		cleanup3()
+		cleanup2()
+		cleanup()
 	}, nil
 }
+
+var (
+	_wireServiceNameValue    = ServiceName
+	_wireServiceVersionValue = ServiceVersion
+)
 
 // wire.go:
 
