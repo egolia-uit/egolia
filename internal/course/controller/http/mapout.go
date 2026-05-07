@@ -4,6 +4,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
+	"github.com/google/uuid"
 	"github.com/oapi-codegen/runtime/types"
 )
 
@@ -29,7 +30,7 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 	return course.VideoLesson{
 		Id:         new(vl.GetID()),
 		Title:      vl.GetTitle(),
-		LessonType: course.LessonTypeVideo,
+		LessonType: course.VideoLessonLessonTypeVideo,
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
 		VideoKey:   nil,
@@ -44,7 +45,7 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 	return course.TestLesson{
 		Id:           new(t.GetID()),
 		Title:        t.GetTitle(),
-		LessonType:   course.LessonTypeTest,
+		LessonType:   course.TestLessonLessonTypeTest,
 		QuestionType: questionTypeToDTO(t.QuestionType),
 		Questions:    questions,
 	}
@@ -80,16 +81,6 @@ func questionTypeToDTO(qt app.QuestionType) course.QuestionType {
 	panic("invalid question type")
 }
 
-func lessonTypeToDTO(lt app.LessonType) course.LessonType {
-	switch lt {
-	case app.LessonTypeVideo:
-		return course.LessonTypeVideo
-	case app.LessonTypeTest:
-		return course.LessonTypeTest
-	}
-	panic("invalid lesson type")
-}
-
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 	return &course.CourseDetail{
 		Id:                   (*types.UUID)(&result.Course.ID),
@@ -112,19 +103,18 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 		items = append(items, course.CourseDetailSectionItem{
 			Id:      (*types.UUID)(&s.ID),
 			Title:   s.Title,
-			Lessons: sectionLessonsToDTO(s.Lessons),
+			Lessons: lessonsToDTO(s.Lessons),
 		})
 	}
 	return items
 }
 
-func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
+func lessonsToDTO(lessons []app.Lesson) []course.Lesson {
 	out := make([]course.Lesson, 0, len(lessons))
 	for _, l := range lessons {
 		out = append(out, course.Lesson{
-			Id:         new(l.GetID()),
-			Title:      l.GetTitle(),
-			LessonType: lessonTypeToDTO(l.GetLessonType()),
+			Id:    new(l.GetID()),
+			Title: l.GetTitle(),
 		})
 	}
 	return out
@@ -142,6 +132,9 @@ func courseToDTO(c *app.Course) *course.Course {
 		Status:               (*course.CourseStatus)(&c.Status),
 		IntroductionVideoUrl: c.IntroductionVideoURL,
 		IntroductionVideoKey: nil,
+	}
+	if c.OriginalCourseID != uuid.Nil {
+		dto.OriginalCourseId = &c.OriginalCourseID
 	}
 	return dto
 }

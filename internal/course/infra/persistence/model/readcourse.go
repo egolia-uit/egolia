@@ -1,7 +1,6 @@
 package model
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
@@ -23,28 +22,29 @@ type ReadCourseQuestionContent struct {
 }
 
 type ReadCourseLessonContent struct {
-	ID         uuid.UUID                   `json:"id"`
-	Title      string                      `json:"title"`
-	SortOrder  int                         `json:"sort_order"`
-	LessonType string                      `json:"lesson_type"`
-	VideoKey   *string                     `json:"video_key,omitempty"`
-	Duration   *int64                      `json:"duration_seconds,omitempty"`
-	TestType   *string                     `json:"test_type,omitempty"`
-	Questions  []ReadCourseQuestionContent `json:"questions,omitempty"`
+	ID    uuid.UUID `json:"id"`
+	Title string    `json:"title"`
+	// Type safe for this
+	LessonType string  `json:"lesson_type"`
+	VideoKey   *string `json:"video_key,omitempty"`
+	Duration   *int64  `json:"duration_seconds,omitempty"`
+	// Type safe for this
+	QuestionType *string                     `json:"test_type,omitempty"`
+	Questions    []ReadCourseQuestionContent `json:"questions,omitempty"`
 }
 
 type ReadCourseSectionContent struct {
-	ID        uuid.UUID                 `json:"id"`
-	Title     string                    `json:"title"`
-	SortOrder int                       `json:"sort_order"`
-	Lessons   []ReadCourseLessonContent `json:"lessons"`
+	ID      uuid.UUID                 `json:"id"`
+	Title   string                    `json:"title"`
+	Index   int                       `json:"index"`
+	Lessons []ReadCourseLessonContent `json:"lessons"`
 }
 
 type ReadCourseContent struct {
 	Title         string                     `json:"title"`
 	InstructorID  string                     `json:"instructor_id"`
 	Status        string                     `json:"status"`
-	Price         float64                    `json:"price"`
+	Price         int64                      `json:"price"`
 	Overview      string                     `json:"overview"`
 	IntroVideoURL string                     `json:"intro_video_url"`
 	Sections      []ReadCourseSectionContent `json:"sections"`
@@ -55,7 +55,8 @@ type ReadCourseContent struct {
 type ReadCourse struct {
 	CourseID          uuid.UUID         `gorm:"type:uuid;primaryKey;column:course_id"`
 	Title             string            `gorm:"type:varchar(255);not null"`
-	Price             float64           `gorm:"not null;default:0"`
+	Price             int64             `gorm:"not null;default:0"`
+	Hidden            bool              `gorm:"column:hidden;not null;default:false"`
 	FullCourseContent ReadCourseContent `gorm:"column:full_course_content;serializer:json;type:jsonb;not null"`
 	PublishedAt       *time.Time        `gorm:"column:published_at"`
 }
@@ -64,15 +65,10 @@ func (ReadCourse) TableName() string { return "read_courses" }
 
 func ReadCourseFromDomain(
 	c *domain.Course,
-	videoKeyToURL func(videoKey string) (string, error),
 ) (*ReadCourse, error) {
-	videoURL, err := videoKeyToURL(c.IntroductionVideoKey())
-	if err != nil {
-		return nil, err
-	}
 	sections := make([]ReadCourseSectionContent, 0, len(c.Sections()))
-	for _, s := range c.Sections() {
-		sections = append(sections, buildSectionContent(s))
+	for i, s := range c.Sections() {
+		sections = append(sections, buildSectionContent(i, s))
 	}
 
 	content := ReadCourseContent{
@@ -81,7 +77,7 @@ func ReadCourseFromDomain(
 		Status:        string(c.Status()),
 		Price:         c.Price(),
 		Overview:      c.Overview(),
-		IntroVideoURL: videoURL,
+		IntroVideoURL: c.IntroductionVideoKey(),
 		Sections:      sections,
 	}
 
@@ -95,36 +91,34 @@ func ReadCourseFromDomain(
 		CourseID:          c.ID(),
 		Title:             c.Title(),
 		Price:             c.Price(),
+		Hidden:            c.Hidden(),
 		FullCourseContent: content,
 		PublishedAt:       publishedAt,
 	}, nil
 }
 
-func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
+func buildSectionContent(index int, s *domain.Section) ReadCourseSectionContent {
 	lessons := make([]ReadCourseLessonContent, 0, len(s.Lessons()))
 	for _, l := range s.Lessons() {
 		lessons = append(lessons, buildLessonContent(l))
 	}
-	n, _ := strconv.Atoi(s.Order())
 	return ReadCourseSectionContent{
-		ID:        s.ID(),
-		Title:     s.Title(),
-		SortOrder: n,
-		Lessons:   lessons,
+		ID:      s.ID(),
+		Title:   s.Title(),
+		Index:   index,
+		Lessons: lessons,
 	}
 }
 
 func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
-	lessonOrder, _ := strconv.Atoi(l.Order())
 	base := ReadCourseLessonContent{
-		ID:         l.ID(),
-		Title:      l.Title(),
-		SortOrder:  lessonOrder,
-		LessonType: "",
-		VideoKey:   nil,
-		Duration:   nil,
-		TestType:   nil,
-		Questions:  nil,
+		ID:           l.ID(),
+		Title:        l.Title(),
+		LessonType:   "",
+		VideoKey:     nil,
+		Duration:     nil,
+		QuestionType: nil,
+		Questions:    nil,
 	}
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:
@@ -134,9 +128,8 @@ func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
 		base.VideoKey = &key
 		base.Duration = &dur
 	case *domain.TestLesson:
-		t := string(lesson.LessonType())
 		base.LessonType = string(domain.LessonTypeTest)
-		base.TestType = &t
+		base.QuestionType = new(string(lesson.QuestionType()))
 		base.Questions = buildQuestions(lesson.GetQuestions())
 	}
 	return base

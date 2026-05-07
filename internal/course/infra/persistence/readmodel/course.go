@@ -13,11 +13,12 @@ import (
 )
 
 type CourseReadRepo struct {
-	db *gorm.DB
+	db               *gorm.DB
+	objectStorageSvc app.ObjectStorageSvc
 }
 
-func NewCourseReadRepo(db *gorm.DB) *CourseReadRepo {
-	return &CourseReadRepo{db: db}
+func NewCourseReadRepo(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *CourseReadRepo {
+	return &CourseReadRepo{db: db, objectStorageSvc: objectStorageSvc}
 }
 
 var (
@@ -41,7 +42,7 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.C
 		return nil, err
 	}
 
-	return toAppCourse(&m), nil
+	return r.toAppCourse(ctx, &m)
 }
 
 func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCourses) (*app.Paginated[app.Course], error) {
@@ -54,7 +55,7 @@ func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCo
 		q = q.Where("full_course_content->>'instructor_id' IN ?", params.InstructorIDs)
 	}
 	if params.Hidden != nil {
-		q = q.Where("(full_course_content->>'hidden')::boolean = ?", *params.Hidden)
+		q = q.Where("hidden = ?", *params.Hidden)
 	}
 	if params.Status != nil {
 		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
@@ -78,7 +79,11 @@ func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCo
 
 	courses := make([]app.Course, 0, len(ms))
 	for i := range ms {
-		courses = append(courses, *toAppCourse(&ms[i]))
+		c, err := r.toAppCourse(ctx, &ms[i])
+		if err != nil {
+			return nil, err
+		}
+		courses = append(courses, *c)
 	}
 
 	return &app.Paginated[app.Course]{
@@ -101,7 +106,7 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (
 		return nil, err
 	}
 
-	return toAppCourseDetail(&m), nil
+	return r.toAppCourseDetail(ctx, &m)
 }
 
 func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses) (*app.Paginated[app.Course], error) {
@@ -111,7 +116,7 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
 	}
 	if params.Hidden != nil && *params.Hidden {
-		q = q.Where("(full_course_content->>'hidden')::boolean = true")
+		q = q.Where("hidden = true")
 	}
 
 	if params.Order == app.SearchCoursesOrderDesc {
@@ -133,7 +138,11 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 
 	courses := make([]app.Course, 0, len(ms))
 	for i := range ms {
-		courses = append(courses, *toAppCourse(&ms[i]))
+		c, err := r.toAppCourse(ctx, &ms[i])
+		if err != nil {
+			return nil, err
+		}
+		courses = append(courses, *c)
 	}
 
 	return &app.Paginated[app.Course]{
@@ -173,42 +182,58 @@ func buildPagination(page, limit, total int) app.Pagination {
 	}
 }
 
-func toAppCourse(m *model.ReadCourse) *app.Course {
+func (r *CourseReadRepo) toAppCourse(_ context.Context, m *model.ReadCourse) (*app.Course, error) {
+	// NOTE: Will uncomment out?
+	// var introVideoURL string
+	// if key := m.FullCourseContent.IntroVideoURL; key != "" {
+	// 	url, err := r.objectStorageSvc.VideoKeyToURL(ctx, key)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	introVideoURL = url
+	// }
 	return &app.Course{
-		ID:                   m.CourseID,
-		OriginalCourseID:     uuid.Nil,
-		Hidden:               false,
-		Title:                m.FullCourseContent.Title,
-		InstructorID:         m.FullCourseContent.InstructorID,
-		Status:               app.CourseStatus(m.FullCourseContent.Status),
-		Price:                int64(m.Price),
-		Overview:             m.FullCourseContent.Overview,
-		IntroductionVideoURL: &m.FullCourseContent.IntroVideoURL,
-		IntroductionVideoKey: nil,
-	}
+		ID:               m.CourseID,
+		OriginalCourseID: uuid.Nil,
+		Hidden:           m.Hidden,
+		Title:            m.FullCourseContent.Title,
+		InstructorID:     m.FullCourseContent.InstructorID,
+		Status:           app.CourseStatus(m.FullCourseContent.Status),
+		Price:            int64(m.Price),
+		Overview:         m.FullCourseContent.Overview,
+		// TODO: Deal with key and URL
+		IntroductionVideoKey: new(""),
+		IntroductionVideoURL: new(""),
+		// Introduction: app.CourseLandingPageIntroduction{
+		// 	VideoUrl: introVideoURL,
+		// },
+	}, nil
 }
 
-func toAppCourseDetail(m *model.ReadCourse) *app.CourseDetail {
+func (r *CourseReadRepo) toAppCourseDetail(ctx context.Context, m *model.ReadCourse) (*app.CourseDetail, error) {
+	c, err := r.toAppCourse(ctx, m)
+	if err != nil {
+		return nil, err
+	}
 	sections := make([]app.CourseDetailSectionItem, 0, len(m.FullCourseContent.Sections))
-	for _, s := range m.FullCourseContent.Sections {
-		sections = append(sections, toAppSectionItem(m.CourseID, &s))
+	for i := range m.FullCourseContent.Sections {
+		sections = append(sections, toAppSectionItem(m.CourseID, &m.FullCourseContent.Sections[i]))
 	}
 	return &app.CourseDetail{
-		Course:   *toAppCourse(m),
+		Course:   *c,
 		Sections: sections,
-	}
+	}, nil
 }
 
 func toAppSectionItem(courseID uuid.UUID, s *model.ReadCourseSectionContent) app.CourseDetailSectionItem {
 	lessons := make([]app.Lesson, 0, len(s.Lessons))
-	for _, l := range s.Lessons {
-		lessons = append(lessons, toAppLesson(&l))
+	for i := range s.Lessons {
+		lessons = append(lessons, toAppLesson(&s.Lessons[i]))
 	}
 	return app.CourseDetailSectionItem{
 		ID:       s.ID,
 		CourseID: courseID,
 		Title:    s.Title,
-		Order:    s.SortOrder,
 		Lessons:  lessons,
 	}
 }
@@ -218,7 +243,6 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 		ID:         l.ID,
 		Title:      l.Title,
 		LessonType: app.LessonType(l.LessonType),
-		Order:      l.SortOrder,
 	}
 	switch app.LessonType(l.LessonType) {
 	case app.LessonTypeVideo:
@@ -236,9 +260,9 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			Duration:   dur,
 		}
 	case app.LessonTypeTest:
-		testType := app.TestLessonType("")
-		if l.TestType != nil {
-			testType = app.TestLessonType(*l.TestType)
+		var questionType app.QuestionType
+		if l.QuestionType != nil {
+			questionType = app.QuestionType(*l.QuestionType)
 		}
 		questions := make([]app.TestQuestion, 0, len(l.Questions))
 		for _, q := range l.Questions {
@@ -257,9 +281,9 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			})
 		}
 		return &app.TestLesson{
-			LessonBase:     base,
-			TestLessonType: testType,
-			Questions:      questions,
+			LessonBase:   base,
+			QuestionType: questionType,
+			Questions:    questions,
 		}
 	}
 	return nil

@@ -2,10 +2,14 @@ package identity
 
 import (
 	"context"
+	"net/http"
 	"strconv"
 
 	"github.com/egolia-uit/egolia/internal/billing/core"
 	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
+	"go.opentelemetry.io/otel/trace"
 	"goauthentik.io/api/v3"
 	"golang.org/x/sync/errgroup"
 )
@@ -24,6 +28,14 @@ func NewAuthentik(
 		{
 			URL: cfg.URL,
 		},
+	}
+	authentikCfg.HTTPClient = &http.Client{
+		Transport: otelhttp.NewTransport(
+			http.DefaultTransport,
+			otelhttp.WithSpanOptions(trace.WithAttributes(
+				semconv.ServicePeerName("authentik"),
+			)),
+		),
 	}
 	client := api.NewAPIClient(authentikCfg)
 	return &Authentik{

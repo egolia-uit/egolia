@@ -20,7 +20,6 @@ Note:
   configuration is tailored for the local environment.
 
   Ex: rc alias set \
-        --insecure \
         egolia \
         http://rustfs.publicdomain.com \
         "\${RUSTFS_ACCESS_KEY}" \

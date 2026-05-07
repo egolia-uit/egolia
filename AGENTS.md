@@ -76,6 +76,7 @@ pkg/                            # Go packages
   - Use debug, info for app handler (core layer for those not follow clean architecture), and under infrastructure logic
   - Use warn only for skipping logic, or retry logic. Warn and error log must suppress the return error. If return error, do not log error
 - For testing, use `test-go` skill
+- While implementing logic in application layer, or business logic from core layer, should run `nx test {projectName}` to check if any test is broken, and write new test for new logic
 
 ### Infrastructure
 

@@ -42,6 +42,7 @@ func (r *BookmarkRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	// TODO: implement this
 	panic("unimplemented")
 }
+
 func (r *BookmarkRepo) ExistsByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) (bool, error) {
 	// TODO: implement this
 	panic("unimplemented")

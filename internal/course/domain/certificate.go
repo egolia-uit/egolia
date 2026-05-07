@@ -7,27 +7,22 @@ import (
 )
 
 type Certificate struct {
-	id             uuid.UUID
-	courseID       uuid.UUID
-	userID         string
-	issuedAt       time.Time
-	certificateURL string
-	createdAt      *time.Time
+	id        uuid.UUID
+	courseID  uuid.UUID
+	userID    string
+	createdAt time.Time
 }
 
 func NewCertificate(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	userID string,
-	issuedAt time.Time,
 ) *Certificate {
 	return &Certificate{
-		id:             id,
-		courseID:       courseID,
-		userID:         userID,
-		issuedAt:       issuedAt,
-		certificateURL: "",
-		createdAt:      nil,
+		id:        id,
+		courseID:  courseID,
+		userID:    userID,
+		createdAt: time.Now(),
 	}
 }
 
@@ -35,17 +30,13 @@ func UnmarshalCertificate(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	userID string,
-	issuedAt time.Time,
-	certificateURL string,
-	createdAt *time.Time,
+	createdAt time.Time,
 ) *Certificate {
 	return &Certificate{
-		id:             id,
-		courseID:       courseID,
-		userID:         userID,
-		issuedAt:       issuedAt,
-		certificateURL: certificateURL,
-		createdAt:      createdAt,
+		id:        id,
+		courseID:  courseID,
+		userID:    userID,
+		createdAt: createdAt,
 	}
 }
 
@@ -61,22 +52,6 @@ func (c *Certificate) UserID() string {
 	return c.userID
 }
 
-func (c *Certificate) IssuedAt() time.Time {
-	return c.issuedAt
-}
-
-func (c *Certificate) CertificateURL() string {
-	return c.certificateURL
-}
-
-func (c *Certificate) SetCertificateURL(url string) {
-	c.certificateURL = url
-}
-
-func (c *Certificate) CreatedAt() *time.Time {
+func (c *Certificate) CreatedAt() time.Time {
 	return c.createdAt
-}
-
-func (c *Certificate) SetCreatedAt(createdAt *time.Time) {
-	c.createdAt = createdAt
 }

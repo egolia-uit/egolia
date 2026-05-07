@@ -1,7 +1,60 @@
 package billing
 
-type Server struct{}
+import (
+	"context"
+	"fmt"
+	"log/slog"
 
-func NewServer() *Server {
-	return &Server{}
+	"github.com/egolia-uit/egolia/internal/billing/controller/health"
+	"github.com/egolia-uit/egolia/internal/billing/controller/http"
+	"golang.org/x/sync/errgroup"
+)
+
+type Server struct {
+	http   *http.HTTP
+	health *health.Health
+}
+
+func NewServer(
+	http *http.HTTP,
+	health *health.Health,
+	logger *slog.Logger,
+) *Server {
+	slog.SetDefault(logger)
+	return &Server{
+		http:   http,
+		health: health,
+	}
+}
+
+func (s *Server) Run(ctx context.Context) error {
+	g, ctx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		go func() {
+			<-ctx.Done()
+			if err := s.http.Shutdown(context.Background()); err != nil {
+				slog.ErrorContext(ctx, "failed to shutdown http server", slog.Any("error", err))
+			}
+		}()
+		if err := s.http.Run(); err != nil {
+			return fmt.Errorf("failed to run http server: %w", err)
+		}
+		return nil
+	})
+
+	g.Go(func() error {
+		go func() {
+			<-ctx.Done()
+			if err := s.health.Shutdown(context.Background()); err != nil {
+				slog.ErrorContext(ctx, "failed to shutdown health server", slog.Any("error", err))
+			}
+		}()
+		if err := s.health.Run(); err != nil {
+			return fmt.Errorf("failed to run health server: %w", err)
+		}
+		return nil
+	})
+
+	return g.Wait()
 }

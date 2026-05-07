@@ -49,7 +49,6 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 			return err
 		}
-
 		if cmd.Title != "" {
 			if err := course.SetTitle(cmd.Title); err != nil {
 				return err
@@ -64,7 +63,9 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			course.SetOverview(cmd.Overview)
 		}
 		if cmd.IntroductionVideoKey != "" {
-			course.SetIntroductionVideoKey(cmd.IntroductionVideoKey)
+			if err := course.SetIntroductionVideoKey(cmd.IntroductionVideoKey); err != nil {
+				return err
+			}
 		}
 
 		return repoRegistry.Course().Save(ctx, course)

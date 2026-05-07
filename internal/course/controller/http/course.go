@@ -198,7 +198,6 @@ func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.Approv
 }
 
 func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
-	// implement update course
 	courseID := request.CourseId
 
 	overview := ""

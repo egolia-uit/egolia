@@ -15,6 +15,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws"
 )
 
 type S3 struct {
@@ -41,6 +42,7 @@ func NewS3(
 	if err != nil {
 		return nil, fmt.Errorf("unable to load AWS SDK config: %w", err)
 	}
+	otelaws.AppendMiddlewares(&c.APIOptions)
 	client := s3.NewFromConfig(
 		c,
 		func(o *s3.Options) {
@@ -70,7 +72,7 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 	})
 	presignParams := &s3.PutObjectInput{
 		Bucket: &s.bucket,
-		Key:    new(key),
+		Key:    aws.String(key),
 	}
 	expiration := time.Now().Add(s.presignExpiration)
 	url, err := s.S3PresignClient.PresignPutObject(ctx, presignParams,

@@ -13,13 +13,7 @@ properties:
   userId:
     $ref: ../../../common/components/schemas/User.yaml#/properties/id
 
-  certificateURL:
-    type: string
-    format: uri
-    example: https://example.com/certificates/f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd
-    readOnly: true
-
-  issuedAt:
+  createdAt:
     type: string
     format: date-time
     example: 2026-05-01T07:30:00Z
@@ -28,4 +22,4 @@ required:
   - id
   - courseId
   - userId
-  - issuedAt
+  - createdAt

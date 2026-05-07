@@ -35,9 +35,8 @@ type Lesson interface {
 }
 
 type LessonBase struct {
-	id         uuid.UUID
-	lessonType LessonType
-	title      string
+	id    uuid.UUID
+	title string
 }
 
 var _ Lesson = (*LessonBase)(nil)
@@ -45,24 +44,20 @@ var _ Lesson = (*LessonBase)(nil)
 func NewLessonBase(
 	id uuid.UUID,
 	title string,
-	lessonType LessonType,
 ) *LessonBase {
 	return &LessonBase{
-		id:         id,
-		lessonType: lessonType,
-		title:      title,
+		id:    id,
+		title: title,
 	}
 }
 
 func UnmarshalLessonBase(
 	id uuid.UUID,
 	title string,
-	lessonType LessonType,
 ) *LessonBase {
 	return &LessonBase{
-		id:         id,
-		lessonType: lessonType,
-		title:      title,
+		id:    id,
+		title: title,
 	}
 }
 
@@ -81,35 +76,38 @@ func (l *LessonBase) SetTitle(title string) {
 }
 
 type Section struct {
-	id      uuid.UUID
-	title   string
-	lessons []Lesson
+	id        uuid.UUID
+	title     string
+	deletedAt *time.Time
+	lessons   []Lesson
 }
 
 func NewSection(
 	id uuid.UUID,
-	courseID uuid.UUID,
 	title string,
 ) *Section {
 	return &Section{
-		id:      id,
-		title:   title,
-		lessons: []Lesson{},
+		id:        id,
+		title:     title,
+		deletedAt: nil,
+		lessons:   []Lesson{},
 	}
 }
 
 func UnmarshalSection(
 	id uuid.UUID,
 	title string,
+	deletedAt *time.Time,
 	lessons []Lesson,
 ) *Section {
 	if lessons == nil {
 		lessons = []Lesson{}
 	}
 	return &Section{
-		id:      id,
-		title:   title,
-		lessons: lessons,
+		id:        id,
+		title:     title,
+		deletedAt: deletedAt,
+		lessons:   lessons,
 	}
 }
 
@@ -123,6 +121,15 @@ func (s *Section) Title() string {
 
 func (s *Section) SetTitle(title string) {
 	s.title = title
+}
+
+func (s *Section) DeletedAt() *time.Time {
+	return s.deletedAt
+}
+
+func (s *Section) Delete() {
+	s.deletedAt = new(time.Time)
+	*s.deletedAt = time.Now()
 }
 
 func (s *Section) Lessons() []Lesson {
@@ -189,7 +196,7 @@ func NewTestQuestion(
 type TestLesson struct {
 	LessonBase
 	questionType QuestionType
-	Questions    []*TestQuestion
+	questions    []*TestQuestion
 }
 
 var _ Lesson = (*TestLesson)(nil)
@@ -197,37 +204,39 @@ var _ Lesson = (*TestLesson)(nil)
 func NewTestLesson(
 	id uuid.UUID,
 	title string,
-	lessonType LessonType,
 	questionType QuestionType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase:   *NewLessonBase(id, title, lessonType),
+		LessonBase:   *NewLessonBase(id, title),
 		questionType: questionType,
-		Questions:    questions,
+		questions:    questions,
 	}
 }
 
 func UnmarshalTestLesson(
 	id uuid.UUID,
 	title string,
-	lessonType LessonType,
 	questionType QuestionType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase:   *UnmarshalLessonBase(id, title, lessonType),
+		LessonBase:   *UnmarshalLessonBase(id, title),
 		questionType: questionType,
-		Questions:    questions,
+		questions:    questions,
 	}
 }
 
 func (tl *TestLesson) GetQuestions() []*TestQuestion {
-	return tl.Questions
+	return tl.questions
 }
 
 func (tl *TestLesson) SetQuestions(questions []*TestQuestion) {
-	tl.Questions = questions
+	tl.questions = questions
+}
+
+func (tl *TestLesson) QuestionType() QuestionType {
+	return tl.questionType
 }
 
 type VideoLesson struct {
@@ -240,14 +249,12 @@ var _ Lesson = (*VideoLesson)(nil)
 
 func NewVideoLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	lessonType LessonType,
 	title string,
 	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *NewLessonBase(id, title, lessonType),
+		LessonBase: *NewLessonBase(id, title),
 		VideoKey:   videoKey,
 		Duration:   duration,
 	}
@@ -256,13 +263,12 @@ func NewVideoLesson(
 func UnmarshalVideoLesson(
 	id uuid.UUID,
 	title string,
-	videoURL string,
+	videoKey string,
 	duration time.Duration,
-	lessonType LessonType,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *UnmarshalLessonBase(id, title, lessonType),
-		VideoKey:   videoURL,
+		LessonBase: *UnmarshalLessonBase(id, title),
+		VideoKey:   videoKey,
 		Duration:   duration,
 	}
 }
@@ -293,7 +299,6 @@ type Course struct {
 	price                int64
 	overview             string
 	introductionVideoKey string
-	introductionVideoURL string
 	deletedAt            *time.Time
 	sections             []*Section
 }
@@ -341,7 +346,6 @@ func UnmarshalCourse(
 	overview string,
 	hidden bool,
 	introductionVideoKey string,
-	introductionVideoURL string,
 	deletedAt *time.Time,
 	sections []*Section,
 ) *Course {
@@ -359,7 +363,6 @@ func UnmarshalCourse(
 		price:                price,
 		overview:             overview,
 		introductionVideoKey: introductionVideoKey,
-		introductionVideoURL: introductionVideoURL,
 		deletedAt:            deletedAt,
 		sections:             sections,
 	}
@@ -427,16 +430,13 @@ func (c *Course) IntroductionVideoKey() string {
 	return c.introductionVideoKey
 }
 
-func (c *Course) SetIntroductionVideoKey(introductionVideoKey string) {
-	c.introductionVideoKey = strings.TrimSpace(introductionVideoKey)
-}
-
-func (c *Course) IntroductionVideoURL() string {
-	return c.introductionVideoURL
-}
-
-func (c *Course) SetIntroductionVideoURL(introductionVideoURL string) {
-	c.introductionVideoURL = strings.TrimSpace(introductionVideoURL)
+func (c *Course) SetIntroductionVideoKey(introductionVideoKey string) error {
+	introductionVideoKey = strings.TrimSpace(introductionVideoKey)
+	if introductionVideoKey == "" {
+		return errs.NewInvalid("introduction video key is required")
+	}
+	c.introductionVideoKey = introductionVideoKey
+	return nil
 }
 
 func (c *Course) Sections() []*Section {

@@ -44,9 +44,8 @@ func (r *LessonReadRepo) GetVideoLessonDetail(ctx context.Context, params *app.G
 			ID:         m.ID,
 			Title:      m.Title,
 			LessonType: app.LessonTypeVideo,
-			Order:      m.SortOrder,
 		},
-		VideoURL: m.VideoLesson.VideoKey,
+		VideoURL: m.VideoLesson.VideoKey, // TODO: transform video key to URL using objectStorageSvc
 		Duration: time.Duration(m.VideoLesson.Duration) * time.Second,
 	}, nil
 }
@@ -90,9 +89,8 @@ func (r *LessonReadRepo) GetTestLessonDetail(ctx context.Context, params *app.Ge
 			ID:         m.ID,
 			Title:      m.Title,
 			LessonType: app.LessonTypeTest,
-			Order:      m.SortOrder,
 		},
-		TestLessonType: app.TestLessonType(m.TestLesson.Type),
-		Questions:      questions,
+		QuestionType: app.QuestionType(m.TestLesson.QuestionType),
+		Questions:    questions,
 	}, nil
 }

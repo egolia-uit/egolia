@@ -58,7 +58,24 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	unitOfWork := repo.NewUnitOfWork(db)
+	s3 := &configConfig.S3
+	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+<<<<<<< HEAD
+	unitOfWork := repo.NewUnitOfWork(db, objectstorageS3)
+	moveLessonHandler := app.NewMoveLessonHandler(moveLessonSvc, unitOfWork)
+	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
+	createCourseHandler := app.NewCreateCourseHandler(unitOfWork)
+||||||| 7d831da
+	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
+	createCourseSvc := domain.NewCreateCourseSvc()
+	createCourseHandler := app.NewCreateCourseHandler(createCourseSvc, unitOfWork)
+=======
+	unitOfWork := repo.NewUnitOfWork(db, objectstorageS3)
 	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
 		cleanup2()
@@ -67,8 +84,18 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	tracer := app.NewTracer(tracerProvider)
 	createCourseCmd := app.NewCreateCourseHandler(unitOfWork, logger, tracer)
+>>>>>>> main
 	deleteCourseSvc := domain.NewDeleteCourseSvc()
+<<<<<<< HEAD
+	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
+	updateCourseHandler := app.NewUpdateCourseHandler(unitOfWork)
+||||||| 7d831da
+	deleteCourseHandler := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork)
+	updateCourseSvc := domain.NewUpdateCourseSvc()
+	updateCourseHandler := app.NewUpdateCourseHandler(updateCourseSvc, unitOfWork)
+=======
 	deleteCourseCmd := app.NewDeleteCourseHandler(deleteCourseSvc, unitOfWork, logger, tracer)
+>>>>>>> main
 	enrollInCourseSvc := domain.NewEnrollInCourseSvc()
 	enrollInCourseCmd := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork, logger, tracer)
 	finishCourseSvc := domain.NewFinishCourseSvc()
@@ -88,14 +115,6 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		MoveLesson:     moveLessonCmd,
 		ReviewCourse:   reviewCourseCmd,
 		UpdateCourse:   updateCourseCmd,
-	}
-	s3 := &configConfig.S3
-	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
-	if err != nil {
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db, objectstorageS3)
 	getCourseQuery := app.NewGetCourseHandler(courseReadRepo, logger, tracer)

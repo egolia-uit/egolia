@@ -12,7 +12,7 @@ type Review struct {
 	userID    string
 	rating    int
 	comment   string
-	createdAt *time.Time
+	createdAt time.Time
 	deletedAt *time.Time
 }
 
@@ -22,7 +22,6 @@ func NewReview(
 	userID string,
 	rating int,
 	comment string,
-	createdAt *time.Time,
 ) *Review {
 	return &Review{
 		id:        id,
@@ -30,7 +29,7 @@ func NewReview(
 		userID:    userID,
 		rating:    rating,
 		comment:   comment,
-		createdAt: createdAt,
+		createdAt: time.Now(),
 		deletedAt: nil,
 	}
 }
@@ -41,7 +40,7 @@ func UnmarshalReview(
 	userID string,
 	rating int,
 	comment string,
-	createdAt *time.Time,
+	createdAt time.Time,
 	deletedAt *time.Time,
 ) *Review {
 	return &Review{
@@ -92,10 +91,6 @@ func (r *Review) Delete() {
 	*r.deletedAt = time.Now()
 }
 
-func (r *Review) CreatedAt() *time.Time {
+func (r *Review) CreatedAt() time.Time {
 	return r.createdAt
-}
-
-func (r *Review) SetCreatedAt(createdAt *time.Time) {
-	r.createdAt = createdAt
 }

@@ -13,8 +13,7 @@ export const zCourseCertificate = z.object({
     id: z.uuid().readonly(),
     courseId: zCourseId,
     userId: zCoursePropertiesId,
-    certificateURL: z.url().readonly().optional(),
-    issuedAt: z.iso.datetime()
+    createdAt: z.iso.datetime()
 });
 
 export const zCourseError = z.object({
@@ -65,12 +64,9 @@ export const zCourseSection = z.object({
     title: z.string().min(1).max(255)
 });
 
-export const zCourseLessonType = z.enum(['video', 'test']);
-
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
-    title: z.string(),
-    lessonType: zCourseLessonType
+    title: z.string()
 });
 
 export const zCourseCourseDetailSectionItem = zCourseSection.and(z.object({
@@ -171,18 +167,24 @@ export const zCourseTestQuestion = z.object({
 });
 
 export const zCourseTestLesson = zCourseLesson.and(z.object({
+    lessonType: z.enum(['test']),
     questionType: zCourseQuestionType,
     questions: z.array(z.unknown())
 }));
 
 export const zCourseVideoLesson = zCourseLesson.and(z.object({
+    lessonType: z.enum(['video']),
     videoUrl: z.url().readonly(),
     duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 }));
 
 export const zCourseLessonDetail = z.union([
-    zCourseVideoLesson,
-    zCourseTestLesson
+    z.object({
+        lessonType: z.literal('video')
+    }).and(zCourseVideoLesson),
+    z.object({
+        lessonType: z.literal('test')
+    }).and(zCourseTestLesson)
 ]);
 
 /**
@@ -287,7 +289,7 @@ export const zBlogComment = z.object({
 
 export const zCourseCertificateWritable = z.object({
     userId: zCoursePropertiesId,
-    issuedAt: z.iso.datetime()
+    createdAt: z.iso.datetime()
 });
 
 export const zCourseCourseWritable = z.object({
@@ -369,17 +371,23 @@ export const zCourseTestQuestionWritable = z.object({
 });
 
 export const zCourseTestLessonWritable = zCourseLessonWritable.and(z.object({
+    lessonType: z.enum(['test']),
     questions: z.array(z.unknown())
 }));
 
 export const zCourseVideoLessonWritable = zCourseLessonWritable.and(z.object({
+    lessonType: z.enum(['video']),
     videoKey: z.string(),
     duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 }));
 
 export const zCourseLessonDetailWritable = z.union([
-    zCourseVideoLessonWritable,
-    zCourseTestLessonWritable
+    z.object({
+        lessonType: z.literal('video')
+    }).and(zCourseVideoLessonWritable),
+    z.object({
+        lessonType: z.literal('test')
+    }).and(zCourseTestLessonWritable)
 ]);
 
 export const zBillingTransactionWritable = z.object({

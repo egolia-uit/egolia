@@ -3,7 +3,7 @@
 import type { CheckoutCourseResponse, CommentOnPostResponse, CreatePostResponse, GetCertificateByIdResponse, GetCourseAnalyticsResponse, GetCourseDetailResponse, GetCourseLandingPageResponse, GetCourseReviewsResponse, GetCourseStudentsResponse, GetLessonCommentsResponse, GetMyBookmarkedCoursesResponse, GetMyCertificatesResponse, GetMyCoursesResponse, GetMyEnrolledCoursesResponse, GetPlatformRevenueAnalyticsResponse, GetPostByIdResponse, GetPostCommentsResponse, GetPublishedCoursesResponse, GetSystemCoursesResponse, GetTransactionsResponse, GetUploadVideoUrlResponse, ReplyCommentResponse, SearchPostsResponse, UpdateCommentResponse, UpdatePostResponse } from './types.gen';
 
 const courseCertificateSchemaResponseTransformer = (data: any) => {
-    data.issuedAt = new Date(data.issuedAt);
+    data.createdAt = new Date(data.createdAt);
     return data;
 };
 

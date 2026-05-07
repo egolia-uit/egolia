@@ -18,6 +18,6 @@ type MoveLesson struct {
 }
 
 func (s *MoveLessonSvc) Handle(params *MoveLesson) error {
-	// TODO: Implement the logic to move the lesson within the section
-	panic("not implemented")
+	// TODO: ここでDBから対象のレッスンを取得して、順番を入れ替える
+	return nil
 }
