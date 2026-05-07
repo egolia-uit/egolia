@@ -93,13 +93,14 @@ func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
 
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 	dto := &course.CourseDetail{
-		Id:           (*types.UUID)(&result.Course.ID),
-		Title:        result.Course.Title,
-		InstructorId: &result.Course.InstructorID,
-		Price:        result.Course.Price,
-		Overview:     &result.Course.Overview,
-		Hidden:       &result.Course.Hidden,
-		Status:       (*course.CourseStatus)(&result.Course.Status),
+		Id:               (*types.UUID)(&result.Course.ID),
+		Title:            result.Course.Title,
+		InstructorId:     &result.Course.InstructorID,
+		OriginalCourseId: nil,
+		Price:            result.Course.Price,
+		Overview:         &result.Course.Overview,
+		Hidden:           &result.Course.Hidden,
+		Status:           (*course.CourseStatus)(&result.Course.Status),
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: result.Course.Introduction.VideoUrl,
 		},
@@ -138,13 +139,14 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 
 func courseToDTO(c *app.Course) *course.Course {
 	dto := &course.Course{
-		Id:           &c.ID,
-		Title:        c.Title,
-		InstructorId: &c.InstructorID,
-		Price:        c.Price,
-		Overview:     &c.Overview,
-		Hidden:       &c.Hidden,
-		Status:       (*course.CourseStatus)(&c.Status),
+		Id:               &c.ID,
+		Title:            c.Title,
+		InstructorId:     &c.InstructorID,
+		OriginalCourseId: nil,
+		Price:            c.Price,
+		Overview:         &c.Overview,
+		Hidden:           &c.Hidden,
+		Status:           (*course.CourseStatus)(&c.Status),
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: c.Introduction.VideoUrl,
 		},
