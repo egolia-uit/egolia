@@ -95,7 +95,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		ReviewCourse:   reviewCourseCmd,
 		UpdateCourse:   updateCourseCmd,
 	}
-	courseReadRepo := readmodel.NewCourseReadRepo(db)
+	courseReadRepo := readmodel.NewCourseReadRepo(db, objectstorageS3)
 	getCourseQuery := app.NewGetCourseHandler(courseReadRepo, logger, tracer)
 	getCourseDetailQuery := app.NewGetCourseDetailHandler(courseReadRepo, logger, tracer)
 	getCoursesQuery := app.NewGetCoursesHandler(courseReadRepo, logger, tracer)

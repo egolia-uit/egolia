@@ -79,7 +79,7 @@ type Section struct {
 	id        uuid.UUID
 	courseID  uuid.UUID
 	title     string
-	order     string
+	order     int
 	deletedAt *time.Time
 	lessons   []Lesson
 }
@@ -88,7 +88,7 @@ func NewSection(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	title string,
-	order string,
+	order int,
 ) *Section {
 	return &Section{
 		id:        id,
@@ -104,7 +104,7 @@ func UnmarshalSection(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	title string,
-	order string,
+	order int,
 	deletedAt *time.Time,
 	lessons []Lesson,
 ) *Section {
@@ -141,11 +141,11 @@ func (s *Section) SetTitle(title string) {
 	s.title = title
 }
 
-func (s *Section) Order() string {
+func (s *Section) Order() int {
 	return s.order
 }
 
-func (s *Section) SetOrder(order string) {
+func (s *Section) SetOrder(order int) {
 	s.order = order
 }
 
@@ -229,7 +229,6 @@ var _ Lesson = (*TestLesson)(nil)
 
 func NewTestLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
 	title string,
 	lessonType TestLessonType,
 	questions []*TestQuestion,
@@ -276,7 +275,6 @@ var _ Lesson = (*VideoLesson)(nil)
 
 func NewVideoLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
 	title string,
 	videoKey string,
 	duration time.Duration,
@@ -291,12 +289,12 @@ func NewVideoLesson(
 func UnmarshalVideoLesson(
 	id uuid.UUID,
 	title string,
-	videoURL string,
+	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
 		LessonBase: *UnmarshalLessonBase(id, title),
-		VideoKey:   videoURL,
+		VideoKey:   videoKey,
 		Duration:   duration,
 	}
 }
@@ -458,8 +456,13 @@ func (c *Course) IntroductionVideoKey() string {
 	return c.introductionVideoKey
 }
 
-func (c *Course) SetIntroductionVideoKey(introductionVideoKey string) {
-	c.introductionVideoKey = strings.TrimSpace(introductionVideoKey)
+func (c *Course) SetIntroductionVideoKey(introductionVideoKey string) error {
+	introductionVideoKey = strings.TrimSpace(introductionVideoKey)
+	if introductionVideoKey == "" {
+		return errs.NewInvalid("introduction video key is required")
+	}
+	c.introductionVideoKey = introductionVideoKey
+	return nil
 }
 
 func (c *Course) Sections() []*Section {

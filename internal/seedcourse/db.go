@@ -17,7 +17,12 @@ func NewDB(
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		return nil, nil, err
+		cleanup := func() {
+			if sqlDB, err := db.DB(); err == nil {
+				sqlDB.Close() //nolint:errcheck
+			}
+		}
+		return nil, cleanup, err
 	}
 
 	cleanup := func() {

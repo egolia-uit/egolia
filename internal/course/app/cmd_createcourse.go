@@ -10,12 +10,12 @@ import (
 )
 
 type CreateCourse struct {
-	ID           uuid.UUID
-	Title        string
-	InstructorID string
-	Price        int64
-	Overview     string
-	Introduction CourseLandingPageIntroduction
+	ID                   uuid.UUID
+	Title                string
+	InstructorID         string
+	Price                int64
+	Overview             string
+	IntroductionVideoKey string
 }
 
 type CreateCourseCmd Cmd[CreateCourse]
@@ -44,7 +44,7 @@ func (h *CreateCourseHandler) Handle(ctx context.Context, cmd *CreateCourse) err
 		cmd.InstructorID,
 		float64(cmd.Price),
 		cmd.Overview,
-		"", // FIXME:
+		cmd.IntroductionVideoKey,
 	)
 	if err != nil {
 		return err

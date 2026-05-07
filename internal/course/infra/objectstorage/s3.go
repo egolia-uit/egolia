@@ -71,7 +71,7 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 	})
 	presignParams := &s3.PutObjectInput{
 		Bucket: &s.bucket,
-		Key:    new(key),
+		Key:    aws.String(key),
 	}
 	expiration := time.Now().Add(s.presignExpiration)
 	url, err := s.S3PresignClient.PresignPutObject(ctx, presignParams,

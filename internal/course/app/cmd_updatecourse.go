@@ -64,7 +64,9 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			course.SetOverview(cmd.Overview)
 		}
 		if cmd.IntroductionVideoKey != "" {
-			course.SetIntroductionVideoKey(cmd.IntroductionVideoKey)
+			if err := course.SetIntroductionVideoKey(cmd.IntroductionVideoKey); err != nil {
+				return err
+			}
 		}
 
 		return repoRegistry.Course().Save(ctx, course)

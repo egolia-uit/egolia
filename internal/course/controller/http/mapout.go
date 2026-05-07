@@ -4,6 +4,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
+	"github.com/google/uuid"
 	"github.com/oapi-codegen/runtime/types"
 )
 
@@ -91,20 +92,24 @@ func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
 }
 
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
-	return &course.CourseDetail{
-		Id:               (*types.UUID)(&result.Course.ID),
-		Title:            result.Course.Title,
-		InstructorId:     &result.Course.InstructorID,
-		OriginalCourseId: (*types.UUID)(&result.Course.OriginalCourseID),
-		Price:            result.Course.Price,
-		Overview:         &result.Course.Overview,
-		Hidden:           &result.Course.Hidden,
-		Status:           (*course.CourseStatus)(&result.Course.Status),
+	dto := &course.CourseDetail{
+		Id:           (*types.UUID)(&result.Course.ID),
+		Title:        result.Course.Title,
+		InstructorId: &result.Course.InstructorID,
+		Price:        result.Course.Price,
+		Overview:     &result.Course.Overview,
+		Hidden:       &result.Course.Hidden,
+		Status:       (*course.CourseStatus)(&result.Course.Status),
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: result.Course.Introduction.VideoUrl,
 		},
 		Sections: sectionItemsToDTO(result.Sections),
 	}
+	if result.Course.OriginalCourseID != uuid.Nil {
+		originalID := types.UUID(result.Course.OriginalCourseID)
+		dto.OriginalCourseId = &originalID
+	}
+	return dto
 }
 
 func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDetailSectionItem {
@@ -133,17 +138,19 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 
 func courseToDTO(c *app.Course) *course.Course {
 	dto := &course.Course{
-		Id:               &c.ID,
-		Title:            c.Title,
-		InstructorId:     &c.InstructorID,
-		OriginalCourseId: &c.OriginalCourseID,
-		Price:            c.Price,
-		Overview:         &c.Overview,
-		Hidden:           &c.Hidden,
-		Status:           (*course.CourseStatus)(&c.Status),
+		Id:           &c.ID,
+		Title:        c.Title,
+		InstructorId: &c.InstructorID,
+		Price:        c.Price,
+		Overview:     &c.Overview,
+		Hidden:       &c.Hidden,
+		Status:       (*course.CourseStatus)(&c.Status),
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: c.Introduction.VideoUrl,
 		},
+	}
+	if c.OriginalCourseID != uuid.Nil {
+		dto.OriginalCourseId = &c.OriginalCourseID
 	}
 	return dto
 }

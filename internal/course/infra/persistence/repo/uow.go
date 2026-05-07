@@ -20,7 +20,7 @@ func NewRegistry(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *Registry {
 }
 
 func (r *Registry) Course() domain.CourseRepo {
-	return &CourseRepo{db: r.db, objectStorageSvc: r.objectStorageSvc}
+	return &CourseRepo{db: r.db}
 }
 func (r *Registry) Enrollment() domain.EnrollmentRepo       { return &EnrollmentRepo{db: r.db} }
 func (r *Registry) Bookmark() domain.BookmarkRepo           { return &BookmarkRepo{db: r.db} }

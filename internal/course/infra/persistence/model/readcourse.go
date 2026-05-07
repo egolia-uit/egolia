@@ -1,7 +1,6 @@
 package model
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
@@ -55,6 +54,7 @@ type ReadCourse struct {
 	CourseID          uuid.UUID         `gorm:"type:uuid;primaryKey;column:course_id"`
 	Title             string            `gorm:"type:varchar(255);not null"`
 	Price             float64           `gorm:"not null;default:0"`
+	Hidden            bool              `gorm:"column:hidden;not null;default:false"`
 	FullCourseContent ReadCourseContent `gorm:"column:full_course_content;serializer:json;type:jsonb;not null"`
 	PublishedAt       *time.Time        `gorm:"column:published_at"`
 }
@@ -65,9 +65,13 @@ func ReadCourseFromDomain(
 	c *domain.Course,
 	videoKeyToURL func(videoKey string) (string, error),
 ) (*ReadCourse, error) {
-	videoURL, err := videoKeyToURL(c.IntroductionVideoKey())
-	if err != nil {
-		return nil, err
+	var videoURL string
+	if key := c.IntroductionVideoKey(); key != "" {
+		var err error
+		videoURL, err = videoKeyToURL(key)
+		if err != nil {
+			return nil, err
+		}
 	}
 	sections := make([]ReadCourseSectionContent, 0, len(c.Sections()))
 	for _, s := range c.Sections() {
@@ -94,6 +98,7 @@ func ReadCourseFromDomain(
 		CourseID:          c.ID(),
 		Title:             c.Title(),
 		Price:             c.Price(),
+		Hidden:            c.Hidden(),
 		FullCourseContent: content,
 		PublishedAt:       publishedAt,
 	}, nil
@@ -104,11 +109,10 @@ func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
 	for _, l := range s.Lessons() {
 		lessons = append(lessons, buildLessonContent(l))
 	}
-	n, _ := strconv.Atoi(s.Order())
 	return ReadCourseSectionContent{
 		ID:        s.ID(),
 		Title:     s.Title(),
-		SortOrder: n,
+		SortOrder: s.Order(),
 		Lessons:   lessons,
 	}
 }
