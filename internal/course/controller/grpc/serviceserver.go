@@ -9,7 +9,6 @@ import (
 )
 
 type ServiceServer struct {
-	pb.UnimplementedCourseServiceServer
 	app *app.App
 }
 
@@ -17,8 +16,7 @@ var _ pb.CourseServiceServer = (*ServiceServer)(nil)
 
 func NewServiceServer(app *app.App) *ServiceServer {
 	return &ServiceServer{
-		UnimplementedCourseServiceServer: pb.UnimplementedCourseServiceServer{},
-		app:                              app,
+		app: app,
 	}
 }
 
@@ -36,7 +34,26 @@ func (ss *ServiceServer) GetCourse(ctx context.Context, params *pb.GetCourseRequ
 	if err != nil {
 		return nil, err
 	}
+	res, err := courseToPb(course)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.GetCourseResponse{
-		Course: courseToPb(course),
+		Course: res,
 	}, nil
+}
+
+func (ss *ServiceServer) EnrollCourseForUser(ctx context.Context, params *pb.EnrollCourseForUserRequest) (*pb.EnrollCourseForUserResponse, error) {
+	return nil, errs.Unimplemented
+	// cmd := &app.EnrollCourseForUser{
+	// 	CourseID: params.CourseId,
+	// 	UserID:   params.UserId,
+	// }
+	// enrollmentID, err := ss.app.Commands.EnrollCourseForUser.Handle(ctx, cmd)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// return &pb.EnrollCourseForUserResponse{
+	// 	EnrollmentId: enrollmentID,
+	// }, nil
 }
