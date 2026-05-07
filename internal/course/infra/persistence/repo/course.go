@@ -2,8 +2,8 @@ package repo
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/model"
 	"gorm.io/gorm"
@@ -11,12 +11,11 @@ import (
 )
 
 type CourseRepo struct {
-	db               *gorm.DB
-	objectStorageSvc app.ObjectStorageSvc
+	db *gorm.DB
 }
 
-func NewCourseRepo(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *CourseRepo {
-	return &CourseRepo{db: db, objectStorageSvc: objectStorageSvc}
+func NewCourseRepo(db *gorm.DB) *CourseRepo {
+	return &CourseRepo{db: db}
 }
 
 var _ domain.CourseRepo = (*CourseRepo)(nil)
@@ -47,12 +46,9 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 		return err
 	}
 
-	// Rebuild read_courses JSONB in the same transaction so reads are never stale.
-	readModel, err := model.ReadCourseFromDomain(course, func(videoKey string) (string, error) {
-		return r.objectStorageSvc.VideoKeyToURL(ctx, videoKey)
-	})
+	readModel, err := model.ReadCourseFromDomain(course)
 	if err != nil {
-		return err
+		return fmt.Errorf("rebuild read course: %w", err)
 	}
 	return db.Save(readModel).Error
 }

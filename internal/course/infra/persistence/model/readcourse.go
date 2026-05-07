@@ -1,7 +1,6 @@
 package model
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
@@ -33,10 +32,10 @@ type ReadCourseLessonContent struct {
 }
 
 type ReadCourseSectionContent struct {
-	ID        uuid.UUID                 `json:"id"`
-	Title     string                    `json:"title"`
-	SortOrder int                       `json:"sort_order"`
-	Lessons   []ReadCourseLessonContent `json:"lessons"`
+	ID      uuid.UUID                 `json:"id"`
+	Title   string                    `json:"title"`
+	Index   int                       `json:"index"`
+	Lessons []ReadCourseLessonContent `json:"lessons"`
 }
 
 type ReadCourseContent struct {
@@ -55,6 +54,7 @@ type ReadCourse struct {
 	CourseID          uuid.UUID         `gorm:"type:uuid;primaryKey;column:course_id"`
 	Title             string            `gorm:"type:varchar(255);not null"`
 	Price             float64           `gorm:"not null;default:0"`
+	Hidden            bool              `gorm:"column:hidden;not null;default:false"`
 	FullCourseContent ReadCourseContent `gorm:"column:full_course_content;serializer:json;type:jsonb;not null"`
 	PublishedAt       *time.Time        `gorm:"column:published_at"`
 }
@@ -63,15 +63,10 @@ func (ReadCourse) TableName() string { return "read_courses" }
 
 func ReadCourseFromDomain(
 	c *domain.Course,
-	videoKeyToURL func(videoKey string) (string, error),
 ) (*ReadCourse, error) {
-	videoURL, err := videoKeyToURL(c.IntroductionVideoKey())
-	if err != nil {
-		return nil, err
-	}
 	sections := make([]ReadCourseSectionContent, 0, len(c.Sections()))
-	for _, s := range c.Sections() {
-		sections = append(sections, buildSectionContent(s))
+	for i, s := range c.Sections() {
+		sections = append(sections, buildSectionContent(i, s))
 	}
 
 	content := ReadCourseContent{
@@ -80,7 +75,7 @@ func ReadCourseFromDomain(
 		Status:        string(c.Status()),
 		Price:         c.Price(),
 		Overview:      c.Overview(),
-		IntroVideoURL: videoURL,
+		IntroVideoURL: c.IntroductionVideoKey(),
 		Sections:      sections,
 	}
 
@@ -94,22 +89,22 @@ func ReadCourseFromDomain(
 		CourseID:          c.ID(),
 		Title:             c.Title(),
 		Price:             c.Price(),
+		Hidden:            c.Hidden(),
 		FullCourseContent: content,
 		PublishedAt:       publishedAt,
 	}, nil
 }
 
-func buildSectionContent(s *domain.Section) ReadCourseSectionContent {
+func buildSectionContent(index int, s *domain.Section) ReadCourseSectionContent {
 	lessons := make([]ReadCourseLessonContent, 0, len(s.Lessons()))
 	for _, l := range s.Lessons() {
 		lessons = append(lessons, buildLessonContent(l))
 	}
-	n, _ := strconv.Atoi(s.Order())
 	return ReadCourseSectionContent{
-		ID:        s.ID(),
-		Title:     s.Title(),
-		SortOrder: n,
-		Lessons:   lessons,
+		ID:      s.ID(),
+		Title:   s.Title(),
+		Index:   index,
+		Lessons: lessons,
 	}
 }
 

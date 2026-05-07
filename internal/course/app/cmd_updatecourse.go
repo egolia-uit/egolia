@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -18,15 +19,20 @@ type UpdateCourse struct {
 	IntroductionVideoKey string // emptyable
 }
 
+type UpdateCourseCmd Cmd[UpdateCourse]
+
 type UpdateCourseHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewUpdateCourseHandler(uow domain.UnitOfWork) *UpdateCourseHandler {
-	return &UpdateCourseHandler{
+func NewUpdateCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) UpdateCourseCmd {
+	handler := &UpdateCourseHandler{
 		uow: uow,
 	}
+	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
+
+var _ Cmd[UpdateCourse] = (*UpdateCourseHandler)(nil)
 
 func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) error {
 	if h.uow == nil {
@@ -43,7 +49,6 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 			return err
 		}
-
 		if cmd.Title != "" {
 			if err := course.SetTitle(cmd.Title); err != nil {
 				return err
@@ -58,7 +63,9 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			course.SetOverview(cmd.Overview)
 		}
 		if cmd.IntroductionVideoKey != "" {
-			course.SetIntroductionVideoKey(cmd.IntroductionVideoKey)
+			if err := course.SetIntroductionVideoKey(cmd.IntroductionVideoKey); err != nil {
+				return err
+			}
 		}
 
 		return repoRegistry.Course().Save(ctx, course)

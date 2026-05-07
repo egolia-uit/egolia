@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -15,6 +16,8 @@ type DeleteCourse struct {
 	ActorID  string
 }
 
+type DeleteCourseCmd Cmd[DeleteCourse]
+
 type DeleteCourseHandler struct {
 	deleteCourseSvc *domain.DeleteCourseSvc
 	uow             domain.UnitOfWork
@@ -23,12 +26,17 @@ type DeleteCourseHandler struct {
 func NewDeleteCourseHandler(
 	deleteCourseSvc *domain.DeleteCourseSvc,
 	uow domain.UnitOfWork,
-) *DeleteCourseHandler {
-	return &DeleteCourseHandler{
+	logger *slog.Logger,
+	tracer Tracer,
+) DeleteCourseCmd {
+	handler := &DeleteCourseHandler{
 		deleteCourseSvc: deleteCourseSvc,
 		uow:             uow,
 	}
+	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
+
+var _ Cmd[DeleteCourse] = (*DeleteCourseHandler)(nil)
 
 func (h *DeleteCourseHandler) Handle(ctx context.Context, cmd *DeleteCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

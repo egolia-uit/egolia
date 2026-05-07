@@ -17,7 +17,7 @@ type Course struct {
 	Price                float64             `gorm:"not null;default:0"`
 	Overview             string              `gorm:"type:text;not null;default:''"`
 	Hidden               bool                `gorm:"not null;default:false"`
-	IntroductionVideoKey string              `gorm:"column:introduction_video_url;type:text;not null;default:''"`
+	IntroductionVideoKey string              `gorm:"column:introduction_video_key;type:text;not null;default:''"`
 	Sections             []Section           `gorm:"foreignKey:CourseID"`
 	CreatedAt            time.Time           `gorm:"autoCreateTime"`
 	UpdatedAt            time.Time           `gorm:"autoUpdateTime"`

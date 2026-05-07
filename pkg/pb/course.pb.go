@@ -22,14 +22,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TODO: Check again how many
 type CourseStatus int32
 
 const (
 	CourseStatus_COURSE_STATUS_UNSPECIFIED CourseStatus = 0
 	CourseStatus_COURSE_STATUS_DRAFT       CourseStatus = 1
-	CourseStatus_COURSE_STATUS_PUBLISHED   CourseStatus = 2
-	CourseStatus_COURSE_STATUS_ARCHIVED    CourseStatus = 3
+	CourseStatus_COURSE_STATUS_PENDING     CourseStatus = 2
+	CourseStatus_COURSE_STATUS_APPROVED    CourseStatus = 3
+	CourseStatus_COURSE_STATUS_REJECTED    CourseStatus = 4
 )
 
 // Enum value maps for CourseStatus.
@@ -37,14 +37,16 @@ var (
 	CourseStatus_name = map[int32]string{
 		0: "COURSE_STATUS_UNSPECIFIED",
 		1: "COURSE_STATUS_DRAFT",
-		2: "COURSE_STATUS_PUBLISHED",
-		3: "COURSE_STATUS_ARCHIVED",
+		2: "COURSE_STATUS_PENDING",
+		3: "COURSE_STATUS_APPROVED",
+		4: "COURSE_STATUS_REJECTED",
 	}
 	CourseStatus_value = map[string]int32{
 		"COURSE_STATUS_UNSPECIFIED": 0,
 		"COURSE_STATUS_DRAFT":       1,
-		"COURSE_STATUS_PUBLISHED":   2,
-		"COURSE_STATUS_ARCHIVED":    3,
+		"COURSE_STATUS_PENDING":     2,
+		"COURSE_STATUS_APPROVED":    3,
+		"COURSE_STATUS_REJECTED":    4,
 	}
 )
 
@@ -327,6 +329,102 @@ func (x *GetCourseResponse) GetCourse() *Course {
 	return nil
 }
 
+type EnrollCourseForUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CourseId      string                 `protobuf:"bytes,1,opt,name=course_id,json=courseId,proto3" json:"course_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EnrollCourseForUserRequest) Reset() {
+	*x = EnrollCourseForUserRequest{}
+	mi := &file_course_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EnrollCourseForUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnrollCourseForUserRequest) ProtoMessage() {}
+
+func (x *EnrollCourseForUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_course_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EnrollCourseForUserRequest.ProtoReflect.Descriptor instead.
+func (*EnrollCourseForUserRequest) Descriptor() ([]byte, []int) {
+	return file_course_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *EnrollCourseForUserRequest) GetCourseId() string {
+	if x != nil {
+		return x.CourseId
+	}
+	return ""
+}
+
+func (x *EnrollCourseForUserRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type EnrollCourseForUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EnrollmentId  string                 `protobuf:"bytes,1,opt,name=enrollment_id,json=enrollmentId,proto3" json:"enrollment_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EnrollCourseForUserResponse) Reset() {
+	*x = EnrollCourseForUserResponse{}
+	mi := &file_course_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EnrollCourseForUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EnrollCourseForUserResponse) ProtoMessage() {}
+
+func (x *EnrollCourseForUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_course_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EnrollCourseForUserResponse.ProtoReflect.Descriptor instead.
+func (*EnrollCourseForUserResponse) Descriptor() ([]byte, []int) {
+	return file_course_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *EnrollCourseForUserResponse) GetEnrollmentId() string {
+	if x != nil {
+		return x.EnrollmentId
+	}
+	return ""
+}
+
 var File_course_proto protoreflect.FileDescriptor
 
 const file_course_proto_rawDesc = "" +
@@ -346,15 +444,22 @@ const file_course_proto_rawDesc = "" +
 	"\x05price\x18\x05 \x01(\x03B\n" +
 	"\xbaH\a\xc8\x01\x01\"\x02 \x00R\x05price\"C\n" +
 	"\x11GetCourseResponse\x12.\n" +
-	"\x06course\x18\x01 \x01(\v2\x0e.course.CourseB\x06\xbaH\x03\xc8\x01\x01R\x06course*\x7f\n" +
+	"\x06course\x18\x01 \x01(\v2\x0e.course.CourseB\x06\xbaH\x03\xc8\x01\x01R\x06course\"g\n" +
+	"\x1aEnrollCourseForUserRequest\x12(\n" +
+	"\tcourse_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\xb0\x01\x01R\bcourseId\x12\x1f\n" +
+	"\auser_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06userId\"O\n" +
+	"\x1bEnrollCourseForUserResponse\x120\n" +
+	"\renrollment_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\xb0\x01\x01R\fenrollmentId*\x99\x01\n" +
 	"\fCourseStatus\x12\x1d\n" +
 	"\x19COURSE_STATUS_UNSPECIFIED\x10\x00\x12\x17\n" +
-	"\x13COURSE_STATUS_DRAFT\x10\x01\x12\x1b\n" +
-	"\x17COURSE_STATUS_PUBLISHED\x10\x02\x12\x1a\n" +
-	"\x16COURSE_STATUS_ARCHIVED\x10\x032\xb4\x01\n" +
+	"\x13COURSE_STATUS_DRAFT\x10\x01\x12\x19\n" +
+	"\x15COURSE_STATUS_PENDING\x10\x02\x12\x1a\n" +
+	"\x16COURSE_STATUS_APPROVED\x10\x03\x12\x1a\n" +
+	"\x16COURSE_STATUS_REJECTED\x10\x042\x94\x02\n" +
 	"\rCourseService\x12a\n" +
 	"\x14GetCourseTitlesByIds\x12#.course.GetCourseTitlesByIdsRequest\x1a$.course.GetCourseTitlesByIdsResponse\x12@\n" +
-	"\tGetCourse\x12\x18.course.GetCourseRequest\x1a\x19.course.GetCourseResponseBv\n" +
+	"\tGetCourse\x12\x18.course.GetCourseRequest\x1a\x19.course.GetCourseResponse\x12^\n" +
+	"\x13EnrollCourseForUser\x12\".course.EnrollCourseForUserRequest\x1a#.course.EnrollCourseForUserResponseBv\n" +
 	"\n" +
 	"com.courseB\vCourseProtoP\x01Z#github.com/egolia-uit/egolia/pkg/pb\xa2\x02\x03CXX\xaa\x02\x06Course\xca\x02\x06Course\xe2\x02\x12Course\\GPBMetadata\xea\x02\x06Courseb\x06proto3"
 
@@ -371,7 +476,7 @@ func file_course_proto_rawDescGZIP() []byte {
 }
 
 var file_course_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_course_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_course_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_course_proto_goTypes = []any{
 	(CourseStatus)(0),                    // 0: course.CourseStatus
 	(*GetCourseTitlesByIdsRequest)(nil),  // 1: course.GetCourseTitlesByIdsRequest
@@ -379,16 +484,20 @@ var file_course_proto_goTypes = []any{
 	(*GetCourseRequest)(nil),             // 3: course.GetCourseRequest
 	(*Course)(nil),                       // 4: course.Course
 	(*GetCourseResponse)(nil),            // 5: course.GetCourseResponse
+	(*EnrollCourseForUserRequest)(nil),   // 6: course.EnrollCourseForUserRequest
+	(*EnrollCourseForUserResponse)(nil),  // 7: course.EnrollCourseForUserResponse
 }
 var file_course_proto_depIdxs = []int32{
 	0, // 0: course.Course.status:type_name -> course.CourseStatus
 	4, // 1: course.GetCourseResponse.course:type_name -> course.Course
 	1, // 2: course.CourseService.GetCourseTitlesByIds:input_type -> course.GetCourseTitlesByIdsRequest
 	3, // 3: course.CourseService.GetCourse:input_type -> course.GetCourseRequest
-	2, // 4: course.CourseService.GetCourseTitlesByIds:output_type -> course.GetCourseTitlesByIdsResponse
-	5, // 5: course.CourseService.GetCourse:output_type -> course.GetCourseResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
+	6, // 4: course.CourseService.EnrollCourseForUser:input_type -> course.EnrollCourseForUserRequest
+	2, // 5: course.CourseService.GetCourseTitlesByIds:output_type -> course.GetCourseTitlesByIdsResponse
+	5, // 6: course.CourseService.GetCourse:output_type -> course.GetCourseResponse
+	7, // 7: course.CourseService.EnrollCourseForUser:output_type -> course.EnrollCourseForUserResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -405,7 +514,7 @@ func file_course_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_course_proto_rawDesc), len(file_course_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

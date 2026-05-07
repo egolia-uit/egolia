@@ -66,6 +66,7 @@ import (
 
 // TODO: SortOrder to become int, later
 func (s *Seed) createCourses() []model.Course {
+	now := time.Now()
 	return []model.Course{
 		{
 			ID:                   uuid.MustParse("00000000-0000-0000-0000-000000000001"),
@@ -76,7 +77,7 @@ func (s *Seed) createCourses() []model.Course {
 			Price:                120000,
 			Overview:             "FlowChart - Chuyên đề Lưu đồ Thuật toán",
 			Hidden:               false,
-			IntroductionVideoKey: s.publicObjectStorageURL.JoinPath(s.objectStorageBucket, "flowchart_intro.mp4").String(),
+			IntroductionVideoKey: "flowchart_intro.mp4",
 			Sections: []model.Section{
 				{
 					ID:       uuid.MustParse("00000000-0000-0000-0000-000000000011"),
@@ -92,18 +93,18 @@ func (s *Seed) createCourses() []model.Course {
 							LessonType: domain.LessonTypeVideo,
 							VideoLesson: &model.VideoLesson{
 								LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000111"),
-								VideoKey: "",
+								VideoKey: "flowchart_lesson_01.mp4",
 								Duration: int64((7*time.Minute + 23*time.Second) / time.Second),
 							},
 							TestLesson: nil,
-							CreatedAt:  time.Now(),
-							UpdatedAt:  time.Now(),
+							CreatedAt:  now,
+							UpdatedAt:  now,
 							DeletedAt:  gorm.DeletedAt{},
 						},
 						{
 							ID:          uuid.MustParse("00000000-0000-0000-0000-000000000112"),
 							SectionID:   uuid.MustParse("00000000-0000-0000-0000-000000000011"),
-							Title:       "Đay là cái gì",
+							Title:       "Đây là cái gì",
 							Index:       2,
 							LessonType:  domain.LessonTypeTest,
 							VideoLesson: nil,
@@ -132,18 +133,18 @@ func (s *Seed) createCourses() []model.Course {
 									},
 								},
 							},
-							CreatedAt: time.Now(),
-							UpdatedAt: time.Now(),
+							CreatedAt: now,
+							UpdatedAt: now,
 							DeletedAt: gorm.DeletedAt{},
 						},
 					},
-					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
+					CreatedAt: now,
+					UpdatedAt: now,
 					DeletedAt: gorm.DeletedAt{},
 				},
 			},
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			CreatedAt: now,
+			UpdatedAt: now,
 			DeletedAt: gorm.DeletedAt{},
 		},
 	}

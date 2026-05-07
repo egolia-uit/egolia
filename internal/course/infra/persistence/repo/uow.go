@@ -8,20 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-// Registry holds a *gorm.DB (root or tx). Inside UnitOfWork.Execute the db is
-// already the GORM transaction, so all repo methods share the same tx.
 type Registry struct {
-	db               *gorm.DB
-	objectStorageSvc app.ObjectStorageSvc
+	db *gorm.DB
 }
 
-func NewRegistry(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *Registry {
-	return &Registry{db: db, objectStorageSvc: objectStorageSvc}
+func NewRegistry(db *gorm.DB) *Registry {
+	return &Registry{db: db}
 }
 
-func (r *Registry) Course() domain.CourseRepo {
-	return &CourseRepo{db: r.db, objectStorageSvc: r.objectStorageSvc}
-}
+func (r *Registry) Course() domain.CourseRepo               { return &CourseRepo{db: r.db} }
 func (r *Registry) Enrollment() domain.EnrollmentRepo       { return &EnrollmentRepo{db: r.db} }
 func (r *Registry) Bookmark() domain.BookmarkRepo           { return &BookmarkRepo{db: r.db} }
 func (r *Registry) Certificate() domain.CertificateRepo     { return &CertificateRepo{db: r.db} }
@@ -43,6 +38,6 @@ func NewUnitOfWork(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *UnitOfWo
 
 func (u *UnitOfWork) Execute(ctx context.Context, fn func(domain.RepoRegistry) error) error {
 	return u.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		return fn(NewRegistry(tx, u.objectStorageSvc))
+		return fn(NewRegistry(tx))
 	})
 }

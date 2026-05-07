@@ -4,6 +4,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
+	"github.com/google/uuid"
 	"github.com/oapi-codegen/runtime/types"
 )
 
@@ -91,11 +92,11 @@ func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
 }
 
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
-	return &course.CourseDetail{
+	dto := &course.CourseDetail{
 		Id:               (*types.UUID)(&result.Course.ID),
 		Title:            result.Course.Title,
 		InstructorId:     &result.Course.InstructorID,
-		OriginalCourseId: (*types.UUID)(&result.Course.OriginalCourseID),
+		OriginalCourseId: nil,
 		Price:            result.Course.Price,
 		Overview:         &result.Course.Overview,
 		Hidden:           &result.Course.Hidden,
@@ -105,6 +106,11 @@ func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
 		},
 		Sections: sectionItemsToDTO(result.Sections),
 	}
+	if result.Course.OriginalCourseID != uuid.Nil {
+		originalID := types.UUID(result.Course.OriginalCourseID)
+		dto.OriginalCourseId = &originalID
+	}
+	return dto
 }
 
 func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDetailSectionItem {
@@ -144,6 +150,9 @@ func courseToDTO(c *app.Course) *course.Course {
 		Introduction: &course.CourseLandingPageIntroduction{
 			VideoUrl: c.Introduction.VideoUrl,
 		},
+	}
+	if c.OriginalCourseID != uuid.Nil {
+		dto.OriginalCourseId = &c.OriginalCourseID
 	}
 	return dto
 }

@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/google/uuid"
@@ -19,6 +20,8 @@ type MoveLesson struct {
 	SectionID   uuid.UUID
 }
 
+type MoveLessonCmd Cmd[MoveLesson]
+
 type MoveLessonHandler struct {
 	moveLessonSvc *domain.MoveLessonSvc
 	uow           domain.UnitOfWork
@@ -27,12 +30,17 @@ type MoveLessonHandler struct {
 func NewMoveLessonHandler(
 	moveLessonSvc *domain.MoveLessonSvc,
 	uow domain.UnitOfWork,
-) *MoveLessonHandler {
-	return &MoveLessonHandler{
+	logger *slog.Logger,
+	tracer Tracer,
+) MoveLessonCmd {
+	handler := &MoveLessonHandler{
 		moveLessonSvc: moveLessonSvc,
 		uow:           uow,
 	}
+	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
+
+var _ Cmd[MoveLesson] = (*MoveLessonHandler)(nil)
 
 // TODO: uow
 // TODO: Get course to check if user id == course instructor id
