@@ -29,7 +29,6 @@ func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
 	return course.VideoLesson{
 		Id:         new(vl.GetID()),
 		Title:      vl.GetTitle(),
-		Order:      new(vl.GetOrder()),
 		LessonType: course.LessonTypeVideo,
 		VideoUrl:   &vl.VideoURL,
 		Duration:   int64(vl.Duration.Seconds()),
@@ -43,12 +42,11 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 		questions = append(questions, testQuestionToDTO(&q))
 	}
 	return course.TestLesson{
-		Id:         new(t.GetID()),
-		Title:      t.GetTitle(),
-		LessonType: course.LessonTypeTest,
-		Type:       testLessonTypeToDTO(t.TestLessonType),
-		Order:      new(t.GetOrder()),
-		Questions:  questions,
+		Id:           new(t.GetID()),
+		Title:        t.GetTitle(),
+		LessonType:   course.LessonTypeTest,
+		QuestionType: questionTypeToDTO(t.QuestionType),
+		Questions:    questions,
 	}
 }
 
@@ -72,6 +70,16 @@ func testAnswerToDTO(a *app.TestAnswer) course.TestAnswer {
 	}
 }
 
+func questionTypeToDTO(qt app.QuestionType) course.QuestionType {
+	switch qt {
+	case app.QuestionTypeMultipleChoice:
+		return course.QuestionTypeMultipleChoice
+	case app.QuestionTypeSingleChoice:
+		return course.QuestionTypeSingleChoice
+	}
+	panic("invalid question type")
+}
+
 func lessonTypeToDTO(lt app.LessonType) course.LessonType {
 	switch lt {
 	case app.LessonTypeVideo:
@@ -80,16 +88,6 @@ func lessonTypeToDTO(lt app.LessonType) course.LessonType {
 		return course.LessonTypeTest
 	}
 	panic("invalid lesson type")
-}
-
-func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
-	switch lt {
-	case app.TestLessonTypeMultipleChoice:
-		return course.TestLessonTypeMultipleChoice
-	case app.TestLessonTypeSingleChoice:
-		return course.TestLessonTypeSingleChoice
-	}
-	panic("invalid test lesson type")
 }
 
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
@@ -114,7 +112,6 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 		items = append(items, course.CourseDetailSectionItem{
 			Id:      (*types.UUID)(&s.ID),
 			Title:   s.Title,
-			Order:   &s.Order,
 			Lessons: sectionLessonsToDTO(s.Lessons),
 		})
 	}
@@ -127,7 +124,6 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 		out = append(out, course.Lesson{
 			Id:         new(l.GetID()),
 			Title:      l.GetTitle(),
-			Order:      new(l.GetOrder()),
 			LessonType: lessonTypeToDTO(l.GetLessonType()),
 		})
 	}

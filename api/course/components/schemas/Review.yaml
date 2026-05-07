@@ -7,6 +7,12 @@ properties:
     readOnly: true
     example: 8a9b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d
 
+  courseId:
+    type: string
+    format: uuid
+    readOnly: true
+    example: 123e4567-e89b-12d3-a456-426614174000
+
   userId:
     type: string
     format: uuid

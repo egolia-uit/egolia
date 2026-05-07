@@ -2,15 +2,12 @@ allOf:
   - $ref: ./Lesson.yaml
   - type: object
     required:
-      - type
+      - questionType
       - questions
     properties:
-      type:
-        type: string
-        enum:
-          - multipleChoice
-          - singleChoice
-        example: singleChoice
+      questionType:
+        $ref: ./QuestionType.yaml
+        readOnly: true
 
       questions:
         type: array

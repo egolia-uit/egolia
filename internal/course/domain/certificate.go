@@ -12,7 +12,7 @@ type Certificate struct {
 	userID         string
 	issuedAt       time.Time
 	certificateURL string
-	deletedAt      *time.Time
+	createdAt      *time.Time
 }
 
 func NewCertificate(
@@ -27,7 +27,7 @@ func NewCertificate(
 		userID:         userID,
 		issuedAt:       issuedAt,
 		certificateURL: "",
-		deletedAt:      nil,
+		createdAt:      nil,
 	}
 }
 
@@ -37,7 +37,7 @@ func UnmarshalCertificate(
 	userID string,
 	issuedAt time.Time,
 	certificateURL string,
-	deletedAt *time.Time,
+	createdAt *time.Time,
 ) *Certificate {
 	return &Certificate{
 		id:             id,
@@ -45,7 +45,7 @@ func UnmarshalCertificate(
 		userID:         userID,
 		issuedAt:       issuedAt,
 		certificateURL: certificateURL,
-		deletedAt:      deletedAt,
+		createdAt:      createdAt,
 	}
 }
 
@@ -73,11 +73,10 @@ func (c *Certificate) SetCertificateURL(url string) {
 	c.certificateURL = url
 }
 
-func (c *Certificate) DeletedAt() *time.Time {
-	return c.deletedAt
+func (c *Certificate) CreatedAt() *time.Time {
+	return c.createdAt
 }
 
-func (c *Certificate) Delete() {
-	c.deletedAt = new(time.Time)
-	*c.deletedAt = time.Now()
+func (c *Certificate) SetCreatedAt(createdAt *time.Time) {
+	c.createdAt = createdAt
 }

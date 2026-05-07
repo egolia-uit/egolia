@@ -55,18 +55,18 @@ func (e LessonType) Valid() bool {
 	}
 }
 
-// Defines values for TestLessonType.
+// Defines values for QuestionType.
 const (
-	TestLessonTypeMultipleChoice TestLessonType = "multipleChoice"
-	TestLessonTypeSingleChoice   TestLessonType = "singleChoice"
+	QuestionTypeMultipleChoice QuestionType = "multipleChoice"
+	QuestionTypeSingleChoice   QuestionType = "singleChoice"
 )
 
-// Valid indicates whether the value is a known member of the TestLessonType enum.
-func (e TestLessonType) Valid() bool {
+// Valid indicates whether the value is a known member of the QuestionType enum.
+func (e QuestionType) Valid() bool {
 	switch e {
-	case TestLessonTypeMultipleChoice:
+	case QuestionTypeMultipleChoice:
 		return true
-	case TestLessonTypeSingleChoice:
+	case QuestionTypeSingleChoice:
 		return true
 	default:
 		return false
@@ -219,9 +219,10 @@ func (e GetMyCoursesParamsOrder) Valid() bool {
 
 // Certificate defines model for Certificate.
 type Certificate struct {
-	CourseId *Id                 `json:"courseId,omitempty"`
-	Id       *openapi_types.UUID `json:"id,omitempty"`
-	IssuedAt time.Time           `json:"issuedAt"`
+	CertificateURL *string             `json:"certificateURL,omitempty"`
+	CourseId       *Id                 `json:"courseId,omitempty"`
+	Id             *openapi_types.UUID `json:"id,omitempty"`
+	IssuedAt       time.Time           `json:"issuedAt"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId PropertiesId `json:"userId"`
@@ -275,7 +276,6 @@ type CourseDetail struct {
 type CourseDetailSectionItem struct {
 	Id      *openapi_types.UUID `json:"id,omitempty"`
 	Lessons []Lesson            `json:"lessons"`
-	Order   *int                `json:"order,omitempty"`
 	Title   string              `json:"title"`
 }
 
@@ -329,7 +329,6 @@ type Error struct {
 type Lesson struct {
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
-	Order      *int                `json:"order,omitempty"`
 	Title      string              `json:"title"`
 }
 
@@ -392,9 +391,13 @@ type Pagination struct {
 	TotalPages int `json:"totalPages"`
 }
 
+// QuestionType defines model for QuestionType.
+type QuestionType string
+
 // Review Represents a single review for a course.
 type Review struct {
 	Comment   string              `json:"comment"`
+	CourseId  *openapi_types.UUID `json:"courseId,omitempty"`
 	CreatedAt *time.Time          `json:"createdAt,omitempty"`
 	Id        *openapi_types.UUID `json:"id,omitempty"`
 	Rating    int                 `json:"rating"`
@@ -404,7 +407,6 @@ type Review struct {
 // Section defines model for Section.
 type Section struct {
 	Id    *openapi_types.UUID `json:"id,omitempty"`
-	Order *int                `json:"order,omitempty"`
 	Title string              `json:"title"`
 }
 
@@ -417,16 +419,12 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	Id         *openapi_types.UUID `json:"id,omitempty"`
-	LessonType LessonType          `json:"lessonType"`
-	Order      *int                `json:"order,omitempty"`
-	Questions  []TestQuestion      `json:"questions"`
-	Title      string              `json:"title"`
-	Type       TestLessonType      `json:"type"`
+	Id           *openapi_types.UUID `json:"id,omitempty"`
+	LessonType   LessonType          `json:"lessonType"`
+	QuestionType QuestionType        `json:"questionType"`
+	Questions    []TestQuestion      `json:"questions"`
+	Title        string              `json:"title"`
 }
-
-// TestLessonType defines model for TestLesson.Type.
-type TestLessonType string
 
 // TestQuestion defines model for TestQuestion.
 type TestQuestion struct {
@@ -440,7 +438,6 @@ type VideoLesson struct {
 	Duration   int64               `json:"duration"`
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
-	Order      *int                `json:"order,omitempty"`
 	Title      string              `json:"title"`
 	VideoKey   *string             `json:"videoKey,omitempty"`
 	VideoUrl   *string             `json:"videoUrl,omitempty"`
@@ -528,6 +525,14 @@ type oIDCContextKey string
 
 // oauth2ContextKey is the context key for Oauth2 security scheme
 type oauth2ContextKey string
+
+// CreateCertificateJSONBody defines parameters for CreateCertificate.
+type CreateCertificateJSONBody struct {
+	CourseId *Id `json:"courseId,omitempty"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId PropertiesId `json:"userId"`
+}
 
 // GetMyCertificatesParams defines parameters for GetMyCertificates.
 type GetMyCertificatesParams struct {
@@ -720,6 +725,9 @@ type UpdateReviewJSONBody struct {
 	Comment string `json:"comment"`
 	Rating  int32  `json:"rating"`
 }
+
+// CreateCertificateJSONRequestBody defines body for CreateCertificate for application/json ContentType.
+type CreateCertificateJSONRequestBody CreateCertificateJSONBody
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course

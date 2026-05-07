@@ -15,6 +15,7 @@ export type CourseCertificate = {
     readonly id: string;
     courseId: CourseId;
     userId: CoursePropertiesId;
+    readonly certificateURL?: string;
     issuedAt: Date;
 };
 
@@ -93,7 +94,6 @@ export type CourseCourseAnalytics = {
 export type CourseSection = {
     readonly id: string;
     title: string;
-    readonly order?: number;
 };
 
 export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
@@ -103,7 +103,6 @@ export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLesson
 export type CourseLesson = {
     readonly id: string;
     title: string;
-    readonly order?: number;
     lessonType: CourseLessonType;
 };
 
@@ -129,6 +128,7 @@ export type CourseCourseProgress = {
  */
 export type CourseReview = {
     readonly id: string;
+    readonly courseId?: string;
     readonly userId: string;
     rating: number;
     comment: string;
@@ -186,6 +186,10 @@ export type CourseVideoLessonProgress = CourseLessonProgress & {
 
 export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseLessonProgress;
 
+export const CourseQuestionType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
+
+export type CourseQuestionType = typeof CourseQuestionType[keyof typeof CourseQuestionType];
+
 export type CourseTestAnswer = {
     readonly id: string;
     content: string;
@@ -199,7 +203,7 @@ export type CourseTestQuestion = {
 };
 
 export type CourseTestLesson = CourseLesson & {
-    type: 'multipleChoice' | 'singleChoice';
+    questionType: CourseQuestionType;
     questions: Array<unknown>;
 };
 
@@ -450,7 +454,6 @@ export type CourseTestQuestionWritable = {
 };
 
 export type CourseTestLessonWritable = CourseLessonWritable & {
-    type: 'multipleChoice' | 'singleChoice';
     questions: Array<unknown>;
 };
 
@@ -675,6 +678,50 @@ export type GetMyCertificatesResponses = {
 };
 
 export type GetMyCertificatesResponse = GetMyCertificatesResponses[keyof GetMyCertificatesResponses];
+
+export type CreateCertificateData = {
+    body: {
+        courseId: CourseId;
+        userId: CoursePropertiesId;
+    };
+    path?: never;
+    query?: never;
+    url: '/course/certificates';
+};
+
+export type CreateCertificateErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type CreateCertificateError = CreateCertificateErrors[keyof CreateCertificateErrors];
+
+export type CreateCertificateResponses = {
+    /**
+     * Certificate created
+     */
+    201: unknown;
+};
 
 export type GetMyCoursesData = {
     body?: never;

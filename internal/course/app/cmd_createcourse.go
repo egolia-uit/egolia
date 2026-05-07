@@ -42,7 +42,7 @@ func (h *CreateCourseHandler) Handle(ctx context.Context, cmd *CreateCourse) err
 		cmd.ID,
 		cmd.Title,
 		cmd.InstructorID,
-		float64(cmd.Price),
+		cmd.Price,
 		cmd.Overview,
 		cmd.IntroductionVideoKey,
 	)

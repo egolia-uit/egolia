@@ -12,7 +12,7 @@ type CourseStatus string
 
 type LessonType string
 
-type TestLessonType string
+type QuestionType string
 
 const (
 	CourseStatusDraft    CourseStatus = "draft"
@@ -23,48 +23,46 @@ const (
 	LessonTypeVideo LessonType = "video"
 	LessonTypeTest  LessonType = "test"
 
-	MultipleChoice TestLessonType = "multipleChoice"
-	SingleChoice   TestLessonType = "singleChoice"
+	QuestionTypeMultipleChoice QuestionType = "multipleChoice"
+	QuestionTypeSingleChoice   QuestionType = "singleChoice"
 )
 
 type Lesson interface {
 	isLesson()
 	ID() uuid.UUID
-	Order() string
-	SetOrder(order string)
 	Title() string
 	SetTitle(title string)
 }
 
 type LessonBase struct {
-	id    uuid.UUID
-	order string
-	title string
+	id         uuid.UUID
+	lessonType LessonType
+	title      string
 }
 
 var _ Lesson = (*LessonBase)(nil)
 
 func NewLessonBase(
 	id uuid.UUID,
-	order string,
 	title string,
+	lessonType LessonType,
 ) *LessonBase {
 	return &LessonBase{
-		id:    id,
-		order: order,
-		title: title,
+		id:         id,
+		lessonType: lessonType,
+		title:      title,
 	}
 }
 
 func UnmarshalLessonBase(
 	id uuid.UUID,
-	order string,
 	title string,
+	lessonType LessonType,
 ) *LessonBase {
 	return &LessonBase{
-		id:    id,
-		order: order,
-		title: title,
+		id:         id,
+		lessonType: lessonType,
+		title:      title,
 	}
 }
 
@@ -72,14 +70,6 @@ func (l *LessonBase) isLesson() {}
 
 func (l *LessonBase) ID() uuid.UUID {
 	return l.id
-}
-
-func (l *LessonBase) Order() string {
-	return l.order
-}
-
-func (l *LessonBase) SetOrder(order string) {
-	l.order = order
 }
 
 func (l *LessonBase) Title() string {
@@ -91,61 +81,40 @@ func (l *LessonBase) SetTitle(title string) {
 }
 
 type Section struct {
-	id        uuid.UUID
-	courseID  uuid.UUID
-	title     string
-	order     string
-	deletedAt *time.Time
-	lessons   []Lesson
+	id      uuid.UUID
+	title   string
+	lessons []Lesson
 }
 
 func NewSection(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	title string,
-	order string,
 ) *Section {
 	return &Section{
-		id:        id,
-		courseID:  courseID,
-		title:     title,
-		order:     order,
-		deletedAt: nil,
-		lessons:   []Lesson{},
+		id:      id,
+		title:   title,
+		lessons: []Lesson{},
 	}
 }
 
 func UnmarshalSection(
 	id uuid.UUID,
-	courseID uuid.UUID,
 	title string,
-	order string,
-	deletedAt *time.Time,
 	lessons []Lesson,
 ) *Section {
 	if lessons == nil {
 		lessons = []Lesson{}
 	}
 	return &Section{
-		id:        id,
-		courseID:  courseID,
-		title:     title,
-		order:     order,
-		deletedAt: deletedAt,
-		lessons:   lessons,
+		id:      id,
+		title:   title,
+		lessons: lessons,
 	}
 }
 
 func (s *Section) ID() uuid.UUID {
 	return s.id
-}
-
-func (s *Section) CourseID() uuid.UUID {
-	return s.courseID
-}
-
-func (s *Section) SetCourseID(courseID uuid.UUID) {
-	s.courseID = courseID
 }
 
 func (s *Section) Title() string {
@@ -154,23 +123,6 @@ func (s *Section) Title() string {
 
 func (s *Section) SetTitle(title string) {
 	s.title = title
-}
-
-func (s *Section) Order() string {
-	return s.order
-}
-
-func (s *Section) SetOrder(order string) {
-	s.order = order
-}
-
-func (s *Section) DeletedAt() *time.Time {
-	return s.deletedAt
-}
-
-func (s *Section) Delete() {
-	s.deletedAt = new(time.Time)
-	*s.deletedAt = time.Now()
 }
 
 func (s *Section) Lessons() []Lesson {
@@ -236,43 +188,38 @@ func NewTestQuestion(
 
 type TestLesson struct {
 	LessonBase
-	Type      TestLessonType
-	Questions []*TestQuestion
+	questionType QuestionType
+	Questions    []*TestQuestion
 }
 
 var _ Lesson = (*TestLesson)(nil)
 
 func NewTestLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	order string,
 	title string,
-	lessonType TestLessonType,
+	lessonType LessonType,
+	questionType QuestionType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *NewLessonBase(id, order, title),
-		Type:       lessonType,
-		Questions:  questions,
+		LessonBase:   *NewLessonBase(id, title, lessonType),
+		questionType: questionType,
+		Questions:    questions,
 	}
 }
 
 func UnmarshalTestLesson(
 	id uuid.UUID,
-	order string,
 	title string,
-	lessonType TestLessonType,
+	lessonType LessonType,
+	questionType QuestionType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *UnmarshalLessonBase(id, order, title),
-		Type:       lessonType,
-		Questions:  questions,
+		LessonBase:   *UnmarshalLessonBase(id, title, lessonType),
+		questionType: questionType,
+		Questions:    questions,
 	}
-}
-
-func (tl *TestLesson) LessonType() TestLessonType {
-	return tl.Type
 }
 
 func (tl *TestLesson) GetQuestions() []*TestQuestion {
@@ -294,13 +241,13 @@ var _ Lesson = (*VideoLesson)(nil)
 func NewVideoLesson(
 	id uuid.UUID,
 	sectionID uuid.UUID,
-	order string,
+	lessonType LessonType,
 	title string,
 	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *NewLessonBase(id, order, title),
+		LessonBase: *NewLessonBase(id, title, lessonType),
 		VideoKey:   videoKey,
 		Duration:   duration,
 	}
@@ -308,13 +255,13 @@ func NewVideoLesson(
 
 func UnmarshalVideoLesson(
 	id uuid.UUID,
-	order string,
 	title string,
 	videoURL string,
 	duration time.Duration,
+	lessonType LessonType,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *UnmarshalLessonBase(id, order, title),
+		LessonBase: *UnmarshalLessonBase(id, title, lessonType),
 		VideoKey:   videoURL,
 		Duration:   duration,
 	}
@@ -343,9 +290,10 @@ type Course struct {
 	title                string
 	instructorID         string
 	status               CourseStatus
-	price                float64
+	price                int64
 	overview             string
 	introductionVideoKey string
+	introductionVideoURL string
 	deletedAt            *time.Time
 	sections             []*Section
 }
@@ -354,7 +302,7 @@ func NewCourse(
 	id uuid.UUID,
 	title string,
 	instructorID string,
-	price float64,
+	price int64,
 	overview string,
 	introductionVideoKey string,
 ) (*Course, error) {
@@ -389,10 +337,11 @@ func UnmarshalCourse(
 	title string,
 	instructorID string,
 	status CourseStatus,
-	price float64,
+	price int64,
 	overview string,
 	hidden bool,
 	introductionVideoKey string,
+	introductionVideoURL string,
 	deletedAt *time.Time,
 	sections []*Section,
 ) *Course {
@@ -410,6 +359,7 @@ func UnmarshalCourse(
 		price:                price,
 		overview:             overview,
 		introductionVideoKey: introductionVideoKey,
+		introductionVideoURL: introductionVideoURL,
 		deletedAt:            deletedAt,
 		sections:             sections,
 	}
@@ -453,11 +403,11 @@ func (c *Course) SetStatus(status CourseStatus) {
 	c.status = status
 }
 
-func (c *Course) Price() float64 {
+func (c *Course) Price() int64 {
 	return c.price
 }
 
-func (c *Course) SetPrice(price float64) error {
+func (c *Course) SetPrice(price int64) error {
 	if price < 0 {
 		return errs.NewInvalid("price must be greater than or equal to 0")
 	}
@@ -481,6 +431,14 @@ func (c *Course) SetIntroductionVideoKey(introductionVideoKey string) {
 	c.introductionVideoKey = strings.TrimSpace(introductionVideoKey)
 }
 
+func (c *Course) IntroductionVideoURL() string {
+	return c.introductionVideoURL
+}
+
+func (c *Course) SetIntroductionVideoURL(introductionVideoURL string) {
+	c.introductionVideoURL = strings.TrimSpace(introductionVideoURL)
+}
+
 func (c *Course) Sections() []*Section {
 	return c.sections
 }
@@ -489,7 +447,6 @@ func (c *Course) AddSection(section *Section) {
 	if section == nil {
 		return
 	}
-	section.courseID = c.id
 	if section.lessons == nil {
 		section.lessons = []Lesson{}
 	}

@@ -194,6 +194,82 @@
         }
       }
     },
+    "/course/certificates": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Certificate"
+        ],
+        "summary": "Create certificate",
+        "operationId": "createCertificate",
+        "description": "- authenticated:\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "courseId",
+                  "userId"
+                ],
+                "properties": {
+                  "courseId": {
+                    "$ref": "#/components/schemas/course_id"
+                  },
+                  "userId": {
+                    "$ref": "#/components/schemas/course_properties-id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Certificate created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/certificates/f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
+                },
+                "required": true
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
     "/course/my-courses": {
       "get": {
         "security": [
@@ -2607,6 +2683,7 @@
           }
         ],
         "tags": [
+          "Course",
           "Lesson"
         ],
         "summary": "Get upload video URL",
@@ -4284,6 +4361,12 @@
           "userId": {
             "$ref": "#/components/schemas/course_properties-id"
           },
+          "certificateURL": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://example.com/certificates/f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd",
+            "readOnly": true
+          },
           "issuedAt": {
             "type": "string",
             "format": "date-time",
@@ -4508,12 +4591,6 @@
             "minLength": 1,
             "maxLength": 255,
             "example": "OOP Fundamentals"
-          },
-          "order": {
-            "type": "integer",
-            "format": "int",
-            "example": 1,
-            "readOnly": true
           }
         },
         "required": [
@@ -4541,12 +4618,6 @@
           "title": {
             "type": "string",
             "example": "Introduction to Python"
-          },
-          "order": {
-            "type": "integer",
-            "format": "int",
-            "example": 1,
-            "readOnly": true
           },
           "lessonType": {
             "$ref": "#/components/schemas/course_LessonType",
@@ -4655,6 +4726,12 @@
             "format": "uuid",
             "readOnly": true,
             "example": "8a9b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "userId": {
             "type": "string",
@@ -4861,6 +4938,14 @@
           }
         ]
       },
+      "course_QuestionType": {
+        "type": "string",
+        "enum": [
+          "multipleChoice",
+          "singleChoice"
+        ],
+        "example": "singleChoice"
+      },
       "course_TestAnswer": {
         "type": "object",
         "properties": {
@@ -4924,17 +5009,13 @@
           {
             "type": "object",
             "required": [
-              "type",
+              "questionType",
               "questions"
             ],
             "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "multipleChoice",
-                  "singleChoice"
-                ],
-                "example": "singleChoice"
+              "questionType": {
+                "$ref": "#/components/schemas/course_QuestionType",
+                "readOnly": true
               },
               "questions": {
                 "type": "array",

@@ -13,12 +13,6 @@ properties:
     maxLength: 255
     example: OOP Fundamentals
 
-  order:
-    type: integer
-    format: int
-    example: 1
-    readOnly: true
-
 required:
   - id
   - title

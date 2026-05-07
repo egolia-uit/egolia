@@ -32,6 +32,8 @@ paths:
     $ref: ./paths/certificates_{certificateId}.yaml
   /course/certificates/me:
     $ref: ./paths/certificates_me.yaml
+  /course/certificates:
+    $ref: ./paths/certificates.yaml
 
   /course/my-courses:
     $ref: ./paths/my-courses.yaml

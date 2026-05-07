@@ -56,7 +56,7 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 		}
 		if cmd.Price != 0 {
-			if err := course.SetPrice(float64(cmd.Price)); err != nil {
+			if err := course.SetPrice(cmd.Price); err != nil {
 				return err
 			}
 		}

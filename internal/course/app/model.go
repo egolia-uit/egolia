@@ -65,14 +65,12 @@ type Lesson interface {
 	GetID() uuid.UUID
 	GetTitle() string
 	GetLessonType() LessonType
-	GetOrder() int
 }
 
 type LessonBase struct {
 	ID         uuid.UUID
 	Title      string
 	LessonType LessonType
-	Order      int
 }
 
 var _ Lesson = (*VideoLesson)(nil)
@@ -89,10 +87,6 @@ func (l *LessonBase) GetTitle() string {
 
 func (l *LessonBase) GetLessonType() LessonType {
 	return l.LessonType
-}
-
-func (l *LessonBase) GetOrder() int {
-	return l.Order
 }
 
 type VideoLesson struct {
@@ -113,24 +107,23 @@ type TestQuestion struct {
 	Answers  []TestAnswer
 }
 
-type TestLessonType string
+type QuestionType string
 
 const (
-	TestLessonTypeMultipleChoice TestLessonType = "multipleChoice"
-	TestLessonTypeSingleChoice   TestLessonType = "singleChoice"
+	QuestionTypeMultipleChoice QuestionType = "multipleChoice"
+	QuestionTypeSingleChoice   QuestionType = "singleChoice"
 )
 
 type TestLesson struct {
 	LessonBase
-	TestLessonType TestLessonType
-	Questions      []TestQuestion
+	QuestionType QuestionType
+	Questions    []TestQuestion
 }
 
 type CourseDetailSectionItem struct {
 	ID       uuid.UUID
 	CourseID uuid.UUID
 	Title    string
-	Order    int
 	Lessons  []Lesson
 }
 

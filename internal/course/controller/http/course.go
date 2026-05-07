@@ -18,6 +18,10 @@ func (h *StrictHandler) GetCertificateById(ctx context.Context, request course.G
 	return nil, errs.Unimplemented
 }
 
+func (h *StrictHandler) CreateCertificate(ctx context.Context, request course.CreateCertificateRequestObject) (course.CreateCertificateResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
 	user, ok := commonHTTP.UserFromContext(ctx)
 

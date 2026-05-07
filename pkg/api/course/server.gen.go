@@ -20,6 +20,9 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Create certificate
+	// (POST /course/certificates)
+	CreateCertificate(c *gin.Context)
 	// Get my certificates
 	// (GET /course/certificates/me)
 	GetMyCertificates(c *gin.Context, params GetMyCertificatesParams)
@@ -165,6 +168,23 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
+
+// CreateCertificate operation middleware
+func (siw *ServerInterfaceWrapper) CreateCertificate(c *gin.Context) {
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateCertificate(c)
+}
 
 // GetMyCertificates operation middleware
 func (siw *ServerInterfaceWrapper) GetMyCertificates(c *gin.Context) {
@@ -1860,6 +1880,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
+	router.POST(options.BaseURL+"/course/certificates", wrapper.CreateCertificate)
 	router.GET(options.BaseURL+"/course/certificates/me", wrapper.GetMyCertificates)
 	router.GET(options.BaseURL+"/course/certificates/:certificateId", wrapper.GetCertificateById)
 	router.POST(options.BaseURL+"/course/courses", wrapper.CreateCourse)
@@ -1916,6 +1937,100 @@ type InternalServerErrorJSONResponse Error
 type NotFoundErrorJSONResponse Error
 
 type UnauthorizedErrorJSONResponse map[string]interface{}
+
+type CreateCertificateRequestObject struct {
+	Body *CreateCertificateJSONRequestBody
+}
+
+type CreateCertificateResponseObject interface {
+	VisitCreateCertificateResponse(w http.ResponseWriter) error
+}
+
+type CreateCertificate201ResponseHeaders struct {
+	ContentLocation string
+}
+
+type CreateCertificate201Response struct {
+	Headers CreateCertificate201ResponseHeaders
+}
+
+func (response CreateCertificate201Response) VisitCreateCertificateResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
+	w.WriteHeader(201)
+	return nil
+}
+
+type CreateCertificate400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CreateCertificate400JSONResponse) VisitCreateCertificateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCertificate401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CreateCertificate401JSONResponse) VisitCreateCertificateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCertificate403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response CreateCertificate403JSONResponse) VisitCreateCertificateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCertificate404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response CreateCertificate404JSONResponse) VisitCreateCertificateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateCertificate500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CreateCertificate500JSONResponse) VisitCreateCertificateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
 
 type GetMyCertificatesRequestObject struct {
 	Params GetMyCertificatesParams
@@ -5860,6 +5975,9 @@ func (response UpdateReview500JSONResponse) VisitUpdateReviewResponse(w http.Res
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
+	// Create certificate
+	// (POST /course/certificates)
+	CreateCertificate(ctx context.Context, request CreateCertificateRequestObject) (CreateCertificateResponseObject, error)
 	// Get my certificates
 	// (GET /course/certificates/me)
 	GetMyCertificates(ctx context.Context, request GetMyCertificatesRequestObject) (GetMyCertificatesResponseObject, error)
@@ -6052,6 +6170,37 @@ type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
 	options     StrictGinServerOptions
+}
+
+// CreateCertificate operation middleware
+func (sh *strictHandler) CreateCertificate(ctx *gin.Context) {
+	var request CreateCertificateRequestObject
+
+	var body CreateCertificateJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateCertificate(ctx, request.(CreateCertificateRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateCertificate")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(CreateCertificateResponseObject); ok {
+		if err := validResponse.VisitCreateCertificateResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
 }
 
 // GetMyCertificates operation middleware

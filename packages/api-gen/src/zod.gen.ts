@@ -13,6 +13,7 @@ export const zCourseCertificate = z.object({
     id: z.uuid().readonly(),
     courseId: zCourseId,
     userId: zCoursePropertiesId,
+    certificateURL: z.url().readonly().optional(),
     issuedAt: z.iso.datetime()
 });
 
@@ -61,8 +62,7 @@ export const zCourseCourseAnalytics = z.object({
 
 export const zCourseSection = z.object({
     id: z.uuid().readonly(),
-    title: z.string().min(1).max(255),
-    order: z.int().readonly().optional()
+    title: z.string().min(1).max(255)
 });
 
 export const zCourseLessonType = z.enum(['video', 'test']);
@@ -70,7 +70,6 @@ export const zCourseLessonType = z.enum(['video', 'test']);
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
     title: z.string(),
-    order: z.int().readonly().optional(),
     lessonType: zCourseLessonType
 });
 
@@ -96,6 +95,7 @@ export const zCourseCourseProgress = z.object({
  */
 export const zCourseReview = z.object({
     id: z.uuid().readonly(),
+    courseId: z.uuid().readonly().optional(),
     userId: z.uuid().readonly(),
     rating: z.int().gte(1).lte(5),
     comment: z.string().max(2000),
@@ -156,6 +156,8 @@ export const zCourseLessonProgressDetail = z.union([
     zCourseLessonProgress
 ]);
 
+export const zCourseQuestionType = z.enum(['multipleChoice', 'singleChoice']);
+
 export const zCourseTestAnswer = z.object({
     id: z.uuid().readonly(),
     content: z.string().min(1).max(1000),
@@ -169,7 +171,7 @@ export const zCourseTestQuestion = z.object({
 });
 
 export const zCourseTestLesson = zCourseLesson.and(z.object({
-    type: z.enum(['multipleChoice', 'singleChoice']),
+    questionType: zCourseQuestionType,
     questions: z.array(z.unknown())
 }));
 
@@ -367,7 +369,6 @@ export const zCourseTestQuestionWritable = z.object({
 });
 
 export const zCourseTestLessonWritable = zCourseLessonWritable.and(z.object({
-    type: z.enum(['multipleChoice', 'singleChoice']),
     questions: z.array(z.unknown())
 }));
 
@@ -506,6 +507,11 @@ export const zGetMyCertificatesQuery = z.object({
 export const zGetMyCertificatesResponse = z.object({
     data: z.array(zCourseCertificate),
     pagination: zCoursePagination
+});
+
+export const zCreateCertificateBody = z.object({
+    courseId: zCourseId,
+    userId: zCoursePropertiesId
 });
 
 export const zGetMyCoursesQuery = z.object({
