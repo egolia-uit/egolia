@@ -8,14 +8,15 @@ service CourseService {
   // NOTE: wtf? where is it used?
   rpc GetCourseTitlesByIds(GetCourseTitlesByIdsRequest) returns (GetCourseTitlesByIdsResponse);
   rpc GetCourse(GetCourseRequest) returns (GetCourseResponse);
+  rpc EnrollCourseForUser(EnrollCourseForUserRequest) returns (EnrollCourseForUserResponse);
 }
 
-// TODO: Check again how many
 enum CourseStatus {
   COURSE_STATUS_UNSPECIFIED = 0;
   COURSE_STATUS_DRAFT = 1;
-  COURSE_STATUS_PUBLISHED = 2;
-  COURSE_STATUS_ARCHIVED = 3;
+  COURSE_STATUS_PENDING = 2;
+  COURSE_STATUS_APPROVED = 3;
+  COURSE_STATUS_REJECTED = 4;
 }
 
 message GetCourseTitlesByIdsRequest {
@@ -65,4 +66,19 @@ message Course {
 
 message GetCourseResponse {
   Course course = 1 [(buf.validate.field).required = true];
+}
+
+message EnrollCourseForUserRequest {
+  string course_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
+  string user_id = 2 [(buf.validate.field).required = true];
+}
+
+message EnrollCourseForUserResponse {
+  string enrollment_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.uuid = true
+  ];
 }

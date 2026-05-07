@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 \
   -o course \
   ./cmd/course
 
-FROM alpine:3.23 AS final
+FROM alpine:3.23 AS production
 # hadolint ignore=DL3018
 RUN apk --no-cache add ffmpeg
 WORKDIR /app
