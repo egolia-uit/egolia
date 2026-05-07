@@ -112,11 +112,10 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 	items := make([]course.CourseDetailSectionItem, 0, len(sections))
 	for _, s := range sections {
 		items = append(items, course.CourseDetailSectionItem{
-			Id:       (*types.UUID)(&s.ID),
-			CourseId: (*types.UUID)(&s.CourseID),
-			Title:    s.Title,
-			Order:    &s.Order,
-			Lessons:  sectionLessonsToDTO(s.Lessons),
+			Id:      (*types.UUID)(&s.ID),
+			Title:   s.Title,
+			Order:   &s.Order,
+			Lessons: sectionLessonsToDTO(s.Lessons),
 		})
 	}
 	return items

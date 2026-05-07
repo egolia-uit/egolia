@@ -62,8 +62,6 @@ paths:
     $ref: ./paths/courses_{courseId}_progress.yaml
   /course/courses/{courseId}/reviews:
     $ref: ./paths/courses_{courseId}_reviews.yaml
-  /course/courses/{courseId}/trigger-learning-reminder:
-    $ref: ./paths/courses_{courseId}_trigger-learning-reminder.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
   /course/courses/me/enrolled:
@@ -89,12 +87,10 @@ paths:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_move.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_progress.yaml
-  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress:
-    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_test-progress.yaml
-  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests:
-    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_tests.yaml
-  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url:
-    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_upload-video-url.yaml
+  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test:
+    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_test.yaml
+  /course/courses/{courseId}/upload-video-url:
+    $ref: ./paths/courses_{courseId}_upload-video-url.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_video-progress.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video:

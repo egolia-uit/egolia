@@ -10,6 +10,8 @@ post:
     - Lesson
   summary: Mark lesson as completed
   operationId: markLessonAsCompleted
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml

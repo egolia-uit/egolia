@@ -83,8 +83,7 @@ export type CourseCourse = {
 export type CourseSection = {
     readonly id: string;
     title: string;
-    readonly order?: string;
-    courseId: CourseId;
+    readonly order?: number;
 };
 
 export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
@@ -94,7 +93,7 @@ export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLesson
 export type CourseLesson = {
     readonly id: string;
     title: string;
-    readonly order?: string;
+    readonly order?: number;
     lessonType: CourseLessonType;
 };
 
@@ -139,15 +138,7 @@ export type CourseVideoLessonProgress = CourseLessonProgress & {
     watchedSeconds: number;
 };
 
-export type CourseTestLessonProgress = CourseLessonProgress & {
-    score: number;
-};
-
-export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseTestLessonProgress;
-
-export const CourseTestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
-
-export type CourseTestLessonType = typeof CourseTestLessonType[keyof typeof CourseTestLessonType];
+export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseLessonProgress;
 
 export type CourseTestAnswer = {
     readonly id: string;
@@ -383,11 +374,7 @@ export type CourseVideoLessonProgressWritable = CourseLessonProgressWritable & {
     watchedSeconds: number;
 };
 
-export type CourseTestLessonProgressWritable = CourseLessonProgressWritable & {
-    score: number;
-};
-
-export type CourseLessonProgressDetailWritable = CourseVideoLessonProgressWritable | CourseTestLessonProgressWritable;
+export type CourseLessonProgressDetailWritable = CourseVideoLessonProgressWritable | CourseLessonProgressWritable;
 
 export type CourseTestAnswerWritable = {
     content: string;
@@ -1299,56 +1286,6 @@ export type ReviewCourseResponses = {
     201: unknown;
 };
 
-export type TriggerLearningReminderData = {
-    body?: {
-        dryRun?: boolean;
-    };
-    path: {
-        /**
-         * Unique identifier of the course
-         */
-        courseId: string;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}/trigger-learning-reminder';
-};
-
-export type TriggerLearningReminderErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type TriggerLearningReminderError = TriggerLearningReminderErrors[keyof TriggerLearningReminderErrors];
-
-export type TriggerLearningReminderResponses = {
-    /**
-     * Learning reminder triggered
-     */
-    204: void;
-};
-
-export type TriggerLearningReminderResponse = TriggerLearningReminderResponses[keyof TriggerLearningReminderResponses];
-
 export type DeleteCourseData = {
     body?: never;
     path: {
@@ -1537,13 +1474,9 @@ export type MoveSectionData = {
     body: {
         courseId: CourseId;
         /**
-         * ID of the section to move (must match the sectionId path parameter)
+         * New order of the section within the course (0-based index)
          */
-        sectionId: string;
-        /**
-         * order of the section you want to insert to
-         */
-        preOrder: string;
+        order: number;
     };
     path: {
         /**
@@ -1704,7 +1637,7 @@ export type CreateSectionData = {
     body: {
         courseId: CourseId;
         title: string;
-        preOrder: string;
+        order: number;
     };
     path: {
         /**
@@ -1900,12 +1833,14 @@ export type MarkLessonAsCompletedResponse = MarkLessonAsCompletedResponses[keyof
 
 export type MoveLessonData = {
     body: {
-        type: CourseLessonType;
-        sectionId: string;
-        afterLesson: {
-            id: string;
-            type: CourseLessonType;
-        } | null;
+        /**
+         * The ID of the section to move the lesson into. Use the current sectionId if only reordering.
+         */
+        targetSectionId: string;
+        /**
+         * The new 0-based position of the lesson within the target section.
+         */
+        order: number;
     };
     path: {
         /**
@@ -2005,58 +1940,6 @@ export type GetLessonProgressResponses = {
 
 export type GetLessonProgressResponse = GetLessonProgressResponses[keyof GetLessonProgressResponses];
 
-export type SaveTestLessonProgressData = {
-    body: CourseTestLessonProgressWritable;
-    path: {
-        /**
-         * Unique identifier of the course
-         */
-        courseId: string;
-        sectionId: string;
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress';
-};
-
-export type SaveTestLessonProgressErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type SaveTestLessonProgressError = SaveTestLessonProgressErrors[keyof SaveTestLessonProgressErrors];
-
-export type SaveTestLessonProgressResponses = {
-    /**
-     * Test lesson progress saved
-     */
-    200: {
-        data: CourseTestLessonProgress;
-    };
-};
-
-export type SaveTestLessonProgressResponse = SaveTestLessonProgressResponses[keyof SaveTestLessonProgressResponses];
-
 export type EditTestLessonData = {
     body: CourseTestLessonWritable;
     path: {
@@ -2068,7 +1951,7 @@ export type EditTestLessonData = {
         lessonId: string;
     };
     query?: never;
-    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests';
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test';
 };
 
 export type EditTestLessonErrors = {
@@ -2107,58 +1990,7 @@ export type EditTestLessonResponses = {
 
 export type EditTestLessonResponse = EditTestLessonResponses[keyof EditTestLessonResponses];
 
-export type CreateTestData = {
-    body: {
-        type: CourseTestLessonType;
-        questions: Array<CourseTestQuestionWritable>;
-    };
-    path: {
-        /**
-         * Unique identifier of the course
-         */
-        courseId: string;
-        sectionId: string;
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests';
-};
-
-export type CreateTestErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type CreateTestError = CreateTestErrors[keyof CreateTestErrors];
-
-export type CreateTestResponses = {
-    /**
-     * Test created
-     */
-    201: unknown;
-};
-
-export type GetUploadVideoLessonUrlData = {
+export type GetUploadVideoUrlData = {
     body: {
         videoFilename: string;
     };
@@ -2167,14 +1999,12 @@ export type GetUploadVideoLessonUrlData = {
          * Unique identifier of the course
          */
         courseId: string;
-        sectionId: string;
-        lessonId: string;
     };
     query?: never;
-    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url';
+    url: '/course/courses/{courseId}/upload-video-url';
 };
 
-export type GetUploadVideoLessonUrlErrors = {
+export type GetUploadVideoUrlErrors = {
     /**
      * Bad Request Error response
      */
@@ -2199,9 +2029,9 @@ export type GetUploadVideoLessonUrlErrors = {
     500: CourseError;
 };
 
-export type GetUploadVideoLessonUrlError = GetUploadVideoLessonUrlErrors[keyof GetUploadVideoLessonUrlErrors];
+export type GetUploadVideoUrlError = GetUploadVideoUrlErrors[keyof GetUploadVideoUrlErrors];
 
-export type GetUploadVideoLessonUrlResponses = {
+export type GetUploadVideoUrlResponses = {
     /**
      * Upload URL generated
      */
@@ -2212,7 +2042,7 @@ export type GetUploadVideoLessonUrlResponses = {
     };
 };
 
-export type GetUploadVideoLessonUrlResponse = GetUploadVideoLessonUrlResponses[keyof GetUploadVideoLessonUrlResponses];
+export type GetUploadVideoUrlResponse = GetUploadVideoUrlResponses[keyof GetUploadVideoUrlResponses];
 
 export type SaveVideoLessonProgressData = {
     body: CourseVideoLessonProgressWritable;
@@ -2265,7 +2095,11 @@ export type SaveVideoLessonProgressResponses = {
 export type SaveVideoLessonProgressResponse = SaveVideoLessonProgressResponses[keyof SaveVideoLessonProgressResponses];
 
 export type EditVideoLessonData = {
-    body: CourseVideoLessonWritable;
+    body: {
+        videoKey?: string;
+        title?: string;
+        duration?: bigint;
+    };
     path: {
         /**
          * Unique identifier of the course
@@ -2417,10 +2251,7 @@ export type GetLessonDetailResponses = {
 export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
 
 export type CreateLessonData = {
-    body: {
-        video?: CourseVideoLessonWritable;
-        test?: CourseTestLessonWritable;
-    };
+    body: CourseVideoLessonWritable | CourseTestLessonWritable;
     path: {
         /**
          * Unique identifier of the course

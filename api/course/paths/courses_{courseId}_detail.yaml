@@ -10,6 +10,8 @@ get:
     - Course
   summary: Get course detail
   operationId: getCourseDetail
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:

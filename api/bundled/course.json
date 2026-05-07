@@ -62,6 +62,7 @@
         ],
         "summary": "Get certificate by id",
         "operationId": "getCertificateById",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/certificateIdPath"
@@ -125,6 +126,7 @@
         ],
         "summary": "Get my certificates",
         "operationId": "getMyCertificates",
+        "description": "- authenticated\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/pageQuery"
@@ -512,6 +514,7 @@
         ],
         "summary": "Bookmark course",
         "operationId": "bookmarkCourse",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -570,6 +573,7 @@
         ],
         "summary": "Decline course",
         "operationId": "declineCourse",
+        "description": "- authenticated:\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -635,6 +639,7 @@
         ],
         "summary": "Get course detail",
         "operationId": "getCourseDetail",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -698,6 +703,7 @@
         ],
         "summary": "Enroll in course",
         "operationId": "enrollInCourse",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -756,6 +762,7 @@
         ],
         "summary": "Finish course",
         "operationId": "finishCourse",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -804,6 +811,7 @@
         ],
         "summary": "Hide course",
         "operationId": "hideCourse",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -839,6 +847,7 @@
         ],
         "summary": "Get course landing page",
         "operationId": "getCourseLandingPage",
+        "description": "- public\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -896,6 +905,7 @@
         ],
         "summary": "Get course progress",
         "operationId": "getCourseProgress",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -959,6 +969,7 @@
         ],
         "summary": "Review course",
         "operationId": "reviewCourse",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1024,70 +1035,6 @@
         }
       }
     },
-    "/course/courses/{courseId}/trigger-learning-reminder": {
-      "post": {
-        "security": [
-          {
-            "Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Trigger learning reminder",
-        "operationId": "triggerLearningReminder",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "dryRun": {
-                    "type": "boolean",
-                    "example": false
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Learning reminder triggered"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
     "/course/courses/{courseId}": {
       "delete": {
         "security": [
@@ -1109,6 +1056,7 @@
         ],
         "summary": "Delete course",
         "operationId": "deleteCourse",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1157,6 +1105,7 @@
         ],
         "summary": "Get my enrolled courses",
         "operationId": "getMyEnrolledCourses",
+        "description": "- authenticated\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/pageQuery"
@@ -1227,6 +1176,7 @@
         ],
         "summary": "Create course",
         "operationId": "createCourse",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -1287,6 +1237,7 @@
         ],
         "summary": "Reply lesson comment",
         "operationId": "replyLessonComment",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/commentIdPath"
@@ -1363,6 +1314,7 @@
         ],
         "summary": "Move section",
         "operationId": "moveSection",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1381,22 +1333,15 @@
                   "courseId": {
                     "$ref": "#/components/schemas/id"
                   },
-                  "sectionId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "ID of the section to move (must match the sectionId path parameter)",
-                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
-                  },
-                  "preOrder": {
-                    "type": "string",
-                    "example": "ab",
-                    "description": "order of the section you want to insert to"
+                  "order": {
+                    "type": "integer",
+                    "description": "New order of the section within the course (0-based index)",
+                    "example": 1
                   }
                 },
                 "required": [
                   "courseId",
-                  "sectionId",
-                  "preOrder"
+                  "order"
                 ]
               }
             }
@@ -1480,6 +1425,7 @@
         ],
         "summary": "Delete section",
         "operationId": "deleteSection",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1529,6 +1475,7 @@
         ],
         "summary": "Update section",
         "operationId": "updateSectionTitle",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1601,6 +1548,7 @@
         ],
         "summary": "Create section",
         "operationId": "createSection",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1615,7 +1563,7 @@
                 "required": [
                   "courseId",
                   "title",
-                  "preOrder"
+                  "order"
                 ],
                 "properties": {
                   "courseId": {
@@ -1627,9 +1575,10 @@
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
                   },
-                  "preOrder": {
-                    "type": "string",
-                    "example": "ab"
+                  "order": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 1
                   }
                 }
               }
@@ -1689,6 +1638,7 @@
         ],
         "summary": "Get lesson comments",
         "operationId": "getLessonComments",
+        "description": "- authenticated\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1756,6 +1706,7 @@
         ],
         "summary": "Comment on lesson",
         "operationId": "commentOnLesson",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1838,6 +1789,7 @@
         ],
         "summary": "Mark lesson as completed",
         "operationId": "markLessonAsCompleted",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1892,6 +1844,7 @@
         ],
         "summary": "Move lesson",
         "operationId": "moveLesson",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -1910,38 +1863,22 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "type": {
-                    "$ref": "#/components/schemas/LessonType"
-                  },
-                  "sectionId": {
+                  "targetSectionId": {
                     "type": "string",
                     "format": "uuid",
+                    "description": "The ID of the section to move the lesson into. Use the current sectionId if only reordering.",
                     "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
                   },
-                  "afterLesson": {
-                    "x-go-type-name": "moveAfterLesson",
-                    "type": "object",
-                    "nullable": true,
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0"
-                      },
-                      "type": {
-                        "$ref": "#/components/schemas/LessonType"
-                      }
-                    },
-                    "required": [
-                      "id",
-                      "type"
-                    ]
+                  "order": {
+                    "type": "integer",
+                    "format": "int",
+                    "description": "The new 0-based position of the lesson within the target section.",
+                    "example": 2
                   }
                 },
                 "required": [
-                  "type",
-                  "sectionId",
-                  "afterLesson"
+                  "targetSectionId",
+                  "order"
                 ]
               }
             }
@@ -1990,6 +1927,7 @@
         ],
         "summary": "Get lesson progress",
         "operationId": "getLessonProgress",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -2038,175 +1976,8 @@
         }
       }
     },
-    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test": {
       "put": {
-        "security": [
-          {
-            "Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Save test lesson progress",
-        "operationId": "saveTestLessonProgress",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/sectionIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/lessonIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TestLessonProgress"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Test lesson progress saved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/TestLessonProgress"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests": {
-      "post": {
-        "security": [
-          {
-            "Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Create test",
-        "operationId": "createTest",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/sectionIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/lessonIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "type",
-                  "questions"
-                ],
-                "properties": {
-                  "type": {
-                    "$ref": "#/components/schemas/TestLessonType"
-                  },
-                  "questions": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                      "$ref": "#/components/schemas/TestQuestion"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Test created",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/tests/123e4567-e89b-12d3-a456-426614174000"
-                },
-                "required": true
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "patch": {
         "security": [
           {
             "Oauth2": [
@@ -2226,6 +1997,7 @@
         ],
         "summary": "Edit test lesson",
         "operationId": "editTestLesson",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -2269,7 +2041,7 @@
         }
       }
     },
-    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url": {
+    "/course/courses/{courseId}/upload-video-url": {
       "post": {
         "security": [
           {
@@ -2288,17 +2060,12 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Get upload video lesson URL",
-        "operationId": "getUploadVideoLessonUrl",
+        "summary": "Get upload video URL",
+        "operationId": "getUploadVideoUrl",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/sectionIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/lessonIdPath"
           }
         ],
         "requestBody": {
@@ -2455,6 +2222,7 @@
         ],
         "summary": "Edit video lesson",
         "operationId": "editVideoLesson",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -2471,7 +2239,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/VideoLesson"
+                "type": "object",
+                "properties": {
+                  "videoKey": {
+                    "type": "string",
+                    "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
+                    "writeOnly": true
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "Introduction to Python"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 300
+                  }
+                }
               }
             }
           }
@@ -2519,6 +2303,7 @@
         ],
         "summary": "Get lesson detail",
         "operationId": "getLessonDetail",
+        "description": "- authenticated:\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -2586,6 +2371,7 @@
         ],
         "summary": "Delete lesson",
         "operationId": "deleteLesson",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -2640,6 +2426,7 @@
         ],
         "summary": "Create lesson",
         "operationId": "createLesson",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/courseIdPath"
@@ -2653,15 +2440,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "video": {
+                "oneOf": [
+                  {
                     "$ref": "#/components/schemas/VideoLesson"
                   },
-                  "test": {
+                  {
                     "$ref": "#/components/schemas/TestLesson"
                   }
-                }
+                ]
               }
             }
           }
@@ -3043,17 +2829,14 @@
             "example": "OOP Fundamentals"
           },
           "order": {
-            "type": "string",
-            "example": "a",
+            "type": "integer",
+            "format": "int",
+            "example": 1,
             "readOnly": true
-          },
-          "courseId": {
-            "$ref": "#/components/schemas/id"
           }
         },
         "required": [
           "id",
-          "courseId",
           "title"
         ]
       },
@@ -3079,8 +2862,9 @@
             "example": "Introduction to Python"
           },
           "order": {
-            "type": "string",
-            "example": "a",
+            "type": "integer",
+            "format": "int",
+            "example": 1,
             "readOnly": true
           },
           "lessonType": {
@@ -3252,7 +3036,7 @@
           },
           "isCompleted": {
             "type": "boolean",
-            "example": false
+            "example": true
           }
         },
         "required": [
@@ -3283,45 +3067,15 @@
           }
         ]
       },
-      "TestLessonProgress": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/LessonProgress"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "score": {
-                "type": "number",
-                "format": "float",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 85
-              }
-            },
-            "required": [
-              "score"
-            ]
-          }
-        ]
-      },
       "LessonProgressDetail": {
         "oneOf": [
           {
             "$ref": "#/components/schemas/VideoLessonProgress"
           },
           {
-            "$ref": "#/components/schemas/TestLessonProgress"
+            "$ref": "#/components/schemas/LessonProgress"
           }
         ]
-      },
-      "TestLessonType": {
-        "type": "string",
-        "enum": [
-          "multipleChoice",
-          "singleChoice"
-        ],
-        "example": "singleChoice"
       },
       "TestAnswer": {
         "type": "object",

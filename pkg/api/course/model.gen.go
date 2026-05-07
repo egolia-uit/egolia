@@ -226,11 +226,10 @@ type CourseDetail struct {
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
 type CourseDetailSectionItem struct {
-	CourseId *Id                 `json:"courseId,omitempty"`
-	Id       *openapi_types.UUID `json:"id,omitempty"`
-	Lessons  []Lesson            `json:"lessons"`
-	Order    *string             `json:"order,omitempty"`
-	Title    string              `json:"title"`
+	Id      *openapi_types.UUID `json:"id,omitempty"`
+	Lessons []Lesson            `json:"lessons"`
+	Order   *int                `json:"order,omitempty"`
+	Title   string              `json:"title"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -264,7 +263,7 @@ type Error struct {
 type Lesson struct {
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
+	Order      *int                `json:"order,omitempty"`
 	Title      string              `json:"title"`
 }
 
@@ -329,10 +328,9 @@ type Pagination struct {
 
 // Section defines model for Section.
 type Section struct {
-	CourseId *Id                 `json:"courseId,omitempty"`
-	Id       *openapi_types.UUID `json:"id,omitempty"`
-	Order    *string             `json:"order,omitempty"`
-	Title    string              `json:"title"`
+	Id    *openapi_types.UUID `json:"id,omitempty"`
+	Order *int                `json:"order,omitempty"`
+	Title string              `json:"title"`
 }
 
 // TestAnswer defines model for TestAnswer.
@@ -346,7 +344,7 @@ type TestAnswer struct {
 type TestLesson struct {
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
+	Order      *int                `json:"order,omitempty"`
 	Questions  []TestQuestion      `json:"questions"`
 	Title      string              `json:"title"`
 	Type       TestLessonType      `json:"type"`
@@ -354,17 +352,6 @@ type TestLesson struct {
 
 // TestLessonType defines model for TestLesson.Type.
 type TestLessonType string
-
-// TestLessonProgress defines model for TestLessonProgress.
-type TestLessonProgress struct {
-	Id          *openapi_types.UUID `json:"id,omitempty"`
-	IsCompleted bool                `json:"isCompleted"`
-	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
-	Score       float32             `json:"score"`
-
-	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
-}
 
 // TestQuestion defines model for TestQuestion.
 type TestQuestion struct {
@@ -378,7 +365,7 @@ type VideoLesson struct {
 	Duration   int64               `json:"duration"`
 	Id         *openapi_types.UUID `json:"id,omitempty"`
 	LessonType LessonType          `json:"lessonType"`
-	Order      *string             `json:"order,omitempty"`
+	Order      *int                `json:"order,omitempty"`
 	Title      string              `json:"title"`
 	VideoKey   *string             `json:"videoKey,omitempty"`
 	VideoUrl   *string             `json:"videoUrl,omitempty"`
@@ -528,7 +515,7 @@ type ReviewCourseJSONBody struct {
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
 	CourseId *Id    `json:"courseId,omitempty"`
-	PreOrder string `json:"preOrder"`
+	Order    int    `json:"order"`
 	Title    string `json:"title"`
 }
 
@@ -539,8 +526,7 @@ type UpdateSectionTitleJSONBody struct {
 
 // CreateLessonJSONBody defines parameters for CreateLesson.
 type CreateLessonJSONBody struct {
-	Test  *TestLesson  `json:"test,omitempty"`
-	Video *VideoLesson `json:"video,omitempty"`
+	union json.RawMessage
 }
 
 // CommentOnLessonJSONBody defines parameters for CommentOnLesson.
@@ -550,42 +536,31 @@ type CommentOnLessonJSONBody struct {
 
 // MoveLessonJSONBody defines parameters for MoveLesson.
 type MoveLessonJSONBody struct {
-	AfterLesson *moveAfterLesson   `json:"afterLesson"`
-	SectionId   openapi_types.UUID `json:"sectionId"`
-	Type        LessonType         `json:"type"`
+	// Order The new 0-based position of the lesson within the target section.
+	Order int `json:"order"`
+
+	// TargetSectionId The ID of the section to move the lesson into. Use the current sectionId if only reordering.
+	TargetSectionId openapi_types.UUID `json:"targetSectionId"`
 }
 
-// moveAfterLesson defines parameters for MoveLesson.
-type moveAfterLesson struct {
-	Id   openapi_types.UUID `json:"id"`
-	Type LessonType         `json:"type"`
-}
-
-// CreateTestJSONBody defines parameters for CreateTest.
-type CreateTestJSONBody struct {
-	Questions []TestQuestion `json:"questions"`
-	Type      TestLessonType `json:"type"`
-}
-
-// GetUploadVideoLessonUrlJSONBody defines parameters for GetUploadVideoLessonUrl.
-type GetUploadVideoLessonUrlJSONBody struct {
-	VideoFilename string `json:"videoFilename"`
+// EditVideoLessonJSONBody defines parameters for EditVideoLesson.
+type EditVideoLessonJSONBody struct {
+	Duration *int64  `json:"duration,omitempty"`
+	Title    *string `json:"title,omitempty"`
+	VideoKey *string `json:"videoKey,omitempty"`
 }
 
 // MoveSectionJSONBody defines parameters for MoveSection.
 type MoveSectionJSONBody struct {
 	CourseId *Id `json:"courseId,omitempty"`
 
-	// PreOrder order of the section you want to insert to
-	PreOrder string `json:"preOrder"`
-
-	// SectionId ID of the section to move (must match the sectionId path parameter)
-	SectionId openapi_types.UUID `json:"sectionId"`
+	// Order New order of the section within the course (0-based index)
+	Order int `json:"order"`
 }
 
-// TriggerLearningReminderJSONBody defines parameters for TriggerLearningReminder.
-type TriggerLearningReminderJSONBody struct {
-	DryRun *bool `json:"dryRun,omitempty"`
+// GetUploadVideoUrlJSONBody defines parameters for GetUploadVideoUrl.
+type GetUploadVideoUrlJSONBody struct {
+	VideoFilename string `json:"videoFilename"`
 }
 
 // ReplyLessonCommentJSONBody defines parameters for ReplyLessonComment.
@@ -635,20 +610,11 @@ type CommentOnLessonJSONRequestBody CommentOnLessonJSONBody
 // MoveLessonJSONRequestBody defines body for MoveLesson for application/json ContentType.
 type MoveLessonJSONRequestBody MoveLessonJSONBody
 
-// SaveTestLessonProgressJSONRequestBody defines body for SaveTestLessonProgress for application/json ContentType.
-type SaveTestLessonProgressJSONRequestBody = TestLessonProgress
-
 // EditTestLessonJSONRequestBody defines body for EditTestLesson for application/json ContentType.
 type EditTestLessonJSONRequestBody = TestLesson
 
-// CreateTestJSONRequestBody defines body for CreateTest for application/json ContentType.
-type CreateTestJSONRequestBody CreateTestJSONBody
-
-// GetUploadVideoLessonUrlJSONRequestBody defines body for GetUploadVideoLessonUrl for application/json ContentType.
-type GetUploadVideoLessonUrlJSONRequestBody GetUploadVideoLessonUrlJSONBody
-
 // EditVideoLessonJSONRequestBody defines body for EditVideoLesson for application/json ContentType.
-type EditVideoLessonJSONRequestBody = VideoLesson
+type EditVideoLessonJSONRequestBody EditVideoLessonJSONBody
 
 // SaveVideoLessonProgressJSONRequestBody defines body for SaveVideoLessonProgress for application/json ContentType.
 type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
@@ -656,8 +622,8 @@ type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
 // MoveSectionJSONRequestBody defines body for MoveSection for application/json ContentType.
 type MoveSectionJSONRequestBody MoveSectionJSONBody
 
-// TriggerLearningReminderJSONRequestBody defines body for TriggerLearningReminder for application/json ContentType.
-type TriggerLearningReminderJSONRequestBody TriggerLearningReminderJSONBody
+// GetUploadVideoUrlJSONRequestBody defines body for GetUploadVideoUrl for application/json ContentType.
+type GetUploadVideoUrlJSONRequestBody GetUploadVideoUrlJSONBody
 
 // ReplyLessonCommentJSONRequestBody defines body for ReplyLessonComment for application/json ContentType.
 type ReplyLessonCommentJSONRequestBody ReplyLessonCommentJSONBody
@@ -750,22 +716,22 @@ func (t *LessonProgressDetail) MergeVideoLessonProgress(v VideoLessonProgress) e
 	return err
 }
 
-// AsTestLessonProgress returns the union data inside the LessonProgressDetail as a TestLessonProgress
-func (t LessonProgressDetail) AsTestLessonProgress() (TestLessonProgress, error) {
-	var body TestLessonProgress
+// AsLessonProgress returns the union data inside the LessonProgressDetail as a LessonProgress
+func (t LessonProgressDetail) AsLessonProgress() (LessonProgress, error) {
+	var body LessonProgress
 	err := json.Unmarshal(t.union, &body)
 	return body, err
 }
 
-// FromTestLessonProgress overwrites any union data inside the LessonProgressDetail as the provided TestLessonProgress
-func (t *LessonProgressDetail) FromTestLessonProgress(v TestLessonProgress) error {
+// FromLessonProgress overwrites any union data inside the LessonProgressDetail as the provided LessonProgress
+func (t *LessonProgressDetail) FromLessonProgress(v LessonProgress) error {
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
 }
 
-// MergeTestLessonProgress performs a merge with any union data inside the LessonProgressDetail, using the provided TestLessonProgress
-func (t *LessonProgressDetail) MergeTestLessonProgress(v TestLessonProgress) error {
+// MergeLessonProgress performs a merge with any union data inside the LessonProgressDetail, using the provided LessonProgress
+func (t *LessonProgressDetail) MergeLessonProgress(v LessonProgress) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -782,6 +748,68 @@ func (t LessonProgressDetail) MarshalJSON() ([]byte, error) {
 }
 
 func (t *LessonProgressDetail) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsVideoLesson returns the union data inside the CreateLessonJSONBody as a VideoLesson
+func (t CreateLessonJSONBody) AsVideoLesson() (VideoLesson, error) {
+	var body VideoLesson
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromVideoLesson overwrites any union data inside the CreateLessonJSONBody as the provided VideoLesson
+func (t *CreateLessonJSONBody) FromVideoLesson(v VideoLesson) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeVideoLesson performs a merge with any union data inside the CreateLessonJSONBody, using the provided VideoLesson
+func (t *CreateLessonJSONBody) MergeVideoLesson(v VideoLesson) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsTestLesson returns the union data inside the CreateLessonJSONBody as a TestLesson
+func (t CreateLessonJSONBody) AsTestLesson() (TestLesson, error) {
+	var body TestLesson
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromTestLesson overwrites any union data inside the CreateLessonJSONBody as the provided TestLesson
+func (t *CreateLessonJSONBody) FromTestLesson(v TestLesson) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeTestLesson performs a merge with any union data inside the CreateLessonJSONBody, using the provided TestLesson
+func (t *CreateLessonJSONBody) MergeTestLesson(v TestLesson) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t CreateLessonJSONBody) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *CreateLessonJSONBody) UnmarshalJSON(b []byte) error {
 	err := t.union.UnmarshalJSON(b)
 	return err
 }

@@ -10,6 +10,10 @@ post:
     - Lesson
   summary: Create lesson
   operationId: createLesson
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
@@ -18,12 +22,9 @@ post:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            video:
-              $ref: ../components/schemas/VideoLesson.yaml
-            test:
-              $ref: ../components/schemas/TestLesson.yaml
+          oneOf:
+            - $ref: ../components/schemas/VideoLesson.yaml
+            - $ref: ../components/schemas/TestLesson.yaml
   responses:
     201:
       description: Lesson created

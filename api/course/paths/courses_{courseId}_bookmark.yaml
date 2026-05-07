@@ -10,6 +10,8 @@ post:
     - Course
   summary: Bookmark course
   operationId: bookmarkCourse
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:

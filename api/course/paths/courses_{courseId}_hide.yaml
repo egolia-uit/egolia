@@ -10,6 +10,10 @@ post:
     - Course
   summary: Hide course
   operationId: hideCourse
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:

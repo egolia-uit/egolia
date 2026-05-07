@@ -312,10 +312,6 @@ func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewC
 	}, nil
 }
 
-func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request course.TriggerLearningReminderRequestObject) (course.TriggerLearningReminderResponseObject, error) {
-	return nil, errs.Unimplemented
-}
-
 func (h *StrictHandler) ReplyLessonComment(ctx context.Context, request course.ReplyLessonCommentRequestObject) (course.ReplyLessonCommentResponseObject, error) {
 	return nil, errs.Unimplemented
 }
@@ -345,12 +341,12 @@ func (h *StrictHandler) GetLessonDetail(ctx context.Context, request course.GetL
 	}, nil
 }
 
-func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {
+func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.EditVideoLessonRequestObject) (course.EditVideoLessonResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.EditVideoLessonRequestObject) (course.EditVideoLessonResponseObject, error) {
-	return nil, errs.Unimplemented
+func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {
+	panic("unimplemented")
 }
 
 func (h *StrictHandler) GetLessonComments(ctx context.Context, request course.GetLessonCommentsRequestObject) (course.GetLessonCommentsResponseObject, error) {
@@ -370,45 +366,41 @@ func (h *StrictHandler) MoveSection(ctx context.Context, request course.MoveSect
 }
 
 func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLessonRequestObject) (course.MoveLessonResponseObject, error) {
-	var afterLesson *app.MoveLessonAfterLesson
-	if request.Body.AfterLesson != nil {
-		var t app.LessonType
-		switch request.Body.AfterLesson.Type {
-		case course.LessonTypeTest:
-			t = app.LessonTypeTest
-		case course.LessonTypeVideo:
-			t = app.LessonTypeVideo
-		}
-		afterLesson = &app.MoveLessonAfterLesson{
-			ID:   request.Body.AfterLesson.Id,
-			Type: t,
-		}
-	}
-	var lessonType app.LessonType
-	switch request.Body.Type {
-	case course.LessonTypeTest:
-		lessonType = app.LessonTypeTest
-	case course.LessonTypeVideo:
-		lessonType = app.LessonTypeVideo
-	}
-	cmd := &app.MoveLesson{
-		LessonID:    request.LessonId,
-		LessonType:  lessonType,
-		AfterLesson: afterLesson,
-		SectionID:   request.Body.SectionId,
-	}
-	err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
-	if err != nil {
-		return nil, err
-	}
+	// var afterLesson *app.MoveLessonAfterLesson
+	// if request.Body.AfterLesson != nil {
+	// 	var t app.LessonType
+	// 	switch request.Body.AfterLesson.Type {
+	// 	case course.LessonTypeTest:
+	// 		t = app.LessonTypeTest
+	// 	case course.LessonTypeVideo:
+	// 		t = app.LessonTypeVideo
+	// 	}
+	// 	afterLesson = &app.MoveLessonAfterLesson{
+	// 		ID:   request.Body.AfterLesson.Id,
+	// 		Type: t,
+	// 	}
+	// }
+	// var lessonType app.LessonType
+	// switch request.Body.Type {
+	// case course.LessonTypeTest:
+	// 	lessonType = app.LessonTypeTest
+	// case course.LessonTypeVideo:
+	// 	lessonType = app.LessonTypeVideo
+	// }
+	// cmd := &app.MoveLesson{
+	// 	LessonID:    request.LessonId,
+	// 	LessonType:  lessonType,
+	// 	AfterLesson: afterLesson,
+	// 	SectionID:   request.Body.SectionId,
+	// }
+	// err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	return &course.MoveLesson201Response{}, nil
 }
 
 func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.GetLessonProgressRequestObject) (course.GetLessonProgressResponseObject, error) {
-	return nil, errs.Unimplemented
-}
-
-func (h *StrictHandler) SaveTestLessonProgress(ctx context.Context, request course.SaveTestLessonProgressRequestObject) (course.SaveTestLessonProgressResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -420,26 +412,21 @@ func (h *StrictHandler) UpdateSectionTitle(ctx context.Context, request course.U
 	panic("unimplemented")
 }
 
-func (h *StrictHandler) CreateTest(ctx context.Context, request course.CreateTestRequestObject) (course.CreateTestResponseObject, error) {
-	return nil, errs.Unimplemented
-}
-
-func (h *StrictHandler) GetUploadVideoLessonUrl(ctx context.Context, request course.GetUploadVideoLessonUrlRequestObject) (course.GetUploadVideoLessonUrlResponseObject, error) {
+// GetUploadVideoUrl implements [course.StrictServerInterface].
+func (h *StrictHandler) GetUploadVideoUrl(ctx context.Context, request course.GetUploadVideoUrlRequestObject) (course.GetUploadVideoUrlResponseObject, error) {
 	cmd := &app.GetUploadVideoLessonURL{
-		LessonID:      request.LessonId,
 		VideoFilename: request.Body.VideoFilename,
 	}
 	result, err := h.App.Cmds.GetUploadVideoLessonURL.Handle(ctx, cmd)
 	if err != nil {
 		return nil, err
 	}
-	return &course.GetUploadVideoLessonUrl201JSONResponse{
+	return &course.GetUploadVideoUrl201JSONResponse{
 		VideoKey:  result.VideoKey,
 		UploadUrl: result.UploadURL,
 		ExpiresAt: result.ExpiresAt,
 	}, nil
 }
-
 func (h *StrictHandler) CreateSection(ctx context.Context, request course.CreateSectionRequestObject) (course.CreateSectionResponseObject, error) {
 	return nil, errs.Unimplemented
 }

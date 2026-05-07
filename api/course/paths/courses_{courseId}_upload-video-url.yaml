@@ -8,12 +8,14 @@ post:
         - entitlements
   tags:
     - Lesson
-  summary: Get upload video lesson URL
-  operationId: getUploadVideoLessonUrl
+  summary: Get upload video URL
+  operationId: getUploadVideoUrl
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
-    - $ref: ../components/parameters/sectionIdPath.yaml
-    - $ref: ../components/parameters/lessonIdPath.yaml
   requestBody:
     required: true
     content:

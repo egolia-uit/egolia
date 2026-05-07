@@ -1,4 +1,4 @@
-patch:
+put:
   security:
     - Oauth2:
         - openid
@@ -10,6 +10,10 @@ patch:
     - Lesson
   summary: Edit test lesson
   operationId: editTestLesson
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml

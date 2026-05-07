@@ -16,7 +16,7 @@ properties:
 
   isCompleted:
     type: boolean
-    example: false
+    example: true
 
 required:
   - id
