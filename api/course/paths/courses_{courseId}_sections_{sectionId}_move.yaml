@@ -10,6 +10,10 @@ post:
     - Section
   summary: Move section
   operationId: moveSection
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
@@ -22,22 +26,14 @@ post:
           properties:
             courseId:
               $ref: ../components/schemas/Course.yaml#/properties/id
-
-            sectionId:
-              type: string
-              format: uuid
-              description: ID of the section to move (must match the sectionId path parameter)
-              example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
-
-            preOrder:
-              type: string
-              example: ab
-              description: order of the section you want to insert to
+            order:
+              type: integer
+              description: New order of the section within the course (0-based index)
+              example: 1
 
           required:
             - courseId
-            - sectionId
-            - preOrder
+            - order
   responses:
     200:
       description: Section moved successfully

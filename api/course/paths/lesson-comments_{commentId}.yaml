@@ -1,4 +1,4 @@
-post:
+delete:
   security:
     - Oauth2:
         - openid
@@ -7,14 +7,18 @@ post:
         - openid
         - entitlements
   tags:
-    - Course
-  summary: Unbookmark course
-  operationId: unbookmarkCourse
+    - Lesson
+  summary: Delete lesson comment
+  operationId: deleteLessonComment
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
-    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/commentIdPath.yaml
   responses:
     204:
-      description: Course unbookmarked successfully
+      description: Lesson comment deleted
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

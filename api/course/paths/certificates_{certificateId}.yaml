@@ -10,6 +10,8 @@ get:
     - Certificate
   summary: Get certificate by id
   operationId: getCertificateById
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/certificateIdPath.yaml
   responses:

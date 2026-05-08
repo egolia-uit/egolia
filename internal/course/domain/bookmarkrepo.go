@@ -7,8 +7,9 @@ import (
 )
 
 type BookmarkRepo interface {
-	Get(ctx context.Context, params BookmarkRepoGet, forUpdate bool) (*Bookmark, error)
 	Save(ctx context.Context, bookmark *Bookmark) error
+	Delete(ctx context.Context, id uuid.UUID) error
+	ExistsByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) (bool, error)
 }
 
 type BookmarkRepoGet struct {

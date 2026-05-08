@@ -42,6 +42,10 @@ delete:
     - Course
   summary: Delete course
   operationId: deleteCourse
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:

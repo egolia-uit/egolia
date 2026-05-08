@@ -1,0 +1,6 @@
+name: instructorId
+in: query
+schema:
+  type: string
+  format: string
+  example: '123'

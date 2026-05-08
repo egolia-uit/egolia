@@ -58,14 +58,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	s3 := &configConfig.S3
-	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	unitOfWork := repo.NewUnitOfWork(db, objectstorageS3)
+	unitOfWork := repo.NewUnitOfWork(db)
 	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
 		cleanup2()
@@ -95,6 +88,14 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		MoveLesson:     moveLessonCmd,
 		ReviewCourse:   reviewCourseCmd,
 		UpdateCourse:   updateCourseCmd,
+	}
+	s3 := &configConfig.S3
+	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db, objectstorageS3)
 	getCourseQuery := app.NewGetCourseHandler(courseReadRepo, logger, tracer)

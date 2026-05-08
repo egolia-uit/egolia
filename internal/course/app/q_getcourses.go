@@ -6,10 +6,11 @@ import (
 )
 
 type GetCourses struct {
-	Status   *CourseStatus
-	Hidden   *bool
-	Paginate PaginationParams
-	Order    SearchCoursesOrder
+	InstructorID *string
+	Status       *CourseStatus
+	Hidden       *bool
+	Paginate     PaginationParams
+	Order        SearchCoursesOrder
 }
 
 type GetCoursesQuery Query[GetCourses, *Paginated[Course]]

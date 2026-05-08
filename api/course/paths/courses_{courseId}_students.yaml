@@ -1,4 +1,4 @@
-put:
+get:
   security:
     - Oauth2:
         - openid
@@ -7,31 +7,35 @@ put:
         - openid
         - entitlements
   tags:
-    - Lesson
-  summary: Save test lesson progress
-  operationId: saveTestLessonProgress
+    - Course
+  summary: Get course students
+  operationId: getCourseStudents
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
-    - $ref: ../components/parameters/sectionIdPath.yaml
-    - $ref: ../components/parameters/lessonIdPath.yaml
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: ../components/schemas/TestLessonProgress.yaml
+    - $ref: ../../common/components/parameters/pageQuery.yaml
+    - $ref: ../../common/components/parameters/limitQuery.yaml
+    - $ref: ../../common/components/parameters/orderQuery.yaml
   responses:
     200:
-      description: Test lesson progress saved
+      description: Course students
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                $ref: ../components/schemas/TestLessonProgress.yaml
+                type: array
+                items:
+                  $ref: ../components/schemas/CourseStudent.yaml
+              pagination:
+                $ref: ../../common/components/schemas/Pagination.yaml
             required:
               - data
+              - pagination
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

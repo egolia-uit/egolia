@@ -21,7 +21,7 @@ type Section struct {
 
 func (Section) TableName() string { return "sections" }
 
-func SectionFromDomain(index int, s *domain.Section) *Section {
+func SectionFromDomain(index int, s *domain.Section, courseID uuid.UUID) *Section {
 	var deletedAt gorm.DeletedAt
 	if s.DeletedAt() != nil {
 		deletedAt = gorm.DeletedAt{Time: *s.DeletedAt(), Valid: true}
@@ -36,7 +36,7 @@ func SectionFromDomain(index int, s *domain.Section) *Section {
 
 	return &Section{
 		ID:        s.ID(),
-		CourseID:  s.CourseID(),
+		CourseID:  courseID,
 		Title:     s.Title(),
 		Index:     index,
 		Lessons:   lessons,
@@ -58,5 +58,5 @@ func (m *Section) ToDomain() *domain.Section {
 			lessons = append(lessons, l)
 		}
 	}
-	return domain.UnmarshalSection(m.ID, m.CourseID, m.Title, deletedAt, lessons)
+	return domain.UnmarshalSection(m.ID, m.Title, deletedAt, lessons)
 }

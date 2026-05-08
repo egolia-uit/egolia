@@ -10,6 +10,8 @@ get:
     - Certificate
   summary: Get my certificates
   operationId: getMyCertificates
+  description: |
+    - authenticated
   parameters:
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml

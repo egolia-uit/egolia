@@ -10,6 +10,10 @@ get:
     - Course
   summary: Get system courses
   operationId: getSystemCourses
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml

@@ -22,13 +22,15 @@ type ReadCourseQuestionContent struct {
 }
 
 type ReadCourseLessonContent struct {
-	ID         uuid.UUID                   `json:"id"`
-	Title      string                      `json:"title"`
-	LessonType string                      `json:"lesson_type"`
-	VideoKey   *string                     `json:"video_key,omitempty"`
-	Duration   *int64                      `json:"duration_seconds,omitempty"`
-	TestType   *string                     `json:"test_type,omitempty"`
-	Questions  []ReadCourseQuestionContent `json:"questions,omitempty"`
+	ID    uuid.UUID `json:"id"`
+	Title string    `json:"title"`
+	// Type safe for this
+	LessonType string  `json:"lesson_type"`
+	VideoKey   *string `json:"video_key,omitempty"`
+	Duration   *int64  `json:"duration_seconds,omitempty"`
+	// Type safe for this
+	QuestionType *string                     `json:"test_type,omitempty"`
+	Questions    []ReadCourseQuestionContent `json:"questions,omitempty"`
 }
 
 type ReadCourseSectionContent struct {
@@ -42,7 +44,7 @@ type ReadCourseContent struct {
 	Title         string                     `json:"title"`
 	InstructorID  string                     `json:"instructor_id"`
 	Status        string                     `json:"status"`
-	Price         float64                    `json:"price"`
+	Price         int64                      `json:"price"`
 	Overview      string                     `json:"overview"`
 	IntroVideoURL string                     `json:"intro_video_url"`
 	Sections      []ReadCourseSectionContent `json:"sections"`
@@ -53,7 +55,7 @@ type ReadCourseContent struct {
 type ReadCourse struct {
 	CourseID          uuid.UUID         `gorm:"type:uuid;primaryKey;column:course_id"`
 	Title             string            `gorm:"type:varchar(255);not null"`
-	Price             float64           `gorm:"not null;default:0"`
+	Price             int64             `gorm:"not null;default:0"`
 	Hidden            bool              `gorm:"column:hidden;not null;default:false"`
 	FullCourseContent ReadCourseContent `gorm:"column:full_course_content;serializer:json;type:jsonb;not null"`
 	PublishedAt       *time.Time        `gorm:"column:published_at"`
@@ -110,13 +112,13 @@ func buildSectionContent(index int, s *domain.Section) ReadCourseSectionContent 
 
 func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
 	base := ReadCourseLessonContent{
-		ID:         l.ID(),
-		Title:      l.Title(),
-		LessonType: "",
-		VideoKey:   nil,
-		Duration:   nil,
-		TestType:   nil,
-		Questions:  nil,
+		ID:           l.ID(),
+		Title:        l.Title(),
+		LessonType:   "",
+		VideoKey:     nil,
+		Duration:     nil,
+		QuestionType: nil,
+		Questions:    nil,
 	}
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:
@@ -126,9 +128,8 @@ func buildLessonContent(l domain.Lesson) ReadCourseLessonContent {
 		base.VideoKey = &key
 		base.Duration = &dur
 	case *domain.TestLesson:
-		t := string(lesson.LessonType())
 		base.LessonType = string(domain.LessonTypeTest)
-		base.TestType = &t
+		base.QuestionType = new(string(lesson.QuestionType()))
 		base.Questions = buildQuestions(lesson.GetQuestions())
 	}
 	return base

@@ -1,0 +1,81 @@
+put:
+  security:
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
+  tags:
+    - Course
+  summary: Update review
+  operationId: updateReview
+  description: |
+    - authenticated:
+      - review owner
+  parameters:
+    - $ref: ../components/parameters/reviewIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - rating
+            - comment
+          properties:
+            rating:
+              type: integer
+              format: int32
+              minimum: 1
+              maximum: 5
+              example: 5
+            comment:
+              type: string
+              maxLength: 2000
+              example: Great course with practical examples.
+  responses:
+    204:
+      description: Review updated
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+delete:
+  security:
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
+  tags:
+    - Course
+  summary: Delete review
+  operationId: deleteReview
+  description: |
+    - authenticated:
+      - review owner
+  parameters:
+    - $ref: ../components/parameters/reviewIdPath.yaml
+  responses:
+    204:
+      description: Review deleted
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

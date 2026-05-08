@@ -2,8 +2,6 @@ package errs
 
 import (
 	"fmt"
-
-	"github.com/google/uuid"
 )
 
 const (
@@ -12,17 +10,15 @@ const (
 )
 
 type ObjectStorageFailToRetrieveUploadURLForVideoLesson struct {
-	LessonID      uuid.UUID
 	VideoFilename string
 	Err
 }
 
-func NewObjectStorageFailToRetrieveUploadURLForVideoLesson(lessonID uuid.UUID, videoFilename string, err error) *ObjectStorageFailToRetrieveUploadURLForVideoLesson {
+func NewObjectStorageFailToRetrieveUploadURLForVideoLesson(videoFilename string, err error) *ObjectStorageFailToRetrieveUploadURLForVideoLesson {
 	return &ObjectStorageFailToRetrieveUploadURLForVideoLesson{
-		LessonID:      lessonID,
 		VideoFilename: videoFilename,
 		Err: Err{
-			message: fmt.Sprintf("failed to retrieve upload URL for video lesson with ID %s", lessonID),
+			message: fmt.Sprintf("failed to retrieve upload URL for video lesson with filename %s", videoFilename),
 			code:    CodeObjectStorageFailToRetrieveUploadURLForVideoLesson,
 			err:     err,
 		},

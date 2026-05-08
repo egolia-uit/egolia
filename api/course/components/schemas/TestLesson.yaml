@@ -8,12 +8,9 @@ allOf:
           - test
         example: test
 
-      type:
-        type: string
-        enum:
-          - multipleChoice
-          - singleChoice
-        example: singleChoice
+      questionType:
+        $ref: ./QuestionType.yaml
+        readOnly: true
 
       questions:
         type: array
@@ -23,5 +20,5 @@ allOf:
 
     required:
       - lessonType
-      - type
+      - questionType
       - questions

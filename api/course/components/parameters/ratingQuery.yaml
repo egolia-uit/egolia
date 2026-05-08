@@ -1,0 +1,8 @@
+name: rating
+in: query
+required: false
+description: Filter reviews by a specific rating (1-5)
+schema:
+  type: integer
+  minimum: 1
+  maximum: 5

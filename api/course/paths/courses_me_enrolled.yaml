@@ -10,6 +10,8 @@ get:
     - Course
   summary: Get my enrolled courses
   operationId: getMyEnrolledCourses
+  description: |
+    - authenticated
   parameters:
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml

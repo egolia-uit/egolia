@@ -32,14 +32,26 @@ paths:
     $ref: ./paths/certificates_{certificateId}.yaml
   /course/certificates/me:
     $ref: ./paths/certificates_me.yaml
+  /course/certificates:
+    $ref: ./paths/certificates.yaml
 
-  /course/courses-by-instructor/{instructorId}:
-    $ref: ./paths/courses-by-instructor_{instructorId}.yaml
+  /course/my-courses:
+    $ref: ./paths/my-courses.yaml
   /course/courses-published:
     $ref: ./paths/courses-published.yaml
   /course/courses-system:
     $ref: ./paths/courses-system.yaml
 
+  /course/reviews/{reviewId}:
+    $ref: ./paths/reviews_{reviewId}.yaml
+
+  /course/courses/me/bookmarked:
+    $ref: ./paths/courses_me_bookmarked.yaml
+  /course/courses/me/enrolled:
+    $ref: ./paths/courses_me_enrolled.yaml
+
+  /course/courses/{courseId}/analytics:
+    $ref: ./paths/courses_{courseId}_analytics.yaml
   /course/courses/{courseId}/approve:
     $ref: ./paths/courses_{courseId}_approve.yaml
   /course/courses/{courseId}/basic-info:
@@ -62,19 +74,15 @@ paths:
     $ref: ./paths/courses_{courseId}_progress.yaml
   /course/courses/{courseId}/reviews:
     $ref: ./paths/courses_{courseId}_reviews.yaml
-  /course/courses/{courseId}/trigger-learning-reminder:
-    $ref: ./paths/courses_{courseId}_trigger-learning-reminder.yaml
-  /course/courses/{courseId}/unbookmark:
-    $ref: ./paths/courses_{courseId}_unbookmark.yaml
-  /course/courses/{courseId}/unhide:
-    $ref: ./paths/courses_{courseId}_unhide.yaml
+  /course/courses/{courseId}/students:
+    $ref: ./paths/courses_{courseId}_students.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
-  /course/courses/me/enrolled:
-    $ref: ./paths/courses_me_enrolled.yaml
   /course/courses:
     $ref: ./paths/courses.yaml
 
+  /course/lesson-comments/{commentId}:
+    $ref: ./paths/lesson-comments_{commentId}.yaml
   /course/lesson-comments/{commentId}/reply:
     $ref: ./paths/lesson-comments_{commentId}_reply.yaml
 
@@ -93,12 +101,10 @@ paths:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_move.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_progress.yaml
-  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress:
-    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_test-progress.yaml
-  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests:
-    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_tests.yaml
-  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url:
-    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_upload-video-url.yaml
+  /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test:
+    $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_test.yaml
+  /course/courses/{courseId}/upload-video-url:
+    $ref: ./paths/courses_{courseId}_upload-video-url.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_video-progress.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video:

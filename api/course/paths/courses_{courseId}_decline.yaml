@@ -10,6 +10,10 @@ post:
     - Course
   summary: Decline course
   operationId: declineCourse
+  description: |
+    - authenticated:
+      - admin
+
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:

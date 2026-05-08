@@ -182,15 +182,16 @@ func buildPagination(page, limit, total int) app.Pagination {
 	}
 }
 
-func (r *CourseReadRepo) toAppCourse(ctx context.Context, m *model.ReadCourse) (*app.Course, error) {
-	var introVideoURL string
-	if key := m.FullCourseContent.IntroVideoURL; key != "" {
-		url, err := r.objectStorageSvc.VideoKeyToURL(ctx, key)
-		if err != nil {
-			return nil, err
-		}
-		introVideoURL = url
-	}
+func (r *CourseReadRepo) toAppCourse(_ context.Context, m *model.ReadCourse) (*app.Course, error) {
+	// NOTE: Will uncomment out?
+	// var introVideoURL string
+	// if key := m.FullCourseContent.IntroVideoURL; key != "" {
+	// 	url, err := r.objectStorageSvc.VideoKeyToURL(ctx, key)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	introVideoURL = url
+	// }
 	return &app.Course{
 		ID:               m.CourseID,
 		OriginalCourseID: uuid.Nil,
@@ -200,9 +201,12 @@ func (r *CourseReadRepo) toAppCourse(ctx context.Context, m *model.ReadCourse) (
 		Status:           app.CourseStatus(m.FullCourseContent.Status),
 		Price:            int64(m.Price),
 		Overview:         m.FullCourseContent.Overview,
-		Introduction: app.CourseLandingPageIntroduction{
-			VideoUrl: introVideoURL,
-		},
+		// TODO: Deal with key and URL
+		IntroductionVideoKey: new(""),
+		IntroductionVideoURL: new(""),
+		// Introduction: app.CourseLandingPageIntroduction{
+		// 	VideoUrl: introVideoURL,
+		// },
 	}, nil
 }
 
@@ -256,9 +260,9 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			Duration:   dur,
 		}
 	case app.LessonTypeTest:
-		testType := app.TestLessonType("")
-		if l.TestType != nil {
-			testType = app.TestLessonType(*l.TestType)
+		var questionType app.QuestionType
+		if l.QuestionType != nil {
+			questionType = app.QuestionType(*l.QuestionType)
 		}
 		questions := make([]app.TestQuestion, 0, len(l.Questions))
 		for _, q := range l.Questions {
@@ -277,9 +281,9 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			})
 		}
 		return &app.TestLesson{
-			LessonBase:     base,
-			TestLessonType: testType,
-			Questions:      questions,
+			LessonBase:   base,
+			QuestionType: questionType,
+			Questions:    questions,
 		}
 	}
 	return nil

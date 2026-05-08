@@ -43,5 +43,5 @@ func (m *Review) ToDomain() *domain.Review {
 	if m.DeletedAt.Valid {
 		deletedAt = &m.DeletedAt.Time
 	}
-	return domain.UnmarshalReview(m.ID, m.CourseID, m.UserID, m.Rating, m.Comment, deletedAt)
+	return domain.UnmarshalReview(m.ID, m.CourseID, m.UserID, m.Rating, m.Comment, m.CreatedAt, deletedAt)
 }
