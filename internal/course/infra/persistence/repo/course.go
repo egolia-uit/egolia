@@ -2,10 +2,10 @@ package repo
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/model"
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -30,24 +30,8 @@ func (r *CourseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUp
 	}
 
 	var m model.Course
-	var err error
 
-	switch {
-	case params.ID != uuid.Nil:
-		err = db.First(&m, "id = ?", params.ID).Error
-
-	case params.SectionID != uuid.Nil:
-		err = db.Joins("JOIN sections ON sections.course_id = courses.id AND sections.id = ? AND sections.deleted_at IS NULL", params.SectionID).
-			First(&m).Error
-
-	case params.LessonID != uuid.Nil:
-		err = db.Where(
-			"id IN (SELECT course_id FROM sections WHERE deleted_at IS NULL AND id IN "+
-				"(SELECT section_id FROM lessons WHERE id = ? AND deleted_at IS NULL))",
-			params.LessonID,
-		).First(&m).Error
-	}
-
+	err := db.First(&m, "id = ?", params.ID).Error
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +46,9 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 		return err
 	}
 
-	// Rebuild read_courses JSONB in the same transaction so reads are never stale.
-	readModel := model.ReadCourseFromDomain(course)
+	readModel, err := model.ReadCourseFromDomain(course)
+	if err != nil {
+		return fmt.Errorf("rebuild read course: %w", err)
+	}
 	return db.Save(readModel).Error
 }

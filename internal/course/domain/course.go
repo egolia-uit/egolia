@@ -1,8 +1,10 @@
 package domain
 
 import (
+	"strings"
 	"time"
 
+	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
 )
 
@@ -28,41 +30,34 @@ const (
 type Lesson interface {
 	isLesson()
 	ID() uuid.UUID
-	SectionID() uuid.UUID
-	SetSectionID(sectionID uuid.UUID)
-	Order() string
-	SetOrder(order string)
 	Title() string
 	SetTitle(title string)
+}
+
+type LessonBase struct {
+	id    uuid.UUID
+	title string
 }
 
 var _ Lesson = (*LessonBase)(nil)
 
 func NewLessonBase(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	order string,
 	title string,
 ) *LessonBase {
 	return &LessonBase{
-		id:        id,
-		sectionID: sectionID,
-		order:     order,
-		title:     title,
+		id:    id,
+		title: title,
 	}
 }
 
 func UnmarshalLessonBase(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	order string,
 	title string,
 ) *LessonBase {
 	return &LessonBase{
-		id:        id,
-		sectionID: sectionID,
-		order:     order,
-		title:     title,
+		id:    id,
+		title: title,
 	}
 }
 
@@ -70,22 +65,6 @@ func (l *LessonBase) isLesson() {}
 
 func (l *LessonBase) ID() uuid.UUID {
 	return l.id
-}
-
-func (l *LessonBase) SectionID() uuid.UUID {
-	return l.sectionID
-}
-
-func (l *LessonBase) SetSectionID(sectionID uuid.UUID) {
-	l.sectionID = sectionID
-}
-
-func (l *LessonBase) Order() string {
-	return l.order
-}
-
-func (l *LessonBase) SetOrder(order string) {
-	l.order = order
 }
 
 func (l *LessonBase) Title() string {
@@ -96,18 +75,10 @@ func (l *LessonBase) SetTitle(title string) {
 	l.title = title
 }
 
-type LessonBase struct {
-	id        uuid.UUID
-	sectionID uuid.UUID
-	order     string
-	title     string
-}
-
 type Section struct {
 	id        uuid.UUID
 	courseID  uuid.UUID
 	title     string
-	order     string
 	deletedAt *time.Time
 	lessons   []Lesson
 }
@@ -116,13 +87,11 @@ func NewSection(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	title string,
-	order string,
 ) *Section {
 	return &Section{
 		id:        id,
 		courseID:  courseID,
 		title:     title,
-		order:     order,
 		deletedAt: nil,
 		lessons:   []Lesson{},
 	}
@@ -132,7 +101,6 @@ func UnmarshalSection(
 	id uuid.UUID,
 	courseID uuid.UUID,
 	title string,
-	order string,
 	deletedAt *time.Time,
 	lessons []Lesson,
 ) *Section {
@@ -143,7 +111,6 @@ func UnmarshalSection(
 		id:        id,
 		courseID:  courseID,
 		title:     title,
-		order:     order,
 		deletedAt: deletedAt,
 		lessons:   lessons,
 	}
@@ -169,14 +136,6 @@ func (s *Section) SetTitle(title string) {
 	s.title = title
 }
 
-func (s *Section) Order() string {
-	return s.order
-}
-
-func (s *Section) SetOrder(order string) {
-	s.order = order
-}
-
 func (s *Section) DeletedAt() *time.Time {
 	return s.deletedAt
 }
@@ -194,7 +153,6 @@ func (s *Section) AddLesson(lesson Lesson) {
 	if lesson == nil {
 		return
 	}
-	lesson.SetSectionID(s.id)
 	s.lessons = append(s.lessons, lesson)
 }
 
@@ -258,14 +216,12 @@ var _ Lesson = (*TestLesson)(nil)
 
 func NewTestLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	order string,
 	title string,
 	lessonType TestLessonType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *NewLessonBase(id, sectionID, order, title),
+		LessonBase: *NewLessonBase(id, title),
 		Type:       lessonType,
 		Questions:  questions,
 	}
@@ -273,14 +229,12 @@ func NewTestLesson(
 
 func UnmarshalTestLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	order string,
 	title string,
 	lessonType TestLessonType,
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase: *UnmarshalLessonBase(id, sectionID, order, title),
+		LessonBase: *UnmarshalLessonBase(id, title),
 		Type:       lessonType,
 		Questions:  questions,
 	}
@@ -308,14 +262,12 @@ var _ Lesson = (*VideoLesson)(nil)
 
 func NewVideoLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	order string,
 	title string,
 	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *NewLessonBase(id, sectionID, order, title),
+		LessonBase: *NewLessonBase(id, title),
 		VideoKey:   videoKey,
 		Duration:   duration,
 	}
@@ -323,15 +275,13 @@ func NewVideoLesson(
 
 func UnmarshalVideoLesson(
 	id uuid.UUID,
-	sectionID uuid.UUID,
-	order string,
 	title string,
-	videoURL string,
+	videoKey string,
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *UnmarshalLessonBase(id, sectionID, order, title),
-		VideoKey:   videoURL,
+		LessonBase: *UnmarshalLessonBase(id, title),
+		VideoKey:   videoKey,
 		Duration:   duration,
 	}
 }
@@ -353,82 +303,62 @@ func (vl *VideoLesson) SetDuration(duration time.Duration) {
 }
 
 type Course struct {
-	id               uuid.UUID
-	originalCourseID uuid.UUID
-	hidden           bool
-	title            string
-	instructorID     uuid.UUID
-	status           CourseStatus
-	price            float64
-	overview         string
-	introduction     CourseLandingPageIntroduction
-	deletedAt        *time.Time
-	sections         []*Section
-}
-
-type CourseLandingPageIntroduction struct {
-	videoURL string
+	id                   uuid.UUID
+	originalCourseID     uuid.UUID
+	hidden               bool
+	title                string
+	instructorID         string
+	status               CourseStatus
+	price                float64
+	overview             string
+	introductionVideoKey string
+	deletedAt            *time.Time
+	sections             []*Section
 }
 
 func NewCourse(
 	id uuid.UUID,
 	title string,
-	originalCourseID uuid.UUID,
-	instructorID uuid.UUID,
-	status CourseStatus,
+	instructorID string,
 	price float64,
 	overview string,
-	hidden bool,
-	introduction CourseLandingPageIntroduction,
-	sections []*Section,
-) *Course {
-	if sections == nil {
-		sections = []*Section{}
+	introductionVideoKey string,
+) (*Course, error) {
+	title = strings.TrimSpace(title)
+	if title == "" {
+		return nil, errs.NewInvalid("title is required")
+	}
+	if price < 0 {
+		return nil, errs.NewInvalid("price must be greater than or equal to 0")
 	}
 
 	c := &Course{
-		id:               id,
-		originalCourseID: originalCourseID,
-		hidden:           hidden,
-		title:            title,
-		instructorID:     instructorID,
-		status:           status,
-		price:            price,
-		overview:         overview,
-		introduction:     introduction,
-		deletedAt:        nil,
-		sections:         sections,
+		id:                   id,
+		originalCourseID:     uuid.Nil,
+		hidden:               false,
+		title:                title,
+		instructorID:         instructorID,
+		status:               CourseStatusDraft,
+		price:                price,
+		overview:             overview,
+		introductionVideoKey: introductionVideoKey,
+		deletedAt:            nil,
+		sections:             []*Section{},
 	}
 
-	for _, s := range c.sections {
-		if s == nil {
-			continue
-		}
-		s.courseID = c.id
-		if s.lessons == nil {
-			s.lessons = []Lesson{}
-		}
-		for _, l := range s.lessons {
-			if l == nil {
-				continue
-			}
-			l.SetSectionID(s.id)
-		}
-	}
-
-	return c
+	return c, nil
 }
 
 func UnmarshalCourse(
 	id uuid.UUID,
 	originalCourseID uuid.UUID,
 	title string,
-	instructorID uuid.UUID,
+	instructorID string,
 	status CourseStatus,
 	price float64,
 	overview string,
 	hidden bool,
-	introduction CourseLandingPageIntroduction,
+	introductionVideoKey string,
 	deletedAt *time.Time,
 	sections []*Section,
 ) *Course {
@@ -436,37 +366,19 @@ func UnmarshalCourse(
 		sections = []*Section{}
 	}
 
-	c := &Course{
-		id:               id,
-		originalCourseID: originalCourseID,
-		hidden:           hidden,
-		title:            title,
-		instructorID:     instructorID,
-		status:           status,
-		price:            price,
-		overview:         overview,
-		introduction:     introduction,
-		deletedAt:        deletedAt,
-		sections:         sections,
+	return &Course{
+		id:                   id,
+		originalCourseID:     originalCourseID,
+		hidden:               hidden,
+		title:                title,
+		instructorID:         instructorID,
+		status:               status,
+		price:                price,
+		overview:             overview,
+		introductionVideoKey: introductionVideoKey,
+		deletedAt:            deletedAt,
+		sections:             sections,
 	}
-
-	for _, s := range c.sections {
-		if s == nil {
-			continue
-		}
-		s.courseID = c.id
-		if s.lessons == nil {
-			s.lessons = []Lesson{}
-		}
-		for _, l := range s.lessons {
-			if l == nil {
-				continue
-			}
-			l.SetSectionID(s.id)
-		}
-	}
-
-	return c
 }
 
 func (c *Course) ID() uuid.UUID {
@@ -485,11 +397,17 @@ func (c *Course) Title() string {
 	return c.title
 }
 
-func (c *Course) SetTitle(title string) {
+func (c *Course) SetTitle(title string) error {
+	title = strings.TrimSpace(title)
+	if title == "" {
+		return errs.NewInvalid("title is required")
+	}
+
 	c.title = title
+	return nil
 }
 
-func (c *Course) InstructorID() uuid.UUID {
+func (c *Course) InstructorID() string {
 	return c.instructorID
 }
 
@@ -505,8 +423,12 @@ func (c *Course) Price() float64 {
 	return c.price
 }
 
-func (c *Course) SetPrice(price float64) {
+func (c *Course) SetPrice(price float64) error {
+	if price < 0 {
+		return errs.NewInvalid("price must be greater than or equal to 0")
+	}
 	c.price = price
+	return nil
 }
 
 func (c *Course) Overview() string {
@@ -514,15 +436,20 @@ func (c *Course) Overview() string {
 }
 
 func (c *Course) SetOverview(overview string) {
-	c.overview = overview
+	c.overview = strings.TrimSpace(overview)
 }
 
-func (c *Course) Introduction() CourseLandingPageIntroduction {
-	return c.introduction
+func (c *Course) IntroductionVideoKey() string {
+	return c.introductionVideoKey
 }
 
-func (c *Course) SetIntroduction(introduction CourseLandingPageIntroduction) {
-	c.introduction = introduction
+func (c *Course) SetIntroductionVideoKey(introductionVideoKey string) error {
+	introductionVideoKey = strings.TrimSpace(introductionVideoKey)
+	if introductionVideoKey == "" {
+		return errs.NewInvalid("introduction video key is required")
+	}
+	c.introductionVideoKey = introductionVideoKey
+	return nil
 }
 
 func (c *Course) Sections() []*Section {
@@ -581,16 +508,6 @@ func (c *Course) GetLesson(lessonID uuid.UUID) Lesson {
 		}
 	}
 	return nil
-}
-
-func NewCourseLandingPageIntroduction(videoURL string) CourseLandingPageIntroduction {
-	return CourseLandingPageIntroduction{
-		videoURL: videoURL,
-	}
-}
-
-func (i CourseLandingPageIntroduction) VideoURL() string {
-	return i.videoURL
 }
 
 func (c *Course) DeletedAt() *time.Time {

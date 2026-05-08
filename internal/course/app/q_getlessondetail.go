@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
@@ -12,15 +13,20 @@ type GetLessonDetail struct {
 	LessonID uuid.UUID
 }
 
+type GetLessonDetailQuery Query[GetLessonDetail, Lesson]
+
 type GetLessonDetailHandler struct {
 	readModel GetLessonDetailReadModel
 }
 
-func NewGetLessonDetailHandler(readModel GetLessonDetailReadModel) *GetLessonDetailHandler {
-	return &GetLessonDetailHandler{
+func NewGetLessonDetailHandler(readModel GetLessonDetailReadModel, logger *slog.Logger, tracer Tracer) GetLessonDetailQuery {
+	handler := &GetLessonDetailHandler{
 		readModel: readModel,
 	}
+	return NewQSpan(NewQLog(handler, logger), tracer)
 }
+
+var _ Query[GetLessonDetail, Lesson] = (*GetLessonDetailHandler)(nil)
 
 func (h *GetLessonDetailHandler) Handle(ctx context.Context, params *GetLessonDetail) (Lesson, error) {
 	videoLesson, err := h.readModel.GetVideoLessonDetail(ctx, params)

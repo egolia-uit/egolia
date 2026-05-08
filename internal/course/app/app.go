@@ -1,19 +1,23 @@
 package app
 
 type Cmds struct {
-	MoveLesson              *MoveLessonHandler
-	GetUploadVideoLessonURL *GetUploadVideoLessonURLHandler
-	CreateCourse            *CreateCourseHandler
-	DeleteCourse            *DeleteCourseHandler
-	UpdateCourse            *UpdateCourseHandler
+	CreateCourse   CreateCourseCmd
+	DeleteCourse   DeleteCourseCmd
+	EnrollInCourse EnrollInCourseCmd
+	FinishCourse   FinishCourseCmd
+	MoveLesson     MoveLessonCmd
+	ReviewCourse   ReviewCourseCmd
+	UpdateCourse   UpdateCourseCmd
 }
 
 type Queries struct {
-	GetCourseDetail *GetCourseDetailHandler
-	GetCourse       *GetCourseHandler
-	GetLessonDetail *GetLessonDetailHandler
-	SearchCourses   *SearchCoursesHandler
-	GetCourses      *GetCoursesHandler
+	GetCourse               GetCourseQuery
+	GetCourseDetail         GetCourseDetailQuery
+	GetCourses              GetCoursesQuery
+	GetInstructorCourses    GetInstructorCoursesQuery
+	GetLessonDetail         GetLessonDetailQuery
+	GetUploadVideoLessonURL GetUploadVideoLessonURLQuery
+	SearchCourses           SearchCoursesQuery
 }
 
 type App struct {

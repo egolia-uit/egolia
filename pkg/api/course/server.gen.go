@@ -20,132 +20,132 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
-	// Approve course
-	// (POST /course/admin/courses/{courseId}/approve)
-	ApproveCourse(c *gin.Context, courseId CourseIdPath)
-	// Decline course
-	// (POST /course/admin/courses/{courseId}/decline)
-	DeclineCourse(c *gin.Context, courseId CourseIdPath)
+	// Get my certificates
+	// (GET /course/certificates/me)
+	GetMyCertificates(c *gin.Context, params GetMyCertificatesParams)
+	// Get certificate by id
+	// (GET /course/certificates/{certificateId})
+	GetCertificateById(c *gin.Context, certificateId CertificateIdPath)
+	// Search courses
+	// (GET /course/courses)
+	SearchCourses(c *gin.Context, params SearchCoursesParams)
+	// Create course
+	// (POST /course/courses)
+	CreateCourse(c *gin.Context)
+	// Get instructor courses
+	// (GET /course/courses-by-instructor/{instructorId})
+	GetInstructorCourses(c *gin.Context, instructorId InstructorIdPath, params GetInstructorCoursesParams)
+	// Get published courses
+	// (GET /course/courses-published)
+	GetPublishedCourses(c *gin.Context, params GetPublishedCoursesParams)
+	// Get system courses
+	// (GET /course/courses-system)
+	GetSystemCourses(c *gin.Context, params GetSystemCoursesParams)
 	// Get my enrolled courses
 	// (GET /course/courses/me/enrolled)
 	GetMyEnrolledCourses(c *gin.Context, params GetMyEnrolledCoursesParams)
-	// Get my certificates
-	// (GET /course/instructor/certificates/me)
-	GetMyCertificates(c *gin.Context, params GetMyCertificatesParams)
-	// Get certificate by id
-	// (GET /course/instructor/certificates/{certificateId})
-	GetCertificateById(c *gin.Context, certificateId CertificateIdPath)
-	// Search courses
-	// (GET /course/instructor/courses)
-	SearchCourses(c *gin.Context, params SearchCoursesParams)
-	// Create course
-	// (POST /course/instructor/courses)
-	CreateCourse(c *gin.Context)
-	// Get instructor courses
-	// (GET /course/instructor/courses-by-instructor/{instructorId})
-	GetInstructorCourses(c *gin.Context, instructorId InstructorIdPath, params GetInstructorCoursesParams)
-	// Get published courses
-	// (GET /course/instructor/courses-published)
-	GetPublishedCourses(c *gin.Context, params GetPublishedCoursesParams)
-	// Get system courses
-	// (GET /course/instructor/courses-system)
-	GetSystemCourses(c *gin.Context, params GetSystemCoursesParams)
 	// Delete course
-	// (DELETE /course/instructor/courses/{courseId})
+	// (DELETE /course/courses/{courseId})
 	DeleteCourse(c *gin.Context, courseId CourseIdPath)
+	// Approve course
+	// (POST /course/courses/{courseId}/approve)
+	ApproveCourse(c *gin.Context, courseId CourseIdPath)
 	// Update course
-	// (PATCH /course/instructor/courses/{courseId}/basic-info)
+	// (PATCH /course/courses/{courseId}/basic-info)
 	UpdateCourse(c *gin.Context, courseId CourseIdPath)
 	// Bookmark course
-	// (POST /course/instructor/courses/{courseId}/bookmark)
+	// (POST /course/courses/{courseId}/bookmark)
 	BookmarkCourse(c *gin.Context, courseId CourseIdPath)
+	// Decline course
+	// (POST /course/courses/{courseId}/decline)
+	DeclineCourse(c *gin.Context, courseId CourseIdPath)
 	// Get course detail
-	// (GET /course/instructor/courses/{courseId}/detail)
+	// (GET /course/courses/{courseId}/detail)
 	GetCourseDetail(c *gin.Context, courseId CourseIdPath)
 	// Enroll in course
-	// (POST /course/instructor/courses/{courseId}/enroll)
+	// (POST /course/courses/{courseId}/enroll)
 	EnrollInCourse(c *gin.Context, courseId CourseIdPath)
 	// Finish course
-	// (POST /course/instructor/courses/{courseId}/finish)
+	// (POST /course/courses/{courseId}/finish)
 	FinishCourse(c *gin.Context, courseId CourseIdPath)
 	// Hide course
-	// (POST /course/instructor/courses/{courseId}/hide)
+	// (POST /course/courses/{courseId}/hide)
 	HideCourse(c *gin.Context, courseId CourseIdPath)
 	// Get course landing page
-	// (GET /course/instructor/courses/{courseId}/landing)
+	// (GET /course/courses/{courseId}/landing)
 	GetCourseLandingPage(c *gin.Context, courseId CourseIdPath)
 	// Get course progress
-	// (GET /course/instructor/courses/{courseId}/progress)
+	// (GET /course/courses/{courseId}/progress)
 	GetCourseProgress(c *gin.Context, courseId CourseIdPath)
 	// Review course
-	// (POST /course/instructor/courses/{courseId}/reviews)
+	// (POST /course/courses/{courseId}/reviews)
 	ReviewCourse(c *gin.Context, courseId CourseIdPath)
+	// Create section
+	// (POST /course/courses/{courseId}/sections)
+	CreateSection(c *gin.Context, courseId CourseIdPath)
+	// Delete section
+	// (DELETE /course/courses/{courseId}/sections/{sectionId})
+	DeleteSection(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath)
+	// Update section
+	// (PATCH /course/courses/{courseId}/sections/{sectionId})
+	UpdateSectionTitle(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath)
+	// Create lesson
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons)
+	CreateLesson(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath)
+	// Delete lesson
+	// (DELETE /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId})
+	DeleteLesson(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Get lesson detail
+	// (GET /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId})
+	GetLessonDetail(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Get lesson comments
+	// (GET /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments)
+	GetLessonComments(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Comment on lesson
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments)
+	CommentOnLesson(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Mark lesson as completed
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/mark-completed)
+	MarkLessonAsCompleted(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Move lesson
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/move)
+	MoveLesson(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Get lesson progress
+	// (GET /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress)
+	GetLessonProgress(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Save test lesson progress
+	// (PUT /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress)
+	SaveTestLessonProgress(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Edit test lesson
+	// (PATCH /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests)
+	EditTestLesson(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Create test
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests)
+	CreateTest(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Get upload video lesson URL
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url)
+	GetUploadVideoLessonUrl(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Edit video lesson
+	// (PATCH /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video)
+	EditVideoLesson(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Save video lesson progress
+	// (PUT /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress)
+	SaveVideoLessonProgress(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath)
+	// Move section
+	// (POST /course/courses/{courseId}/sections/{sectionId}/move)
+	MoveSection(c *gin.Context, courseId CourseIdPath, sectionId SectionIdPath)
 	// Trigger learning reminder
-	// (POST /course/instructor/courses/{courseId}/trigger-learning-reminder)
+	// (POST /course/courses/{courseId}/trigger-learning-reminder)
 	TriggerLearningReminder(c *gin.Context, courseId CourseIdPath)
 	// Unbookmark course
-	// (POST /course/instructor/courses/{courseId}/unbookmark)
+	// (POST /course/courses/{courseId}/unbookmark)
 	UnbookmarkCourse(c *gin.Context, courseId CourseIdPath)
 	// Unhide course
-	// (POST /course/instructor/courses/{courseId}/unhide)
+	// (POST /course/courses/{courseId}/unhide)
 	UnhideCourse(c *gin.Context, courseId CourseIdPath)
 	// Reply lesson comment
-	// (POST /course/instructor/lesson-comments/{commentId}/reply)
+	// (POST /course/lesson-comments/{commentId}/reply)
 	ReplyLessonComment(c *gin.Context, commentId CommentIdPath)
-	// Create lesson
-	// (POST /course/instructor/lessons)
-	CreateLesson(c *gin.Context)
-	// Delete lesson
-	// (DELETE /course/instructor/lessons/{lessonId})
-	DeleteLesson(c *gin.Context, lessonId LessonIdPath)
-	// Get lesson detail
-	// (GET /course/instructor/lessons/{lessonId})
-	GetLessonDetail(c *gin.Context, lessonId LessonIdPath)
-	// Get lesson comments
-	// (GET /course/instructor/lessons/{lessonId}/comments)
-	GetLessonComments(c *gin.Context, lessonId LessonIdPath)
-	// Comment on lesson
-	// (POST /course/instructor/lessons/{lessonId}/comments)
-	CommentOnLesson(c *gin.Context, lessonId LessonIdPath)
-	// Mark lesson as completed
-	// (POST /course/instructor/lessons/{lessonId}/mark-completed)
-	MarkLessonAsCompleted(c *gin.Context, lessonId LessonIdPath)
-	// Move lesson
-	// (POST /course/instructor/lessons/{lessonId}/move)
-	MoveLesson(c *gin.Context, lessonId LessonIdPath)
-	// Get lesson progress
-	// (GET /course/instructor/lessons/{lessonId}/progress)
-	GetLessonProgress(c *gin.Context, lessonId LessonIdPath)
-	// Edit test lesson
-	// (PATCH /course/instructor/lessons/{lessonId}/test)
-	EditTestLesson(c *gin.Context, lessonId LessonIdPath)
-	// Save test lesson progress
-	// (PUT /course/instructor/lessons/{lessonId}/test-progress)
-	SaveTestLessonProgress(c *gin.Context, lessonId LessonIdPath)
-	// Create test
-	// (POST /course/instructor/lessons/{lessonId}/tests)
-	CreateTest(c *gin.Context, lessonId LessonIdPath)
-	// Get upload video lesson URL
-	// (POST /course/instructor/lessons/{lessonId}/upload-video-url)
-	GetUploadVideoLessonUrl(c *gin.Context, lessonId LessonIdPath)
-	// Edit video lesson
-	// (PATCH /course/instructor/lessons/{lessonId}/video)
-	EditVideoLesson(c *gin.Context, lessonId LessonIdPath)
-	// Save video lesson progress
-	// (PUT /course/instructor/lessons/{lessonId}/video-progress)
-	SaveVideoLessonProgress(c *gin.Context, lessonId LessonIdPath)
-	// Create section
-	// (POST /course/instructor/sections)
-	CreateSection(c *gin.Context)
-	// Delete section
-	// (DELETE /course/instructor/sections/{sectionId})
-	DeleteSection(c *gin.Context, sectionId SectionIdPath)
-	// Update section
-	// (PATCH /course/instructor/sections/{sectionId})
-	UpdateSectionTitle(c *gin.Context, sectionId SectionIdPath)
-	// Move section
-	// (POST /course/instructor/sections/{sectionId}/move)
-	MoveSection(c *gin.Context, sectionId SectionIdPath)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -156,111 +156,6 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(c *gin.Context)
-
-// ApproveCourse operation middleware
-func (siw *ServerInterfaceWrapper) ApproveCourse(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "courseId" -------------
-	var courseId CourseIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.ApproveCourse(c, courseId)
-}
-
-// DeclineCourse operation middleware
-func (siw *ServerInterfaceWrapper) DeclineCourse(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "courseId" -------------
-	var courseId CourseIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.DeclineCourse(c, courseId)
-}
-
-// GetMyEnrolledCourses operation middleware
-func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetMyEnrolledCoursesParams
-
-	// ------------- Optional query parameter "page" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	// ------------- Optional query parameter "order" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetMyEnrolledCourses(c, params)
-}
 
 // GetMyCertificates operation middleware
 func (siw *ServerInterfaceWrapper) GetMyCertificates(c *gin.Context) {
@@ -568,6 +463,53 @@ func (siw *ServerInterfaceWrapper) GetSystemCourses(c *gin.Context) {
 	siw.Handler.GetSystemCourses(c, params)
 }
 
+// GetMyEnrolledCourses operation middleware
+func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetMyEnrolledCoursesParams
+
+	// ------------- Optional query parameter "page" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "page", c.Request.URL.Query(), &params.Page, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter page: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", c.Request.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter limit: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "order" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "order", c.Request.URL.Query(), &params.Order, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter order: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetMyEnrolledCourses(c, params)
+}
+
 // DeleteCourse operation middleware
 func (siw *ServerInterfaceWrapper) DeleteCourse(c *gin.Context) {
 
@@ -595,6 +537,35 @@ func (siw *ServerInterfaceWrapper) DeleteCourse(c *gin.Context) {
 	}
 
 	siw.Handler.DeleteCourse(c, courseId)
+}
+
+// ApproveCourse operation middleware
+func (siw *ServerInterfaceWrapper) ApproveCourse(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.ApproveCourse(c, courseId)
 }
 
 // UpdateCourse operation middleware
@@ -653,6 +624,35 @@ func (siw *ServerInterfaceWrapper) BookmarkCourse(c *gin.Context) {
 	}
 
 	siw.Handler.BookmarkCourse(c, courseId)
+}
+
+// DeclineCourse operation middleware
+func (siw *ServerInterfaceWrapper) DeclineCourse(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeclineCourse(c, courseId)
 }
 
 // GetCourseDetail operation middleware
@@ -854,6 +854,798 @@ func (siw *ServerInterfaceWrapper) ReviewCourse(c *gin.Context) {
 	siw.Handler.ReviewCourse(c, courseId)
 }
 
+// CreateSection operation middleware
+func (siw *ServerInterfaceWrapper) CreateSection(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateSection(c, courseId)
+}
+
+// DeleteSection operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSection(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeleteSection(c, courseId, sectionId)
+}
+
+// UpdateSectionTitle operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSectionTitle(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.UpdateSectionTitle(c, courseId, sectionId)
+}
+
+// CreateLesson operation middleware
+func (siw *ServerInterfaceWrapper) CreateLesson(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateLesson(c, courseId, sectionId)
+}
+
+// DeleteLesson operation middleware
+func (siw *ServerInterfaceWrapper) DeleteLesson(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.DeleteLesson(c, courseId, sectionId, lessonId)
+}
+
+// GetLessonDetail operation middleware
+func (siw *ServerInterfaceWrapper) GetLessonDetail(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetLessonDetail(c, courseId, sectionId, lessonId)
+}
+
+// GetLessonComments operation middleware
+func (siw *ServerInterfaceWrapper) GetLessonComments(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetLessonComments(c, courseId, sectionId, lessonId)
+}
+
+// CommentOnLesson operation middleware
+func (siw *ServerInterfaceWrapper) CommentOnLesson(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CommentOnLesson(c, courseId, sectionId, lessonId)
+}
+
+// MarkLessonAsCompleted operation middleware
+func (siw *ServerInterfaceWrapper) MarkLessonAsCompleted(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.MarkLessonAsCompleted(c, courseId, sectionId, lessonId)
+}
+
+// MoveLesson operation middleware
+func (siw *ServerInterfaceWrapper) MoveLesson(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.MoveLesson(c, courseId, sectionId, lessonId)
+}
+
+// GetLessonProgress operation middleware
+func (siw *ServerInterfaceWrapper) GetLessonProgress(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetLessonProgress(c, courseId, sectionId, lessonId)
+}
+
+// SaveTestLessonProgress operation middleware
+func (siw *ServerInterfaceWrapper) SaveTestLessonProgress(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.SaveTestLessonProgress(c, courseId, sectionId, lessonId)
+}
+
+// EditTestLesson operation middleware
+func (siw *ServerInterfaceWrapper) EditTestLesson(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.EditTestLesson(c, courseId, sectionId, lessonId)
+}
+
+// CreateTest operation middleware
+func (siw *ServerInterfaceWrapper) CreateTest(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateTest(c, courseId, sectionId, lessonId)
+}
+
+// GetUploadVideoLessonUrl operation middleware
+func (siw *ServerInterfaceWrapper) GetUploadVideoLessonUrl(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetUploadVideoLessonUrl(c, courseId, sectionId, lessonId)
+}
+
+// EditVideoLesson operation middleware
+func (siw *ServerInterfaceWrapper) EditVideoLesson(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.EditVideoLesson(c, courseId, sectionId, lessonId)
+}
+
+// SaveVideoLessonProgress operation middleware
+func (siw *ServerInterfaceWrapper) SaveVideoLessonProgress(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "lessonId" -------------
+	var lessonId LessonIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.SaveVideoLessonProgress(c, courseId, sectionId, lessonId)
+}
+
+// MoveSection operation middleware
+func (siw *ServerInterfaceWrapper) MoveSection(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "sectionId" -------------
+	var sectionId SectionIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.MoveSection(c, courseId, sectionId)
+}
+
 // TriggerLearningReminder operation middleware
 func (siw *ServerInterfaceWrapper) TriggerLearningReminder(c *gin.Context) {
 
@@ -970,504 +1762,6 @@ func (siw *ServerInterfaceWrapper) ReplyLessonComment(c *gin.Context) {
 	siw.Handler.ReplyLessonComment(c, commentId)
 }
 
-// CreateLesson operation middleware
-func (siw *ServerInterfaceWrapper) CreateLesson(c *gin.Context) {
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.CreateLesson(c)
-}
-
-// DeleteLesson operation middleware
-func (siw *ServerInterfaceWrapper) DeleteLesson(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.DeleteLesson(c, lessonId)
-}
-
-// GetLessonDetail operation middleware
-func (siw *ServerInterfaceWrapper) GetLessonDetail(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetLessonDetail(c, lessonId)
-}
-
-// GetLessonComments operation middleware
-func (siw *ServerInterfaceWrapper) GetLessonComments(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetLessonComments(c, lessonId)
-}
-
-// CommentOnLesson operation middleware
-func (siw *ServerInterfaceWrapper) CommentOnLesson(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.CommentOnLesson(c, lessonId)
-}
-
-// MarkLessonAsCompleted operation middleware
-func (siw *ServerInterfaceWrapper) MarkLessonAsCompleted(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.MarkLessonAsCompleted(c, lessonId)
-}
-
-// MoveLesson operation middleware
-func (siw *ServerInterfaceWrapper) MoveLesson(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.MoveLesson(c, lessonId)
-}
-
-// GetLessonProgress operation middleware
-func (siw *ServerInterfaceWrapper) GetLessonProgress(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetLessonProgress(c, lessonId)
-}
-
-// EditTestLesson operation middleware
-func (siw *ServerInterfaceWrapper) EditTestLesson(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.EditTestLesson(c, lessonId)
-}
-
-// SaveTestLessonProgress operation middleware
-func (siw *ServerInterfaceWrapper) SaveTestLessonProgress(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.SaveTestLessonProgress(c, lessonId)
-}
-
-// CreateTest operation middleware
-func (siw *ServerInterfaceWrapper) CreateTest(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.CreateTest(c, lessonId)
-}
-
-// GetUploadVideoLessonUrl operation middleware
-func (siw *ServerInterfaceWrapper) GetUploadVideoLessonUrl(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetUploadVideoLessonUrl(c, lessonId)
-}
-
-// EditVideoLesson operation middleware
-func (siw *ServerInterfaceWrapper) EditVideoLesson(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.EditVideoLesson(c, lessonId)
-}
-
-// SaveVideoLessonProgress operation middleware
-func (siw *ServerInterfaceWrapper) SaveVideoLessonProgress(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "lessonId" -------------
-	var lessonId LessonIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "lessonId", c.Param("lessonId"), &lessonId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter lessonId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.SaveVideoLessonProgress(c, lessonId)
-}
-
-// CreateSection operation middleware
-func (siw *ServerInterfaceWrapper) CreateSection(c *gin.Context) {
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.CreateSection(c)
-}
-
-// DeleteSection operation middleware
-func (siw *ServerInterfaceWrapper) DeleteSection(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "sectionId" -------------
-	var sectionId SectionIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.DeleteSection(c, sectionId)
-}
-
-// UpdateSectionTitle operation middleware
-func (siw *ServerInterfaceWrapper) UpdateSectionTitle(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "sectionId" -------------
-	var sectionId SectionIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.UpdateSectionTitle(c, sectionId)
-}
-
-// MoveSection operation middleware
-func (siw *ServerInterfaceWrapper) MoveSection(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "sectionId" -------------
-	var sectionId SectionIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "sectionId", c.Param("sectionId"), &sectionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter sectionId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.MoveSection(c, sectionId)
-}
-
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -1495,48 +1789,48 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
-	router.POST(options.BaseURL+"/course/admin/courses/:courseId/approve", wrapper.ApproveCourse)
-	router.POST(options.BaseURL+"/course/admin/courses/:courseId/decline", wrapper.DeclineCourse)
+	router.GET(options.BaseURL+"/course/certificates/me", wrapper.GetMyCertificates)
+	router.GET(options.BaseURL+"/course/certificates/:certificateId", wrapper.GetCertificateById)
+	router.GET(options.BaseURL+"/course/courses", wrapper.SearchCourses)
+	router.POST(options.BaseURL+"/course/courses", wrapper.CreateCourse)
+	router.GET(options.BaseURL+"/course/courses-by-instructor/:instructorId", wrapper.GetInstructorCourses)
+	router.GET(options.BaseURL+"/course/courses-published", wrapper.GetPublishedCourses)
+	router.GET(options.BaseURL+"/course/courses-system", wrapper.GetSystemCourses)
 	router.GET(options.BaseURL+"/course/courses/me/enrolled", wrapper.GetMyEnrolledCourses)
-	router.GET(options.BaseURL+"/course/instructor/certificates/me", wrapper.GetMyCertificates)
-	router.GET(options.BaseURL+"/course/instructor/certificates/:certificateId", wrapper.GetCertificateById)
-	router.GET(options.BaseURL+"/course/instructor/courses", wrapper.SearchCourses)
-	router.POST(options.BaseURL+"/course/instructor/courses", wrapper.CreateCourse)
-	router.GET(options.BaseURL+"/course/instructor/courses-by-instructor/:instructorId", wrapper.GetInstructorCourses)
-	router.GET(options.BaseURL+"/course/instructor/courses-published", wrapper.GetPublishedCourses)
-	router.GET(options.BaseURL+"/course/instructor/courses-system", wrapper.GetSystemCourses)
-	router.DELETE(options.BaseURL+"/course/instructor/courses/:courseId", wrapper.DeleteCourse)
-	router.PATCH(options.BaseURL+"/course/instructor/courses/:courseId/basic-info", wrapper.UpdateCourse)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/bookmark", wrapper.BookmarkCourse)
-	router.GET(options.BaseURL+"/course/instructor/courses/:courseId/detail", wrapper.GetCourseDetail)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/enroll", wrapper.EnrollInCourse)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/finish", wrapper.FinishCourse)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/hide", wrapper.HideCourse)
-	router.GET(options.BaseURL+"/course/instructor/courses/:courseId/landing", wrapper.GetCourseLandingPage)
-	router.GET(options.BaseURL+"/course/instructor/courses/:courseId/progress", wrapper.GetCourseProgress)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/reviews", wrapper.ReviewCourse)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/trigger-learning-reminder", wrapper.TriggerLearningReminder)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/unbookmark", wrapper.UnbookmarkCourse)
-	router.POST(options.BaseURL+"/course/instructor/courses/:courseId/unhide", wrapper.UnhideCourse)
-	router.POST(options.BaseURL+"/course/instructor/lesson-comments/:commentId/reply", wrapper.ReplyLessonComment)
-	router.POST(options.BaseURL+"/course/instructor/lessons", wrapper.CreateLesson)
-	router.DELETE(options.BaseURL+"/course/instructor/lessons/:lessonId", wrapper.DeleteLesson)
-	router.GET(options.BaseURL+"/course/instructor/lessons/:lessonId", wrapper.GetLessonDetail)
-	router.GET(options.BaseURL+"/course/instructor/lessons/:lessonId/comments", wrapper.GetLessonComments)
-	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/comments", wrapper.CommentOnLesson)
-	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/mark-completed", wrapper.MarkLessonAsCompleted)
-	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/move", wrapper.MoveLesson)
-	router.GET(options.BaseURL+"/course/instructor/lessons/:lessonId/progress", wrapper.GetLessonProgress)
-	router.PATCH(options.BaseURL+"/course/instructor/lessons/:lessonId/test", wrapper.EditTestLesson)
-	router.PUT(options.BaseURL+"/course/instructor/lessons/:lessonId/test-progress", wrapper.SaveTestLessonProgress)
-	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/tests", wrapper.CreateTest)
-	router.POST(options.BaseURL+"/course/instructor/lessons/:lessonId/upload-video-url", wrapper.GetUploadVideoLessonUrl)
-	router.PATCH(options.BaseURL+"/course/instructor/lessons/:lessonId/video", wrapper.EditVideoLesson)
-	router.PUT(options.BaseURL+"/course/instructor/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
-	router.POST(options.BaseURL+"/course/instructor/sections", wrapper.CreateSection)
-	router.DELETE(options.BaseURL+"/course/instructor/sections/:sectionId", wrapper.DeleteSection)
-	router.PATCH(options.BaseURL+"/course/instructor/sections/:sectionId", wrapper.UpdateSectionTitle)
-	router.POST(options.BaseURL+"/course/instructor/sections/:sectionId/move", wrapper.MoveSection)
+	router.DELETE(options.BaseURL+"/course/courses/:courseId", wrapper.DeleteCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/approve", wrapper.ApproveCourse)
+	router.PATCH(options.BaseURL+"/course/courses/:courseId/basic-info", wrapper.UpdateCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/bookmark", wrapper.BookmarkCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/decline", wrapper.DeclineCourse)
+	router.GET(options.BaseURL+"/course/courses/:courseId/detail", wrapper.GetCourseDetail)
+	router.POST(options.BaseURL+"/course/courses/:courseId/enroll", wrapper.EnrollInCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/finish", wrapper.FinishCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/hide", wrapper.HideCourse)
+	router.GET(options.BaseURL+"/course/courses/:courseId/landing", wrapper.GetCourseLandingPage)
+	router.GET(options.BaseURL+"/course/courses/:courseId/progress", wrapper.GetCourseProgress)
+	router.POST(options.BaseURL+"/course/courses/:courseId/reviews", wrapper.ReviewCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections", wrapper.CreateSection)
+	router.DELETE(options.BaseURL+"/course/courses/:courseId/sections/:sectionId", wrapper.DeleteSection)
+	router.PATCH(options.BaseURL+"/course/courses/:courseId/sections/:sectionId", wrapper.UpdateSectionTitle)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons", wrapper.CreateLesson)
+	router.DELETE(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId", wrapper.DeleteLesson)
+	router.GET(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId", wrapper.GetLessonDetail)
+	router.GET(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/comments", wrapper.GetLessonComments)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/comments", wrapper.CommentOnLesson)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/mark-completed", wrapper.MarkLessonAsCompleted)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/move", wrapper.MoveLesson)
+	router.GET(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/progress", wrapper.GetLessonProgress)
+	router.PUT(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/test-progress", wrapper.SaveTestLessonProgress)
+	router.PATCH(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/tests", wrapper.EditTestLesson)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/tests", wrapper.CreateTest)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/upload-video-url", wrapper.GetUploadVideoLessonUrl)
+	router.PATCH(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/video", wrapper.EditVideoLesson)
+	router.PUT(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/lessons/:lessonId/video-progress", wrapper.SaveVideoLessonProgress)
+	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/move", wrapper.MoveSection)
+	router.POST(options.BaseURL+"/course/courses/:courseId/trigger-learning-reminder", wrapper.TriggerLearningReminder)
+	router.POST(options.BaseURL+"/course/courses/:courseId/unbookmark", wrapper.UnbookmarkCourse)
+	router.POST(options.BaseURL+"/course/courses/:courseId/unhide", wrapper.UnhideCourse)
+	router.POST(options.BaseURL+"/course/lesson-comments/:commentId/reply", wrapper.ReplyLessonComment)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -1548,252 +1842,6 @@ type InternalServerErrorJSONResponse Error
 type NotFoundErrorJSONResponse Error
 
 type UnauthorizedErrorJSONResponse map[string]interface{}
-
-type ApproveCourseRequestObject struct {
-	CourseId CourseIdPath `json:"courseId"`
-}
-
-type ApproveCourseResponseObject interface {
-	VisitApproveCourseResponse(w http.ResponseWriter) error
-}
-
-type ApproveCourse204Response struct {
-}
-
-func (response ApproveCourse204Response) VisitApproveCourseResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type ApproveCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response ApproveCourse400JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response ApproveCourse401JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response ApproveCourse403JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response ApproveCourse404JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveCourse500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response ApproveCourse500JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeclineCourseRequestObject struct {
-	CourseId CourseIdPath `json:"courseId"`
-	Body     *DeclineCourseJSONRequestBody
-}
-
-type DeclineCourseResponseObject interface {
-	VisitDeclineCourseResponse(w http.ResponseWriter) error
-}
-
-type DeclineCourse204Response struct {
-}
-
-func (response DeclineCourse204Response) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeclineCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response DeclineCourse400JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeclineCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response DeclineCourse401JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeclineCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response DeclineCourse403JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeclineCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response DeclineCourse404JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeclineCourse500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response DeclineCourse500JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMyEnrolledCoursesRequestObject struct {
-	Params GetMyEnrolledCoursesParams
-}
-
-type GetMyEnrolledCoursesResponseObject interface {
-	VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error
-}
-
-type GetMyEnrolledCourses200JSONResponse struct {
-	Data       []Course   `json:"data"`
-	Pagination Pagination `json:"pagination"`
-}
-
-func (response GetMyEnrolledCourses200JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMyEnrolledCourses400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetMyEnrolledCourses400JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMyEnrolledCourses401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetMyEnrolledCourses401JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMyEnrolledCourses500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetMyEnrolledCourses500JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
 
 type GetMyCertificatesRequestObject struct {
 	Params GetMyCertificatesParams
@@ -2359,6 +2407,75 @@ func (response GetSystemCourses500JSONResponse) VisitGetSystemCoursesResponse(w 
 	return err
 }
 
+type GetMyEnrolledCoursesRequestObject struct {
+	Params GetMyEnrolledCoursesParams
+}
+
+type GetMyEnrolledCoursesResponseObject interface {
+	VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error
+}
+
+type GetMyEnrolledCourses200JSONResponse struct {
+	Data       []Course   `json:"data"`
+	Pagination Pagination `json:"pagination"`
+}
+
+func (response GetMyEnrolledCourses200JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMyEnrolledCourses400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetMyEnrolledCourses400JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMyEnrolledCourses401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetMyEnrolledCourses401JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetMyEnrolledCourses500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetMyEnrolledCourses500JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type DeleteCourseRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
 }
@@ -2436,6 +2553,94 @@ type DeleteCourse500JSONResponse struct {
 }
 
 func (response DeleteCourse500JSONResponse) VisitDeleteCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveCourseRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+}
+
+type ApproveCourseResponseObject interface {
+	VisitApproveCourseResponse(w http.ResponseWriter) error
+}
+
+type ApproveCourse204Response struct {
+}
+
+func (response ApproveCourse204Response) VisitApproveCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type ApproveCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response ApproveCourse400JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response ApproveCourse401JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response ApproveCourse403JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response ApproveCourse404JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ApproveCourse500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response ApproveCourse500JSONResponse) VisitApproveCourseResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -2619,6 +2824,95 @@ type BookmarkCourse500JSONResponse struct {
 }
 
 func (response BookmarkCourse500JSONResponse) VisitBookmarkCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeclineCourseRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+	Body     *DeclineCourseJSONRequestBody
+}
+
+type DeclineCourseResponseObject interface {
+	VisitDeclineCourseResponse(w http.ResponseWriter) error
+}
+
+type DeclineCourse204Response struct {
+}
+
+func (response DeclineCourse204Response) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeclineCourse400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response DeclineCourse400JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeclineCourse401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response DeclineCourse401JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeclineCourse403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response DeclineCourse403JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeclineCourse404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response DeclineCourse404JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeclineCourse500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response DeclineCourse500JSONResponse) VisitDeclineCourseResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -3255,6 +3549,1684 @@ func (response ReviewCourse500JSONResponse) VisitReviewCourseResponse(w http.Res
 	return err
 }
 
+type CreateSectionRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+	Body     *CreateSectionJSONRequestBody
+}
+
+type CreateSectionResponseObject interface {
+	VisitCreateSectionResponse(w http.ResponseWriter) error
+}
+
+type CreateSection201ResponseHeaders struct {
+	ContentLocation string
+}
+
+type CreateSection201Response struct {
+	Headers CreateSection201ResponseHeaders
+}
+
+func (response CreateSection201Response) VisitCreateSectionResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
+	w.WriteHeader(201)
+	return nil
+}
+
+type CreateSection400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CreateSection400JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSection401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CreateSection401JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSection403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response CreateSection403JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSection404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response CreateSection404JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateSection500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CreateSection500JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSectionRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+}
+
+type DeleteSectionResponseObject interface {
+	VisitDeleteSectionResponse(w http.ResponseWriter) error
+}
+
+type DeleteSection204Response struct {
+}
+
+func (response DeleteSection204Response) VisitDeleteSectionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteSection400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response DeleteSection400JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSection401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response DeleteSection401JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSection403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response DeleteSection403JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSection404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response DeleteSection404JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteSection500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response DeleteSection500JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSectionTitleRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	Body      *UpdateSectionTitleJSONRequestBody
+}
+
+type UpdateSectionTitleResponseObject interface {
+	VisitUpdateSectionTitleResponse(w http.ResponseWriter) error
+}
+
+type UpdateSectionTitle200Response struct {
+}
+
+func (response UpdateSectionTitle200Response) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+	w.WriteHeader(200)
+	return nil
+}
+
+type UpdateSectionTitle400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response UpdateSectionTitle400JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSectionTitle401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response UpdateSectionTitle401JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSectionTitle403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response UpdateSectionTitle403JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSectionTitle404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response UpdateSectionTitle404JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateSectionTitle500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response UpdateSectionTitle500JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateLessonRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	Body      *CreateLessonJSONRequestBody
+}
+
+type CreateLessonResponseObject interface {
+	VisitCreateLessonResponse(w http.ResponseWriter) error
+}
+
+type CreateLesson201ResponseHeaders struct {
+	ContentLocation string
+}
+
+type CreateLesson201Response struct {
+	Headers CreateLesson201ResponseHeaders
+}
+
+func (response CreateLesson201Response) VisitCreateLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
+	w.WriteHeader(201)
+	return nil
+}
+
+type CreateLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CreateLesson400JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CreateLesson401JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response CreateLesson403JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CreateLesson500JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteLessonRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+}
+
+type DeleteLessonResponseObject interface {
+	VisitDeleteLessonResponse(w http.ResponseWriter) error
+}
+
+type DeleteLesson204Response struct {
+}
+
+func (response DeleteLesson204Response) VisitDeleteLessonResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response DeleteLesson400JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response DeleteLesson401JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response DeleteLesson403JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response DeleteLesson404JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response DeleteLesson500JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonDetailRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+}
+
+type GetLessonDetailResponseObject interface {
+	VisitGetLessonDetailResponse(w http.ResponseWriter) error
+}
+
+type GetLessonDetail200JSONResponse struct {
+	Data LessonDetail `json:"data"`
+}
+
+func (response GetLessonDetail200JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonDetail400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetLessonDetail400JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonDetail401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetLessonDetail401JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonDetail403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response GetLessonDetail403JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonDetail404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetLessonDetail404JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonDetail500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetLessonDetail500JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonCommentsRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+}
+
+type GetLessonCommentsResponseObject interface {
+	VisitGetLessonCommentsResponse(w http.ResponseWriter) error
+}
+
+type GetLessonComments200JSONResponse struct {
+	Data []LessonComment `json:"data"`
+}
+
+func (response GetLessonComments200JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonComments401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetLessonComments401JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonComments403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response GetLessonComments403JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonComments404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetLessonComments404JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonComments500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetLessonComments500JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CommentOnLessonRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *CommentOnLessonJSONRequestBody
+}
+
+type CommentOnLessonResponseObject interface {
+	VisitCommentOnLessonResponse(w http.ResponseWriter) error
+}
+
+type CommentOnLesson201ResponseHeaders struct {
+	ContentLocation string
+}
+
+type CommentOnLesson201Response struct {
+	Headers CommentOnLesson201ResponseHeaders
+}
+
+func (response CommentOnLesson201Response) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
+	w.WriteHeader(201)
+	return nil
+}
+
+type CommentOnLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CommentOnLesson400JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CommentOnLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CommentOnLesson401JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CommentOnLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response CommentOnLesson403JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CommentOnLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response CommentOnLesson404JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CommentOnLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CommentOnLesson500JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkLessonAsCompletedRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+}
+
+type MarkLessonAsCompletedResponseObject interface {
+	VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error
+}
+
+type MarkLessonAsCompleted204Response struct {
+}
+
+func (response MarkLessonAsCompleted204Response) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type MarkLessonAsCompleted400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response MarkLessonAsCompleted400JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkLessonAsCompleted401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response MarkLessonAsCompleted401JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkLessonAsCompleted403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response MarkLessonAsCompleted403JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkLessonAsCompleted404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response MarkLessonAsCompleted404JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MarkLessonAsCompleted500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response MarkLessonAsCompleted500JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveLessonRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *MoveLessonJSONRequestBody
+}
+
+type MoveLessonResponseObject interface {
+	VisitMoveLessonResponse(w http.ResponseWriter) error
+}
+
+type MoveLesson201Response struct {
+}
+
+func (response MoveLesson201Response) VisitMoveLessonResponse(w http.ResponseWriter) error {
+	w.WriteHeader(201)
+	return nil
+}
+
+type MoveLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response MoveLesson400JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response MoveLesson401JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response MoveLesson403JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response MoveLesson404JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response MoveLesson500JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonProgressRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+}
+
+type GetLessonProgressResponseObject interface {
+	VisitGetLessonProgressResponse(w http.ResponseWriter) error
+}
+
+type GetLessonProgress200JSONResponse struct {
+	Data LessonProgressDetail `json:"data"`
+}
+
+func (response GetLessonProgress200JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetLessonProgress400JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetLessonProgress401JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response GetLessonProgress403JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetLessonProgress404JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetLessonProgress500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetLessonProgress500JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveTestLessonProgressRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *SaveTestLessonProgressJSONRequestBody
+}
+
+type SaveTestLessonProgressResponseObject interface {
+	VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error
+}
+
+type SaveTestLessonProgress200JSONResponse struct {
+	Data TestLessonProgress `json:"data"`
+}
+
+func (response SaveTestLessonProgress200JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveTestLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response SaveTestLessonProgress400JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveTestLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response SaveTestLessonProgress401JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveTestLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response SaveTestLessonProgress403JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveTestLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response SaveTestLessonProgress404JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveTestLessonProgress500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response SaveTestLessonProgress500JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditTestLessonRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *EditTestLessonJSONRequestBody
+}
+
+type EditTestLessonResponseObject interface {
+	VisitEditTestLessonResponse(w http.ResponseWriter) error
+}
+
+type EditTestLesson204Response struct {
+}
+
+func (response EditTestLesson204Response) VisitEditTestLessonResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type EditTestLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response EditTestLesson400JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditTestLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response EditTestLesson401JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditTestLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response EditTestLesson403JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditTestLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response EditTestLesson404JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditTestLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response EditTestLesson500JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateTestRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *CreateTestJSONRequestBody
+}
+
+type CreateTestResponseObject interface {
+	VisitCreateTestResponse(w http.ResponseWriter) error
+}
+
+type CreateTest201ResponseHeaders struct {
+	ContentLocation string
+}
+
+type CreateTest201Response struct {
+	Headers CreateTest201ResponseHeaders
+}
+
+func (response CreateTest201Response) VisitCreateTestResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
+	w.WriteHeader(201)
+	return nil
+}
+
+type CreateTest400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CreateTest400JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateTest401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CreateTest401JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateTest403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response CreateTest403JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateTest404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response CreateTest404JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateTest500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CreateTest500JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoLessonUrlRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *GetUploadVideoLessonUrlJSONRequestBody
+}
+
+type GetUploadVideoLessonUrlResponseObject interface {
+	VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error
+}
+
+type GetUploadVideoLessonUrl201JSONResponse struct {
+	ExpiresAt time.Time `json:"expiresAt"`
+	UploadUrl string    `json:"uploadUrl"`
+	VideoKey  string    `json:"videoKey"`
+}
+
+func (response GetUploadVideoLessonUrl201JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoLessonUrl400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetUploadVideoLessonUrl400JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoLessonUrl401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetUploadVideoLessonUrl401JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoLessonUrl403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response GetUploadVideoLessonUrl403JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoLessonUrl404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetUploadVideoLessonUrl404JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoLessonUrl500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetUploadVideoLessonUrl500JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditVideoLessonRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *EditVideoLessonJSONRequestBody
+}
+
+type EditVideoLessonResponseObject interface {
+	VisitEditVideoLessonResponse(w http.ResponseWriter) error
+}
+
+type EditVideoLesson204Response struct {
+}
+
+func (response EditVideoLesson204Response) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type EditVideoLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response EditVideoLesson400JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditVideoLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response EditVideoLesson401JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditVideoLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response EditVideoLesson403JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditVideoLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response EditVideoLesson404JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type EditVideoLesson500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response EditVideoLesson500JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveVideoLessonProgressRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *SaveVideoLessonProgressJSONRequestBody
+}
+
+type SaveVideoLessonProgressResponseObject interface {
+	VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error
+}
+
+type SaveVideoLessonProgress204Response struct {
+}
+
+func (response SaveVideoLessonProgress204Response) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type SaveVideoLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response SaveVideoLessonProgress400JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveVideoLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response SaveVideoLessonProgress401JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveVideoLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response SaveVideoLessonProgress403JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveVideoLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response SaveVideoLessonProgress404JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type SaveVideoLessonProgress500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response SaveVideoLessonProgress500JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveSectionRequestObject struct {
+	CourseId  CourseIdPath  `json:"courseId"`
+	SectionId SectionIdPath `json:"sectionId"`
+	Body      *MoveSectionJSONRequestBody
+}
+
+type MoveSectionResponseObject interface {
+	VisitMoveSectionResponse(w http.ResponseWriter) error
+}
+
+type MoveSection200JSONResponse struct {
+	Data *struct {
+		// Structure Resulting course structure after moving the section, including all sections and their lessons
+		Structure *[]struct {
+			LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
+			SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
+		} `json:"structure,omitempty"`
+	} `json:"data,omitempty"`
+}
+
+func (response MoveSection200JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveSection400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response MoveSection400JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveSection401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response MoveSection401JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveSection403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response MoveSection403JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveSection404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response MoveSection404JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type MoveSection500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response MoveSection500JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type TriggerLearningReminderRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
 	Body     *TriggerLearningReminderJSONRequestBody
@@ -3615,1780 +5587,134 @@ func (response ReplyLessonComment500JSONResponse) VisitReplyLessonCommentRespons
 	return err
 }
 
-type CreateLessonRequestObject struct {
-	Body *CreateLessonJSONRequestBody
-}
-
-type CreateLessonResponseObject interface {
-	VisitCreateLessonResponse(w http.ResponseWriter) error
-}
-
-type CreateLesson201ResponseHeaders struct {
-	ContentLocation string
-}
-
-type CreateLesson201Response struct {
-	Headers CreateLesson201ResponseHeaders
-}
-
-func (response CreateLesson201Response) VisitCreateLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
-	w.WriteHeader(201)
-	return nil
-}
-
-type CreateLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response CreateLesson400JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response CreateLesson401JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response CreateLesson403JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateLesson500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response CreateLesson500JSONResponse) VisitCreateLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteLessonRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-}
-
-type DeleteLessonResponseObject interface {
-	VisitDeleteLessonResponse(w http.ResponseWriter) error
-}
-
-type DeleteLesson204Response struct {
-}
-
-func (response DeleteLesson204Response) VisitDeleteLessonResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeleteLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response DeleteLesson400JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response DeleteLesson401JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response DeleteLesson403JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response DeleteLesson404JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteLesson500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response DeleteLesson500JSONResponse) VisitDeleteLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonDetailRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-}
-
-type GetLessonDetailResponseObject interface {
-	VisitGetLessonDetailResponse(w http.ResponseWriter) error
-}
-
-type GetLessonDetail200JSONResponse struct {
-	Data LessonDetail `json:"data"`
-}
-
-func (response GetLessonDetail200JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonDetail400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetLessonDetail400JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonDetail401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetLessonDetail401JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonDetail403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response GetLessonDetail403JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonDetail404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response GetLessonDetail404JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonDetail500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetLessonDetail500JSONResponse) VisitGetLessonDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonCommentsRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-}
-
-type GetLessonCommentsResponseObject interface {
-	VisitGetLessonCommentsResponse(w http.ResponseWriter) error
-}
-
-type GetLessonComments200JSONResponse struct {
-	Data []LessonComment `json:"data"`
-}
-
-func (response GetLessonComments200JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonComments401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetLessonComments401JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonComments403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response GetLessonComments403JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonComments404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response GetLessonComments404JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonComments500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetLessonComments500JSONResponse) VisitGetLessonCommentsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CommentOnLessonRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *CommentOnLessonJSONRequestBody
-}
-
-type CommentOnLessonResponseObject interface {
-	VisitCommentOnLessonResponse(w http.ResponseWriter) error
-}
-
-type CommentOnLesson201ResponseHeaders struct {
-	ContentLocation string
-}
-
-type CommentOnLesson201Response struct {
-	Headers CommentOnLesson201ResponseHeaders
-}
-
-func (response CommentOnLesson201Response) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
-	w.WriteHeader(201)
-	return nil
-}
-
-type CommentOnLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response CommentOnLesson400JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CommentOnLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response CommentOnLesson401JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CommentOnLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response CommentOnLesson403JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CommentOnLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response CommentOnLesson404JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CommentOnLesson500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response CommentOnLesson500JSONResponse) VisitCommentOnLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MarkLessonAsCompletedRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-}
-
-type MarkLessonAsCompletedResponseObject interface {
-	VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error
-}
-
-type MarkLessonAsCompleted204Response struct {
-}
-
-func (response MarkLessonAsCompleted204Response) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type MarkLessonAsCompleted400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response MarkLessonAsCompleted400JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MarkLessonAsCompleted401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response MarkLessonAsCompleted401JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MarkLessonAsCompleted403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response MarkLessonAsCompleted403JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MarkLessonAsCompleted404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response MarkLessonAsCompleted404JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MarkLessonAsCompleted500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response MarkLessonAsCompleted500JSONResponse) VisitMarkLessonAsCompletedResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveLessonRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *MoveLessonJSONRequestBody
-}
-
-type MoveLessonResponseObject interface {
-	VisitMoveLessonResponse(w http.ResponseWriter) error
-}
-
-type MoveLesson201Response struct {
-}
-
-func (response MoveLesson201Response) VisitMoveLessonResponse(w http.ResponseWriter) error {
-	w.WriteHeader(201)
-	return nil
-}
-
-type MoveLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response MoveLesson400JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response MoveLesson401JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response MoveLesson403JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response MoveLesson404JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveLesson500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response MoveLesson500JSONResponse) VisitMoveLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonProgressRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-}
-
-type GetLessonProgressResponseObject interface {
-	VisitGetLessonProgressResponse(w http.ResponseWriter) error
-}
-
-type GetLessonProgress200JSONResponse struct {
-	Data LessonProgressDetail `json:"data"`
-}
-
-func (response GetLessonProgress200JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetLessonProgress400JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetLessonProgress401JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response GetLessonProgress403JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response GetLessonProgress404JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetLessonProgress500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetLessonProgress500JSONResponse) VisitGetLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditTestLessonRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *EditTestLessonJSONRequestBody
-}
-
-type EditTestLessonResponseObject interface {
-	VisitEditTestLessonResponse(w http.ResponseWriter) error
-}
-
-type EditTestLesson204Response struct {
-}
-
-func (response EditTestLesson204Response) VisitEditTestLessonResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type EditTestLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response EditTestLesson400JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditTestLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response EditTestLesson401JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditTestLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response EditTestLesson403JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditTestLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response EditTestLesson404JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditTestLesson500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response EditTestLesson500JSONResponse) VisitEditTestLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveTestLessonProgressRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *SaveTestLessonProgressJSONRequestBody
-}
-
-type SaveTestLessonProgressResponseObject interface {
-	VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error
-}
-
-type SaveTestLessonProgress200JSONResponse struct {
-	Data TestLessonProgress `json:"data"`
-}
-
-func (response SaveTestLessonProgress200JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveTestLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response SaveTestLessonProgress400JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveTestLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response SaveTestLessonProgress401JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveTestLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response SaveTestLessonProgress403JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveTestLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response SaveTestLessonProgress404JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveTestLessonProgress500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response SaveTestLessonProgress500JSONResponse) VisitSaveTestLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTestRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *CreateTestJSONRequestBody
-}
-
-type CreateTestResponseObject interface {
-	VisitCreateTestResponse(w http.ResponseWriter) error
-}
-
-type CreateTest201ResponseHeaders struct {
-	ContentLocation string
-}
-
-type CreateTest201Response struct {
-	Headers CreateTest201ResponseHeaders
-}
-
-func (response CreateTest201Response) VisitCreateTestResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
-	w.WriteHeader(201)
-	return nil
-}
-
-type CreateTest400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response CreateTest400JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTest401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response CreateTest401JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTest403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response CreateTest403JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTest404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response CreateTest404JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTest500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response CreateTest500JSONResponse) VisitCreateTestResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoLessonUrlRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *GetUploadVideoLessonUrlJSONRequestBody
-}
-
-type GetUploadVideoLessonUrlResponseObject interface {
-	VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error
-}
-
-type GetUploadVideoLessonUrl201JSONResponse struct {
-	ExpiresAt time.Time `json:"expiresAt"`
-	UploadUrl string    `json:"uploadUrl"`
-	VideoKey  string    `json:"videoKey"`
-}
-
-func (response GetUploadVideoLessonUrl201JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoLessonUrl400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetUploadVideoLessonUrl400JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoLessonUrl401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetUploadVideoLessonUrl401JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoLessonUrl403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response GetUploadVideoLessonUrl403JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoLessonUrl404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response GetUploadVideoLessonUrl404JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoLessonUrl500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetUploadVideoLessonUrl500JSONResponse) VisitGetUploadVideoLessonUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditVideoLessonRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *EditVideoLessonJSONRequestBody
-}
-
-type EditVideoLessonResponseObject interface {
-	VisitEditVideoLessonResponse(w http.ResponseWriter) error
-}
-
-type EditVideoLesson204Response struct {
-}
-
-func (response EditVideoLesson204Response) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type EditVideoLesson400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response EditVideoLesson400JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditVideoLesson401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response EditVideoLesson401JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditVideoLesson403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response EditVideoLesson403JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditVideoLesson404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response EditVideoLesson404JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type EditVideoLesson500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response EditVideoLesson500JSONResponse) VisitEditVideoLessonResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveVideoLessonProgressRequestObject struct {
-	LessonId LessonIdPath `json:"lessonId"`
-	Body     *SaveVideoLessonProgressJSONRequestBody
-}
-
-type SaveVideoLessonProgressResponseObject interface {
-	VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error
-}
-
-type SaveVideoLessonProgress204Response struct {
-}
-
-func (response SaveVideoLessonProgress204Response) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type SaveVideoLessonProgress400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response SaveVideoLessonProgress400JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveVideoLessonProgress401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response SaveVideoLessonProgress401JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveVideoLessonProgress403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response SaveVideoLessonProgress403JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveVideoLessonProgress404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response SaveVideoLessonProgress404JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveVideoLessonProgress500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response SaveVideoLessonProgress500JSONResponse) VisitSaveVideoLessonProgressResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateSectionRequestObject struct {
-	Body *CreateSectionJSONRequestBody
-}
-
-type CreateSectionResponseObject interface {
-	VisitCreateSectionResponse(w http.ResponseWriter) error
-}
-
-type CreateSection201ResponseHeaders struct {
-	ContentLocation string
-}
-
-type CreateSection201Response struct {
-	Headers CreateSection201ResponseHeaders
-}
-
-func (response CreateSection201Response) VisitCreateSectionResponse(w http.ResponseWriter) error {
-	w.Header().Set("Content-Location", fmt.Sprint(response.Headers.ContentLocation))
-	w.WriteHeader(201)
-	return nil
-}
-
-type CreateSection400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response CreateSection400JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateSection401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response CreateSection401JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateSection403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response CreateSection403JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateSection404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response CreateSection404JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateSection500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response CreateSection500JSONResponse) VisitCreateSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteSectionRequestObject struct {
-	SectionId SectionIdPath `json:"sectionId"`
-}
-
-type DeleteSectionResponseObject interface {
-	VisitDeleteSectionResponse(w http.ResponseWriter) error
-}
-
-type DeleteSection204Response struct {
-}
-
-func (response DeleteSection204Response) VisitDeleteSectionResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeleteSection400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response DeleteSection400JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteSection401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response DeleteSection401JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteSection403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response DeleteSection403JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteSection404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response DeleteSection404JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteSection500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response DeleteSection500JSONResponse) VisitDeleteSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateSectionTitleRequestObject struct {
-	SectionId SectionIdPath `json:"sectionId"`
-	Body      *UpdateSectionTitleJSONRequestBody
-}
-
-type UpdateSectionTitleResponseObject interface {
-	VisitUpdateSectionTitleResponse(w http.ResponseWriter) error
-}
-
-type UpdateSectionTitle200Response struct {
-}
-
-func (response UpdateSectionTitle200Response) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
-	w.WriteHeader(200)
-	return nil
-}
-
-type UpdateSectionTitle400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response UpdateSectionTitle400JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateSectionTitle401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response UpdateSectionTitle401JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateSectionTitle403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response UpdateSectionTitle403JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateSectionTitle404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response UpdateSectionTitle404JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateSectionTitle500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response UpdateSectionTitle500JSONResponse) VisitUpdateSectionTitleResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveSectionRequestObject struct {
-	SectionId SectionIdPath `json:"sectionId"`
-	Body      *MoveSectionJSONRequestBody
-}
-
-type MoveSectionResponseObject interface {
-	VisitMoveSectionResponse(w http.ResponseWriter) error
-}
-
-type MoveSection200JSONResponse struct {
-	Data *struct {
-		// Structure Resulting course structure after moving the section, including all sections and their lessons
-		Structure *[]struct {
-			LessonIds *[]openapi_types.UUID `json:"lessonIds,omitempty"`
-			SectionId *openapi_types.UUID   `json:"sectionId,omitempty"`
-		} `json:"structure,omitempty"`
-	} `json:"data,omitempty"`
-}
-
-func (response MoveSection200JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveSection400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response MoveSection400JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveSection401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response MoveSection401JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveSection403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response MoveSection403JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveSection404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response MoveSection404JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MoveSection500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response MoveSection500JSONResponse) VisitMoveSectionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
-	// Approve course
-	// (POST /course/admin/courses/{courseId}/approve)
-	ApproveCourse(ctx context.Context, request ApproveCourseRequestObject) (ApproveCourseResponseObject, error)
-	// Decline course
-	// (POST /course/admin/courses/{courseId}/decline)
-	DeclineCourse(ctx context.Context, request DeclineCourseRequestObject) (DeclineCourseResponseObject, error)
+	// Get my certificates
+	// (GET /course/certificates/me)
+	GetMyCertificates(ctx context.Context, request GetMyCertificatesRequestObject) (GetMyCertificatesResponseObject, error)
+	// Get certificate by id
+	// (GET /course/certificates/{certificateId})
+	GetCertificateById(ctx context.Context, request GetCertificateByIdRequestObject) (GetCertificateByIdResponseObject, error)
+	// Search courses
+	// (GET /course/courses)
+	SearchCourses(ctx context.Context, request SearchCoursesRequestObject) (SearchCoursesResponseObject, error)
+	// Create course
+	// (POST /course/courses)
+	CreateCourse(ctx context.Context, request CreateCourseRequestObject) (CreateCourseResponseObject, error)
+	// Get instructor courses
+	// (GET /course/courses-by-instructor/{instructorId})
+	GetInstructorCourses(ctx context.Context, request GetInstructorCoursesRequestObject) (GetInstructorCoursesResponseObject, error)
+	// Get published courses
+	// (GET /course/courses-published)
+	GetPublishedCourses(ctx context.Context, request GetPublishedCoursesRequestObject) (GetPublishedCoursesResponseObject, error)
+	// Get system courses
+	// (GET /course/courses-system)
+	GetSystemCourses(ctx context.Context, request GetSystemCoursesRequestObject) (GetSystemCoursesResponseObject, error)
 	// Get my enrolled courses
 	// (GET /course/courses/me/enrolled)
 	GetMyEnrolledCourses(ctx context.Context, request GetMyEnrolledCoursesRequestObject) (GetMyEnrolledCoursesResponseObject, error)
-	// Get my certificates
-	// (GET /course/instructor/certificates/me)
-	GetMyCertificates(ctx context.Context, request GetMyCertificatesRequestObject) (GetMyCertificatesResponseObject, error)
-	// Get certificate by id
-	// (GET /course/instructor/certificates/{certificateId})
-	GetCertificateById(ctx context.Context, request GetCertificateByIdRequestObject) (GetCertificateByIdResponseObject, error)
-	// Search courses
-	// (GET /course/instructor/courses)
-	SearchCourses(ctx context.Context, request SearchCoursesRequestObject) (SearchCoursesResponseObject, error)
-	// Create course
-	// (POST /course/instructor/courses)
-	CreateCourse(ctx context.Context, request CreateCourseRequestObject) (CreateCourseResponseObject, error)
-	// Get instructor courses
-	// (GET /course/instructor/courses-by-instructor/{instructorId})
-	GetInstructorCourses(ctx context.Context, request GetInstructorCoursesRequestObject) (GetInstructorCoursesResponseObject, error)
-	// Get published courses
-	// (GET /course/instructor/courses-published)
-	GetPublishedCourses(ctx context.Context, request GetPublishedCoursesRequestObject) (GetPublishedCoursesResponseObject, error)
-	// Get system courses
-	// (GET /course/instructor/courses-system)
-	GetSystemCourses(ctx context.Context, request GetSystemCoursesRequestObject) (GetSystemCoursesResponseObject, error)
 	// Delete course
-	// (DELETE /course/instructor/courses/{courseId})
+	// (DELETE /course/courses/{courseId})
 	DeleteCourse(ctx context.Context, request DeleteCourseRequestObject) (DeleteCourseResponseObject, error)
+	// Approve course
+	// (POST /course/courses/{courseId}/approve)
+	ApproveCourse(ctx context.Context, request ApproveCourseRequestObject) (ApproveCourseResponseObject, error)
 	// Update course
-	// (PATCH /course/instructor/courses/{courseId}/basic-info)
+	// (PATCH /course/courses/{courseId}/basic-info)
 	UpdateCourse(ctx context.Context, request UpdateCourseRequestObject) (UpdateCourseResponseObject, error)
 	// Bookmark course
-	// (POST /course/instructor/courses/{courseId}/bookmark)
+	// (POST /course/courses/{courseId}/bookmark)
 	BookmarkCourse(ctx context.Context, request BookmarkCourseRequestObject) (BookmarkCourseResponseObject, error)
+	// Decline course
+	// (POST /course/courses/{courseId}/decline)
+	DeclineCourse(ctx context.Context, request DeclineCourseRequestObject) (DeclineCourseResponseObject, error)
 	// Get course detail
-	// (GET /course/instructor/courses/{courseId}/detail)
+	// (GET /course/courses/{courseId}/detail)
 	GetCourseDetail(ctx context.Context, request GetCourseDetailRequestObject) (GetCourseDetailResponseObject, error)
 	// Enroll in course
-	// (POST /course/instructor/courses/{courseId}/enroll)
+	// (POST /course/courses/{courseId}/enroll)
 	EnrollInCourse(ctx context.Context, request EnrollInCourseRequestObject) (EnrollInCourseResponseObject, error)
 	// Finish course
-	// (POST /course/instructor/courses/{courseId}/finish)
+	// (POST /course/courses/{courseId}/finish)
 	FinishCourse(ctx context.Context, request FinishCourseRequestObject) (FinishCourseResponseObject, error)
 	// Hide course
-	// (POST /course/instructor/courses/{courseId}/hide)
+	// (POST /course/courses/{courseId}/hide)
 	HideCourse(ctx context.Context, request HideCourseRequestObject) (HideCourseResponseObject, error)
 	// Get course landing page
-	// (GET /course/instructor/courses/{courseId}/landing)
+	// (GET /course/courses/{courseId}/landing)
 	GetCourseLandingPage(ctx context.Context, request GetCourseLandingPageRequestObject) (GetCourseLandingPageResponseObject, error)
 	// Get course progress
-	// (GET /course/instructor/courses/{courseId}/progress)
+	// (GET /course/courses/{courseId}/progress)
 	GetCourseProgress(ctx context.Context, request GetCourseProgressRequestObject) (GetCourseProgressResponseObject, error)
 	// Review course
-	// (POST /course/instructor/courses/{courseId}/reviews)
+	// (POST /course/courses/{courseId}/reviews)
 	ReviewCourse(ctx context.Context, request ReviewCourseRequestObject) (ReviewCourseResponseObject, error)
-	// Trigger learning reminder
-	// (POST /course/instructor/courses/{courseId}/trigger-learning-reminder)
-	TriggerLearningReminder(ctx context.Context, request TriggerLearningReminderRequestObject) (TriggerLearningReminderResponseObject, error)
-	// Unbookmark course
-	// (POST /course/instructor/courses/{courseId}/unbookmark)
-	UnbookmarkCourse(ctx context.Context, request UnbookmarkCourseRequestObject) (UnbookmarkCourseResponseObject, error)
-	// Unhide course
-	// (POST /course/instructor/courses/{courseId}/unhide)
-	UnhideCourse(ctx context.Context, request UnhideCourseRequestObject) (UnhideCourseResponseObject, error)
-	// Reply lesson comment
-	// (POST /course/instructor/lesson-comments/{commentId}/reply)
-	ReplyLessonComment(ctx context.Context, request ReplyLessonCommentRequestObject) (ReplyLessonCommentResponseObject, error)
-	// Create lesson
-	// (POST /course/instructor/lessons)
-	CreateLesson(ctx context.Context, request CreateLessonRequestObject) (CreateLessonResponseObject, error)
-	// Delete lesson
-	// (DELETE /course/instructor/lessons/{lessonId})
-	DeleteLesson(ctx context.Context, request DeleteLessonRequestObject) (DeleteLessonResponseObject, error)
-	// Get lesson detail
-	// (GET /course/instructor/lessons/{lessonId})
-	GetLessonDetail(ctx context.Context, request GetLessonDetailRequestObject) (GetLessonDetailResponseObject, error)
-	// Get lesson comments
-	// (GET /course/instructor/lessons/{lessonId}/comments)
-	GetLessonComments(ctx context.Context, request GetLessonCommentsRequestObject) (GetLessonCommentsResponseObject, error)
-	// Comment on lesson
-	// (POST /course/instructor/lessons/{lessonId}/comments)
-	CommentOnLesson(ctx context.Context, request CommentOnLessonRequestObject) (CommentOnLessonResponseObject, error)
-	// Mark lesson as completed
-	// (POST /course/instructor/lessons/{lessonId}/mark-completed)
-	MarkLessonAsCompleted(ctx context.Context, request MarkLessonAsCompletedRequestObject) (MarkLessonAsCompletedResponseObject, error)
-	// Move lesson
-	// (POST /course/instructor/lessons/{lessonId}/move)
-	MoveLesson(ctx context.Context, request MoveLessonRequestObject) (MoveLessonResponseObject, error)
-	// Get lesson progress
-	// (GET /course/instructor/lessons/{lessonId}/progress)
-	GetLessonProgress(ctx context.Context, request GetLessonProgressRequestObject) (GetLessonProgressResponseObject, error)
-	// Edit test lesson
-	// (PATCH /course/instructor/lessons/{lessonId}/test)
-	EditTestLesson(ctx context.Context, request EditTestLessonRequestObject) (EditTestLessonResponseObject, error)
-	// Save test lesson progress
-	// (PUT /course/instructor/lessons/{lessonId}/test-progress)
-	SaveTestLessonProgress(ctx context.Context, request SaveTestLessonProgressRequestObject) (SaveTestLessonProgressResponseObject, error)
-	// Create test
-	// (POST /course/instructor/lessons/{lessonId}/tests)
-	CreateTest(ctx context.Context, request CreateTestRequestObject) (CreateTestResponseObject, error)
-	// Get upload video lesson URL
-	// (POST /course/instructor/lessons/{lessonId}/upload-video-url)
-	GetUploadVideoLessonUrl(ctx context.Context, request GetUploadVideoLessonUrlRequestObject) (GetUploadVideoLessonUrlResponseObject, error)
-	// Edit video lesson
-	// (PATCH /course/instructor/lessons/{lessonId}/video)
-	EditVideoLesson(ctx context.Context, request EditVideoLessonRequestObject) (EditVideoLessonResponseObject, error)
-	// Save video lesson progress
-	// (PUT /course/instructor/lessons/{lessonId}/video-progress)
-	SaveVideoLessonProgress(ctx context.Context, request SaveVideoLessonProgressRequestObject) (SaveVideoLessonProgressResponseObject, error)
 	// Create section
-	// (POST /course/instructor/sections)
+	// (POST /course/courses/{courseId}/sections)
 	CreateSection(ctx context.Context, request CreateSectionRequestObject) (CreateSectionResponseObject, error)
 	// Delete section
-	// (DELETE /course/instructor/sections/{sectionId})
+	// (DELETE /course/courses/{courseId}/sections/{sectionId})
 	DeleteSection(ctx context.Context, request DeleteSectionRequestObject) (DeleteSectionResponseObject, error)
 	// Update section
-	// (PATCH /course/instructor/sections/{sectionId})
+	// (PATCH /course/courses/{courseId}/sections/{sectionId})
 	UpdateSectionTitle(ctx context.Context, request UpdateSectionTitleRequestObject) (UpdateSectionTitleResponseObject, error)
+	// Create lesson
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons)
+	CreateLesson(ctx context.Context, request CreateLessonRequestObject) (CreateLessonResponseObject, error)
+	// Delete lesson
+	// (DELETE /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId})
+	DeleteLesson(ctx context.Context, request DeleteLessonRequestObject) (DeleteLessonResponseObject, error)
+	// Get lesson detail
+	// (GET /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId})
+	GetLessonDetail(ctx context.Context, request GetLessonDetailRequestObject) (GetLessonDetailResponseObject, error)
+	// Get lesson comments
+	// (GET /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments)
+	GetLessonComments(ctx context.Context, request GetLessonCommentsRequestObject) (GetLessonCommentsResponseObject, error)
+	// Comment on lesson
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments)
+	CommentOnLesson(ctx context.Context, request CommentOnLessonRequestObject) (CommentOnLessonResponseObject, error)
+	// Mark lesson as completed
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/mark-completed)
+	MarkLessonAsCompleted(ctx context.Context, request MarkLessonAsCompletedRequestObject) (MarkLessonAsCompletedResponseObject, error)
+	// Move lesson
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/move)
+	MoveLesson(ctx context.Context, request MoveLessonRequestObject) (MoveLessonResponseObject, error)
+	// Get lesson progress
+	// (GET /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress)
+	GetLessonProgress(ctx context.Context, request GetLessonProgressRequestObject) (GetLessonProgressResponseObject, error)
+	// Save test lesson progress
+	// (PUT /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress)
+	SaveTestLessonProgress(ctx context.Context, request SaveTestLessonProgressRequestObject) (SaveTestLessonProgressResponseObject, error)
+	// Edit test lesson
+	// (PATCH /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests)
+	EditTestLesson(ctx context.Context, request EditTestLessonRequestObject) (EditTestLessonResponseObject, error)
+	// Create test
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests)
+	CreateTest(ctx context.Context, request CreateTestRequestObject) (CreateTestResponseObject, error)
+	// Get upload video lesson URL
+	// (POST /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url)
+	GetUploadVideoLessonUrl(ctx context.Context, request GetUploadVideoLessonUrlRequestObject) (GetUploadVideoLessonUrlResponseObject, error)
+	// Edit video lesson
+	// (PATCH /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video)
+	EditVideoLesson(ctx context.Context, request EditVideoLessonRequestObject) (EditVideoLessonResponseObject, error)
+	// Save video lesson progress
+	// (PUT /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress)
+	SaveVideoLessonProgress(ctx context.Context, request SaveVideoLessonProgressRequestObject) (SaveVideoLessonProgressResponseObject, error)
 	// Move section
-	// (POST /course/instructor/sections/{sectionId}/move)
+	// (POST /course/courses/{courseId}/sections/{sectionId}/move)
 	MoveSection(ctx context.Context, request MoveSectionRequestObject) (MoveSectionResponseObject, error)
+	// Trigger learning reminder
+	// (POST /course/courses/{courseId}/trigger-learning-reminder)
+	TriggerLearningReminder(ctx context.Context, request TriggerLearningReminderRequestObject) (TriggerLearningReminderResponseObject, error)
+	// Unbookmark course
+	// (POST /course/courses/{courseId}/unbookmark)
+	UnbookmarkCourse(ctx context.Context, request UnbookmarkCourseRequestObject) (UnbookmarkCourseResponseObject, error)
+	// Unhide course
+	// (POST /course/courses/{courseId}/unhide)
+	UnhideCourse(ctx context.Context, request UnhideCourseRequestObject) (UnhideCourseResponseObject, error)
+	// Reply lesson comment
+	// (POST /course/lesson-comments/{commentId}/reply)
+	ReplyLessonComment(ctx context.Context, request ReplyLessonCommentRequestObject) (ReplyLessonCommentResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx *gin.Context, request any) (any, error)
@@ -5446,94 +5772,6 @@ type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
 	options     StrictGinServerOptions
-}
-
-// ApproveCourse operation middleware
-func (sh *strictHandler) ApproveCourse(ctx *gin.Context, courseId CourseIdPath) {
-	var request ApproveCourseRequestObject
-
-	request.CourseId = courseId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.ApproveCourse(ctx, request.(ApproveCourseRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ApproveCourse")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(ApproveCourseResponseObject); ok {
-		if err := validResponse.VisitApproveCourseResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// DeclineCourse operation middleware
-func (sh *strictHandler) DeclineCourse(ctx *gin.Context, courseId CourseIdPath) {
-	var request DeclineCourseRequestObject
-
-	request.CourseId = courseId
-
-	var body DeclineCourseJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		if !errors.Is(err, io.EOF) {
-			sh.options.RequestErrorHandlerFunc(ctx, err)
-			return
-		}
-	} else {
-		request.Body = &body
-	}
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeclineCourse(ctx, request.(DeclineCourseRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeclineCourse")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(DeclineCourseResponseObject); ok {
-		if err := validResponse.VisitDeclineCourseResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetMyEnrolledCourses operation middleware
-func (sh *strictHandler) GetMyEnrolledCourses(ctx *gin.Context, params GetMyEnrolledCoursesParams) {
-	var request GetMyEnrolledCoursesRequestObject
-
-	request.Params = params
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetMyEnrolledCourses(ctx, request.(GetMyEnrolledCoursesRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetMyEnrolledCourses")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(GetMyEnrolledCoursesResponseObject); ok {
-		if err := validResponse.VisitGetMyEnrolledCoursesResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
 }
 
 // GetMyCertificates operation middleware
@@ -5724,6 +5962,32 @@ func (sh *strictHandler) GetSystemCourses(ctx *gin.Context, params GetSystemCour
 	}
 }
 
+// GetMyEnrolledCourses operation middleware
+func (sh *strictHandler) GetMyEnrolledCourses(ctx *gin.Context, params GetMyEnrolledCoursesParams) {
+	var request GetMyEnrolledCoursesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetMyEnrolledCourses(ctx, request.(GetMyEnrolledCoursesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetMyEnrolledCourses")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(GetMyEnrolledCoursesResponseObject); ok {
+		if err := validResponse.VisitGetMyEnrolledCoursesResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // DeleteCourse operation middleware
 func (sh *strictHandler) DeleteCourse(ctx *gin.Context, courseId CourseIdPath) {
 	var request DeleteCourseRequestObject
@@ -5743,6 +6007,32 @@ func (sh *strictHandler) DeleteCourse(ctx *gin.Context, courseId CourseIdPath) {
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(DeleteCourseResponseObject); ok {
 		if err := validResponse.VisitDeleteCourseResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ApproveCourse operation middleware
+func (sh *strictHandler) ApproveCourse(ctx *gin.Context, courseId CourseIdPath) {
+	var request ApproveCourseRequestObject
+
+	request.CourseId = courseId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.ApproveCourse(ctx, request.(ApproveCourseRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ApproveCourse")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(ApproveCourseResponseObject); ok {
+		if err := validResponse.VisitApproveCourseResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {
@@ -5802,6 +6092,42 @@ func (sh *strictHandler) BookmarkCourse(ctx *gin.Context, courseId CourseIdPath)
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(BookmarkCourseResponseObject); ok {
 		if err := validResponse.VisitBookmarkCourseResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeclineCourse operation middleware
+func (sh *strictHandler) DeclineCourse(ctx *gin.Context, courseId CourseIdPath) {
+	var request DeclineCourseRequestObject
+
+	request.CourseId = courseId
+
+	var body DeclineCourseJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		if !errors.Is(err, io.EOF) {
+			sh.options.RequestErrorHandlerFunc(ctx, err)
+			return
+		}
+	} else {
+		request.Body = &body
+	}
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeclineCourse(ctx, request.(DeclineCourseRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeclineCourse")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(DeclineCourseResponseObject); ok {
+		if err := validResponse.VisitDeclineCourseResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {
@@ -5998,6 +6324,588 @@ func (sh *strictHandler) ReviewCourse(ctx *gin.Context, courseId CourseIdPath) {
 	}
 }
 
+// CreateSection operation middleware
+func (sh *strictHandler) CreateSection(ctx *gin.Context, courseId CourseIdPath) {
+	var request CreateSectionRequestObject
+
+	request.CourseId = courseId
+
+	var body CreateSectionJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateSection(ctx, request.(CreateSectionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateSection")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(CreateSectionResponseObject); ok {
+		if err := validResponse.VisitCreateSectionResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteSection operation middleware
+func (sh *strictHandler) DeleteSection(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath) {
+	var request DeleteSectionRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteSection(ctx, request.(DeleteSectionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteSection")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(DeleteSectionResponseObject); ok {
+		if err := validResponse.VisitDeleteSectionResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// UpdateSectionTitle operation middleware
+func (sh *strictHandler) UpdateSectionTitle(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath) {
+	var request UpdateSectionTitleRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+
+	var body UpdateSectionTitleJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateSectionTitle(ctx, request.(UpdateSectionTitleRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateSectionTitle")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(UpdateSectionTitleResponseObject); ok {
+		if err := validResponse.VisitUpdateSectionTitleResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateLesson operation middleware
+func (sh *strictHandler) CreateLesson(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath) {
+	var request CreateLessonRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+
+	var body CreateLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateLesson(ctx, request.(CreateLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(CreateLessonResponseObject); ok {
+		if err := validResponse.VisitCreateLessonResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// DeleteLesson operation middleware
+func (sh *strictHandler) DeleteLesson(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request DeleteLessonRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteLesson(ctx, request.(DeleteLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(DeleteLessonResponseObject); ok {
+		if err := validResponse.VisitDeleteLessonResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetLessonDetail operation middleware
+func (sh *strictHandler) GetLessonDetail(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request GetLessonDetailRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetLessonDetail(ctx, request.(GetLessonDetailRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetLessonDetail")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(GetLessonDetailResponseObject); ok {
+		if err := validResponse.VisitGetLessonDetailResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetLessonComments operation middleware
+func (sh *strictHandler) GetLessonComments(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request GetLessonCommentsRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetLessonComments(ctx, request.(GetLessonCommentsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetLessonComments")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(GetLessonCommentsResponseObject); ok {
+		if err := validResponse.VisitGetLessonCommentsResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CommentOnLesson operation middleware
+func (sh *strictHandler) CommentOnLesson(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request CommentOnLessonRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body CommentOnLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CommentOnLesson(ctx, request.(CommentOnLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CommentOnLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(CommentOnLessonResponseObject); ok {
+		if err := validResponse.VisitCommentOnLessonResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MarkLessonAsCompleted operation middleware
+func (sh *strictHandler) MarkLessonAsCompleted(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request MarkLessonAsCompletedRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.MarkLessonAsCompleted(ctx, request.(MarkLessonAsCompletedRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MarkLessonAsCompleted")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(MarkLessonAsCompletedResponseObject); ok {
+		if err := validResponse.VisitMarkLessonAsCompletedResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MoveLesson operation middleware
+func (sh *strictHandler) MoveLesson(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request MoveLessonRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body MoveLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.MoveLesson(ctx, request.(MoveLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MoveLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(MoveLessonResponseObject); ok {
+		if err := validResponse.VisitMoveLessonResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetLessonProgress operation middleware
+func (sh *strictHandler) GetLessonProgress(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request GetLessonProgressRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetLessonProgress(ctx, request.(GetLessonProgressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetLessonProgress")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(GetLessonProgressResponseObject); ok {
+		if err := validResponse.VisitGetLessonProgressResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SaveTestLessonProgress operation middleware
+func (sh *strictHandler) SaveTestLessonProgress(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request SaveTestLessonProgressRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body SaveTestLessonProgressJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.SaveTestLessonProgress(ctx, request.(SaveTestLessonProgressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SaveTestLessonProgress")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(SaveTestLessonProgressResponseObject); ok {
+		if err := validResponse.VisitSaveTestLessonProgressResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// EditTestLesson operation middleware
+func (sh *strictHandler) EditTestLesson(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request EditTestLessonRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body EditTestLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.EditTestLesson(ctx, request.(EditTestLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "EditTestLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(EditTestLessonResponseObject); ok {
+		if err := validResponse.VisitEditTestLessonResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateTest operation middleware
+func (sh *strictHandler) CreateTest(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request CreateTestRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body CreateTestJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateTest(ctx, request.(CreateTestRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateTest")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(CreateTestResponseObject); ok {
+		if err := validResponse.VisitCreateTestResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetUploadVideoLessonUrl operation middleware
+func (sh *strictHandler) GetUploadVideoLessonUrl(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request GetUploadVideoLessonUrlRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body GetUploadVideoLessonUrlJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetUploadVideoLessonUrl(ctx, request.(GetUploadVideoLessonUrlRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetUploadVideoLessonUrl")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(GetUploadVideoLessonUrlResponseObject); ok {
+		if err := validResponse.VisitGetUploadVideoLessonUrlResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// EditVideoLesson operation middleware
+func (sh *strictHandler) EditVideoLesson(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request EditVideoLessonRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body EditVideoLessonJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.EditVideoLesson(ctx, request.(EditVideoLessonRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "EditVideoLesson")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(EditVideoLessonResponseObject); ok {
+		if err := validResponse.VisitEditVideoLessonResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// SaveVideoLessonProgress operation middleware
+func (sh *strictHandler) SaveVideoLessonProgress(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath, lessonId LessonIdPath) {
+	var request SaveVideoLessonProgressRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+	request.LessonId = lessonId
+
+	var body SaveVideoLessonProgressJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.SaveVideoLessonProgress(ctx, request.(SaveVideoLessonProgressRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "SaveVideoLessonProgress")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(SaveVideoLessonProgressResponseObject); ok {
+		if err := validResponse.VisitSaveVideoLessonProgressResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// MoveSection operation middleware
+func (sh *strictHandler) MoveSection(ctx *gin.Context, courseId CourseIdPath, sectionId SectionIdPath) {
+	var request MoveSectionRequestObject
+
+	request.CourseId = courseId
+	request.SectionId = sectionId
+
+	var body MoveSectionJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.MoveSection(ctx, request.(MoveSectionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "MoveSection")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(MoveSectionResponseObject); ok {
+		if err := validResponse.VisitMoveSectionResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // TriggerLearningReminder operation middleware
 func (sh *strictHandler) TriggerLearningReminder(ctx *gin.Context, courseId CourseIdPath) {
 	var request TriggerLearningReminderRequestObject
@@ -6112,554 +7020,6 @@ func (sh *strictHandler) ReplyLessonComment(ctx *gin.Context, commentId CommentI
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(ReplyLessonCommentResponseObject); ok {
 		if err := validResponse.VisitReplyLessonCommentResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreateLesson operation middleware
-func (sh *strictHandler) CreateLesson(ctx *gin.Context) {
-	var request CreateLessonRequestObject
-
-	var body CreateLessonJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateLesson(ctx, request.(CreateLessonRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateLesson")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(CreateLessonResponseObject); ok {
-		if err := validResponse.VisitCreateLessonResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// DeleteLesson operation middleware
-func (sh *strictHandler) DeleteLesson(ctx *gin.Context, lessonId LessonIdPath) {
-	var request DeleteLessonRequestObject
-
-	request.LessonId = lessonId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeleteLesson(ctx, request.(DeleteLessonRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeleteLesson")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(DeleteLessonResponseObject); ok {
-		if err := validResponse.VisitDeleteLessonResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetLessonDetail operation middleware
-func (sh *strictHandler) GetLessonDetail(ctx *gin.Context, lessonId LessonIdPath) {
-	var request GetLessonDetailRequestObject
-
-	request.LessonId = lessonId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetLessonDetail(ctx, request.(GetLessonDetailRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetLessonDetail")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(GetLessonDetailResponseObject); ok {
-		if err := validResponse.VisitGetLessonDetailResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetLessonComments operation middleware
-func (sh *strictHandler) GetLessonComments(ctx *gin.Context, lessonId LessonIdPath) {
-	var request GetLessonCommentsRequestObject
-
-	request.LessonId = lessonId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetLessonComments(ctx, request.(GetLessonCommentsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetLessonComments")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(GetLessonCommentsResponseObject); ok {
-		if err := validResponse.VisitGetLessonCommentsResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CommentOnLesson operation middleware
-func (sh *strictHandler) CommentOnLesson(ctx *gin.Context, lessonId LessonIdPath) {
-	var request CommentOnLessonRequestObject
-
-	request.LessonId = lessonId
-
-	var body CommentOnLessonJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CommentOnLesson(ctx, request.(CommentOnLessonRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CommentOnLesson")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(CommentOnLessonResponseObject); ok {
-		if err := validResponse.VisitCommentOnLessonResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// MarkLessonAsCompleted operation middleware
-func (sh *strictHandler) MarkLessonAsCompleted(ctx *gin.Context, lessonId LessonIdPath) {
-	var request MarkLessonAsCompletedRequestObject
-
-	request.LessonId = lessonId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.MarkLessonAsCompleted(ctx, request.(MarkLessonAsCompletedRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "MarkLessonAsCompleted")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(MarkLessonAsCompletedResponseObject); ok {
-		if err := validResponse.VisitMarkLessonAsCompletedResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// MoveLesson operation middleware
-func (sh *strictHandler) MoveLesson(ctx *gin.Context, lessonId LessonIdPath) {
-	var request MoveLessonRequestObject
-
-	request.LessonId = lessonId
-
-	var body MoveLessonJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.MoveLesson(ctx, request.(MoveLessonRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "MoveLesson")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(MoveLessonResponseObject); ok {
-		if err := validResponse.VisitMoveLessonResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetLessonProgress operation middleware
-func (sh *strictHandler) GetLessonProgress(ctx *gin.Context, lessonId LessonIdPath) {
-	var request GetLessonProgressRequestObject
-
-	request.LessonId = lessonId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetLessonProgress(ctx, request.(GetLessonProgressRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetLessonProgress")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(GetLessonProgressResponseObject); ok {
-		if err := validResponse.VisitGetLessonProgressResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// EditTestLesson operation middleware
-func (sh *strictHandler) EditTestLesson(ctx *gin.Context, lessonId LessonIdPath) {
-	var request EditTestLessonRequestObject
-
-	request.LessonId = lessonId
-
-	var body EditTestLessonJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.EditTestLesson(ctx, request.(EditTestLessonRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "EditTestLesson")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(EditTestLessonResponseObject); ok {
-		if err := validResponse.VisitEditTestLessonResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SaveTestLessonProgress operation middleware
-func (sh *strictHandler) SaveTestLessonProgress(ctx *gin.Context, lessonId LessonIdPath) {
-	var request SaveTestLessonProgressRequestObject
-
-	request.LessonId = lessonId
-
-	var body SaveTestLessonProgressJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.SaveTestLessonProgress(ctx, request.(SaveTestLessonProgressRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SaveTestLessonProgress")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(SaveTestLessonProgressResponseObject); ok {
-		if err := validResponse.VisitSaveTestLessonProgressResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreateTest operation middleware
-func (sh *strictHandler) CreateTest(ctx *gin.Context, lessonId LessonIdPath) {
-	var request CreateTestRequestObject
-
-	request.LessonId = lessonId
-
-	var body CreateTestJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateTest(ctx, request.(CreateTestRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateTest")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(CreateTestResponseObject); ok {
-		if err := validResponse.VisitCreateTestResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetUploadVideoLessonUrl operation middleware
-func (sh *strictHandler) GetUploadVideoLessonUrl(ctx *gin.Context, lessonId LessonIdPath) {
-	var request GetUploadVideoLessonUrlRequestObject
-
-	request.LessonId = lessonId
-
-	var body GetUploadVideoLessonUrlJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetUploadVideoLessonUrl(ctx, request.(GetUploadVideoLessonUrlRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetUploadVideoLessonUrl")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(GetUploadVideoLessonUrlResponseObject); ok {
-		if err := validResponse.VisitGetUploadVideoLessonUrlResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// EditVideoLesson operation middleware
-func (sh *strictHandler) EditVideoLesson(ctx *gin.Context, lessonId LessonIdPath) {
-	var request EditVideoLessonRequestObject
-
-	request.LessonId = lessonId
-
-	var body EditVideoLessonJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.EditVideoLesson(ctx, request.(EditVideoLessonRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "EditVideoLesson")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(EditVideoLessonResponseObject); ok {
-		if err := validResponse.VisitEditVideoLessonResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SaveVideoLessonProgress operation middleware
-func (sh *strictHandler) SaveVideoLessonProgress(ctx *gin.Context, lessonId LessonIdPath) {
-	var request SaveVideoLessonProgressRequestObject
-
-	request.LessonId = lessonId
-
-	var body SaveVideoLessonProgressJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.SaveVideoLessonProgress(ctx, request.(SaveVideoLessonProgressRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SaveVideoLessonProgress")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(SaveVideoLessonProgressResponseObject); ok {
-		if err := validResponse.VisitSaveVideoLessonProgressResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreateSection operation middleware
-func (sh *strictHandler) CreateSection(ctx *gin.Context) {
-	var request CreateSectionRequestObject
-
-	var body CreateSectionJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateSection(ctx, request.(CreateSectionRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateSection")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(CreateSectionResponseObject); ok {
-		if err := validResponse.VisitCreateSectionResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// DeleteSection operation middleware
-func (sh *strictHandler) DeleteSection(ctx *gin.Context, sectionId SectionIdPath) {
-	var request DeleteSectionRequestObject
-
-	request.SectionId = sectionId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeleteSection(ctx, request.(DeleteSectionRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeleteSection")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(DeleteSectionResponseObject); ok {
-		if err := validResponse.VisitDeleteSectionResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// UpdateSectionTitle operation middleware
-func (sh *strictHandler) UpdateSectionTitle(ctx *gin.Context, sectionId SectionIdPath) {
-	var request UpdateSectionTitleRequestObject
-
-	request.SectionId = sectionId
-
-	var body UpdateSectionTitleJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.UpdateSectionTitle(ctx, request.(UpdateSectionTitleRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "UpdateSectionTitle")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(UpdateSectionTitleResponseObject); ok {
-		if err := validResponse.VisitUpdateSectionTitleResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// MoveSection operation middleware
-func (sh *strictHandler) MoveSection(ctx *gin.Context, sectionId SectionIdPath) {
-	var request MoveSectionRequestObject
-
-	request.SectionId = sectionId
-
-	var body MoveSectionJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.MoveSection(ctx, request.(MoveSectionRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "MoveSection")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(MoveSectionResponseObject); ok {
-		if err := validResponse.VisitMoveSectionResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {

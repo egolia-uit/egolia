@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 \
   -o billing \
   ./cmd/billing
 
-FROM alpine:3.23 AS final
+FROM alpine:3.23 AS production
 WORKDIR /app
 COPY --from=builder /app/billing .
 EXPOSE 8082 28082

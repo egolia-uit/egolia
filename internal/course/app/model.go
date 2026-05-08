@@ -66,18 +66,14 @@ const (
 type Lesson interface {
 	isLesson()
 	GetID() uuid.UUID
-	GetSectionID() uuid.UUID
 	GetTitle() string
 	GetLessonType() LessonType
-	GetOrder() string
 }
 
 type LessonBase struct {
 	ID         uuid.UUID
-	SectionID  uuid.UUID
 	Title      string
 	LessonType LessonType
-	Order      string
 }
 
 var _ Lesson = (*VideoLesson)(nil)
@@ -88,20 +84,12 @@ func (l *LessonBase) GetID() uuid.UUID {
 	return l.ID
 }
 
-func (l *LessonBase) GetSectionID() uuid.UUID {
-	return l.SectionID
-}
-
 func (l *LessonBase) GetTitle() string {
 	return l.Title
 }
 
 func (l *LessonBase) GetLessonType() LessonType {
 	return l.LessonType
-}
-
-func (l *LessonBase) GetOrder() string {
-	return l.Order
 }
 
 type VideoLesson struct {
@@ -139,7 +127,6 @@ type CourseDetailSectionItem struct {
 	ID       uuid.UUID
 	CourseID uuid.UUID
 	Title    string
-	Order    string
 	Lessons  []Lesson
 }
 

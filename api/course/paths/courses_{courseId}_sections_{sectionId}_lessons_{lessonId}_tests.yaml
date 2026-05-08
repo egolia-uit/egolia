@@ -11,6 +11,8 @@ post:
   summary: Create test
   operationId: createTest
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
   requestBody:
     required: true
@@ -39,6 +41,42 @@ post:
             format: uri
             example: http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/tests/123e4567-e89b-12d3-a456-426614174000
           required: true
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+patch:
+  security:
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
+  tags:
+    - Lesson
+  summary: Edit test lesson
+  operationId: editTestLesson
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
+    - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/TestLesson.yaml
+  responses:
+    204:
+      description: Test lesson successfully updated
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

@@ -12,89 +12,45 @@ import (
 )
 
 func toGRPCError(err error) error {
-	if cerr, ok := errors.AsType[*errs.Err](err); ok {
-		switch cerr.Code() {
+	if err, ok := errors.AsType[errs.Error](err); ok {
+		switch err.Code() {
 		case errs.CodeUnauthorized:
-			return status.Error(codes.Unauthenticated, cerr.Error())
+			return status.Error(codes.Unauthenticated, err.Error())
 		case errs.CodeForbidden:
-			return status.Error(codes.PermissionDenied, cerr.Error())
+			return status.Error(codes.PermissionDenied, err.Error())
 		case errs.CodeInvalid:
-			return status.Error(codes.InvalidArgument, cerr.Error())
+			return status.Error(codes.InvalidArgument, err.Error())
 		case errs.CodeUnimplemented:
-			return status.Error(codes.Unimplemented, cerr.Error())
+			return status.Error(codes.Unimplemented, err.Error())
 		case errs.CodeInternal,
 			errs.CodeInternalGenerateID:
-			return status.Error(codes.Internal, cerr.Error())
+			return status.Error(codes.Internal, err.Error())
 
 		case errs.CodeLessonNotFound:
-			return status.Error(codes.NotFound, cerr.Error())
+			return status.Error(codes.NotFound, err.Error())
 		case errs.CodeLessonGenerateOrderFailed:
-			return status.Error(codes.FailedPrecondition, cerr.Error())
+			return status.Error(codes.FailedPrecondition, err.Error())
 
 		case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson, errs.CodeObjectStorageFailToRetrieveDownloadURLForVideoLesson:
-			return status.Error(codes.Internal, cerr.Error())
+			return status.Error(codes.Internal, err.Error())
 		case errs.CodeCourseNotFound:
-			return status.Error(codes.NotFound, cerr.Error())
+			return status.Error(codes.NotFound, err.Error())
 		case errs.CodeCourseInvalid,
 			errs.CodeCourseAlreadyExists,
 			errs.CodeCourseCannotModify,
 			errs.CodeCourseHasEnrollment,
 			errs.CodeCourseStatusInvalid,
 			errs.CodeSectionInvalid:
-			return status.Error(codes.InvalidArgument, cerr.Error())
+			return status.Error(codes.InvalidArgument, err.Error())
 		case errs.CodeSectionNotFound:
-			return status.Error(codes.NotFound, cerr.Error())
+			return status.Error(codes.NotFound, err.Error())
 		case errs.CodeInstructorPermissionDenied:
-			return status.Error(codes.PermissionDenied, cerr.Error())
+			return status.Error(codes.PermissionDenied, err.Error())
 		case errs.CodeCourseNotApproved:
-			return status.Error(codes.PermissionDenied, cerr.Error())
+			return status.Error(codes.PermissionDenied, err.Error())
 
 		default:
-			return status.Error(codes.Unknown, cerr.Error())
-		}
-	} else if errors.Is(err, context.Canceled) {
-		return status.Error(codes.Canceled, "request canceled")
-	} else if errors.Is(err, context.DeadlineExceeded) {
-		return status.Error(codes.DeadlineExceeded, "deadline exceeded")
-	} else if cerr, ok := errors.AsType[errs.Error](err); ok {
-		switch cerr.Code() {
-		case errs.CodeUnauthorized:
-			return status.Error(codes.Unauthenticated, cerr.Error())
-		case errs.CodeForbidden:
-			return status.Error(codes.PermissionDenied, cerr.Error())
-		case errs.CodeInvalid:
-			return status.Error(codes.InvalidArgument, cerr.Error())
-		case errs.CodeUnimplemented:
-			return status.Error(codes.Unimplemented, cerr.Error())
-		case errs.CodeInternal,
-			errs.CodeInternalGenerateID:
-			return status.Error(codes.Internal, cerr.Error())
-
-		case errs.CodeLessonNotFound:
-			return status.Error(codes.NotFound, cerr.Error())
-		case errs.CodeLessonGenerateOrderFailed:
-			return status.Error(codes.FailedPrecondition, cerr.Error())
-
-		case errs.CodeObjectStorageFailToRetrieveUploadURLForVideoLesson, errs.CodeObjectStorageFailToRetrieveDownloadURLForVideoLesson:
-			return status.Error(codes.Internal, cerr.Error())
-		case errs.CodeCourseNotFound:
-			return status.Error(codes.NotFound, cerr.Error())
-		case errs.CodeCourseInvalid,
-			errs.CodeCourseAlreadyExists,
-			errs.CodeCourseCannotModify,
-			errs.CodeCourseHasEnrollment,
-			errs.CodeCourseStatusInvalid,
-			errs.CodeSectionInvalid:
-			return status.Error(codes.InvalidArgument, cerr.Error())
-		case errs.CodeSectionNotFound:
-			return status.Error(codes.NotFound, cerr.Error())
-		case errs.CodeInstructorPermissionDenied:
-			return status.Error(codes.PermissionDenied, cerr.Error())
-		case errs.CodeCourseNotApproved:
-			return status.Error(codes.PermissionDenied, cerr.Error())
-
-		default:
-			return status.Error(codes.Unknown, cerr.Error())
+			return status.Error(codes.Unknown, err.Error())
 		}
 	}
 	return err

@@ -7,41 +7,32 @@ post:
         - openid
         - entitlements
   tags:
-    - Section
-  summary: Create section
-  operationId: createSection
+    - Lesson
+  summary: Create lesson
+  operationId: createLesson
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
   requestBody:
     required: true
     content:
       application/json:
         schema:
           type: object
-          required:
-            - courseId
-            - title
-            - preOrder
           properties:
-            courseId:
-              $ref: ../components/schemas/Course.yaml#/properties/id
-            title:
-              type: string
-              minLength: 1
-              maxLength: 255
-              example: OOP Fundamentals
-
-            preOrder:
-              type: string
-              example: ab
-
+            video:
+              $ref: ../components/schemas/VideoLesson.yaml
+            test:
+              $ref: ../components/schemas/TestLesson.yaml
   responses:
     201:
-      description: Section created
+      description: Lesson created
       headers:
         Content-Location:
           schema:
             type: string
             format: uri
-            example: http://api.egolia.localhost/course/sections/123e4567-e89b-12d3-a456-426614174000
+            example: http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000
           required: true
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
@@ -49,7 +40,5 @@ post:
       $ref: ../../common/components/responses/UnauthorizedError.yaml
     403:
       $ref: ../../common/components/responses/ForbiddenError.yaml
-    404:
-      $ref: ../../common/components/responses/NotFoundError.yaml
     500:
       $ref: ../../common/components/responses/InternalServerError.yaml

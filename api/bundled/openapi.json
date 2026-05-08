@@ -59,7 +59,1277 @@
     "url": "https://egolia-uit.github.io/egolia"
   },
   "paths": {
-    "/course/instructor/courses": {
+    "/course/certificates/{certificateId}": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Certificate"
+        ],
+        "summary": "Get certificate by id",
+        "operationId": "getCertificateById",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_certificateIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certificate detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_Certificate"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/certificates/me": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Certificate"
+        ],
+        "summary": "Get my certificates",
+        "operationId": "getMyCertificates",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "My certificates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/course_Certificate"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/course_Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses-by-instructor/{instructorId}": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get instructor courses",
+        "operationId": "getInstructorCourses",
+        "description": "Maybe removed or used in the future",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_instructorIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Courses by instructor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/course_Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/course_Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses-published": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get published courses",
+        "operationId": "getPublishedCourses",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/course_Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/course_Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses-system": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get system courses",
+        "operationId": "getSystemCourses",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Courses in system",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/course_Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/course_Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/approve": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Approve course",
+        "operationId": "approveCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course approved"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/basic-info": {
+      "patch": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Update course",
+        "operationId": "updateCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/course_Course"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Course basic information updated"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/bookmark": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Bookmark course",
+        "operationId": "bookmarkCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Course bookmarked",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/bookmark"
+                },
+                "required": true
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/decline": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Decline course",
+        "operationId": "declineCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "Course content does not meet quality requirements."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Course declined"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/detail": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get course detail",
+        "operationId": "getCourseDetail",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full course content with section and lesson references",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_CourseDetail"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/enroll": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Enroll in course",
+        "operationId": "enrollInCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Course enrollment created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/enroll"
+                },
+                "required": true
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/finish": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Finish course",
+        "operationId": "finishCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course finished and certificate issued"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/hide": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Hide course",
+        "operationId": "hideCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course hidden"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/landing": {
+      "get": {
+        "security": [],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get course landing page",
+        "operationId": "getCourseLandingPage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Course landing page data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_Course"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/progress": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get course progress",
+        "operationId": "getCourseProgress",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Course progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_CourseProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/reviews": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Review course",
+        "operationId": "reviewCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "rating",
+                  "comment"
+                ],
+                "properties": {
+                  "rating": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "example": 5
+                  },
+                  "comment": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "example": "Great course with practical examples."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Course review created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/reviews/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/trigger-learning-reminder": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Trigger learning reminder",
+        "operationId": "triggerLearningReminder",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dryRun": {
+                    "type": "boolean",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Learning reminder triggered"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/unbookmark": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Unbookmark course",
+        "operationId": "unbookmarkCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course unbookmarked successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/unhide": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Unhide course",
+        "operationId": "unhideCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course unhidden"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}": {
+      "delete": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Delete course",
+        "operationId": "deleteCourse",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Course successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/me/enrolled": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get my enrolled courses",
+        "operationId": "getMyEnrolledCourses",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_pageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_limitQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_orderQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "My enrolled courses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/course_Course"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/course_Pagination"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "pagination"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses": {
       "post": {
         "security": [
           {
@@ -214,396 +1484,7 @@
         }
       }
     },
-    "/course/instructor/courses-system": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get system courses",
-        "operationId": "getSystemCourses",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_pageQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_limitQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_orderQuery"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Courses in system",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/course_Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/course_Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses-published": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get published courses",
-        "operationId": "getPublishedCourses",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_pageQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_limitQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_orderQuery"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Published courses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/course_Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/course_Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses-by-instructor/{instructorId}": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get instructor courses",
-        "operationId": "getInstructorCourses",
-        "description": "Maybe removed or used in the future",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_instructorIdPath"
-          },
-          {
-            "$ref": "#/components/parameters/course_pageQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_limitQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_orderQuery"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Courses by instructor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/course_Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/course_Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}": {
-      "delete": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Delete course",
-        "operationId": "deleteCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course successfully deleted"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/detail": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get course detail",
-        "operationId": "getCourseDetail",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Full course content with section and lesson references",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/course_CourseDetail"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/basic-info": {
-      "patch": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Update course",
-        "operationId": "updateCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/course_Course"
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Course basic information updated"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/enroll": {
+    "/course/lesson-comments/{commentId}/reply": {
       "post": {
         "security": [
           {
@@ -620,182 +1501,13 @@
           }
         ],
         "tags": [
-          "Course"
+          "Lesson"
         ],
-        "summary": "Enroll in course",
-        "operationId": "enrollInCourse",
+        "summary": "Reply lesson comment",
+        "operationId": "replyLessonComment",
         "parameters": [
           {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Course enrollment created",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/enroll"
-                },
-                "required": true
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/progress": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get course progress",
-        "operationId": "getCourseProgress",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Course progress",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/course_CourseProgress"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/finish": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Finish course",
-        "operationId": "finishCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course finished and certificate issued"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/reviews": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Review course",
-        "operationId": "reviewCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
+            "$ref": "#/components/parameters/course_commentIdPath"
           }
         ],
         "requestBody": {
@@ -805,21 +1517,11 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "rating",
-                  "comment"
+                  "content"
                 ],
                 "properties": {
-                  "rating": {
-                    "type": "integer",
-                    "format": "int32",
-                    "minimum": 1,
-                    "maximum": 5,
-                    "example": 5
-                  },
-                  "comment": {
-                    "type": "string",
-                    "maxLength": 2000,
-                    "example": "Great course with practical examples."
+                  "content": {
+                    "$ref": "#/components/schemas/course_content"
                   }
                 }
               }
@@ -828,13 +1530,13 @@
         },
         "responses": {
           "201": {
-            "description": "Course review created",
+            "description": "Lesson comment reply created",
             "headers": {
               "Content-Location": {
                 "schema": {
                   "type": "string",
                   "format": "uri",
-                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/reviews/123e4567-e89b-12d3-a456-426614174000"
+                  "example": "http://api.egolia.localhost/course/lesson-comments/123e4567-e89b-12d3-a456-426614174000/reply"
                 },
                 "required": true
               }
@@ -858,698 +1560,7 @@
         }
       }
     },
-    "/course/instructor/courses/{courseId}/bookmark": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Bookmark course",
-        "operationId": "bookmarkCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Course bookmarked",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/bookmark"
-                },
-                "required": true
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/unbookmark": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Unbookmark course",
-        "operationId": "unbookmarkCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course unbookmarked successfully"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/hide": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Hide course",
-        "operationId": "hideCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course hidden"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/unhide": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Unhide course",
-        "operationId": "unhideCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course unhidden"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/trigger-learning-reminder": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Trigger learning reminder",
-        "operationId": "triggerLearningReminder",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "dryRun": {
-                    "type": "boolean",
-                    "example": false
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Learning reminder triggered"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/courses/{courseId}/landing": {
-      "get": {
-        "security": [],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get course landing page",
-        "operationId": "getCourseLandingPage",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Course landing page data",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/course_Course"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/admin/courses/{courseId}/approve": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Approve course",
-        "operationId": "approveCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Course approved"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/admin/courses/{courseId}/decline": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Decline course",
-        "operationId": "declineCourse",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "reason": {
-                    "type": "string",
-                    "maxLength": 1000,
-                    "example": "Course content does not meet quality requirements."
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Course declined"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/courses/me/enrolled": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Get my enrolled courses",
-        "operationId": "getMyEnrolledCourses",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_pageQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_limitQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_orderQuery"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "My enrolled courses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/course_Course"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/course_Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/sections": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Section"
-        ],
-        "summary": "Create section",
-        "operationId": "createSection",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "courseId",
-                  "title",
-                  "preOrder"
-                ],
-                "properties": {
-                  "courseId": {
-                    "$ref": "#/components/schemas/course_properties-id"
-                  },
-                  "title": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "OOP Fundamentals"
-                  },
-                  "preOrder": {
-                    "type": "string",
-                    "example": "ab"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Section created",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/sections/123e4567-e89b-12d3-a456-426614174000"
-                },
-                "required": true
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/sections/{sectionId}": {
-      "delete": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Section"
-        ],
-        "summary": "Delete section",
-        "operationId": "deleteSection",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_sectionIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Section successfully deleted"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      },
-      "patch": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Section"
-        ],
-        "summary": "Update section",
-        "operationId": "updateSectionTitle",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_sectionIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "title"
-                ],
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255,
-                    "example": "OOP Fundamentals"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Section title successfully updated"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/sections/{sectionId}/move": {
+    "/course/courses/{courseId}/sections/{sectionId}/move": {
       "post": {
         "security": [
           {
@@ -1572,6 +1583,9 @@
         "operationId": "moveSection",
         "parameters": [
           {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
             "$ref": "#/components/parameters/course_sectionIdPath"
           }
         ],
@@ -1583,7 +1597,7 @@
                 "type": "object",
                 "properties": {
                   "courseId": {
-                    "$ref": "#/components/schemas/course_properties-id"
+                    "$ref": "#/components/schemas/course_id"
                   },
                   "sectionId": {
                     "type": "string",
@@ -1663,7 +1677,128 @@
         }
       }
     },
-    "/course/instructor/lessons": {
+    "/course/courses/{courseId}/sections/{sectionId}": {
+      "delete": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Delete section",
+        "operationId": "deleteSection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Section successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Section"
+        ],
+        "summary": "Update section",
+        "operationId": "updateSectionTitle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP Fundamentals"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Section title successfully updated"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/sections": {
       "post": {
         "security": [
           {
@@ -1680,22 +1815,39 @@
           }
         ],
         "tags": [
-          "Lesson"
+          "Section"
         ],
-        "summary": "Create lesson",
-        "operationId": "createLesson",
+        "summary": "Create section",
+        "operationId": "createSection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "courseId",
+                  "title",
+                  "preOrder"
+                ],
                 "properties": {
-                  "video": {
-                    "$ref": "#/components/schemas/course_VideoLesson"
+                  "courseId": {
+                    "$ref": "#/components/schemas/course_id"
                   },
-                  "test": {
-                    "$ref": "#/components/schemas/course_TestLesson"
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "OOP Fundamentals"
+                  },
+                  "preOrder": {
+                    "type": "string",
+                    "example": "ab"
                   }
                 }
               }
@@ -1704,13 +1856,13 @@
         },
         "responses": {
           "201": {
-            "description": "Lesson created",
+            "description": "Section created",
             "headers": {
               "Content-Location": {
                 "schema": {
                   "type": "string",
                   "format": "uri",
-                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000"
+                  "example": "http://api.egolia.localhost/course/sections/123e4567-e89b-12d3-a456-426614174000"
                 },
                 "required": true
               }
@@ -1725,13 +1877,16 @@
           "403": {
             "$ref": "#/components/responses/course_ForbiddenError"
           },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
           "500": {
             "$ref": "#/components/responses/course_InternalServerError"
           }
         }
       }
     },
-    "/course/instructor/lessons/{lessonId}": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments": {
       "get": {
         "security": [
           {
@@ -1750,23 +1905,330 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Get lesson detail",
-        "operationId": "getLessonDetail",
+        "summary": "Get lesson comments",
+        "operationId": "getLessonComments",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
         ],
         "responses": {
           "200": {
-            "description": "Lesson detail",
+            "description": "Top-level comments for the lesson",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "data": {
-                      "$ref": "#/components/schemas/course_LessonDetail"
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/course_LessonComment"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Comment on lesson",
+        "operationId": "commentOnLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "$ref": "#/components/schemas/course_content"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lesson comment created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/comments/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/mark-completed": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Mark lesson as completed",
+        "operationId": "markLessonAsCompleted",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Lesson marked as completed"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/move": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Move lesson",
+        "operationId": "moveLesson",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "$ref": "#/components/schemas/course_LessonType"
+                  },
+                  "sectionId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+                  },
+                  "afterLesson": {
+                    "x-go-type-name": "moveAfterLesson",
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0"
+                      },
+                      "type": {
+                        "$ref": "#/components/schemas/course_LessonType"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "type"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "sectionId",
+                  "afterLesson"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lesson moved successfully"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Get lesson progress",
+        "operationId": "getLessonProgress",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lesson progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_LessonProgressDetail"
                     }
                   },
                   "required": [
@@ -1792,56 +2254,10 @@
             "$ref": "#/components/responses/course_InternalServerError"
           }
         }
-      },
-      "delete": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Delete lesson",
-        "operationId": "deleteLesson",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_lessonIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Lesson successfully deleted"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
       }
     },
-    "/course/instructor/lessons/{lessonId}/video": {
-      "patch": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress": {
+      "put": {
         "security": [
           {
             "course_Oauth2": [
@@ -1859,9 +2275,15 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Edit video lesson",
-        "operationId": "editVideoLesson",
+        "summary": "Save test lesson progress",
+        "operationId": "saveTestLessonProgress",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
@@ -1871,14 +2293,29 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/course_VideoLesson"
+                "$ref": "#/components/schemas/course_TestLessonProgress"
               }
             }
           }
         },
         "responses": {
-          "204": {
-            "description": "Video lesson successfully updated"
+          "200": {
+            "description": "Test lesson progress saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_TestLessonProgress"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"
@@ -1898,7 +2335,95 @@
         }
       }
     },
-    "/course/instructor/lessons/{lessonId}/test": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Lesson"
+        ],
+        "summary": "Create test",
+        "operationId": "createTest",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_lessonIdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "questions"
+                ],
+                "properties": {
+                  "type": {
+                    "$ref": "#/components/schemas/course_TestLessonType"
+                  },
+                  "questions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/components/schemas/course_TestQuestion"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Test created",
+            "headers": {
+              "Content-Location": {
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/tests/123e4567-e89b-12d3-a456-426614174000"
+                },
+                "required": true
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      },
       "patch": {
         "security": [
           {
@@ -1920,6 +2445,12 @@
         "summary": "Edit test lesson",
         "operationId": "editTestLesson",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
@@ -1956,7 +2487,7 @@
         }
       }
     },
-    "/course/instructor/lessons/{lessonId}/upload-video-url": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url": {
       "post": {
         "security": [
           {
@@ -1978,6 +2509,12 @@
         "summary": "Get upload video lesson URL",
         "operationId": "getUploadVideoLessonUrl",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
@@ -2051,154 +2588,7 @@
         }
       }
     },
-    "/course/instructor/lessons/{lessonId}/tests": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Create test",
-        "operationId": "createTest",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_lessonIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "type",
-                  "questions"
-                ],
-                "properties": {
-                  "type": {
-                    "$ref": "#/components/schemas/course_TestLessonType"
-                  },
-                  "questions": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                      "$ref": "#/components/schemas/course_TestQuestion"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Test created",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/tests/123e4567-e89b-12d3-a456-426614174000"
-                },
-                "required": true
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/lessons/{lessonId}/progress": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Get lesson progress",
-        "operationId": "getLessonProgress",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_lessonIdPath"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lesson progress",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/course_LessonProgressDetail"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/lessons/{lessonId}/video-progress": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress": {
       "put": {
         "security": [
           {
@@ -2220,6 +2610,12 @@
         "summary": "Save video lesson progress",
         "operationId": "saveVideoLessonProgress",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
@@ -2256,8 +2652,8 @@
         }
       }
     },
-    "/course/instructor/lessons/{lessonId}/test-progress": {
-      "put": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video": {
+      "patch": {
         "security": [
           {
             "course_Oauth2": [
@@ -2275,9 +2671,15 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Save test lesson progress",
-        "operationId": "saveTestLessonProgress",
+        "summary": "Edit video lesson",
+        "operationId": "editVideoLesson",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
@@ -2287,77 +2689,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/course_TestLessonProgress"
+                "$ref": "#/components/schemas/course_VideoLesson"
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Test lesson progress saved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/course_TestLessonProgress"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/lessons/{lessonId}/mark-completed": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Mark lesson as completed",
-        "operationId": "markLessonAsCompleted",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_lessonIdPath"
-          }
-        ],
         "responses": {
           "204": {
-            "description": "Lesson marked as completed"
+            "description": "Video lesson successfully updated"
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"
@@ -2377,99 +2716,7 @@
         }
       }
     },
-    "/course/instructor/lessons/{lessonId}/move": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Lesson"
-        ],
-        "summary": "Move lesson",
-        "operationId": "moveLesson",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_lessonIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "$ref": "#/components/schemas/course_LessonType"
-                  },
-                  "sectionId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
-                  },
-                  "afterLesson": {
-                    "x-go-type-name": "moveAfterLesson",
-                    "type": "object",
-                    "nullable": true,
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "format": "uuid",
-                        "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0"
-                      },
-                      "type": {
-                        "$ref": "#/components/schemas/course_LessonType"
-                      }
-                    },
-                    "required": [
-                      "id",
-                      "type"
-                    ]
-                  }
-                },
-                "required": [
-                  "type",
-                  "sectionId",
-                  "afterLesson"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Lesson moved successfully"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/lessons/{lessonId}/comments": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}": {
       "get": {
         "security": [
           {
@@ -2488,26 +2735,29 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Get lesson comments",
-        "operationId": "getLessonComments",
+        "summary": "Get lesson detail",
+        "operationId": "getLessonDetail",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
         ],
         "responses": {
           "200": {
-            "description": "Top-level comments for the lesson",
+            "description": "Lesson detail",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/course_LessonComment"
-                      }
+                      "$ref": "#/components/schemas/course_LessonDetail"
                     }
                   },
                   "required": [
@@ -2516,6 +2766,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
           },
           "401": {
             "$ref": "#/components/responses/course_UnauthorizedError"
@@ -2531,7 +2784,7 @@
           }
         }
       },
-      "post": {
+      "delete": {
         "security": [
           {
             "course_Oauth2": [
@@ -2549,44 +2802,22 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Comment on lesson",
-        "operationId": "commentOnLesson",
+        "summary": "Delete lesson",
+        "operationId": "deleteLesson",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
+          },
           {
             "$ref": "#/components/parameters/course_lessonIdPath"
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "content"
-                ],
-                "properties": {
-                  "content": {
-                    "$ref": "#/components/schemas/course_content"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
-          "201": {
-            "description": "Lesson comment created",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/comments/123e4567-e89b-12d3-a456-426614174000"
-                },
-                "required": true
-              }
-            }
+          "204": {
+            "description": "Lesson successfully deleted"
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"
@@ -2606,7 +2837,7 @@
         }
       }
     },
-    "/course/instructor/lesson-comments/{commentId}/reply": {
+    "/course/courses/{courseId}/sections/{sectionId}/lessons": {
       "post": {
         "security": [
           {
@@ -2625,11 +2856,14 @@
         "tags": [
           "Lesson"
         ],
-        "summary": "Reply lesson comment",
-        "operationId": "replyLessonComment",
+        "summary": "Create lesson",
+        "operationId": "createLesson",
         "parameters": [
           {
-            "$ref": "#/components/parameters/course_commentIdPath"
+            "$ref": "#/components/parameters/course_courseIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/course_sectionIdPath"
           }
         ],
         "requestBody": {
@@ -2638,12 +2872,12 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "content"
-                ],
                 "properties": {
-                  "content": {
-                    "$ref": "#/components/schemas/course_content"
+                  "video": {
+                    "$ref": "#/components/schemas/course_VideoLesson"
+                  },
+                  "test": {
+                    "$ref": "#/components/schemas/course_TestLesson"
                   }
                 }
               }
@@ -2652,13 +2886,13 @@
         },
         "responses": {
           "201": {
-            "description": "Lesson comment reply created",
+            "description": "Lesson created",
             "headers": {
               "Content-Location": {
                 "schema": {
                   "type": "string",
                   "format": "uri",
-                  "example": "http://api.egolia.localhost/course/lesson-comments/123e4567-e89b-12d3-a456-426614174000/reply"
+                  "example": "http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000"
                 },
                 "required": true
               }
@@ -2672,142 +2906,6 @@
           },
           "403": {
             "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/certificates/me": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Certificate"
-        ],
-        "summary": "Get my certificates",
-        "operationId": "getMyCertificates",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_pageQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_limitQuery"
-          },
-          {
-            "$ref": "#/components/parameters/course_orderQuery"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "My certificates",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/course_Certificate"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/course_Pagination"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "pagination"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/instructor/certificates/{certificateId}": {
-      "get": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Certificate"
-        ],
-        "summary": "Get certificate by id",
-        "operationId": "getCertificateById",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_certificateIdPath"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Certificate detail",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/course_Certificate"
-                    }
-                  },
-                  "required": [
-                    "data"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
           },
           "500": {
             "$ref": "#/components/responses/course_InternalServerError"
@@ -3813,6 +3911,16 @@
       }
     },
     "parameters": {
+      "course_certificateIdPath": {
+        "name": "certificateId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
+        }
+      },
       "course_pageQuery": {
         "name": "page",
         "in": "query",
@@ -3864,9 +3972,23 @@
         "name": "courseId",
         "in": "path",
         "required": true,
+        "description": "Unique identifier of the course",
         "schema": {
-          "$ref": "#/components/schemas/course_properties-id"
-        }
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
+      },
+      "course_commentIdPath": {
+        "name": "commentId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the post comment",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
       },
       "course_sectionIdPath": {
         "name": "sectionId",
@@ -3886,27 +4008,6 @@
           "type": "string",
           "format": "uuid",
           "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
-        }
-      },
-      "course_commentIdPath": {
-        "name": "commentId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the post comment",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
-      },
-      "course_certificateIdPath": {
-        "name": "certificateId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "format": "uuid",
-          "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd"
         }
       },
       "billing_pageQuery": {
@@ -4020,81 +4121,66 @@
     "schemas": {
       "course_id": {
         "type": "string",
+        "format": "uuid",
+        "example": "123e4567-e89b-12d3-a456-426614174000",
+        "readOnly": true
+      },
+      "course_properties-id": {
+        "type": "string",
         "format": "number",
         "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
         "example": "100"
       },
-      "course_CourseStatus": {
-        "type": "string",
-        "enum": [
-          "draft",
-          "pending",
-          "approved"
-        ],
-        "default": "draft",
-        "example": "draft"
-      },
-      "course_Course": {
+      "course_Certificate": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid",
-            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd",
             "readOnly": true
           },
-          "originalCourseId": {
+          "courseId": {
+            "$ref": "#/components/schemas/course_id"
+          },
+          "userId": {
+            "$ref": "#/components/schemas/course_properties-id"
+          },
+          "issuedAt": {
             "type": "string",
-            "format": "uuid",
-            "example": "123e4567-e89b-12d3-a456-426614174000",
-            "readOnly": true
-          },
-          "title": {
-            "type": "string",
-            "example": "Introduction to Programming"
-          },
-          "price": {
-            "type": "integer",
-            "format": "int64",
-            "example": 1000000
-          },
-          "hidden": {
-            "type": "boolean",
-            "default": true,
-            "example": true,
-            "readOnly": true
-          },
-          "instructorId": {
-            "$ref": "#/components/schemas/course_id",
-            "example": "100",
-            "readOnly": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/course_CourseStatus",
-            "readOnly": true
-          },
-          "overview": {
-            "type": "string",
-            "example": "Learn practical Go backend concepts in this beginner-friendly course."
-          },
-          "introduction": {
-            "type": "object",
-            "x-go-type-name": "CourseLandingPageIntroduction",
-            "properties": {
-              "videoUrl": {
-                "type": "string",
-                "format": "uri",
-                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
-              }
-            },
-            "required": [
-              "videoUrl"
-            ]
+            "format": "date-time",
+            "example": "2026-05-01T07:30:00Z"
           }
         },
         "required": [
-          "title",
-          "price"
+          "id",
+          "courseId",
+          "userId",
+          "issuedAt"
+        ]
+      },
+      "course_Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "EXAMPLE_CODE"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message",
+            "example": "Example error"
+          },
+          "more_info": {
+            "type": "string",
+            "description": "URL with more information about the error",
+            "example": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+          }
+        },
+        "required": [
+          "code",
+          "message"
         ]
       },
       "course_Pagination": {
@@ -4145,35 +4231,78 @@
           "hasPrev"
         ]
       },
-      "course_Error": {
+      "course_CourseStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "pending",
+          "approved"
+        ],
+        "default": "draft",
+        "example": "draft"
+      },
+      "course_Course": {
         "type": "object",
         "properties": {
-          "code": {
+          "id": {
             "type": "string",
-            "description": "Error code",
-            "example": "EXAMPLE_CODE"
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "readOnly": true
           },
-          "message": {
+          "originalCourseId": {
             "type": "string",
-            "description": "Human-readable error message",
-            "example": "Example error"
+            "format": "uuid",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "readOnly": true
           },
-          "more_info": {
+          "title": {
             "type": "string",
-            "description": "URL with more information about the error",
-            "example": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+            "example": "Introduction to Programming"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1000000
+          },
+          "hidden": {
+            "type": "boolean",
+            "default": true,
+            "example": true,
+            "readOnly": true
+          },
+          "instructorId": {
+            "$ref": "#/components/schemas/course_properties-id",
+            "example": "100",
+            "readOnly": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/course_CourseStatus",
+            "readOnly": true
+          },
+          "overview": {
+            "type": "string",
+            "example": "Learn practical Go backend concepts in this beginner-friendly course."
+          },
+          "introduction": {
+            "type": "object",
+            "x-go-type-name": "CourseLandingPageIntroduction",
+            "properties": {
+              "videoUrl": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://cdn.egolia.localhost/videos/course-intro.mp4"
+              }
+            },
+            "required": [
+              "videoUrl"
+            ]
           }
         },
         "required": [
-          "code",
-          "message"
+          "title",
+          "price"
         ]
-      },
-      "course_properties-id": {
-        "type": "string",
-        "format": "uuid",
-        "example": "123e4567-e89b-12d3-a456-426614174000",
-        "readOnly": true
       },
       "course_Section": {
         "type": "object",
@@ -4190,13 +4319,8 @@
             "maxLength": 255,
             "example": "OOP Fundamentals"
           },
-          "order": {
-            "type": "string",
-            "example": "a",
-            "readOnly": true
-          },
           "courseId": {
-            "$ref": "#/components/schemas/course_properties-id"
+            "$ref": "#/components/schemas/course_id"
           }
         },
         "required": [
@@ -4204,20 +4328,6 @@
           "courseId",
           "title"
         ]
-      },
-      "course_Section_properties-id": {
-        "type": "string",
-        "format": "uuid",
-        "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
-        "readOnly": true
-      },
-      "course_LessonType": {
-        "type": "string",
-        "enum": [
-          "video",
-          "test"
-        ],
-        "example": "video"
       },
       "course_Lesson": {
         "type": "object",
@@ -4228,27 +4338,14 @@
             "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
             "readOnly": true
           },
-          "sectionId": {
-            "$ref": "#/components/schemas/course_Section_properties-id"
-          },
           "title": {
             "type": "string",
             "example": "Introduction to Python"
-          },
-          "order": {
-            "type": "string",
-            "example": "a",
-            "readOnly": true
-          },
-          "lessonType": {
-            "$ref": "#/components/schemas/course_LessonType",
-            "readOnly": true
           }
         },
         "required": [
           "id",
-          "title",
-          "lessonType"
+          "title"
         ]
       },
       "course_CourseDetailSectionItem": {
@@ -4299,11 +4396,11 @@
         "type": "object",
         "properties": {
           "courseId": {
-            "$ref": "#/components/schemas/course_properties-id",
+            "$ref": "#/components/schemas/course_id",
             "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "userId": {
-            "$ref": "#/components/schemas/course_id"
+            "$ref": "#/components/schemas/course_properties-id"
           },
           "totalLessons": {
             "type": "integer",
@@ -4338,148 +4435,66 @@
           "isCompleted"
         ]
       },
-      "course_VideoLesson": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/course_Lesson"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "videoKey": {
-                "type": "string",
-                "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
-                "writeOnly": true
-              },
-              "videoUrl": {
-                "type": "string",
-                "format": "uri",
-                "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "readOnly": true
-              },
-              "duration": {
-                "type": "integer",
-                "format": "int64",
-                "example": 300
-              }
-            },
-            "required": [
-              "videoKey",
-              "videoUrl",
-              "duration"
-            ]
-          }
-        ]
-      },
-      "course_TestAnswer": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
-            "readOnly": true
-          },
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1000,
-            "example": "Encapsulation hides implementation details behind a stable API."
-          },
-          "isCorrect": {
-            "type": "boolean",
-            "example": true
-          }
-        },
-        "required": [
-          "id",
-          "content",
-          "isCorrect"
-        ]
-      },
-      "course_TestQuestion": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
-            "readOnly": true
-          },
-          "question": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 2000,
-            "example": "Which principle of OOP enables exposing only essential behavior?"
-          },
-          "answers": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "$ref": "#/components/schemas/course_TestAnswer"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "question",
-          "answers"
-        ]
-      },
-      "course_TestLesson": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/course_Lesson"
-          },
-          {
-            "type": "object",
-            "required": [
-              "type",
-              "questions"
-            ],
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "multipleChoice",
-                  "singleChoice"
-                ],
-                "example": "singleChoice"
-              },
-              "questions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "$ref": "#/components/schemas/course_TestQuestion"
-                }
-              }
-            }
-          }
-        ]
-      },
-      "course_LessonDetail": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/course_VideoLesson"
-          },
-          {
-            "$ref": "#/components/schemas/course_TestLesson"
-          }
-        ]
-      },
-      "course_TestLessonType": {
+      "course_content": {
         "type": "string",
-        "enum": [
-          "multipleChoice",
-          "singleChoice"
-        ],
-        "example": "singleChoice"
+        "minLength": 1,
+        "maxLength": 4000,
+        "example": "This explanation of polymorphism is very clear."
       },
       "course_Lesson_properties-id": {
         "type": "string",
         "format": "uuid",
         "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
         "readOnly": true
+      },
+      "course_LessonComment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "1c948f26-c6db-4f20-b6ac-2d10164fb8c0",
+            "readOnly": true
+          },
+          "userId": {
+            "$ref": "#/components/schemas/course_properties-id"
+          },
+          "lessonId": {
+            "$ref": "#/components/schemas/course_Lesson_properties-id"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "example": "This explanation of polymorphism is very clear."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-22T10:30:00Z"
+          },
+          "parentCommentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "example": "8fd4f406-583d-4cd5-9c24-23c490a06711"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "lessonId",
+          "content",
+          "createdAt"
+        ]
+      },
+      "course_LessonType": {
+        "type": "string",
+        "enum": [
+          "video",
+          "test"
+        ],
+        "example": "video"
       },
       "course_LessonProgress": {
         "type": "object",
@@ -4491,7 +4506,7 @@
             "readOnly": true
           },
           "userId": {
-            "$ref": "#/components/schemas/course_id",
+            "$ref": "#/components/schemas/course_properties-id",
             "readOnly": true
           },
           "lessonId": {
@@ -4562,80 +4577,165 @@
           }
         ]
       },
-      "course_LessonComment": {
+      "course_TestLessonType": {
+        "type": "string",
+        "enum": [
+          "multipleChoice",
+          "singleChoice"
+        ],
+        "example": "singleChoice"
+      },
+      "course_TestAnswer": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid",
-            "example": "1c948f26-c6db-4f20-b6ac-2d10164fb8c0",
+            "example": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
             "readOnly": true
-          },
-          "userId": {
-            "$ref": "#/components/schemas/course_id"
-          },
-          "lessonId": {
-            "$ref": "#/components/schemas/course_Lesson_properties-id"
           },
           "content": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 4000,
-            "example": "This explanation of polymorphism is very clear."
+            "maxLength": 1000,
+            "example": "Encapsulation hides implementation details behind a stable API."
           },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-22T10:30:00Z"
-          },
-          "parentCommentId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true,
-            "example": "8fd4f406-583d-4cd5-9c24-23c490a06711"
+          "isCorrect": {
+            "type": "boolean",
+            "example": true
           }
         },
         "required": [
           "id",
-          "userId",
-          "lessonId",
           "content",
-          "createdAt"
+          "isCorrect"
         ]
       },
-      "course_content": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 4000,
-        "example": "This explanation of polymorphism is very clear."
-      },
-      "course_Certificate": {
+      "course_TestQuestion": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid",
-            "example": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd",
+            "example": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
             "readOnly": true
           },
-          "courseId": {
-            "$ref": "#/components/schemas/course_properties-id"
-          },
-          "userId": {
-            "$ref": "#/components/schemas/course_id"
-          },
-          "issuedAt": {
+          "question": {
             "type": "string",
-            "format": "date-time",
-            "example": "2026-05-01T07:30:00Z"
+            "minLength": 1,
+            "maxLength": 2000,
+            "example": "Which principle of OOP enables exposing only essential behavior?"
+          },
+          "answers": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/course_TestAnswer"
+            }
           }
         },
         "required": [
           "id",
-          "courseId",
-          "userId",
-          "issuedAt"
+          "question",
+          "answers"
         ]
+      },
+      "course_TestLesson": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/course_Lesson"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lessonType": {
+                "type": "string",
+                "enum": [
+                  "test"
+                ],
+                "example": "test"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "multipleChoice",
+                  "singleChoice"
+                ],
+                "example": "singleChoice"
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/course_TestQuestion"
+                }
+              }
+            },
+            "required": [
+              "lessonType",
+              "type",
+              "questions"
+            ]
+          }
+        ]
+      },
+      "course_VideoLesson": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/course_Lesson"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lessonType": {
+                "type": "string",
+                "enum": [
+                  "video"
+                ],
+                "example": "video"
+              },
+              "videoKey": {
+                "type": "string",
+                "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
+                "writeOnly": true
+              },
+              "videoUrl": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "readOnly": true
+              },
+              "duration": {
+                "type": "integer",
+                "format": "int64",
+                "example": 300
+              }
+            },
+            "required": [
+              "lessonType",
+              "videoKey",
+              "videoUrl",
+              "duration"
+            ]
+          }
+        ]
+      },
+      "course_LessonDetail": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/course_VideoLesson"
+          },
+          {
+            "$ref": "#/components/schemas/course_TestLesson"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "lessonType",
+          "mapping": {
+            "video": "#/components/schemas/course_VideoLesson",
+            "test": "#/components/schemas/course_TestLesson"
+          }
+        }
       },
       "billing_id": {
         "type": "string",
@@ -5060,21 +5160,6 @@
           }
         }
       },
-      "course_InternalServerError": {
-        "description": "Internal Server Error response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/course_Error"
-            },
-            "example": {
-              "code": "INTERNAL_SERVER_ERROR",
-              "message": "An internal server error occurred. Please try again later",
-              "more_info": "https://api.egolia.com/docs/errors/INTERNAL_SERVER_ERROR"
-            }
-          }
-        }
-      },
       "course_NotFoundError": {
         "description": "Not Found Error response",
         "content": {
@@ -5086,6 +5171,21 @@
               "code": "NOT_FOUND",
               "message": "The requested resource was not found",
               "more_info": "https://api.egolia.com/docs/errors/NOT_FOUND"
+            }
+          }
+        }
+      },
+      "course_InternalServerError": {
+        "description": "Internal Server Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/course_Error"
+            },
+            "example": {
+              "code": "INTERNAL_SERVER_ERROR",
+              "message": "An internal server error occurred. Please try again later",
+              "more_info": "https://api.egolia.com/docs/errors/INTERNAL_SERVER_ERROR"
             }
           }
         }

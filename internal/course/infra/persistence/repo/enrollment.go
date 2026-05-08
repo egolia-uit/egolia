@@ -24,6 +24,19 @@ func (r *EnrollmentRepo) ExistsByCourseID(ctx context.Context, courseID uuid.UUI
 	panic("unimplemented")
 }
 
+func (r *EnrollmentRepo) ExistsByCourseAndLearner(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error) {
+	// var count int64
+	// if err := r.db.WithContext(ctx).Model(&model.Enrollment{}).
+	// 	Where("course_id = ? AND learner_id = ?", courseID, learnerID).
+	// 	Count(&count).Error; err != nil {
+	// 	return false, err
+	// }
+	// return count > 0, nil
+
+	// unemplemented
+	return false, nil
+}
+
 func (r *EnrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRepoGetByID, forUpdate bool) (*domain.Enrollment, error) {
 	db := r.db.WithContext(ctx)
 	if forUpdate {
@@ -32,6 +45,19 @@ func (r *EnrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRe
 
 	var m model.Enrollment
 	if err := db.First(&m, "id = ?", params.ID).Error; err != nil {
+		return nil, err
+	}
+	return m.ToDomain(), nil
+}
+
+func (r *EnrollmentRepo) GetByCourseAndLearner(ctx context.Context, params domain.EnrollmentRepoGetByCourseAndLearner, forUpdate bool) (*domain.Enrollment, error) {
+	db := r.db.WithContext(ctx)
+	if forUpdate {
+		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+
+	var m model.Enrollment
+	if err := db.First(&m, "course_id = ? AND learner_id = ?", params.CourseID, params.LearnerID).Error; err != nil {
 		return nil, err
 	}
 	return m.ToDomain(), nil

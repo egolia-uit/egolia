@@ -1,10 +1,13 @@
 allOf:
   - $ref: ./Lesson.yaml
   - type: object
-    required:
-      - type
-      - questions
     properties:
+      lessonType:
+        type: string
+        enum:
+          - test
+        example: test
+
       type:
         type: string
         enum:
@@ -17,3 +20,8 @@ allOf:
         items:
           type: object
           $ref: ./TestQuestion.yaml
+
+    required:
+      - lessonType
+      - type
+      - questions

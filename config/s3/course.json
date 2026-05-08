@@ -1,0 +1,17 @@
+{
+  "$schema": "https://gist.githubusercontent.com/jstewmon/ee5d4b7ec0d8d60cbc303cb515272f8a/raw/aws-iam-poilcy-schema.json",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3Admin",
+      "Effect": "Allow",
+      "Action": ["s3:*"],
+      "Resource": ["arn:aws:s3:::course", "arn:aws:s3:::course/*"],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "jwt:roles": ["admin"]
+        }
+      }
+    }
+  ]
+}

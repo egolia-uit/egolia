@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 \
   -o blog \
   ./cmd/blog
 
-FROM alpine:3.23 AS final
+FROM alpine:3.23 AS production
 WORKDIR /app
 COPY --from=builder /app/blog .
 EXPOSE 8083 28083

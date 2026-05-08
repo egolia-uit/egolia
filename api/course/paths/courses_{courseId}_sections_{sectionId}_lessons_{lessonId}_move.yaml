@@ -11,8 +11,9 @@ post:
   summary: Move lesson
   operationId: moveLesson
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
-
   requestBody:
     required: true
     content:

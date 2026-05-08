@@ -7,23 +7,10 @@ properties:
     example: 2926aa3f-29ad-449b-9556-c44d4fc676a0
     readOnly: true
 
-  sectionId:
-    $ref: ./Section.yaml#/properties/id
-
   title:
     type: string
     example: Introduction to Python
 
-  order:
-    type: string
-    example: a
-    readOnly: true
-
-  lessonType:
-    $ref: ./LessonType.yaml
-    readOnly: true
-
 required:
   - id
   - title
-  - lessonType

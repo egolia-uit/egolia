@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 	"errors"
-	"strings"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -12,43 +12,36 @@ import (
 )
 
 type UpdateCourse struct {
-	CourseID     uuid.UUID
-	ActorID      uuid.UUID
-	IsAdmin      bool
-	Title        string
-	Price        int64
-	Overview     string
-	Introduction CourseLandingPageIntroduction
+	CourseID             uuid.UUID
+	Title                string // emptyable
+	Price                int64  // emptyable
+	Overview             string // emptyable
+	IntroductionVideoKey string // emptyable
 }
+
+type UpdateCourseCmd Cmd[UpdateCourse]
 
 type UpdateCourseHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewUpdateCourseHandler(uow domain.UnitOfWork) *UpdateCourseHandler {
-	return &UpdateCourseHandler{
+func NewUpdateCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) UpdateCourseCmd {
+	handler := &UpdateCourseHandler{
 		uow: uow,
 	}
+	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
+
+var _ Cmd[UpdateCourse] = (*UpdateCourseHandler)(nil)
 
 func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) error {
 	if h.uow == nil {
 		return errs.NewInternal("unit of work is required")
 	}
 
-	title := strings.TrimSpace(cmd.Title)
-	if title == "" {
-		return errs.NewInvalid("title is required")
-	}
-	if cmd.Price < 0 {
-		return errs.NewInvalid("price must be greater than or equal to 0")
-	}
-
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID:        cmd.CourseID,
-			SectionID: uuid.Nil,
-			LessonID:  uuid.Nil,
+			ID: cmd.CourseID,
 		}, true)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -56,14 +49,24 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 			return err
 		}
-		if !cmd.IsAdmin && course.InstructorID() != cmd.ActorID {
-			return errs.NewInstructorPermissionDenied(cmd.ActorID, cmd.CourseID)
+		if cmd.Title != "" {
+			if err := course.SetTitle(cmd.Title); err != nil {
+				return err
+			}
 		}
-
-		course.SetTitle(title)
-		course.SetPrice(float64(cmd.Price))
-		course.SetOverview(strings.TrimSpace(cmd.Overview))
-		course.SetIntroduction(domain.NewCourseLandingPageIntroduction(cmd.Introduction.VideoUrl))
+		if cmd.Price != 0 {
+			if err := course.SetPrice(float64(cmd.Price)); err != nil {
+				return err
+			}
+		}
+		if cmd.Overview != "" {
+			course.SetOverview(cmd.Overview)
+		}
+		if cmd.IntroductionVideoKey != "" {
+			if err := course.SetIntroductionVideoKey(cmd.IntroductionVideoKey); err != nil {
+				return err
+			}
+		}
 
 		return repoRegistry.Course().Save(ctx, course)
 	})

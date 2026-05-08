@@ -1,0 +1,57 @@
+post:
+  security:
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
+  tags:
+    - Section
+  summary: Create section
+  operationId: createSection
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - courseId
+            - title
+            - preOrder
+          properties:
+            courseId:
+              $ref: ../components/schemas/Course.yaml#/properties/id
+            title:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: OOP Fundamentals
+
+            preOrder:
+              type: string
+              example: ab
+
+  responses:
+    201:
+      description: Section created
+      headers:
+        Content-Location:
+          schema:
+            type: string
+            format: uri
+            example: http://api.egolia.localhost/course/sections/123e4567-e89b-12d3-a456-426614174000
+          required: true
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

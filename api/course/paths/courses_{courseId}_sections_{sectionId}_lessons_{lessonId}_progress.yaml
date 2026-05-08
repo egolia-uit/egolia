@@ -1,4 +1,4 @@
-patch:
+get:
   security:
     - Oauth2:
         - openid
@@ -8,19 +8,24 @@ patch:
         - entitlements
   tags:
     - Lesson
-  summary: Edit test lesson
-  operationId: editTestLesson
+  summary: Get lesson progress
+  operationId: getLessonProgress
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: ../components/schemas/TestLesson.yaml
   responses:
-    204:
-      description: Test lesson successfully updated
+    200:
+      description: Lesson progress
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: ../components/schemas/LessonProgressDetail.yaml
+            required:
+              - data
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

@@ -7,3 +7,5 @@ func NewViper() *viper.Viper {
 		viper.ExperimentalBindStruct(),
 	)
 }
+
+var ProvideViper = NewViper

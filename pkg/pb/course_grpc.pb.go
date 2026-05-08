@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	CourseService_GetCourseTitlesByIds_FullMethodName = "/course.CourseService/GetCourseTitlesByIds"
 	CourseService_GetCourse_FullMethodName            = "/course.CourseService/GetCourse"
+	CourseService_EnrollCourseForUser_FullMethodName  = "/course.CourseService/EnrollCourseForUser"
 )
 
 // CourseServiceClient is the client API for CourseService service.
@@ -30,6 +31,7 @@ type CourseServiceClient interface {
 	// NOTE: wtf? where is it used?
 	GetCourseTitlesByIds(ctx context.Context, in *GetCourseTitlesByIdsRequest, opts ...grpc.CallOption) (*GetCourseTitlesByIdsResponse, error)
 	GetCourse(ctx context.Context, in *GetCourseRequest, opts ...grpc.CallOption) (*GetCourseResponse, error)
+	EnrollCourseForUser(ctx context.Context, in *EnrollCourseForUserRequest, opts ...grpc.CallOption) (*EnrollCourseForUserResponse, error)
 }
 
 type courseServiceClient struct {
@@ -60,17 +62,27 @@ func (c *courseServiceClient) GetCourse(ctx context.Context, in *GetCourseReques
 	return out, nil
 }
 
+func (c *courseServiceClient) EnrollCourseForUser(ctx context.Context, in *EnrollCourseForUserRequest, opts ...grpc.CallOption) (*EnrollCourseForUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EnrollCourseForUserResponse)
+	err := c.cc.Invoke(ctx, CourseService_EnrollCourseForUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CourseServiceServer is the server API for CourseService service.
-// All implementations must embed UnimplementedCourseServiceServer
+// All implementations should embed UnimplementedCourseServiceServer
 // for forward compatibility.
 type CourseServiceServer interface {
 	// NOTE: wtf? where is it used?
 	GetCourseTitlesByIds(context.Context, *GetCourseTitlesByIdsRequest) (*GetCourseTitlesByIdsResponse, error)
 	GetCourse(context.Context, *GetCourseRequest) (*GetCourseResponse, error)
-	mustEmbedUnimplementedCourseServiceServer()
+	EnrollCourseForUser(context.Context, *EnrollCourseForUserRequest) (*EnrollCourseForUserResponse, error)
 }
 
-// UnimplementedCourseServiceServer must be embedded to have
+// UnimplementedCourseServiceServer should be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
@@ -83,8 +95,10 @@ func (UnimplementedCourseServiceServer) GetCourseTitlesByIds(context.Context, *G
 func (UnimplementedCourseServiceServer) GetCourse(context.Context, *GetCourseRequest) (*GetCourseResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetCourse not implemented")
 }
-func (UnimplementedCourseServiceServer) mustEmbedUnimplementedCourseServiceServer() {}
-func (UnimplementedCourseServiceServer) testEmbeddedByValue()                       {}
+func (UnimplementedCourseServiceServer) EnrollCourseForUser(context.Context, *EnrollCourseForUserRequest) (*EnrollCourseForUserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method EnrollCourseForUser not implemented")
+}
+func (UnimplementedCourseServiceServer) testEmbeddedByValue() {}
 
 // UnsafeCourseServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to CourseServiceServer will
@@ -140,6 +154,24 @@ func _CourseService_GetCourse_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CourseService_EnrollCourseForUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnrollCourseForUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CourseServiceServer).EnrollCourseForUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CourseService_EnrollCourseForUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CourseServiceServer).EnrollCourseForUser(ctx, req.(*EnrollCourseForUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CourseService_ServiceDesc is the grpc.ServiceDesc for CourseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -154,6 +186,10 @@ var CourseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCourse",
 			Handler:    _CourseService_GetCourse_Handler,
+		},
+		{
+			MethodName: "EnrollCourseForUser",
+			Handler:    _CourseService_EnrollCourseForUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1,4 +1,4 @@
-put:
+post:
   security:
     - Oauth2:
         - openid
@@ -8,19 +8,15 @@ put:
         - entitlements
   tags:
     - Lesson
-  summary: Save video lesson progress
-  operationId: saveVideoLessonProgress
+  summary: Mark lesson as completed
+  operationId: markLessonAsCompleted
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: ../components/schemas/VideoLessonProgress.yaml
   responses:
     204:
-      description: Video lesson progress saved
+      description: Lesson marked as completed
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

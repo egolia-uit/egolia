@@ -1,4 +1,4 @@
-get:
+delete:
   security:
     - Oauth2:
         - openid
@@ -7,25 +7,17 @@ get:
         - openid
         - entitlements
   tags:
-    - Lesson
-  summary: Get lesson comments
-  operationId: getLessonComments
+    - Section
+  summary: Delete section
+  operationId: deleteSection
   parameters:
-    - $ref: ../components/parameters/lessonIdPath.yaml
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
   responses:
-    200:
-      description: Top-level comments for the lesson
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
-                type: array
-                items:
-                  $ref: ../components/schemas/LessonComment.yaml
-            required:
-              - data
+    204:
+      description: Section successfully deleted
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
     401:
       $ref: ../../common/components/responses/UnauthorizedError.yaml
     403:
@@ -35,7 +27,7 @@ get:
     500:
       $ref: ../../common/components/responses/InternalServerError.yaml
 
-post:
+patch:
   security:
     - Oauth2:
         - openid
@@ -44,11 +36,12 @@ post:
         - openid
         - entitlements
   tags:
-    - Lesson
-  summary: Comment on lesson
-  operationId: commentOnLesson
+    - Section
+  summary: Update section
+  operationId: updateSectionTitle
   parameters:
-    - $ref: ../components/parameters/lessonIdPath.yaml
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
   requestBody:
     required: true
     content:
@@ -56,20 +49,16 @@ post:
         schema:
           type: object
           required:
-            - content
+            - title
           properties:
-            content:
-              $ref: ../components/schemas/LessonComment.yaml#/properties/content
+            title:
+              type: string
+              minLength: 1
+              maxLength: 255
+              example: OOP Fundamentals
   responses:
-    201:
-      description: Lesson comment created
-      headers:
-        Content-Location:
-          schema:
-            type: string
-            format: uri
-            example: http://api.egolia.localhost/course/lessons/123e4567-e89b-12d3-a456-426614174000/comments/123e4567-e89b-12d3-a456-426614174000
-          required: true
+    200:
+      description: Section title successfully updated
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

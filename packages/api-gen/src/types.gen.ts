@@ -4,31 +4,33 @@ export type ClientOptions = {
     baseUrl: 'http://api.egolia.localhost' | (string & {});
 };
 
+export type CourseId = string;
+
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
-export type CourseId = string;
+export type CoursePropertiesId = string;
 
-export const CourseCourseStatus = {
-    DRAFT: 'draft',
-    PENDING: 'pending',
-    APPROVED: 'approved'
-} as const;
+export type CourseCertificate = {
+    readonly id: string;
+    courseId: CourseId;
+    userId: CoursePropertiesId;
+    issuedAt: Date;
+};
 
-export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
-
-export type CourseCourse = {
-    readonly id?: string;
-    readonly originalCourseId?: string;
-    title: string;
-    price: bigint;
-    readonly hidden?: boolean;
-    instructorId?: CourseId;
-    status?: CourseCourseStatus;
-    overview?: string;
-    introduction?: {
-        videoUrl: string;
-    };
+export type CourseError = {
+    /**
+     * Error code
+     */
+    code: string;
+    /**
+     * Human-readable error message
+     */
+    message: string;
+    /**
+     * URL with more information about the error
+     */
+    more_info?: string;
 };
 
 export type CoursePagination = {
@@ -58,42 +60,37 @@ export type CoursePagination = {
     hasPrev: boolean;
 };
 
-export type CourseError = {
-    /**
-     * Error code
-     */
-    code: string;
-    /**
-     * Human-readable error message
-     */
-    message: string;
-    /**
-     * URL with more information about the error
-     */
-    more_info?: string;
-};
+export const CourseCourseStatus = {
+    DRAFT: 'draft',
+    PENDING: 'pending',
+    APPROVED: 'approved'
+} as const;
 
-export type CoursePropertiesId = string;
+export type CourseCourseStatus = typeof CourseCourseStatus[keyof typeof CourseCourseStatus];
+
+export type CourseCourse = {
+    readonly id?: string;
+    readonly originalCourseId?: string;
+    title: string;
+    price: bigint;
+    readonly hidden?: boolean;
+    instructorId?: CoursePropertiesId;
+    status?: CourseCourseStatus;
+    overview?: string;
+    introduction?: {
+        videoUrl: string;
+    };
+};
 
 export type CourseSection = {
     readonly id: string;
     title: string;
-    readonly order?: string;
-    courseId: CoursePropertiesId;
+    courseId: CourseId;
 };
-
-export type CourseSectionPropertiesId = string;
-
-export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
-
-export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
 
 export type CourseLesson = {
     readonly id: string;
-    sectionId?: CourseSectionPropertiesId;
     title: string;
-    readonly order?: string;
-    lessonType: CourseLessonType;
 };
 
 export type CourseCourseDetailSectionItem = CourseSection & {
@@ -105,47 +102,34 @@ export type CourseCourseDetail = CourseCourse & {
 };
 
 export type CourseCourseProgress = {
-    courseId: CoursePropertiesId;
-    userId: CourseId;
+    courseId: CourseId;
+    userId: CoursePropertiesId;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
 };
 
-export type CourseVideoLesson = CourseLesson & {
-    readonly videoUrl: string;
-    duration: bigint;
-};
-
-export type CourseTestAnswer = {
-    readonly id: string;
-    content: string;
-    isCorrect: boolean;
-};
-
-export type CourseTestQuestion = {
-    readonly id: string;
-    question: string;
-    answers: Array<CourseTestAnswer>;
-};
-
-export type CourseTestLesson = CourseLesson & {
-    type: 'multipleChoice' | 'singleChoice';
-    questions: Array<unknown>;
-};
-
-export type CourseLessonDetail = CourseVideoLesson | CourseTestLesson;
-
-export const CourseTestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
-
-export type CourseTestLessonType = typeof CourseTestLessonType[keyof typeof CourseTestLessonType];
+export type CourseContent = string;
 
 export type CourseLessonPropertiesId = string;
 
+export type CourseLessonComment = {
+    readonly id: string;
+    userId: CoursePropertiesId;
+    lessonId: CourseLessonPropertiesId;
+    content: string;
+    createdAt: Date;
+    parentCommentId?: string | null;
+};
+
+export const CourseLessonType = { VIDEO: 'video', TEST: 'test' } as const;
+
+export type CourseLessonType = typeof CourseLessonType[keyof typeof CourseLessonType];
+
 export type CourseLessonProgress = {
     readonly id: string;
-    userId: CourseId;
+    userId: CoursePropertiesId;
     lessonId: CourseLessonPropertiesId;
     isCompleted: boolean;
 };
@@ -160,23 +144,39 @@ export type CourseTestLessonProgress = CourseLessonProgress & {
 
 export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseTestLessonProgress;
 
-export type CourseLessonComment = {
+export const CourseTestLessonType = { MULTIPLE_CHOICE: 'multipleChoice', SINGLE_CHOICE: 'singleChoice' } as const;
+
+export type CourseTestLessonType = typeof CourseTestLessonType[keyof typeof CourseTestLessonType];
+
+export type CourseTestAnswer = {
     readonly id: string;
-    userId: CourseId;
-    lessonId: CourseLessonPropertiesId;
     content: string;
-    createdAt: Date;
-    parentCommentId?: string | null;
+    isCorrect: boolean;
 };
 
-export type CourseContent = string;
-
-export type CourseCertificate = {
+export type CourseTestQuestion = {
     readonly id: string;
-    courseId: CoursePropertiesId;
-    userId: CourseId;
-    issuedAt: Date;
+    question: string;
+    answers: Array<CourseTestAnswer>;
 };
+
+export type CourseTestLesson = CourseLesson & {
+    lessonType: 'test';
+    type: 'multipleChoice' | 'singleChoice';
+    questions: Array<unknown>;
+};
+
+export type CourseVideoLesson = CourseLesson & {
+    lessonType: 'video';
+    readonly videoUrl: string;
+    duration: bigint;
+};
+
+export type CourseLessonDetail = ({
+    lessonType: 'video';
+} & CourseVideoLesson) | ({
+    lessonType: 'test';
+} & CourseTestLesson);
 
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
@@ -337,6 +337,11 @@ export type BlogComment = {
     readonly createdAt: Date;
 };
 
+export type CourseCertificateWritable = {
+    userId: CoursePropertiesId;
+    issuedAt: Date;
+};
+
 export type CourseCourseWritable = {
     title: string;
     price: bigint;
@@ -363,34 +368,19 @@ export type CourseCourseDetailWritable = CourseCourseWritable & {
 };
 
 export type CourseCourseProgressWritable = {
-    userId: CourseId;
+    userId: CoursePropertiesId;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
     isCompleted: boolean;
 };
 
-export type CourseVideoLessonWritable = CourseLessonWritable & {
-    videoKey: string;
-    duration: bigint;
-};
-
-export type CourseTestAnswerWritable = {
+export type CourseLessonCommentWritable = {
+    userId: CoursePropertiesId;
     content: string;
-    isCorrect: boolean;
+    createdAt: Date;
+    parentCommentId?: string | null;
 };
-
-export type CourseTestQuestionWritable = {
-    question: string;
-    answers: Array<CourseTestAnswerWritable>;
-};
-
-export type CourseTestLessonWritable = CourseLessonWritable & {
-    type: 'multipleChoice' | 'singleChoice';
-    questions: Array<unknown>;
-};
-
-export type CourseLessonDetailWritable = CourseVideoLessonWritable | CourseTestLessonWritable;
 
 export type CourseLessonProgressWritable = {
     isCompleted: boolean;
@@ -406,17 +396,33 @@ export type CourseTestLessonProgressWritable = CourseLessonProgressWritable & {
 
 export type CourseLessonProgressDetailWritable = CourseVideoLessonProgressWritable | CourseTestLessonProgressWritable;
 
-export type CourseLessonCommentWritable = {
-    userId: CourseId;
+export type CourseTestAnswerWritable = {
     content: string;
-    createdAt: Date;
-    parentCommentId?: string | null;
+    isCorrect: boolean;
 };
 
-export type CourseCertificateWritable = {
-    userId: CourseId;
-    issuedAt: Date;
+export type CourseTestQuestionWritable = {
+    question: string;
+    answers: Array<CourseTestAnswerWritable>;
 };
+
+export type CourseTestLessonWritable = CourseLessonWritable & {
+    lessonType: 'test';
+    type: 'multipleChoice' | 'singleChoice';
+    questions: Array<unknown>;
+};
+
+export type CourseVideoLessonWritable = CourseLessonWritable & {
+    lessonType: 'video';
+    videoKey: string;
+    duration: bigint;
+};
+
+export type CourseLessonDetailWritable = ({
+    lessonType: 'video';
+} & CourseVideoLessonWritable) | ({
+    lessonType: 'test';
+} & CourseTestLessonWritable);
 
 export type BillingTransactionWritable = {
     courseId: string;
@@ -431,6 +437,8 @@ export type BlogPostWritable = {
 export type BlogCommentWritable = {
     content: string;
 };
+
+export type CourseCertificateIdPath = string;
 
 /**
  * Page number for pagination
@@ -454,18 +462,19 @@ export type CourseOrderQuery = typeof CourseOrderQuery[keyof typeof CourseOrderQ
 
 export type CourseInstructorIdPath = string;
 
-export type CourseCourseIdPath = CoursePropertiesId;
-
-export type CourseSectionIdPath = string;
-
-export type CourseLessonIdPath = string;
+/**
+ * Unique identifier of the course
+ */
+export type CourseCourseIdPath = string;
 
 /**
  * Unique identifier of the post comment
  */
 export type CourseCommentIdPath = string;
 
-export type CourseCertificateIdPath = string;
+export type CourseSectionIdPath = string;
+
+export type CourseLessonIdPath = string;
 
 /**
  * Page number for pagination
@@ -522,77 +531,16 @@ export type BlogPostIdPath = string;
  */
 export type BlogCommentIdPath = string;
 
-export type SearchCoursesData = {
+export type GetCertificateByIdData = {
     body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Search term for course title or description
-         */
-        q?: string;
-        /**
-         * Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
-         */
-        instructorId?: Array<string>;
-        /**
-         * Page number for pagination
-         */
-        page?: number;
-        /**
-         * Number of items per page
-         */
-        limit?: number;
-        /**
-         * Sort order
-         */
-        order?: 'asc' | 'desc';
+    path: {
+        certificateId: string;
     };
-    url: '/course/instructor/courses';
-};
-
-export type SearchCoursesErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type SearchCoursesError = SearchCoursesErrors[keyof SearchCoursesErrors];
-
-export type SearchCoursesResponses = {
-    /**
-     * Search results for courses
-     */
-    200: {
-        data: Array<CourseCourse>;
-        pagination: CoursePagination;
-    };
-};
-
-export type SearchCoursesResponse = SearchCoursesResponses[keyof SearchCoursesResponses];
-
-export type CreateCourseData = {
-    body: CourseCourseWritable;
-    path?: never;
     query?: never;
-    url: '/course/instructor/courses';
+    url: '/course/certificates/{certificateId}';
 };
 
-export type CreateCourseErrors = {
+export type GetCertificateByIdErrors = {
     /**
      * Bad Request Error response
      */
@@ -608,21 +556,29 @@ export type CreateCourseErrors = {
      */
     403: CourseError;
     /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
      * Internal Server Error response
      */
     500: CourseError;
 };
 
-export type CreateCourseError = CreateCourseErrors[keyof CreateCourseErrors];
+export type GetCertificateByIdError = GetCertificateByIdErrors[keyof GetCertificateByIdErrors];
 
-export type CreateCourseResponses = {
+export type GetCertificateByIdResponses = {
     /**
-     * Course created
+     * Certificate detail
      */
-    201: unknown;
+    200: {
+        data: CourseCertificate;
+    };
 };
 
-export type GetSystemCoursesData = {
+export type GetCertificateByIdResponse = GetCertificateByIdResponses[keyof GetCertificateByIdResponses];
+
+export type GetMyCertificatesData = {
     body?: never;
     path?: never;
     query?: {
@@ -639,10 +595,10 @@ export type GetSystemCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/instructor/courses-system';
+    url: '/course/certificates/me';
 };
 
-export type GetSystemCoursesErrors = {
+export type GetMyCertificatesErrors = {
     /**
      * Bad Request Error response
      */
@@ -654,73 +610,24 @@ export type GetSystemCoursesErrors = {
         [key: string]: unknown;
     };
     /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
      * Internal Server Error response
      */
     500: CourseError;
 };
 
-export type GetSystemCoursesError = GetSystemCoursesErrors[keyof GetSystemCoursesErrors];
+export type GetMyCertificatesError = GetMyCertificatesErrors[keyof GetMyCertificatesErrors];
 
-export type GetSystemCoursesResponses = {
+export type GetMyCertificatesResponses = {
     /**
-     * Courses in system
+     * My certificates
      */
     200: {
-        data: Array<CourseCourse>;
+        data: Array<CourseCertificate>;
         pagination: CoursePagination;
     };
 };
 
-export type GetSystemCoursesResponse = GetSystemCoursesResponses[keyof GetSystemCoursesResponses];
-
-export type GetPublishedCoursesData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Page number for pagination
-         */
-        page?: number;
-        /**
-         * Number of items per page
-         */
-        limit?: number;
-        /**
-         * Sort order
-         */
-        order?: 'asc' | 'desc';
-    };
-    url: '/course/instructor/courses-published';
-};
-
-export type GetPublishedCoursesErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetPublishedCoursesError = GetPublishedCoursesErrors[keyof GetPublishedCoursesErrors];
-
-export type GetPublishedCoursesResponses = {
-    /**
-     * Published courses
-     */
-    200: {
-        data: Array<CourseCourse>;
-        pagination: CoursePagination;
-    };
-};
-
-export type GetPublishedCoursesResponse = GetPublishedCoursesResponses[keyof GetPublishedCoursesResponses];
+export type GetMyCertificatesResponse = GetMyCertificatesResponses[keyof GetMyCertificatesResponses];
 
 export type GetInstructorCoursesData = {
     body?: never;
@@ -741,7 +648,7 @@ export type GetInstructorCoursesData = {
          */
         order?: 'asc' | 'desc';
     };
-    url: '/course/instructor/courses-by-instructor/{instructorId}';
+    url: '/course/courses-by-instructor/{instructorId}';
 };
 
 export type GetInstructorCoursesErrors = {
@@ -783,16 +690,119 @@ export type GetInstructorCoursesResponses = {
 
 export type GetInstructorCoursesResponse = GetInstructorCoursesResponses[keyof GetInstructorCoursesResponses];
 
-export type DeleteCourseData = {
+export type GetPublishedCoursesData = {
     body?: never;
-    path: {
-        courseId: CoursePropertiesId;
+    path?: never;
+    query?: {
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
     };
-    query?: never;
-    url: '/course/instructor/courses/{courseId}';
+    url: '/course/courses-published';
 };
 
-export type DeleteCourseErrors = {
+export type GetPublishedCoursesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetPublishedCoursesError = GetPublishedCoursesErrors[keyof GetPublishedCoursesErrors];
+
+export type GetPublishedCoursesResponses = {
+    /**
+     * Published courses
+     */
+    200: {
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
+    };
+};
+
+export type GetPublishedCoursesResponse = GetPublishedCoursesResponses[keyof GetPublishedCoursesResponses];
+
+export type GetSystemCoursesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/courses-system';
+};
+
+export type GetSystemCoursesErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetSystemCoursesError = GetSystemCoursesErrors[keyof GetSystemCoursesErrors];
+
+export type GetSystemCoursesResponses = {
+    /**
+     * Courses in system
+     */
+    200: {
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
+    };
+};
+
+export type GetSystemCoursesResponse = GetSystemCoursesResponses[keyof GetSystemCoursesResponses];
+
+export type ApproveCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/approve';
+};
+
+export type ApproveCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -817,24 +827,171 @@ export type DeleteCourseErrors = {
     500: CourseError;
 };
 
-export type DeleteCourseError = DeleteCourseErrors[keyof DeleteCourseErrors];
+export type ApproveCourseError = ApproveCourseErrors[keyof ApproveCourseErrors];
 
-export type DeleteCourseResponses = {
+export type ApproveCourseResponses = {
     /**
-     * Course successfully deleted
+     * Course approved
      */
     204: void;
 };
 
-export type DeleteCourseResponse = DeleteCourseResponses[keyof DeleteCourseResponses];
+export type ApproveCourseResponse = ApproveCourseResponses[keyof ApproveCourseResponses];
+
+export type UpdateCourseData = {
+    body: CourseCourseWritable;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/basic-info';
+};
+
+export type UpdateCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type UpdateCourseError = UpdateCourseErrors[keyof UpdateCourseErrors];
+
+export type UpdateCourseResponses = {
+    /**
+     * Course basic information updated
+     */
+    204: void;
+};
+
+export type UpdateCourseResponse = UpdateCourseResponses[keyof UpdateCourseResponses];
+
+export type BookmarkCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/bookmark';
+};
+
+export type BookmarkCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type BookmarkCourseError = BookmarkCourseErrors[keyof BookmarkCourseErrors];
+
+export type BookmarkCourseResponses = {
+    /**
+     * Course bookmarked
+     */
+    201: unknown;
+};
+
+export type DeclineCourseData = {
+    body?: {
+        reason?: string;
+    };
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/decline';
+};
+
+export type DeclineCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type DeclineCourseError = DeclineCourseErrors[keyof DeclineCourseErrors];
+
+export type DeclineCourseResponses = {
+    /**
+     * Course declined
+     */
+    204: void;
+};
+
+export type DeclineCourseResponse = DeclineCourseResponses[keyof DeclineCourseResponses];
 
 export type GetCourseDetailData = {
     body?: never;
     path: {
-        courseId: CoursePropertiesId;
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
     };
     query?: never;
-    url: '/course/instructor/courses/{courseId}/detail';
+    url: '/course/courses/{courseId}/detail';
 };
 
 export type GetCourseDetailErrors = {
@@ -875,58 +1032,16 @@ export type GetCourseDetailResponses = {
 
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
 
-export type UpdateCourseData = {
-    body: CourseCourseWritable;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/instructor/courses/{courseId}/basic-info';
-};
-
-export type UpdateCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type UpdateCourseError = UpdateCourseErrors[keyof UpdateCourseErrors];
-
-export type UpdateCourseResponses = {
-    /**
-     * Course basic information updated
-     */
-    204: void;
-};
-
-export type UpdateCourseResponse = UpdateCourseResponses[keyof UpdateCourseResponses];
-
 export type EnrollInCourseData = {
     body?: never;
     path: {
-        courseId: CoursePropertiesId;
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
     };
     query?: never;
-    url: '/course/instructor/courses/{courseId}/enroll';
+    url: '/course/courses/{courseId}/enroll';
 };
 
 export type EnrollInCourseErrors = {
@@ -963,13 +1078,152 @@ export type EnrollInCourseResponses = {
     201: unknown;
 };
 
+export type FinishCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/finish';
+};
+
+export type FinishCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type FinishCourseError = FinishCourseErrors[keyof FinishCourseErrors];
+
+export type FinishCourseResponses = {
+    /**
+     * Course finished and certificate issued
+     */
+    204: void;
+};
+
+export type FinishCourseResponse = FinishCourseResponses[keyof FinishCourseResponses];
+
+export type HideCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/hide';
+};
+
+export type HideCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type HideCourseError = HideCourseErrors[keyof HideCourseErrors];
+
+export type HideCourseResponses = {
+    /**
+     * Course hidden
+     */
+    204: void;
+};
+
+export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
+
+export type GetCourseLandingPageData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/landing';
+};
+
+export type GetCourseLandingPageErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetCourseLandingPageError = GetCourseLandingPageErrors[keyof GetCourseLandingPageErrors];
+
+export type GetCourseLandingPageResponses = {
+    /**
+     * Course landing page data
+     */
+    200: {
+        data: CourseCourse;
+    };
+};
+
+export type GetCourseLandingPageResponse = GetCourseLandingPageResponses[keyof GetCourseLandingPageResponses];
+
 export type GetCourseProgressData = {
     body?: never;
     path: {
-        courseId: CoursePropertiesId;
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
     };
     query?: never;
-    url: '/course/instructor/courses/{courseId}/progress';
+    url: '/course/courses/{courseId}/progress';
 };
 
 export type GetCourseProgressErrors = {
@@ -1010,61 +1264,19 @@ export type GetCourseProgressResponses = {
 
 export type GetCourseProgressResponse = GetCourseProgressResponses[keyof GetCourseProgressResponses];
 
-export type FinishCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/instructor/courses/{courseId}/finish';
-};
-
-export type FinishCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type FinishCourseError = FinishCourseErrors[keyof FinishCourseErrors];
-
-export type FinishCourseResponses = {
-    /**
-     * Course finished and certificate issued
-     */
-    204: void;
-};
-
-export type FinishCourseResponse = FinishCourseResponses[keyof FinishCourseResponses];
-
 export type ReviewCourseData = {
     body: {
         rating: number;
         comment: string;
     };
     path: {
-        courseId: CoursePropertiesId;
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
     };
     query?: never;
-    url: '/course/instructor/courses/{courseId}/reviews';
+    url: '/course/courses/{courseId}/reviews';
 };
 
 export type ReviewCourseErrors = {
@@ -1101,193 +1313,18 @@ export type ReviewCourseResponses = {
     201: unknown;
 };
 
-export type BookmarkCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/instructor/courses/{courseId}/bookmark';
-};
-
-export type BookmarkCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type BookmarkCourseError = BookmarkCourseErrors[keyof BookmarkCourseErrors];
-
-export type BookmarkCourseResponses = {
-    /**
-     * Course bookmarked
-     */
-    201: unknown;
-};
-
-export type UnbookmarkCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/instructor/courses/{courseId}/unbookmark';
-};
-
-export type UnbookmarkCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
-
-export type UnbookmarkCourseResponses = {
-    /**
-     * Course unbookmarked successfully
-     */
-    204: void;
-};
-
-export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
-
-export type HideCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/instructor/courses/{courseId}/hide';
-};
-
-export type HideCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type HideCourseError = HideCourseErrors[keyof HideCourseErrors];
-
-export type HideCourseResponses = {
-    /**
-     * Course hidden
-     */
-    204: void;
-};
-
-export type HideCourseResponse = HideCourseResponses[keyof HideCourseResponses];
-
-export type UnhideCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/instructor/courses/{courseId}/unhide';
-};
-
-export type UnhideCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type UnhideCourseError = UnhideCourseErrors[keyof UnhideCourseErrors];
-
-export type UnhideCourseResponses = {
-    /**
-     * Course unhidden
-     */
-    204: void;
-};
-
-export type UnhideCourseResponse = UnhideCourseResponses[keyof UnhideCourseResponses];
-
 export type TriggerLearningReminderData = {
     body?: {
         dryRun?: boolean;
     };
     path: {
-        courseId: CoursePropertiesId;
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
     };
     query?: never;
-    url: '/course/instructor/courses/{courseId}/trigger-learning-reminder';
+    url: '/course/courses/{courseId}/trigger-learning-reminder';
 };
 
 export type TriggerLearningReminderErrors = {
@@ -1326,53 +1363,19 @@ export type TriggerLearningReminderResponses = {
 
 export type TriggerLearningReminderResponse = TriggerLearningReminderResponses[keyof TriggerLearningReminderResponses];
 
-export type GetCourseLandingPageData = {
+export type UnbookmarkCourseData = {
     body?: never;
     path: {
-        courseId: CoursePropertiesId;
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
     };
     query?: never;
-    url: '/course/instructor/courses/{courseId}/landing';
+    url: '/course/courses/{courseId}/unbookmark';
 };
 
-export type GetCourseLandingPageErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetCourseLandingPageError = GetCourseLandingPageErrors[keyof GetCourseLandingPageErrors];
-
-export type GetCourseLandingPageResponses = {
-    /**
-     * Course landing page data
-     */
-    200: {
-        data: CourseCourse;
-    };
-};
-
-export type GetCourseLandingPageResponse = GetCourseLandingPageResponses[keyof GetCourseLandingPageResponses];
-
-export type ApproveCourseData = {
-    body?: never;
-    path: {
-        courseId: CoursePropertiesId;
-    };
-    query?: never;
-    url: '/course/admin/courses/{courseId}/approve';
-};
-
-export type ApproveCourseErrors = {
+export type UnbookmarkCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1397,29 +1400,30 @@ export type ApproveCourseErrors = {
     500: CourseError;
 };
 
-export type ApproveCourseError = ApproveCourseErrors[keyof ApproveCourseErrors];
+export type UnbookmarkCourseError = UnbookmarkCourseErrors[keyof UnbookmarkCourseErrors];
 
-export type ApproveCourseResponses = {
+export type UnbookmarkCourseResponses = {
     /**
-     * Course approved
+     * Course unbookmarked successfully
      */
     204: void;
 };
 
-export type ApproveCourseResponse = ApproveCourseResponses[keyof ApproveCourseResponses];
+export type UnbookmarkCourseResponse = UnbookmarkCourseResponses[keyof UnbookmarkCourseResponses];
 
-export type DeclineCourseData = {
-    body?: {
-        reason?: string;
-    };
+export type UnhideCourseData = {
+    body?: never;
     path: {
-        courseId: CoursePropertiesId;
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
     };
     query?: never;
-    url: '/course/admin/courses/{courseId}/decline';
+    url: '/course/courses/{courseId}/unhide';
 };
 
-export type DeclineCourseErrors = {
+export type UnhideCourseErrors = {
     /**
      * Bad Request Error response
      */
@@ -1444,16 +1448,64 @@ export type DeclineCourseErrors = {
     500: CourseError;
 };
 
-export type DeclineCourseError = DeclineCourseErrors[keyof DeclineCourseErrors];
+export type UnhideCourseError = UnhideCourseErrors[keyof UnhideCourseErrors];
 
-export type DeclineCourseResponses = {
+export type UnhideCourseResponses = {
     /**
-     * Course declined
+     * Course unhidden
      */
     204: void;
 };
 
-export type DeclineCourseResponse = DeclineCourseResponses[keyof DeclineCourseResponses];
+export type UnhideCourseResponse = UnhideCourseResponses[keyof UnhideCourseResponses];
+
+export type DeleteCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}';
+};
+
+export type DeleteCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type DeleteCourseError = DeleteCourseErrors[keyof DeleteCourseErrors];
+
+export type DeleteCourseResponses = {
+    /**
+     * Course successfully deleted
+     */
+    204: void;
+};
+
+export type DeleteCourseResponse = DeleteCourseResponses[keyof DeleteCourseResponses];
 
 export type GetMyEnrolledCoursesData = {
     body?: never;
@@ -1506,18 +1558,35 @@ export type GetMyEnrolledCoursesResponses = {
 
 export type GetMyEnrolledCoursesResponse = GetMyEnrolledCoursesResponses[keyof GetMyEnrolledCoursesResponses];
 
-export type CreateSectionData = {
-    body: {
-        courseId: CoursePropertiesId;
-        title: string;
-        preOrder: string;
-    };
+export type SearchCoursesData = {
+    body?: never;
     path?: never;
-    query?: never;
-    url: '/course/instructor/sections';
+    query?: {
+        /**
+         * Search term for course title or description
+         */
+        q?: string;
+        /**
+         * Filter courses by one or more instructor ids. Supports multiple values (e.g., ?instructorId=id1&instructorId=id2)
+         */
+        instructorId?: Array<string>;
+        /**
+         * Page number for pagination
+         */
+        page?: number;
+        /**
+         * Number of items per page
+         */
+        limit?: number;
+        /**
+         * Sort order
+         */
+        order?: 'asc' | 'desc';
+    };
+    url: '/course/courses';
 };
 
-export type CreateSectionErrors = {
+export type SearchCoursesErrors = {
     /**
      * Bad Request Error response
      */
@@ -1533,81 +1602,77 @@ export type CreateSectionErrors = {
      */
     403: CourseError;
     /**
-     * Not Found Error response
+     * Internal Server Error response
      */
-    404: CourseError;
+    500: CourseError;
+};
+
+export type SearchCoursesError = SearchCoursesErrors[keyof SearchCoursesErrors];
+
+export type SearchCoursesResponses = {
+    /**
+     * Search results for courses
+     */
+    200: {
+        data: Array<CourseCourse>;
+        pagination: CoursePagination;
+    };
+};
+
+export type SearchCoursesResponse = SearchCoursesResponses[keyof SearchCoursesResponses];
+
+export type CreateCourseData = {
+    body: CourseCourseWritable;
+    path?: never;
+    query?: never;
+    url: '/course/courses';
+};
+
+export type CreateCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
     /**
      * Internal Server Error response
      */
     500: CourseError;
 };
 
-export type CreateSectionError = CreateSectionErrors[keyof CreateSectionErrors];
+export type CreateCourseError = CreateCourseErrors[keyof CreateCourseErrors];
 
-export type CreateSectionResponses = {
+export type CreateCourseResponses = {
     /**
-     * Section created
+     * Course created
      */
     201: unknown;
 };
 
-export type DeleteSectionData = {
-    body?: never;
-    path: {
-        sectionId: string;
-    };
-    query?: never;
-    url: '/course/instructor/sections/{sectionId}';
-};
-
-export type DeleteSectionErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type DeleteSectionError = DeleteSectionErrors[keyof DeleteSectionErrors];
-
-export type DeleteSectionResponses = {
-    /**
-     * Section successfully deleted
-     */
-    204: void;
-};
-
-export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionResponses];
-
-export type UpdateSectionTitleData = {
+export type ReplyLessonCommentData = {
     body: {
-        title: string;
+        content: CourseContent;
     };
     path: {
-        sectionId: string;
+        /**
+         * Unique identifier of the post comment
+         */
+        commentId: string;
     };
     query?: never;
-    url: '/course/instructor/sections/{sectionId}';
+    url: '/course/lesson-comments/{commentId}/reply';
 };
 
-export type UpdateSectionTitleErrors = {
+export type ReplyLessonCommentErrors = {
     /**
      * Bad Request Error response
      */
@@ -1632,18 +1697,18 @@ export type UpdateSectionTitleErrors = {
     500: CourseError;
 };
 
-export type UpdateSectionTitleError = UpdateSectionTitleErrors[keyof UpdateSectionTitleErrors];
+export type ReplyLessonCommentError = ReplyLessonCommentErrors[keyof ReplyLessonCommentErrors];
 
-export type UpdateSectionTitleResponses = {
+export type ReplyLessonCommentResponses = {
     /**
-     * Section title successfully updated
+     * Lesson comment reply created
      */
-    200: unknown;
+    201: unknown;
 };
 
 export type MoveSectionData = {
     body: {
-        courseId: CoursePropertiesId;
+        courseId: CourseId;
         /**
          * ID of the section to move (must match the sectionId path parameter)
          */
@@ -1654,10 +1719,14 @@ export type MoveSectionData = {
         preOrder: string;
     };
     path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
         sectionId: string;
     };
     query?: never;
-    url: '/course/instructor/sections/{sectionId}/move';
+    url: '/course/courses/{courseId}/sections/{sectionId}/move';
 };
 
 export type MoveSectionErrors = {
@@ -1706,17 +1775,20 @@ export type MoveSectionResponses = {
 
 export type MoveSectionResponse = MoveSectionResponses[keyof MoveSectionResponses];
 
-export type CreateLessonData = {
-    body: {
-        video?: CourseVideoLessonWritable;
-        test?: CourseTestLessonWritable;
+export type DeleteSectionData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
     };
-    path?: never;
     query?: never;
-    url: '/course/instructor/lessons';
+    url: '/course/courses/{courseId}/sections/{sectionId}';
 };
 
-export type CreateLessonErrors = {
+export type DeleteSectionErrors = {
     /**
      * Bad Request Error response
      */
@@ -1732,34 +1804,140 @@ export type CreateLessonErrors = {
      */
     403: CourseError;
     /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
      * Internal Server Error response
      */
     500: CourseError;
 };
 
-export type CreateLessonError = CreateLessonErrors[keyof CreateLessonErrors];
+export type DeleteSectionError = DeleteSectionErrors[keyof DeleteSectionErrors];
 
-export type CreateLessonResponses = {
+export type DeleteSectionResponses = {
     /**
-     * Lesson created
+     * Section successfully deleted
+     */
+    204: void;
+};
+
+export type DeleteSectionResponse = DeleteSectionResponses[keyof DeleteSectionResponses];
+
+export type UpdateSectionTitleData = {
+    body: {
+        title: string;
+    };
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}';
+};
+
+export type UpdateSectionTitleErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type UpdateSectionTitleError = UpdateSectionTitleErrors[keyof UpdateSectionTitleErrors];
+
+export type UpdateSectionTitleResponses = {
+    /**
+     * Section title successfully updated
+     */
+    200: unknown;
+};
+
+export type CreateSectionData = {
+    body: {
+        courseId: CourseId;
+        title: string;
+        preOrder: string;
+    };
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections';
+};
+
+export type CreateSectionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type CreateSectionError = CreateSectionErrors[keyof CreateSectionErrors];
+
+export type CreateSectionResponses = {
+    /**
+     * Section created
      */
     201: unknown;
 };
 
-export type DeleteLessonData = {
+export type GetLessonCommentsData = {
     body?: never;
     path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
         lessonId: string;
     };
     query?: never;
-    url: '/course/instructor/lessons/{lessonId}';
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments';
 };
 
-export type DeleteLessonErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
+export type GetLessonCommentsErrors = {
     /**
      * Unauthorized Error response
      */
@@ -1780,166 +1958,36 @@ export type DeleteLessonErrors = {
     500: CourseError;
 };
 
-export type DeleteLessonError = DeleteLessonErrors[keyof DeleteLessonErrors];
+export type GetLessonCommentsError = GetLessonCommentsErrors[keyof GetLessonCommentsErrors];
 
-export type DeleteLessonResponses = {
+export type GetLessonCommentsResponses = {
     /**
-     * Lesson successfully deleted
-     */
-    204: void;
-};
-
-export type DeleteLessonResponse = DeleteLessonResponses[keyof DeleteLessonResponses];
-
-export type GetLessonDetailData = {
-    body?: never;
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}';
-};
-
-export type GetLessonDetailErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetLessonDetailError = GetLessonDetailErrors[keyof GetLessonDetailErrors];
-
-export type GetLessonDetailResponses = {
-    /**
-     * Lesson detail
+     * Top-level comments for the lesson
      */
     200: {
-        data: CourseLessonDetail;
+        data: Array<CourseLessonComment>;
     };
 };
 
-export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
+export type GetLessonCommentsResponse = GetLessonCommentsResponses[keyof GetLessonCommentsResponses];
 
-export type EditVideoLessonData = {
-    body: CourseVideoLessonWritable;
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}/video';
-};
-
-export type EditVideoLessonErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type EditVideoLessonError = EditVideoLessonErrors[keyof EditVideoLessonErrors];
-
-export type EditVideoLessonResponses = {
-    /**
-     * Video lesson successfully updated
-     */
-    204: void;
-};
-
-export type EditVideoLessonResponse = EditVideoLessonResponses[keyof EditVideoLessonResponses];
-
-export type EditTestLessonData = {
-    body: CourseTestLessonWritable;
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}/test';
-};
-
-export type EditTestLessonErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type EditTestLessonError = EditTestLessonErrors[keyof EditTestLessonErrors];
-
-export type EditTestLessonResponses = {
-    /**
-     * Test lesson successfully updated
-     */
-    204: void;
-};
-
-export type EditTestLessonResponse = EditTestLessonResponses[keyof EditTestLessonResponses];
-
-export type GetUploadVideoLessonUrlData = {
+export type CommentOnLessonData = {
     body: {
-        videoFilename: string;
+        content: CourseContent;
     };
     path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
         lessonId: string;
     };
     query?: never;
-    url: '/course/instructor/lessons/{lessonId}/upload-video-url';
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments';
 };
 
-export type GetUploadVideoLessonUrlErrors = {
+export type CommentOnLessonErrors = {
     /**
      * Bad Request Error response
      */
@@ -1964,213 +2012,27 @@ export type GetUploadVideoLessonUrlErrors = {
     500: CourseError;
 };
 
-export type GetUploadVideoLessonUrlError = GetUploadVideoLessonUrlErrors[keyof GetUploadVideoLessonUrlErrors];
+export type CommentOnLessonError = CommentOnLessonErrors[keyof CommentOnLessonErrors];
 
-export type GetUploadVideoLessonUrlResponses = {
+export type CommentOnLessonResponses = {
     /**
-     * Upload URL generated
-     */
-    201: {
-        uploadUrl: string;
-        videoKey: string;
-        expiresAt: Date;
-    };
-};
-
-export type GetUploadVideoLessonUrlResponse = GetUploadVideoLessonUrlResponses[keyof GetUploadVideoLessonUrlResponses];
-
-export type CreateTestData = {
-    body: {
-        type: CourseTestLessonType;
-        questions: Array<CourseTestQuestionWritable>;
-    };
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}/tests';
-};
-
-export type CreateTestErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type CreateTestError = CreateTestErrors[keyof CreateTestErrors];
-
-export type CreateTestResponses = {
-    /**
-     * Test created
+     * Lesson comment created
      */
     201: unknown;
 };
-
-export type GetLessonProgressData = {
-    body?: never;
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}/progress';
-};
-
-export type GetLessonProgressErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetLessonProgressError = GetLessonProgressErrors[keyof GetLessonProgressErrors];
-
-export type GetLessonProgressResponses = {
-    /**
-     * Lesson progress
-     */
-    200: {
-        data: CourseLessonProgressDetail;
-    };
-};
-
-export type GetLessonProgressResponse = GetLessonProgressResponses[keyof GetLessonProgressResponses];
-
-export type SaveVideoLessonProgressData = {
-    body: CourseVideoLessonProgressWritable;
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}/video-progress';
-};
-
-export type SaveVideoLessonProgressErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type SaveVideoLessonProgressError = SaveVideoLessonProgressErrors[keyof SaveVideoLessonProgressErrors];
-
-export type SaveVideoLessonProgressResponses = {
-    /**
-     * Video lesson progress saved
-     */
-    204: void;
-};
-
-export type SaveVideoLessonProgressResponse = SaveVideoLessonProgressResponses[keyof SaveVideoLessonProgressResponses];
-
-export type SaveTestLessonProgressData = {
-    body: CourseTestLessonProgressWritable;
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}/test-progress';
-};
-
-export type SaveTestLessonProgressErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type SaveTestLessonProgressError = SaveTestLessonProgressErrors[keyof SaveTestLessonProgressErrors];
-
-export type SaveTestLessonProgressResponses = {
-    /**
-     * Test lesson progress saved
-     */
-    200: {
-        data: CourseTestLessonProgress;
-    };
-};
-
-export type SaveTestLessonProgressResponse = SaveTestLessonProgressResponses[keyof SaveTestLessonProgressResponses];
 
 export type MarkLessonAsCompletedData = {
     body?: never;
     path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
         lessonId: string;
     };
     query?: never;
-    url: '/course/instructor/lessons/{lessonId}/mark-completed';
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/mark-completed';
 };
 
 export type MarkLessonAsCompletedErrors = {
@@ -2219,10 +2081,15 @@ export type MoveLessonData = {
         } | null;
     };
     path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
         lessonId: string;
     };
     query?: never;
-    url: '/course/instructor/lessons/{lessonId}/move';
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/move';
 };
 
 export type MoveLessonErrors = {
@@ -2259,61 +2126,21 @@ export type MoveLessonResponses = {
     201: unknown;
 };
 
-export type GetLessonCommentsData = {
+export type GetLessonProgressData = {
     body?: never;
     path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
         lessonId: string;
     };
     query?: never;
-    url: '/course/instructor/lessons/{lessonId}/comments';
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress';
 };
 
-export type GetLessonCommentsErrors = {
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetLessonCommentsError = GetLessonCommentsErrors[keyof GetLessonCommentsErrors];
-
-export type GetLessonCommentsResponses = {
-    /**
-     * Top-level comments for the lesson
-     */
-    200: {
-        data: Array<CourseLessonComment>;
-    };
-};
-
-export type GetLessonCommentsResponse = GetLessonCommentsResponses[keyof GetLessonCommentsResponses];
-
-export type CommentOnLessonData = {
-    body: {
-        content: CourseContent;
-    };
-    path: {
-        lessonId: string;
-    };
-    query?: never;
-    url: '/course/instructor/lessons/{lessonId}/comments';
-};
-
-export type CommentOnLessonErrors = {
+export type GetLessonProgressErrors = {
     /**
      * Bad Request Error response
      */
@@ -2338,30 +2165,189 @@ export type CommentOnLessonErrors = {
     500: CourseError;
 };
 
-export type CommentOnLessonError = CommentOnLessonErrors[keyof CommentOnLessonErrors];
+export type GetLessonProgressError = GetLessonProgressErrors[keyof GetLessonProgressErrors];
 
-export type CommentOnLessonResponses = {
+export type GetLessonProgressResponses = {
     /**
-     * Lesson comment created
+     * Lesson progress
+     */
+    200: {
+        data: CourseLessonProgressDetail;
+    };
+};
+
+export type GetLessonProgressResponse = GetLessonProgressResponses[keyof GetLessonProgressResponses];
+
+export type SaveTestLessonProgressData = {
+    body: CourseTestLessonProgressWritable;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test-progress';
+};
+
+export type SaveTestLessonProgressErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type SaveTestLessonProgressError = SaveTestLessonProgressErrors[keyof SaveTestLessonProgressErrors];
+
+export type SaveTestLessonProgressResponses = {
+    /**
+     * Test lesson progress saved
+     */
+    200: {
+        data: CourseTestLessonProgress;
+    };
+};
+
+export type SaveTestLessonProgressResponse = SaveTestLessonProgressResponses[keyof SaveTestLessonProgressResponses];
+
+export type EditTestLessonData = {
+    body: CourseTestLessonWritable;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests';
+};
+
+export type EditTestLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type EditTestLessonError = EditTestLessonErrors[keyof EditTestLessonErrors];
+
+export type EditTestLessonResponses = {
+    /**
+     * Test lesson successfully updated
+     */
+    204: void;
+};
+
+export type EditTestLessonResponse = EditTestLessonResponses[keyof EditTestLessonResponses];
+
+export type CreateTestData = {
+    body: {
+        type: CourseTestLessonType;
+        questions: Array<CourseTestQuestionWritable>;
+    };
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/tests';
+};
+
+export type CreateTestErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type CreateTestError = CreateTestErrors[keyof CreateTestErrors];
+
+export type CreateTestResponses = {
+    /**
+     * Test created
      */
     201: unknown;
 };
 
-export type ReplyLessonCommentData = {
+export type GetUploadVideoLessonUrlData = {
     body: {
-        content: CourseContent;
+        videoFilename: string;
     };
     path: {
         /**
-         * Unique identifier of the post comment
+         * Unique identifier of the course
          */
-        commentId: string;
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
     };
     query?: never;
-    url: '/course/instructor/lesson-comments/{commentId}/reply';
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/upload-video-url';
 };
 
-export type ReplyLessonCommentErrors = {
+export type GetUploadVideoLessonUrlErrors = {
     /**
      * Bad Request Error response
      */
@@ -2386,112 +2372,268 @@ export type ReplyLessonCommentErrors = {
     500: CourseError;
 };
 
-export type ReplyLessonCommentError = ReplyLessonCommentErrors[keyof ReplyLessonCommentErrors];
+export type GetUploadVideoLessonUrlError = GetUploadVideoLessonUrlErrors[keyof GetUploadVideoLessonUrlErrors];
 
-export type ReplyLessonCommentResponses = {
+export type GetUploadVideoLessonUrlResponses = {
     /**
-     * Lesson comment reply created
+     * Upload URL generated
+     */
+    201: {
+        uploadUrl: string;
+        videoKey: string;
+        expiresAt: Date;
+    };
+};
+
+export type GetUploadVideoLessonUrlResponse = GetUploadVideoLessonUrlResponses[keyof GetUploadVideoLessonUrlResponses];
+
+export type SaveVideoLessonProgressData = {
+    body: CourseVideoLessonProgressWritable;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress';
+};
+
+export type SaveVideoLessonProgressErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type SaveVideoLessonProgressError = SaveVideoLessonProgressErrors[keyof SaveVideoLessonProgressErrors];
+
+export type SaveVideoLessonProgressResponses = {
+    /**
+     * Video lesson progress saved
+     */
+    204: void;
+};
+
+export type SaveVideoLessonProgressResponse = SaveVideoLessonProgressResponses[keyof SaveVideoLessonProgressResponses];
+
+export type EditVideoLessonData = {
+    body: CourseVideoLessonWritable;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video';
+};
+
+export type EditVideoLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type EditVideoLessonError = EditVideoLessonErrors[keyof EditVideoLessonErrors];
+
+export type EditVideoLessonResponses = {
+    /**
+     * Video lesson successfully updated
+     */
+    204: void;
+};
+
+export type EditVideoLessonResponse = EditVideoLessonResponses[keyof EditVideoLessonResponses];
+
+export type DeleteLessonData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}';
+};
+
+export type DeleteLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type DeleteLessonError = DeleteLessonErrors[keyof DeleteLessonErrors];
+
+export type DeleteLessonResponses = {
+    /**
+     * Lesson successfully deleted
+     */
+    204: void;
+};
+
+export type DeleteLessonResponse = DeleteLessonResponses[keyof DeleteLessonResponses];
+
+export type GetLessonDetailData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+        lessonId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}';
+};
+
+export type GetLessonDetailErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetLessonDetailError = GetLessonDetailErrors[keyof GetLessonDetailErrors];
+
+export type GetLessonDetailResponses = {
+    /**
+     * Lesson detail
+     */
+    200: {
+        data: CourseLessonDetail;
+    };
+};
+
+export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
+
+export type CreateLessonData = {
+    body: {
+        video?: CourseVideoLessonWritable;
+        test?: CourseTestLessonWritable;
+    };
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+        sectionId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/sections/{sectionId}/lessons';
+};
+
+export type CreateLessonErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type CreateLessonError = CreateLessonErrors[keyof CreateLessonErrors];
+
+export type CreateLessonResponses = {
+    /**
+     * Lesson created
      */
     201: unknown;
 };
-
-export type GetMyCertificatesData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Page number for pagination
-         */
-        page?: number;
-        /**
-         * Number of items per page
-         */
-        limit?: number;
-        /**
-         * Sort order
-         */
-        order?: 'asc' | 'desc';
-    };
-    url: '/course/instructor/certificates/me';
-};
-
-export type GetMyCertificatesErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetMyCertificatesError = GetMyCertificatesErrors[keyof GetMyCertificatesErrors];
-
-export type GetMyCertificatesResponses = {
-    /**
-     * My certificates
-     */
-    200: {
-        data: Array<CourseCertificate>;
-        pagination: CoursePagination;
-    };
-};
-
-export type GetMyCertificatesResponse = GetMyCertificatesResponses[keyof GetMyCertificatesResponses];
-
-export type GetCertificateByIdData = {
-    body?: never;
-    path: {
-        certificateId: string;
-    };
-    query?: never;
-    url: '/course/instructor/certificates/{certificateId}';
-};
-
-export type GetCertificateByIdErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetCertificateByIdError = GetCertificateByIdErrors[keyof GetCertificateByIdErrors];
-
-export type GetCertificateByIdResponses = {
-    /**
-     * Certificate detail
-     */
-    200: {
-        data: CourseCertificate;
-    };
-};
-
-export type GetCertificateByIdResponse = GetCertificateByIdResponses[keyof GetCertificateByIdResponses];
 
 export type CheckoutCourseData = {
     body: BillingTransactionWritable;

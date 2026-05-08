@@ -1,5 +1,6 @@
 local lsp = vim.lsp
 local map = vim.keymap.set
+local root = vim.fn.getcwd()
 
 vim.filetype.add({
   pattern = {
@@ -30,6 +31,37 @@ vim.filetype.add({
 --     },
 --   },
 -- })
+
+lsp.config("tailwindcss", {
+  root_dir = function(bufnr, on_dir)
+    local fname = vim.api.nvim_buf_get_name(bufnr)
+    local allowed_paths = {
+      "apps/web",
+    }
+    local is_allowed = false
+    for _, path in ipairs(allowed_paths) do
+      if fname:match(path) then
+        is_allowed = true
+        break
+      end
+    end
+    if not is_allowed then
+      return
+    end
+    on_dir(root)
+  end,
+  ---@module 'lspconfig'
+  ---@type lspconfig.settings.tailwindcss
+  settings = {
+    tailwindCSS = {
+      experimental = {
+        configFile = {
+          ["apps/web/src/app/global.css"] = "apps/web/src/**",
+        },
+      },
+    },
+  },
+})
 
 lsp.config("gopls", {
   settings = {

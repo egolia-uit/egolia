@@ -1,4 +1,4 @@
-post:
+patch:
   security:
     - Oauth2:
         - openid
@@ -8,13 +8,21 @@ post:
         - entitlements
   tags:
     - Lesson
-  summary: Mark lesson as completed
-  operationId: markLessonAsCompleted
+  summary: Edit test lesson
+  operationId: editTestLesson
   parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+    - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/TestLesson.yaml
   responses:
     204:
-      description: Lesson marked as completed
+      description: Test lesson successfully updated
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

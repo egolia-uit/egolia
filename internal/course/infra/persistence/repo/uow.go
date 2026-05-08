@@ -3,12 +3,11 @@ package repo
 import (
 	"context"
 
+	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"gorm.io/gorm"
 )
 
-// Registry holds a *gorm.DB (root or tx). Inside UnitOfWork.Execute the db is
-// already the GORM transaction, so all repo methods share the same tx.
 type Registry struct {
 	db *gorm.DB
 }
@@ -27,17 +26,18 @@ func (r *Registry) Review() domain.ReviewRepo               { return &ReviewRepo
 // UnitOfWork opens a Postgres transaction and passes a Registry backed by
 // that tx to fn, keeping all repo operations atomic.
 type UnitOfWork struct {
-	db *gorm.DB
+	db               *gorm.DB
+	objectStorageSvc app.ObjectStorageSvc
 }
 
 var _ domain.UnitOfWork = (*UnitOfWork)(nil)
 
-func NewUnitOfWork(db *gorm.DB) *UnitOfWork {
-	return &UnitOfWork{db: db}
+func NewUnitOfWork(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *UnitOfWork {
+	return &UnitOfWork{db: db, objectStorageSvc: objectStorageSvc}
 }
 
 func (u *UnitOfWork) Execute(ctx context.Context, fn func(domain.RepoRegistry) error) error {
 	return u.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		return fn(&Registry{db: tx})
+		return fn(NewRegistry(tx))
 	})
 }

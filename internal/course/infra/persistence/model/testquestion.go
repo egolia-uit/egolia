@@ -8,7 +8,7 @@ import (
 type TestQuestion struct {
 	ID           uuid.UUID    `gorm:"type:uuid;primaryKey"`
 	TestLessonID uuid.UUID    `gorm:"column:test_lesson_id;type:uuid;not null"`
-	QuestionText string       `gorm:"column:question_text;type:text;not null"`
+	Question     string       `gorm:"column:question;type:text;not null"`
 	Answers      []TestAnswer `gorm:"foreignKey:QuestionID"`
 }
 
@@ -22,7 +22,7 @@ func TestQuestionFromDomain(q *domain.TestQuestion, lessonID uuid.UUID) TestQues
 	return TestQuestion{
 		ID:           q.ID,
 		TestLessonID: lessonID,
-		QuestionText: q.Question,
+		Question:     q.Question,
 		Answers:      answers,
 	}
 }
@@ -32,5 +32,5 @@ func (m *TestQuestion) ToDomain() *domain.TestQuestion {
 	for i := range m.Answers {
 		answers = append(answers, m.Answers[i].ToDomain())
 	}
-	return domain.NewTestQuestion(m.ID, m.QuestionText, answers)
+	return domain.NewTestQuestion(m.ID, m.Question, answers)
 }
