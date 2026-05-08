@@ -14,7 +14,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeServer(ctx context.Context) (*seedcourse.Seed, func(), error) {
+func InitializeSeed(ctx context.Context) (*seedcourse.Seed, func(), error) {
 	validate := seedcourse.NewValidate()
 	viper := seedcourse.NewViper()
 	config, err := seedcourse.NewConfig(validate, viper)
@@ -25,7 +25,7 @@ func InitializeServer(ctx context.Context) (*seedcourse.Seed, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	seed, err := seedcourse.NewSeed(db, config)
+	seed, err := seedcourse.NewSeed(db)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
