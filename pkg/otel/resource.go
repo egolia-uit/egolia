@@ -25,6 +25,7 @@ func NewResource(
 		resource.WithTelemetrySDK(),
 		resource.WithOS(),
 		resource.WithContainer(),
+		resource.WithFromEnv(),
 	)
 }
 
