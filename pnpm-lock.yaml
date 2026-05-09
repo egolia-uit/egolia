@@ -91,11 +91,11 @@ catalogs:
       specifier: 3.8.3
       version: 3.8.3
     react:
-      specifier: 19.2.5
-      version: 19.2.5
+      specifier: 19.2.6
+      version: 19.2.6
     react-dom:
-      specifier: 19.2.5
-      version: 19.2.5
+      specifier: 19.2.6
+      version: 19.2.6
     reflect-metadata:
       specifier: 0.2.2
       version: 0.2.2
@@ -142,13 +142,13 @@ importers:
         version: 1.13.6
       next:
         specifier: 'catalog:'
-        version: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.97.3)
+        version: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.97.3)
       react:
         specifier: 'catalog:'
-        version: 19.2.5
+        version: 19.2.6
       react-dom:
         specifier: 'catalog:'
-        version: 19.2.5(react@19.2.5)
+        version: 19.2.6(react@19.2.6)
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -173,13 +173,13 @@ importers:
         version: 22.7.1(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
       '@nx/next':
         specifier: 22.7.1
-        version: 22.7.1(107a9b6a480390c20e6ff729d0970bc0)
+        version: 22.7.1(27b9971a683860f787b7b5f2ffff241f)
       '@nx/node':
         specifier: 22.7.1
         version: 22.7.1(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(@types/node@25.3.5)(@zkochan/js-yaml@0.0.7)(babel-plugin-macros@3.1.0)(eslint@9.39.4(jiti@2.6.1))(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))(typescript@5.9.3)
       '@nx/react':
         specifier: 22.7.1
-        version: 22.7.1(4436d9f73b31b5a072c67752c1409fd6)
+        version: 22.7.1(7553490f9ebb2615e0f2c6ed63744f4d)
       '@nx/vite':
         specifier: 22.7.1
         version: 22.7.1(12826baf3ae0a6eb1134294f09771de6)
@@ -311,7 +311,7 @@ importers:
         version: link:../../api
       '@scalar/api-reference-react':
         specifier: 0.9.34
-        version: 0.9.34(@vue/compiler-sfc@3.5.32)(axios@1.15.0)(react@19.2.5)(tailwindcss@4.2.4)(typescript@5.9.3)
+        version: 0.9.34(@vue/compiler-sfc@3.5.32)(axios@1.15.0)(react@19.2.6)(tailwindcss@4.2.4)(typescript@5.9.3)
 
   apps/web:
     dependencies:
@@ -323,16 +323,16 @@ importers:
         version: 2.1.1
       lucide-react:
         specifier: 'catalog:'
-        version: 1.6.0(react@19.2.5)
+        version: 1.6.0(react@19.2.6)
       next:
         specifier: 'catalog:'
-        version: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.97.3)
+        version: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.97.3)
       react:
         specifier: 'catalog:'
-        version: 19.2.5
+        version: 19.2.6
       react-dom:
         specifier: 'catalog:'
-        version: 19.2.5(react@19.2.5)
+        version: 19.2.6(react@19.2.6)
     devDependencies:
       autoprefixer:
         specifier: 'catalog:'
@@ -385,7 +385,7 @@ importers:
     devDependencies:
       '@tanstack/react-query':
         specifier: 'catalog:'
-        version: 5.90.21(react@19.2.5)
+        version: 5.90.21(react@19.2.6)
       zod:
         specifier: 'catalog:'
         version: 4.3.6
@@ -9963,6 +9963,11 @@ packages:
     peerDependencies:
       react: ^19.2.5
 
+  react-dom@19.2.6:
+    resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
+    peerDependencies:
+      react: ^19.2.6
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -9976,6 +9981,10 @@ packages:
 
   react@19.2.5:
     resolution: {integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==}
+    engines: {node: '>=0.10.0'}
+
+  react@19.2.6:
+    resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
     engines: {node: '>=0.10.0'}
 
   read-cache@1.0.0:
@@ -14084,22 +14093,22 @@ snapshots:
       - utf-8-validate
       - vue-tsc
 
-  '@module-federation/data-prefetch@2.1.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@module-federation/data-prefetch@2.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@module-federation/runtime': 2.1.0
       '@module-federation/sdk': 2.1.0
       fs-extra: 9.1.0
     optionalDependencies:
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
 
-  '@module-federation/data-prefetch@2.3.3(node-fetch@3.3.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@module-federation/data-prefetch@2.3.3(node-fetch@3.3.2)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
       '@module-federation/runtime': 2.3.3(node-fetch@3.3.2)
       '@module-federation/sdk': 2.3.3(node-fetch@3.3.2)
     optionalDependencies:
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
     transitivePeerDependencies:
       - node-fetch
 
@@ -14145,11 +14154,11 @@ snapshots:
       - node-fetch
       - utf-8-validate
 
-  '@module-federation/enhanced@2.1.0(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))':
+  '@module-federation/enhanced@2.1.0(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))':
     dependencies:
       '@module-federation/bridge-react-webpack-plugin': 2.1.0
       '@module-federation/cli': 2.1.0(typescript@5.9.3)
-      '@module-federation/data-prefetch': 2.1.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@module-federation/data-prefetch': 2.1.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@module-federation/dts-plugin': 2.1.0(typescript@5.9.3)
       '@module-federation/error-codes': 2.1.0
       '@module-federation/inject-external-runtime-core-plugin': 2.1.0(@module-federation/runtime-tools@2.1.0)
@@ -14173,11 +14182,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@module-federation/enhanced@2.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.21))(node-fetch@3.3.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))':
+  '@module-federation/enhanced@2.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.21))(node-fetch@3.3.2)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))':
     dependencies:
       '@module-federation/bridge-react-webpack-plugin': 2.3.3(node-fetch@3.3.2)
       '@module-federation/cli': 2.3.3(node-fetch@3.3.2)(typescript@5.9.3)
-      '@module-federation/data-prefetch': 2.3.3(node-fetch@3.3.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@module-federation/data-prefetch': 2.3.3(node-fetch@3.3.2)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@module-federation/dts-plugin': 2.3.3(node-fetch@3.3.2)(typescript@5.9.3)
       '@module-federation/error-codes': 2.3.3
       '@module-federation/inject-external-runtime-core-plugin': 2.3.3(@module-federation/runtime-tools@2.3.3(node-fetch@3.3.2))
@@ -14256,9 +14265,9 @@ snapshots:
       - utf-8-validate
       - vue-tsc
 
-  '@module-federation/node@2.7.33(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))':
+  '@module-federation/node@2.7.33(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))':
     dependencies:
-      '@module-federation/enhanced': 2.1.0(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))
+      '@module-federation/enhanced': 2.1.0(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))
       '@module-federation/runtime': 2.1.0
       '@module-federation/sdk': 2.1.0
       btoa: 1.2.1
@@ -14718,10 +14727,10 @@ snapshots:
       - nx
       - supports-color
 
-  '@nx/module-federation@22.7.1(6cbc799979a8dd0407aa31ff9805e475)':
+  '@nx/module-federation@22.7.1(6d29d2b70aa0c5ed29cc1b0a992c1c5e)':
     dependencies:
-      '@module-federation/enhanced': 2.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.21))(node-fetch@3.3.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))
-      '@module-federation/node': 2.7.33(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))
+      '@module-federation/enhanced': 2.3.3(@rspack/core@1.6.8(@swc/helpers@0.5.21))(node-fetch@3.3.2)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))
+      '@module-federation/node': 2.7.33(@rspack/core@1.6.8(@swc/helpers@0.5.21))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@5.9.3)(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))
       '@module-federation/sdk': 2.3.3(node-fetch@3.3.2)
       '@nx/devkit': 22.7.1(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
       '@nx/js': 22.7.1(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
@@ -14758,20 +14767,20 @@ snapshots:
       - vue-tsc
       - webpack-cli
 
-  '@nx/next@22.7.1(107a9b6a480390c20e6ff729d0970bc0)':
+  '@nx/next@22.7.1(27b9971a683860f787b7b5f2ffff241f)':
     dependencies:
       '@babel/plugin-proposal-decorators': 7.29.0(@babel/core@7.29.0)
       '@nx/devkit': 22.7.1(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
       '@nx/eslint': 22.7.1(@babel/traverse@7.29.0)(@nx/jest@22.7.1(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(@types/node@25.3.5)(babel-plugin-macros@3.1.0)(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))(typescript@5.9.3))(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(@zkochan/js-yaml@0.0.7)(eslint@9.39.4(jiti@2.6.1))(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
       '@nx/js': 22.7.1(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
-      '@nx/react': 22.7.1(4436d9f73b31b5a072c67752c1409fd6)
+      '@nx/react': 22.7.1(7553490f9ebb2615e0f2c6ed63744f4d)
       '@nx/web': 22.7.1(51a14ea8422e23916666dd66eed94a27)
       '@nx/webpack': 22.7.1(@babel/traverse@7.29.0)(@rspack/core@1.6.8(@swc/helpers@0.5.21))(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7)(lightningcss@1.32.0)(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))(typescript@5.9.3)
       '@phenomnomnominal/tsquery': 6.1.4(typescript@5.9.3)
       '@svgr/webpack': 8.1.0(typescript@5.9.3)
       copy-webpack-plugin: 14.0.0(webpack@5.105.4(@swc/core@1.15.33(@swc/helpers@0.5.21))(esbuild@0.27.7))
       ignore: 5.3.2
-      next: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.97.3)
+      next: 16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.97.3)
       semver: 7.7.4
       tslib: 2.8.1
       webpack-merge: 5.10.0
@@ -14871,12 +14880,12 @@ snapshots:
   '@nx/nx-win32-x64-msvc@22.7.1':
     optional: true
 
-  '@nx/react@22.7.1(4436d9f73b31b5a072c67752c1409fd6)':
+  '@nx/react@22.7.1(7553490f9ebb2615e0f2c6ed63744f4d)':
     dependencies:
       '@nx/devkit': 22.7.1(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
       '@nx/eslint': 22.7.1(@babel/traverse@7.29.0)(@nx/jest@22.7.1(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(@types/node@25.3.5)(babel-plugin-macros@3.1.0)(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))(typescript@5.9.3))(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(@zkochan/js-yaml@0.0.7)(eslint@9.39.4(jiti@2.6.1))(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
       '@nx/js': 22.7.1(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))
-      '@nx/module-federation': 22.7.1(6cbc799979a8dd0407aa31ff9805e475)
+      '@nx/module-federation': 22.7.1(6d29d2b70aa0c5ed29cc1b0a992c1c5e)
       '@nx/rollup': 22.7.1(@babel/core@7.29.0)(@babel/traverse@7.29.0)(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21))(@types/babel__core@7.20.5)(nx@22.7.1(@swc-node/register@1.11.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@swc/core@1.15.33(@swc/helpers@0.5.21))(@swc/types@0.1.26)(typescript@5.9.3))(@swc/core@1.15.33(@swc/helpers@0.5.21)))(typescript@5.9.3)
       '@nx/web': 22.7.1(51a14ea8422e23916666dd66eed94a27)
       '@phenomnomnominal/tsquery': 6.1.4(typescript@5.9.3)
@@ -15991,11 +16000,11 @@ snapshots:
       - typescript
       - universal-cookie
 
-  '@scalar/api-reference-react@0.9.34(@vue/compiler-sfc@3.5.32)(axios@1.15.0)(react@19.2.5)(tailwindcss@4.2.4)(typescript@5.9.3)':
+  '@scalar/api-reference-react@0.9.34(@vue/compiler-sfc@3.5.32)(axios@1.15.0)(react@19.2.6)(tailwindcss@4.2.4)(typescript@5.9.3)':
     dependencies:
       '@scalar/api-reference': 1.55.3(@vue/compiler-sfc@3.5.32)(axios@1.15.0)(tailwindcss@4.2.4)(typescript@5.9.3)
       '@scalar/types': 0.9.6
-      react: 19.2.5
+      react: 19.2.6
     transitivePeerDependencies:
       - '@pinia/colada'
       - '@vue/compiler-sfc'
@@ -16966,10 +16975,10 @@ snapshots:
 
   '@tanstack/query-core@5.90.20': {}
 
-  '@tanstack/react-query@5.90.21(react@19.2.5)':
+  '@tanstack/react-query@5.90.21(react@19.2.6)':
     dependencies:
       '@tanstack/query-core': 5.90.20
-      react: 19.2.5
+      react: 19.2.6
 
   '@tanstack/virtual-core@3.13.21': {}
 
@@ -21959,9 +21968,9 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@1.6.0(react@19.2.5):
+  lucide-react@1.6.0(react@19.2.6):
     dependencies:
-      react: 19.2.5
+      react: 19.2.6
 
   lucide-vue-next@0.577.0(vue@3.5.32(typescript@5.9.3)):
     dependencies:
@@ -22607,16 +22616,16 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.97.3):
+  next@16.2.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(sass@1.97.3):
     dependencies:
       '@next/env': 16.2.6
       '@swc/helpers': 0.5.15
       baseline-browser-mapping: 2.10.0
       caniuse-lite: 1.0.30001777
       postcss: 8.4.31
-      react: 19.2.5
-      react-dom: 19.2.5(react@19.2.5)
-      styled-jsx: 5.1.6(@babel/core@7.29.0)(babel-plugin-macros@3.1.0)(react@19.2.5)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
+      styled-jsx: 5.1.6(@babel/core@7.29.0)(babel-plugin-macros@3.1.0)(react@19.2.6)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.2.6
       '@next/swc-darwin-x64': 16.2.6
@@ -23708,6 +23717,11 @@ snapshots:
       react: 19.2.5
       scheduler: 0.27.0
 
+  react-dom@19.2.6(react@19.2.6):
+    dependencies:
+      react: 19.2.6
+      scheduler: 0.27.0
+
   react-is@16.13.1: {}
 
   react-is@18.3.1: {}
@@ -23719,6 +23733,8 @@ snapshots:
       react: 19.2.5
 
   react@19.2.5: {}
+
+  react@19.2.6: {}
 
   read-cache@1.0.0:
     dependencies:
@@ -24946,10 +24962,10 @@ snapshots:
     optionalDependencies:
       react-dom: 19.2.5(react@19.2.5)
 
-  styled-jsx@5.1.6(@babel/core@7.29.0)(babel-plugin-macros@3.1.0)(react@19.2.5):
+  styled-jsx@5.1.6(@babel/core@7.29.0)(babel-plugin-macros@3.1.0)(react@19.2.6):
     dependencies:
       client-only: 0.0.1
-      react: 19.2.5
+      react: 19.2.6
     optionalDependencies:
       '@babel/core': 7.29.0
       babel-plugin-macros: 3.1.0
