@@ -214,49 +214,6 @@ export type CourseLessonDetail = ({
     lessonType: 'test';
 } & CourseTestLesson);
 
-/**
- * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
- */
-export type BillingId = string;
-
-/**
- * Username from Authentik
- */
-export type BillingUsername = string;
-
-/**
- * Email from Authentik
- */
-export type BillingEmail = string | null;
-
-export type BillingTitle = string;
-
-/**
- * Current status of a billing transaction
- */
-export const BillingTransactionStatus = {
-    PENDING: 'pending',
-    COMPLETED: 'completed',
-    FAILED: 'failed'
-} as const;
-
-/**
- * Current status of a billing transaction
- */
-export type BillingTransactionStatus = typeof BillingTransactionStatus[keyof typeof BillingTransactionStatus];
-
-export type BillingTransaction = {
-    readonly id: string;
-    userId: BillingId;
-    username: BillingUsername;
-    userEmail: BillingEmail;
-    courseId: string;
-    courseTitle?: BillingTitle;
-    readonly amount: bigint;
-    status: BillingTransactionStatus;
-    readonly createdAt: Date;
-};
-
 export type BillingError = {
     /**
      * Error code
@@ -278,6 +235,35 @@ export type BillingRevenueAnalytics = {
     totalRevenue: bigint;
     completedTransactions: number;
     failedTransactions: number;
+};
+
+/**
+ * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+ */
+export type BillingId = string;
+
+/**
+ * Current status of a billing transaction
+ */
+export const BillingTransactionStatus = {
+    PENDING: 'pending',
+    COMPLETED: 'completed',
+    FAILED: 'failed'
+} as const;
+
+/**
+ * Current status of a billing transaction
+ */
+export type BillingTransactionStatus = typeof BillingTransactionStatus[keyof typeof BillingTransactionStatus];
+
+export type BillingTransaction = {
+    readonly id: string;
+    userId: BillingId;
+    courseId: string;
+    readonly amount: bigint;
+    status: BillingTransactionStatus;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
 };
 
 export type BillingPagination = {
@@ -533,6 +519,11 @@ export type CourseSectionIdPath = string;
 export type CourseLessonIdPath = string;
 
 /**
+ * Unique identifier of the course
+ */
+export type BillingCourseIdPath = string;
+
+/**
  * Page number for pagination
  */
 export type BillingPageQuery = number;
@@ -551,11 +542,6 @@ export const BillingOrderQuery = { ASC: 'asc', DESC: 'desc' } as const;
  * Sort order
  */
 export type BillingOrderQuery = typeof BillingOrderQuery[keyof typeof BillingOrderQuery];
-
-/**
- * Unique identifier of the billing transaction
- */
-export type BillingTransactionIdPath = string;
 
 /**
  * Page number for pagination
@@ -1429,52 +1415,6 @@ export type GetCourseDetailResponses = {
 };
 
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
-
-export type EnrollInCourseData = {
-    body?: never;
-    path: {
-        /**
-         * Unique identifier of the course
-         */
-        courseId: string;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}/enroll';
-};
-
-export type EnrollInCourseErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type EnrollInCourseError = EnrollInCourseErrors[keyof EnrollInCourseErrors];
-
-export type EnrollInCourseResponses = {
-    /**
-     * Course enrollment created
-     */
-    201: unknown;
-};
 
 export type FinishCourseData = {
     body?: never;
@@ -2874,10 +2814,15 @@ export type CreateLessonResponses = {
 };
 
 export type CheckoutCourseData = {
-    body: BillingTransactionWritable;
-    path?: never;
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
     query?: never;
-    url: '/billing/checkout';
+    url: '/billing/courses/{courseId}/checkout';
 };
 
 export type CheckoutCourseErrors = {
@@ -2905,9 +2850,12 @@ export type CheckoutCourseError = CheckoutCourseErrors[keyof CheckoutCourseError
 
 export type CheckoutCourseResponses = {
     /**
-     * Checkout transaction created
+     * Checkout successful, transaction created
      */
-    201: BillingTransaction;
+    201: {
+        transactionId: string;
+        paymentUrl: string;
+    };
 };
 
 export type CheckoutCourseResponse = CheckoutCourseResponses[keyof CheckoutCourseResponses];
@@ -3001,46 +2949,6 @@ export type GetTransactionsResponses = {
 };
 
 export type GetTransactionsResponse = GetTransactionsResponses[keyof GetTransactionsResponses];
-
-export type CompleteTransactionData = {
-    body?: never;
-    path: {
-        /**
-         * Unique identifier of the billing transaction
-         */
-        transactionId: string;
-    };
-    query?: never;
-    url: '/billing/transactions/{transactionId}/complete';
-};
-
-export type CompleteTransactionErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: BillingError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Internal Server Error response
-     */
-    500: BillingError;
-};
-
-export type CompleteTransactionError = CompleteTransactionErrors[keyof CompleteTransactionErrors];
-
-export type CompleteTransactionResponses = {
-    /**
-     * Transaction completed successfully
-     */
-    204: void;
-};
-
-export type CompleteTransactionResponse = CompleteTransactionResponses[keyof CompleteTransactionResponses];
 
 export type SearchPostsData = {
     body?: never;

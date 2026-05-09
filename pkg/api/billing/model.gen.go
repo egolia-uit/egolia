@@ -115,39 +115,27 @@ type RevenueAnalytics struct {
 
 // Transaction defines model for Transaction.
 type Transaction struct {
-	Amount      *int64              `json:"amount,omitempty"`
-	CourseId    openapi_types.UUID  `json:"courseId"`
-	CourseTitle *Title              `json:"courseTitle,omitempty"`
-	CreatedAt   *time.Time          `json:"createdAt,omitempty"`
-	Id          *openapi_types.UUID `json:"id,omitempty"`
+	Amount    *int64              `json:"amount,omitempty"`
+	CourseId  openapi_types.UUID  `json:"courseId"`
+	CreatedAt *time.Time          `json:"createdAt,omitempty"`
+	Id        *openapi_types.UUID `json:"id,omitempty"`
 
 	// Status Current status of a billing transaction
-	Status TransactionStatus `json:"status"`
-
-	// UserEmail Email from Authentik
-	UserEmail *Email `json:"userEmail"`
+	Status    TransactionStatus `json:"status"`
+	UpdatedAt *time.Time        `json:"updatedAt,omitempty"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId Id `json:"userId"`
-
-	// Username Username from Authentik
-	Username Username `json:"username"`
 }
 
 // TransactionStatus Current status of a billing transaction
 type TransactionStatus string
 
-// Email Email from Authentik
-type Email = openapi_types.Email
-
 // Id User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 type Id = string
 
-// Title defines model for title.
-type Title = string
-
-// Username Username from Authentik
-type Username = string
+// CourseIdPath defines model for courseIdPath.
+type CourseIdPath = openapi_types.UUID
 
 // LimitQuery defines model for limitQuery.
 type LimitQuery = int
@@ -157,9 +145,6 @@ type OrderQuery string
 
 // PageQuery defines model for pageQuery.
 type PageQuery = int
-
-// TransactionIdPath defines model for transactionIdPath.
-type TransactionIdPath = openapi_types.UUID
 
 // BadRequestError defines model for BadRequestError.
 type BadRequestError = Error
@@ -203,6 +188,3 @@ type GetTransactionsParams struct {
 
 // GetTransactionsParamsOrder defines parameters for GetTransactions.
 type GetTransactionsParamsOrder string
-
-// CheckoutCourseJSONRequestBody defines body for CheckoutCourse for application/json ContentType.
-type CheckoutCourseJSONRequestBody = Transaction

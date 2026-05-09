@@ -1153,65 +1153,6 @@
         }
       }
     },
-    "/course/courses/{courseId}/enroll": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Enroll in course",
-        "operationId": "enrollInCourse",
-        "description": "- authenticated:\n",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Course enrollment created",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/enroll"
-                },
-                "required": true
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
     "/course/courses/{courseId}/finish": {
       "post": {
         "security": [
@@ -3107,7 +3048,7 @@
         }
       }
     },
-    "/billing/checkout": {
+    "/billing/courses/{courseId}/checkout": {
       "post": {
         "security": [
           {
@@ -3128,23 +3069,35 @@
         ],
         "summary": "Checkout course",
         "operationId": "checkoutCourse",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/billing_Transaction"
-              }
-            }
+        "description": "- authenticated:\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/billing_courseIdPath"
           }
-        },
+        ],
         "responses": {
           "201": {
-            "description": "Checkout transaction created",
+            "description": "Checkout successful, transaction created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/billing_Transaction"
+                  "type": "object",
+                  "properties": {
+                    "transactionId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+                    },
+                    "paymentUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://api.egolia.com/billing/transactions/0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+                    }
+                  },
+                  "required": [
+                    "transactionId",
+                    "paymentUrl"
+                  ]
                 }
               }
             }
@@ -3305,48 +3258,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "$ref": "#/components/responses/billing_UnauthorizedError"
-          },
-          "500": {
-            "$ref": "#/components/responses/billing_InternalServerError"
-          }
-        }
-      }
-    },
-    "/billing/transactions/{transactionId}/complete": {
-      "get": {
-        "security": [
-          {
-            "billing_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "billing_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Billing"
-        ],
-        "summary": "Complete transaction",
-        "operationId": "completeTransaction",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/billing_transactionIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Transaction completed successfully"
-          },
-          "400": {
-            "$ref": "#/components/responses/billing_BadRequestError"
           },
           "401": {
             "$ref": "#/components/responses/billing_UnauthorizedError"
@@ -4225,6 +4136,17 @@
           "example": "46f94d4d-41b5-4df6-bf8d-270fb9a49c97"
         }
       },
+      "billing_courseIdPath": {
+        "name": "courseId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the course",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
+      },
       "billing_pageQuery": {
         "name": "page",
         "in": "query",
@@ -4261,17 +4183,6 @@
           "default": "desc",
           "example": "desc"
         }
-      },
-      "billing_transactionIdPath": {
-        "name": "transactionId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the billing transaction",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
       },
       "blog_pageQuery": {
         "name": "page",
@@ -5075,97 +4986,6 @@
           }
         }
       },
-      "billing_id": {
-        "type": "string",
-        "format": "number",
-        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
-        "example": "100"
-      },
-      "billing_username": {
-        "type": "string",
-        "description": "Username from Authentik",
-        "example": "user"
-      },
-      "billing_email": {
-        "type": "string",
-        "format": "email",
-        "description": "Email from Authentik",
-        "example": "user@egolia.com",
-        "nullable": true
-      },
-      "billing_title": {
-        "type": "string",
-        "example": "Introduction to Programming"
-      },
-      "billing_TransactionStatus": {
-        "type": "string",
-        "description": "Current status of a billing transaction",
-        "enum": [
-          "pending",
-          "completed",
-          "failed"
-        ],
-        "example": "completed"
-      },
-      "billing_Transaction": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
-            "readOnly": true
-          },
-          "userId": {
-            "$ref": "#/components/schemas/billing_id",
-            "readOnly": true
-          },
-          "username": {
-            "$ref": "#/components/schemas/billing_username",
-            "readOnly": true
-          },
-          "userEmail": {
-            "$ref": "#/components/schemas/billing_email",
-            "readOnly": true
-          },
-          "courseId": {
-            "type": "string",
-            "format": "uuid",
-            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
-          },
-          "courseTitle": {
-            "$ref": "#/components/schemas/billing_title",
-            "readOnly": true
-          },
-          "amount": {
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 499000,
-            "readOnly": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/billing_TransactionStatus",
-            "readOnly": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-25T08:30:00Z",
-            "readOnly": true
-          }
-        },
-        "required": [
-          "id",
-          "userId",
-          "username",
-          "userEmail",
-          "courseId",
-          "amount",
-          "status",
-          "createdAt"
-        ]
-      },
       "billing_Error": {
         "type": "object",
         "properties": {
@@ -5226,6 +5046,74 @@
           "totalRevenue",
           "completedTransactions",
           "failedTransactions"
+        ]
+      },
+      "billing_id": {
+        "type": "string",
+        "format": "number",
+        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
+        "example": "100"
+      },
+      "billing_TransactionStatus": {
+        "type": "string",
+        "description": "Current status of a billing transaction",
+        "enum": [
+          "pending",
+          "completed",
+          "failed"
+        ],
+        "example": "completed"
+      },
+      "billing_Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+            "readOnly": true
+          },
+          "userId": {
+            "$ref": "#/components/schemas/billing_id",
+            "readOnly": true
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 499000,
+            "readOnly": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/billing_TransactionStatus",
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:30:00Z",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:30:00Z",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "courseId",
+          "amount",
+          "status",
+          "updatedAt",
+          "createdAt"
         ]
       },
       "billing_Pagination": {

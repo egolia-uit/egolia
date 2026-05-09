@@ -29,7 +29,7 @@
     "url": "https://egolia-uit.github.io/egolia"
   },
   "paths": {
-    "/billing/checkout": {
+    "/billing/courses/{courseId}/checkout": {
       "post": {
         "security": [
           {
@@ -50,23 +50,35 @@
         ],
         "summary": "Checkout course",
         "operationId": "checkoutCourse",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Transaction"
-              }
-            }
+        "description": "- authenticated:\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
           }
-        },
+        ],
         "responses": {
           "201": {
-            "description": "Checkout transaction created",
+            "description": "Checkout successful, transaction created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Transaction"
+                  "type": "object",
+                  "properties": {
+                    "transactionId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+                    },
+                    "paymentUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://api.egolia.com/billing/transactions/0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+                    }
+                  },
+                  "required": [
+                    "transactionId",
+                    "paymentUrl"
+                  ]
                 }
               }
             }
@@ -236,48 +248,6 @@
           }
         }
       }
-    },
-    "/billing/transactions/{transactionId}/complete": {
-      "get": {
-        "security": [
-          {
-            "Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Billing"
-        ],
-        "summary": "Complete transaction",
-        "operationId": "completeTransaction",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/transactionIdPath"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Transaction completed successfully"
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
     }
   },
   "components": {
@@ -328,98 +298,57 @@
         }
       }
     },
-    "schemas": {
-      "id": {
-        "type": "string",
-        "format": "number",
-        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
-        "example": "100"
-      },
-      "username": {
-        "type": "string",
-        "description": "Username from Authentik",
-        "example": "user"
-      },
-      "email": {
-        "type": "string",
-        "format": "email",
-        "description": "Email from Authentik",
-        "example": "user@egolia.com",
-        "nullable": true
-      },
-      "title": {
-        "type": "string",
-        "example": "Introduction to Programming"
-      },
-      "TransactionStatus": {
-        "type": "string",
-        "description": "Current status of a billing transaction",
-        "enum": [
-          "pending",
-          "completed",
-          "failed"
-        ],
-        "example": "completed"
-      },
-      "Transaction": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
-            "readOnly": true
-          },
-          "userId": {
-            "$ref": "#/components/schemas/id",
-            "readOnly": true
-          },
-          "username": {
-            "$ref": "#/components/schemas/username",
-            "readOnly": true
-          },
-          "userEmail": {
-            "$ref": "#/components/schemas/email",
-            "readOnly": true
-          },
-          "courseId": {
-            "type": "string",
-            "format": "uuid",
-            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
-          },
-          "courseTitle": {
-            "$ref": "#/components/schemas/title",
-            "readOnly": true
-          },
-          "amount": {
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 499000,
-            "readOnly": true
-          },
-          "status": {
-            "$ref": "#/components/schemas/TransactionStatus",
-            "readOnly": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-03-25T08:30:00Z",
-            "readOnly": true
-          }
+    "parameters": {
+      "courseIdPath": {
+        "name": "courseId",
+        "in": "path",
+        "required": true,
+        "description": "Unique identifier of the course",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
         },
-        "required": [
-          "id",
-          "userId",
-          "username",
-          "userEmail",
-          "courseId",
-          "amount",
-          "status",
-          "createdAt"
-        ]
+        "example": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1"
       },
+      "pageQuery": {
+        "name": "page",
+        "in": "query",
+        "description": "Page number for pagination",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "example": 1
+      },
+      "limitQuery": {
+        "name": "limit",
+        "in": "query",
+        "description": "Number of items per page",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "example": 20
+      },
+      "orderQuery": {
+        "name": "order",
+        "in": "query",
+        "description": "Sort order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "default": "desc",
+          "example": "desc"
+        }
+      }
+    },
+    "schemas": {
       "Error": {
         "type": "object",
         "properties": {
@@ -480,6 +409,74 @@
           "totalRevenue",
           "completedTransactions",
           "failedTransactions"
+        ]
+      },
+      "id": {
+        "type": "string",
+        "format": "number",
+        "description": "User ID from Authentik (need to change subject mode to User's ID instead of hashed)",
+        "example": "100"
+      },
+      "TransactionStatus": {
+        "type": "string",
+        "description": "Current status of a billing transaction",
+        "enum": [
+          "pending",
+          "completed",
+          "failed"
+        ],
+        "example": "completed"
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+            "readOnly": true
+          },
+          "userId": {
+            "$ref": "#/components/schemas/id",
+            "readOnly": true
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 499000,
+            "readOnly": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/TransactionStatus",
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:30:00Z",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-25T08:30:00Z",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "courseId",
+          "amount",
+          "status",
+          "updatedAt",
+          "createdAt"
         ]
       },
       "Pagination": {
@@ -586,56 +583,6 @@
             }
           }
         }
-      }
-    },
-    "parameters": {
-      "pageQuery": {
-        "name": "page",
-        "in": "query",
-        "description": "Page number for pagination",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1
-        },
-        "example": 1
-      },
-      "limitQuery": {
-        "name": "limit",
-        "in": "query",
-        "description": "Number of items per page",
-        "schema": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
-          "default": 20
-        },
-        "example": 20
-      },
-      "orderQuery": {
-        "name": "order",
-        "in": "query",
-        "description": "Sort order",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "asc",
-            "desc"
-          ],
-          "default": "desc",
-          "example": "desc"
-        }
-      },
-      "transactionIdPath": {
-        "name": "transactionId",
-        "in": "path",
-        "required": true,
-        "description": "Unique identifier of the billing transaction",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "example": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d"
       }
     }
   }

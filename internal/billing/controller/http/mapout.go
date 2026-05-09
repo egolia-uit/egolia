@@ -7,15 +7,12 @@ import (
 
 func toTransactionDTO(transaction *core.Transaction) billing.Transaction {
 	return billing.Transaction{
-		Id:          &transaction.ID,
-		UserId:      transaction.UserID,
-		Username:    transaction.Username,
-		UserEmail:   (*billing.Email)(&transaction.UserEmail),
-		CourseId:    transaction.CourseID,
-		CourseTitle: &transaction.CourseTitle,
-		Amount:      &transaction.Amount,
-		Status:      toTransactionStatusDTO(transaction.Status),
-		CreatedAt:   &transaction.CreatedAt,
+		Id:        &transaction.ID,
+		UserId:    transaction.UserID,
+		CourseId:  transaction.CourseID,
+		Amount:    &transaction.Amount,
+		Status:    toTransactionStatusDTO(transaction.Status),
+		CreatedAt: &transaction.CreatedAt,
 	}
 }
 

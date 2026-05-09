@@ -12,6 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // ServerInterface represents all server handlers.
@@ -20,14 +21,11 @@ type ServerInterface interface {
 	// (GET /billing/admin/analytics/revenue)
 	GetPlatformRevenueAnalytics(c *gin.Context, params GetPlatformRevenueAnalyticsParams)
 	// Checkout course
-	// (POST /billing/checkout)
-	CheckoutCourse(c *gin.Context)
+	// (POST /billing/courses/{courseId}/checkout)
+	CheckoutCourse(c *gin.Context, courseId CourseIdPath)
 	// Get transactions
 	// (GET /billing/transactions)
 	GetTransactions(c *gin.Context, params GetTransactionsParams)
-	// Complete transaction
-	// (GET /billing/transactions/{transactionId}/complete)
-	CompleteTransaction(c *gin.Context, transactionId TransactionIdPath)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -81,6 +79,18 @@ func (siw *ServerInterfaceWrapper) GetPlatformRevenueAnalytics(c *gin.Context) {
 // CheckoutCourse operation middleware
 func (siw *ServerInterfaceWrapper) CheckoutCourse(c *gin.Context) {
 
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
 	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
 
 	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
@@ -92,7 +102,7 @@ func (siw *ServerInterfaceWrapper) CheckoutCourse(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.CheckoutCourse(c)
+	siw.Handler.CheckoutCourse(c, courseId)
 }
 
 // GetTransactions operation middleware
@@ -158,35 +168,6 @@ func (siw *ServerInterfaceWrapper) GetTransactions(c *gin.Context) {
 	siw.Handler.GetTransactions(c, params)
 }
 
-// CompleteTransaction operation middleware
-func (siw *ServerInterfaceWrapper) CompleteTransaction(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "transactionId" -------------
-	var transactionId TransactionIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "transactionId", c.Param("transactionId"), &transactionId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter transactionId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.CompleteTransaction(c, transactionId)
-}
-
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -215,9 +196,8 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/billing/admin/analytics/revenue", wrapper.GetPlatformRevenueAnalytics)
-	router.POST(options.BaseURL+"/billing/checkout", wrapper.CheckoutCourse)
+	router.POST(options.BaseURL+"/billing/courses/:courseId/checkout", wrapper.CheckoutCourse)
 	router.GET(options.BaseURL+"/billing/transactions", wrapper.GetTransactions)
-	router.GET(options.BaseURL+"/billing/transactions/:transactionId/complete", wrapper.CompleteTransaction)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -295,14 +275,17 @@ func (response GetPlatformRevenueAnalytics500JSONResponse) VisitGetPlatformReven
 }
 
 type CheckoutCourseRequestObject struct {
-	Body *CheckoutCourseJSONRequestBody
+	CourseId CourseIdPath `json:"courseId"`
 }
 
 type CheckoutCourseResponseObject interface {
 	VisitCheckoutCourseResponse(w http.ResponseWriter) error
 }
 
-type CheckoutCourse201JSONResponse Transaction
+type CheckoutCourse201JSONResponse struct {
+	PaymentUrl    string             `json:"paymentUrl"`
+	TransactionId openapi_types.UUID `json:"transactionId"`
+}
 
 func (response CheckoutCourse201JSONResponse) VisitCheckoutCourseResponse(w http.ResponseWriter) error {
 
@@ -429,80 +412,17 @@ func (response GetTransactions500JSONResponse) VisitGetTransactionsResponse(w ht
 	return err
 }
 
-type CompleteTransactionRequestObject struct {
-	TransactionId TransactionIdPath `json:"transactionId"`
-}
-
-type CompleteTransactionResponseObject interface {
-	VisitCompleteTransactionResponse(w http.ResponseWriter) error
-}
-
-type CompleteTransaction204Response struct {
-}
-
-func (response CompleteTransaction204Response) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type CompleteTransaction400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response CompleteTransaction400JSONResponse) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CompleteTransaction401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response CompleteTransaction401JSONResponse) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CompleteTransaction500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response CompleteTransaction500JSONResponse) VisitCompleteTransactionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Get platform revenue analytics
 	// (GET /billing/admin/analytics/revenue)
 	GetPlatformRevenueAnalytics(ctx context.Context, request GetPlatformRevenueAnalyticsRequestObject) (GetPlatformRevenueAnalyticsResponseObject, error)
 	// Checkout course
-	// (POST /billing/checkout)
+	// (POST /billing/courses/{courseId}/checkout)
 	CheckoutCourse(ctx context.Context, request CheckoutCourseRequestObject) (CheckoutCourseResponseObject, error)
 	// Get transactions
 	// (GET /billing/transactions)
 	GetTransactions(ctx context.Context, request GetTransactionsRequestObject) (GetTransactionsResponseObject, error)
-	// Complete transaction
-	// (GET /billing/transactions/{transactionId}/complete)
-	CompleteTransaction(ctx context.Context, request CompleteTransactionRequestObject) (CompleteTransactionResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx *gin.Context, request any) (any, error)
@@ -589,15 +509,10 @@ func (sh *strictHandler) GetPlatformRevenueAnalytics(ctx *gin.Context, params Ge
 }
 
 // CheckoutCourse operation middleware
-func (sh *strictHandler) CheckoutCourse(ctx *gin.Context) {
+func (sh *strictHandler) CheckoutCourse(ctx *gin.Context, courseId CourseIdPath) {
 	var request CheckoutCourseRequestObject
 
-	var body CheckoutCourseJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
+	request.CourseId = courseId
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.CheckoutCourse(ctx, request.(CheckoutCourseRequestObject))
@@ -638,32 +553,6 @@ func (sh *strictHandler) GetTransactions(ctx *gin.Context, params GetTransaction
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(GetTransactionsResponseObject); ok {
 		if err := validResponse.VisitGetTransactionsResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CompleteTransaction operation middleware
-func (sh *strictHandler) CompleteTransaction(ctx *gin.Context, transactionId TransactionIdPath) {
-	var request CompleteTransactionRequestObject
-
-	request.TransactionId = transactionId
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CompleteTransaction(ctx, request.(CompleteTransactionRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CompleteTransaction")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(CompleteTransactionResponseObject); ok {
-		if err := validResponse.VisitCompleteTransactionResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {

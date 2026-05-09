@@ -187,22 +187,24 @@ export const zCourseLessonDetail = z.union([
     }).and(zCourseTestLesson)
 ]);
 
+export const zBillingError = z.object({
+    code: z.string(),
+    message: z.string(),
+    more_info: z.string().optional()
+});
+
+export const zBillingRevenueAnalytics = z.object({
+    from: z.iso.datetime(),
+    to: z.iso.datetime(),
+    totalRevenue: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+    completedTransactions: z.int().gte(0),
+    failedTransactions: z.int().gte(0)
+});
+
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
 export const zBillingId = z.string();
-
-/**
- * Username from Authentik
- */
-export const zBillingUsername = z.string();
-
-/**
- * Email from Authentik
- */
-export const zBillingEmail = z.email().nullable();
-
-export const zBillingTitle = z.string();
 
 /**
  * Current status of a billing transaction
@@ -216,27 +218,11 @@ export const zBillingTransactionStatus = z.enum([
 export const zBillingTransaction = z.object({
     id: z.uuid().readonly(),
     userId: zBillingId,
-    username: zBillingUsername,
-    userEmail: zBillingEmail,
     courseId: z.uuid(),
-    courseTitle: zBillingTitle.optional(),
     amount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly(),
     status: zBillingTransactionStatus,
-    createdAt: z.iso.datetime().readonly()
-});
-
-export const zBillingError = z.object({
-    code: z.string(),
-    message: z.string(),
-    more_info: z.string().optional()
-});
-
-export const zBillingRevenueAnalytics = z.object({
-    from: z.iso.datetime(),
-    to: z.iso.datetime(),
-    totalRevenue: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
-    completedTransactions: z.int().gte(0),
-    failedTransactions: z.int().gte(0)
+    createdAt: z.iso.datetime().readonly(),
+    updatedAt: z.iso.datetime().readonly()
 });
 
 export const zBillingPagination = z.object({
@@ -448,6 +434,11 @@ export const zCourseSectionIdPath = z.uuid();
 export const zCourseLessonIdPath = z.uuid();
 
 /**
+ * Unique identifier of the course
+ */
+export const zBillingCourseIdPath = z.uuid();
+
+/**
  * Page number for pagination
  */
 export const zBillingPageQuery = z.int().gte(1).default(1);
@@ -461,11 +452,6 @@ export const zBillingLimitQuery = z.int().gte(1).lte(100).default(20);
  * Sort order
  */
 export const zBillingOrderQuery = z.enum(['asc', 'desc']).default('desc');
-
-/**
- * Unique identifier of the billing transaction
- */
-export const zBillingTransactionIdPath = z.uuid();
 
 /**
  * Page number for pagination
@@ -682,10 +668,6 @@ export const zGetCourseDetailPath = z.object({
  */
 export const zGetCourseDetailResponse = z.object({
     data: zCourseCourseDetail
-});
-
-export const zEnrollInCoursePath = z.object({
-    courseId: z.uuid()
 });
 
 export const zFinishCoursePath = z.object({
@@ -1013,12 +995,17 @@ export const zCreateLessonPath = z.object({
     sectionId: z.uuid()
 });
 
-export const zCheckoutCourseBody = zBillingTransactionWritable;
+export const zCheckoutCoursePath = z.object({
+    courseId: z.uuid()
+});
 
 /**
- * Checkout transaction created
+ * Checkout successful, transaction created
  */
-export const zCheckoutCourseResponse = zBillingTransaction;
+export const zCheckoutCourseResponse = z.object({
+    transactionId: z.uuid(),
+    paymentUrl: z.url()
+});
 
 export const zGetPlatformRevenueAnalyticsQuery = z.object({
     from: z.iso.date(),
@@ -1045,15 +1032,6 @@ export const zGetTransactionsResponse = z.object({
     data: z.array(zBillingTransaction),
     pagination: zBillingPagination
 });
-
-export const zCompleteTransactionPath = z.object({
-    transactionId: z.uuid()
-});
-
-/**
- * Transaction completed successfully
- */
-export const zCompleteTransactionResponse = z.void();
 
 export const zSearchPostsQuery = z.object({
     q: z.string().optional(),

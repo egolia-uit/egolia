@@ -1,0 +1,43 @@
+post:
+  security:
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
+  tags:
+    - Billing
+  summary: Checkout course
+  operationId: checkoutCourse
+  description: |
+    - authenticated:
+  parameters:
+    - $ref: ../../course/components/parameters/courseIdPath.yaml
+  responses:
+    201:
+      description: Checkout successful, transaction created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              transactionId:
+                type: string
+                format: uuid
+                example: 0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc
+              paymentUrl:
+                type: string
+                format: uri
+                example: 'https://api.egolia.com/billing/transactions/0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc'
+            required:
+              - transactionId
+              - paymentUrl
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml

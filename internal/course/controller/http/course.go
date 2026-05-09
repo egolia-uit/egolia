@@ -252,27 +252,6 @@ func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetC
 	}, nil
 }
 
-func (h *StrictHandler) EnrollInCourse(ctx context.Context, request course.EnrollInCourseRequestObject) (course.EnrollInCourseResponseObject, error) {
-	// TODO: implement enroll in course
-	user, ok := commonHTTP.UserFromContext(ctx)
-	if !ok {
-		return nil, errs.Unauthorized
-	}
-	userID := user.ID
-	courseID := request.CourseId
-	if err := h.App.Cmds.EnrollInCourse.Handle(ctx, &app.EnrollInCourse{
-		CourseID: courseID,
-		ActorID:  userID,
-	}); err != nil {
-		return nil, err
-	}
-	return course.EnrollInCourse201Response{
-		Headers: course.EnrollInCourse201ResponseHeaders{
-			ContentLocation: "i dont know what to put here", // TODO: return the actual enrollment ID or course progress ID
-		},
-	}, nil
-}
-
 func (h *StrictHandler) FinishCourse(ctx context.Context, request course.FinishCourseRequestObject) (course.FinishCourseResponseObject, error) {
 	// TODO: implement finish course
 	courseID := request.CourseId
