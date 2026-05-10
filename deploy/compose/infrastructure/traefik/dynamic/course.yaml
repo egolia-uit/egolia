@@ -12,15 +12,14 @@ http:
     course-http-admin:
       entryPoints:
         - web
-      # rule: "
-      #   Host(`api.egolia.localhost`) && ( \
-      #   (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) \
-      #   ) \
-      #   "
-      # rule: start with /course/admin/
-      rule: Host(`api.egolia.localhost`) && PathPrefix(`/course/admin/`)
+      rule: "
+        Host(`api.egolia.localhost`) && ( \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/approve`) && Method(`POST`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/decline`) && Method(`POST`)) \
+        ) \
+        "
       service: course-http
-      priority: 80
+      priority: 85
       middlewares:
         - cors
         - protect-admin
@@ -28,16 +27,30 @@ http:
     course-http-instructor:
       entryPoints:
         - web
-        # rule: start with /course/instructor/
-      rule: Host(`api.egolia.localhost`) && PathPrefix(`/course/instructor/`)
-      # rule: "
-      # rule: "
-      #   Host(`api.egolia.localhost`) && ( \
-      #   (PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}/basic-info`) && Method(`PATCH`)) \
-      #   ) \
-      #   "
+      rule: "
+        Host(`api.egolia.localhost`) && ( \
+        (Path(`/course/my-courses`) && Method(`GET`)) || \
+        (Path(`/course/courses-system`) && Method(`GET`)) || \
+        (Path(`/course/courses`) && Method(`POST`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/analytics`) && Method(`GET`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/basic-info`) && Method(`PUT`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/hide`) && (Method(`POST`) || Method(`DELETE`))) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/students`) && Method(`GET`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/upload-video-url`) && Method(`POST`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections`) && Method(`POST`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}`) && (Method(`DELETE`) || Method(`PATCH`))) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/move`) && Method(`POST`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons`) && Method(`POST`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}/move`) && Method(`POST`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}/test`) && Method(`PUT`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}/video`) && Method(`PATCH`)) || \
+        (Path(`/course/lesson-comments/{commentId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) \
+        ) \
+        "
       service: course-http
-      priority: 70
+      priority: 80
       middlewares:
         - cors
         - protect-instructor-or-admin
@@ -48,12 +61,12 @@ http:
       rule: "
         Host(`api.egolia.localhost`) && ( \
         PathPrefix(`/course/courses-published`) || \
-        PathPrefix(`/course/courses/{courseId:[a-zA-Z0-9-]+}/detail`) || \
-        PathPrefix(`/course/certificates/{certificateId:[a-zA-Z0-9-]+}`) \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/landing`) && Method(`GET`)) || \
+        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/reviews`) && Method(`GET`)) \
         ) \
         "
       service: course-http
-      priority: 60
+      priority: 70
       middlewares:
         - cors
 
