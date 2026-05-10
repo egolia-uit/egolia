@@ -1,9 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>egolia-uit/renovate-config",
-    ":automergeBranch",
-    ":automergePatch"
+    "github>egolia-uit/renovate-config"
+    // ":automergeBranch",
+    // ":automergePatch"
   ],
   "packageRules": [
     {
