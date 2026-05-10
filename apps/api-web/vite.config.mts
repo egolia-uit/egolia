@@ -1,6 +1,35 @@
 /// <reference types='vitest' />
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { createMarkdownFromOpenApi } from '@scalar/openapi-to-markdown'
+import react from '@vitejs/plugin-react'
+import { writeFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { resolve } from 'node:path'
+import { defineConfig, type Plugin } from 'vite'
+
+const require = createRequire(import.meta.url)
+
+const SPECS = [
+  { name: 'openapi', out: 'llms.txt' },
+  { name: 'blog', out: 'llms-blog.txt' },
+  { name: 'course', out: 'llms-course.txt' },
+  { name: 'billing', out: 'llms-billing.txt' },
+] as const
+
+function llmsTxtPlugin(): Plugin {
+  return {
+    name: 'llms-txt',
+    apply: 'build',
+    async closeBundle() {
+      const outDir = resolve(import.meta.dirname, 'dist')
+
+      for (const { name, out } of SPECS) {
+        const spec = require(`@egolia-uit/api/${name}`)
+        const markdown = await createMarkdownFromOpenApi(spec)
+        writeFileSync(resolve(outDir, out), markdown, 'utf-8')
+      }
+    },
+  }
+}
 
 export default defineConfig(() => ({
   root: import.meta.dirname,
@@ -13,11 +42,7 @@ export default defineConfig(() => ({
     port: 9080,
     host: true,
   },
-  plugins: [react()],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [],
-  // },
+  plugins: [react(), llmsTxtPlugin()],
   base: '/egolia/api/',
   build: {
     outDir: './dist',
@@ -33,4 +58,4 @@ export default defineConfig(() => ({
       },
     },
   },
-}));
+}))

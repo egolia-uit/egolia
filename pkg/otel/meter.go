@@ -2,10 +2,12 @@ package otel
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"time"
 
 	"go.opentelemetry.io/contrib/exporters/autoexport"
+	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel/metric"
 	sdk "go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -41,6 +43,11 @@ func NewMeterProvider(
 				slog.Any("error", err),
 			)
 		}
+	}
+
+	if err := runtime.Start(runtime.WithMeterProvider(mp)); err != nil {
+		cleanup()
+		return nil, nil, fmt.Errorf("failed to start runtime instrumentation: %w", err)
 	}
 
 	return mp, cleanup, nil

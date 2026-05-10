@@ -4,5 +4,8 @@
   "dependencies": {
     "@egolia-uit/api": "workspace:",
     "@scalar/api-reference-react": "0.9.34"
+  },
+  "devDependencies": {
+    "@scalar/openapi-to-markdown": "catalog:"
   }
 }
