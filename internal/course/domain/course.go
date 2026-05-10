@@ -394,6 +394,10 @@ func (c *Course) SetTitle(title string) error {
 	return nil
 }
 
+func (c *Course) IsPublic() bool {
+	return c.status == CourseStatusApproved && !c.hidden
+}
+
 func (c *Course) InstructorID() string {
 	return c.instructorID
 }

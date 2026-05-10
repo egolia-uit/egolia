@@ -37,11 +37,8 @@ func (r *CourseReadRepo) GetMyEnrolledCourses(ctx context.Context, params *app.G
 	panic("unimplemented")
 }
 
-func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.Course, error) {
-	id, err := uuid.Parse(courseID)
-	if err != nil {
-		return nil, errs.NewCourseNotFound(uuid.Nil, err)
-	}
+func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID uuid.UUID) (*app.Course, error) {
+	id := courseID
 
 	var m model.ReadCourse
 	if err := r.db.WithContext(ctx).First(&m, "course_id = ?", id).Error; err != nil {
@@ -101,11 +98,8 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.C
 // 	}, nil
 // }
 
-func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (*app.CourseDetail, error) {
-	id, err := uuid.Parse(courseID)
-	if err != nil {
-		return nil, errs.NewCourseNotFound(uuid.Nil, err)
-	}
+func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID) (*app.CourseDetail, error) {
+	id := courseID
 
 	var m model.ReadCourse
 	if err := r.db.WithContext(ctx).First(&m, "course_id = ?", id).Error; err != nil {

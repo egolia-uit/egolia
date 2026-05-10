@@ -10,4 +10,5 @@ var ProviderSet = wire.NewSet(
 	NewReviewCourseSvc,
 	NewApproveCourseSvc,
 	NewBookmarkCourseSvc,
+	NewAuthorizationSvc,
 )

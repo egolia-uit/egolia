@@ -423,8 +423,20 @@ func (h *StrictHandler) GetCourseAnalytics(ctx context.Context, request course.G
 }
 
 func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetCourseDetailRequestObject) (course.GetCourseDetailResponseObject, error) {
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	roles := make([]app.UserRole, 0, len(user.Roles))
+	for _, r := range user.Roles {
+		roles = append(roles, app.UserRole(r))
+	}
+
 	query := &app.GetCourseDetail{
-		CourseID: request.CourseId.String(),
+		CourseID:  request.CourseId,
+		UserID:    userID,
+		UserRoles: roles,
 	}
 	result, err := h.App.Queries.GetCourseDetail.Handle(ctx, query)
 	if err != nil {

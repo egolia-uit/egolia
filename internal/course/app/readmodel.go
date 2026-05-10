@@ -2,14 +2,16 @@ package app
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type GetCourseReadModel interface {
-	GetCourse(ctx context.Context, courseID string) (*Course, error)
+	GetCourse(ctx context.Context, courseID uuid.UUID) (*Course, error)
 }
 
 type GetCourseDetailReadModel interface {
-	GetCourseDetail(ctx context.Context, courseID string) (*CourseDetail, error)
+	GetCourseDetail(ctx context.Context, courseID uuid.UUID) (*CourseDetail, error)
 }
 
 type GetLessonDetailReadModel interface {
