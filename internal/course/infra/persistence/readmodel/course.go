@@ -22,10 +22,14 @@ func NewCourseReadRepo(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *Cour
 }
 
 var (
-	_ app.GetCourseReadModel       = (*CourseReadRepo)(nil)
 	_ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
 	_ app.GetCoursesReadModel      = (*CourseReadRepo)(nil)
 )
+
+// GetCourseByID implements [app.GetCoursesReadModel].
+func (r *CourseReadRepo) GetCourseByID(ctx context.Context, courseID uuid.UUID) (*app.Course, error) {
+	panic("unimplemented")
+}
 
 // GetMyBookmarkedCourses implements [app.GetCoursesReadModel].
 func (r *CourseReadRepo) GetMyBookmarkedCourses(ctx context.Context, params *app.GetMyBookmarkedCourses) (*app.Paginated[app.Course], error) {

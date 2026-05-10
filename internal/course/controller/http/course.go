@@ -352,24 +352,12 @@ func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.Approv
 }
 
 func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
-	courseID := request.CourseId
-
-	overview := ""
-	if request.Body.Overview != nil {
-		overview = *request.Body.Overview
-	}
-
-	introductionVideoKey := (*string)(nil)
-	if request.Body.IntroductionVideoKey != nil {
-		introductionVideoKey = request.Body.IntroductionVideoKey
-	}
-
 	if err := h.App.Cmds.UpdateCourse.Handle(ctx, &app.UpdateCourse{
-		CourseID:             courseID,
+		CourseID:             request.CourseId,
 		Title:                request.Body.Title,
 		Price:                request.Body.Price,
-		Overview:             overview,
-		IntroductionVideoKey: *introductionVideoKey,
+		Overview:             request.Body.Overview,
+		IntroductionVideoKey: request.Body.IntroductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}
@@ -467,15 +455,59 @@ func (h *StrictHandler) FinishCourse(ctx context.Context, request course.FinishC
 }
 
 func (h *StrictHandler) HideCourse(ctx context.Context, request course.HideCourseRequestObject) (course.HideCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	roles := make([]app.UserRole, 0, len(user.Roles))
+	for _, r := range user.Roles {
+		roles = append(roles, app.UserRole(r))
+	}
+
+	if err := h.App.Cmds.HideCourse.Handle(ctx, &app.HideCourse{
+		CourseID: request.CourseId,
+		UserID:   userID,
+		Roles:    roles,
+	}); err != nil {
+		return nil, err
+	}
+	return course.HideCourse204Response{}, nil
 }
 
 func (h *StrictHandler) UnhideCourse(ctx context.Context, request course.UnhideCourseRequestObject) (course.UnhideCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	roles := make([]app.UserRole, 0, len(user.Roles))
+	for _, r := range user.Roles {
+		roles = append(roles, app.UserRole(r))
+	}
+
+	if err := h.App.Cmds.HideCourse.Handle(ctx, &app.HideCourse{
+		CourseID: request.CourseId,
+		UserID:   userID,
+		Roles:    roles,
+	}); err != nil {
+		return nil, err
+	}
+	return course.UnhideCourse204Response{}, nil
 }
 
 func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course.GetCourseLandingPageRequestObject) (course.GetCourseLandingPageResponseObject, error) {
-	return nil, errs.Unimplemented
+	courseID := request.CourseId
+	result, err := h.App.Queries.GetCourseLandingPage.Handle(ctx, &app.GetCourseLandingPage{
+		CourseID: courseID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &course.GetCourseLandingPage200JSONResponse{
+		Data: *courseToDTO(result),
+	}, nil
+
 }
 
 func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.GetCourseProgressRequestObject) (course.GetCourseProgressResponseObject, error) {

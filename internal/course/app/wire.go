@@ -12,6 +12,7 @@ var ProviderSetCmds = wire.NewSet(
 	NewFinishCourseHandler,
 	NewReviewCourseHandler,
 	NewBookmarkCourseHandler,
+	NewHideCourseHandler,
 	wire.Struct(new(Cmds), "*"),
 )
 
@@ -24,6 +25,7 @@ var ProviderSetQueries = wire.NewSet(
 	NewGetSystemCoursesHandler,
 	NewGetMyBookmarkedCoursesHandler,
 	NewGetMyEnrolledCoursesHandler,
+	NewGetCourseLandingPageHandler,
 	wire.Struct(new(Queries), "*"),
 )
 

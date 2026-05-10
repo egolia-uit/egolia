@@ -3,8 +3,8 @@ type: oauth2
 description: OAuth2 Security Scheme
 flows:
   authorizationCode:
-    authorizationUrl: http://authentik.notopia.localhost/application/o/authorize/
-    tokenUrl: http://authentik.notopia.localhost/application/o/token/
+    authorizationUrl: http://authentik.egolia.localhost/application/o/authorize/
+    tokenUrl: http://authentik.egolia.localhost/application/o/token/
     scopes:
       openid: OpenID Connect scope
       email: Email scope
@@ -16,7 +16,7 @@ flows:
     x-scalar-credentials-location: header
 
   password:
-    tokenUrl: http://authentik.notopia.localhost/application/o/token/
+    tokenUrl: http://authentik.egolia.localhost/application/o/token/
     scopes:
       openid: OpenID Connect scope
       email: Email scope

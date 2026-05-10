@@ -33,4 +33,5 @@ type GetCoursesReadModel interface {
 	GetCourses(ctx context.Context, params *GetCourses) (*Paginated[Course], error)
 	GetMyBookmarkedCourses(ctx context.Context, params *GetMyBookmarkedCourses) (*Paginated[Course], error)
 	GetMyEnrolledCourses(ctx context.Context, params *GetMyEnrolledCourses) (*Paginated[Course], error)
+	GetCourseByID(ctx context.Context, courseID uuid.UUID) (*Course, error)
 }

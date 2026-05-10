@@ -9,6 +9,7 @@ type Cmds struct {
 	ReviewCourse   ReviewCourseCmd
 	UpdateCourse   UpdateCourseCmd
 	BookmarkCourse BookmarkCourseCmd
+	HideCourse     HideCourseCmd
 }
 
 type Queries struct {
@@ -21,6 +22,7 @@ type Queries struct {
 	GetSystemCourses        GetSystemCoursesQuery
 	GetMyBookmarkedCourses  GetMyBookmarkedCoursesQuery
 	GetMyEnrolledCourses    GetMyEnrolledCoursesQuery
+	GetCourseLandingPage    GetCourseLandingPageQuery
 }
 
 type App struct {

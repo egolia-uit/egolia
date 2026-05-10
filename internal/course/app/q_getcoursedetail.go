@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
 )
 
@@ -42,7 +42,7 @@ func (h *GetCourseDetailHandler) Handle(ctx context.Context, query *GetCourseDet
 		return nil, err
 	}
 	if !hasPermission {
-		return nil, errors.New("unauthorized")
+		return nil, errs.Unauthorized
 	}
 	return h.getCourseDetailReadModel.GetCourseDetail(ctx, query.CourseID)
 }

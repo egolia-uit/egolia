@@ -81,6 +81,9 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	reviewCourseCmd := app.NewReviewCourseHandler(reviewCourseSvc, unitOfWork, logger, tracer)
 	updateCourseCmd := app.NewUpdateCourseHandler(unitOfWork, logger, tracer)
 	bookmarkCourseCmd := app.NewBookmarkCourseHandler(unitOfWork, logger, tracer)
+	courseRepo := repo.NewCourseRepo(db)
+	authorizationSvc := domain.NewAuthorizationSvc(courseRepo, enrollmentRepo)
+	hideCourseCmd := app.NewHideCourseHandler(authorizationSvc, unitOfWork, logger, tracer)
 	cmds := &app.Cmds{
 		CreateCourse:   createCourseCmd,
 		DeleteCourse:   deleteCourseCmd,
@@ -90,6 +93,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		ReviewCourse:   reviewCourseCmd,
 		UpdateCourse:   updateCourseCmd,
 		BookmarkCourse: bookmarkCourseCmd,
+		HideCourse:     hideCourseCmd,
 	}
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
@@ -101,8 +105,6 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	courseReadRepo := readmodel.NewCourseReadRepo(db, objectstorageS3)
 	getCourseQuery := app.NewGetCourseHandler(courseReadRepo, logger, tracer)
-	courseRepo := repo.NewCourseRepo(db)
-	authorizationSvc := domain.NewAuthorizationSvc(courseRepo, enrollmentRepo)
 	getCourseDetailQuery := app.NewGetCourseDetailHandler(courseReadRepo, authorizationSvc, logger, tracer)
 	getMyCoursesQuery := app.NewGetMyCoursesHandler(courseReadRepo, logger, tracer)
 	getPublishedCoursesQuery := app.NewGetPublishedCoursesHandler(courseReadRepo, logger, tracer)
@@ -112,6 +114,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getSystemCoursesQuery := app.NewGetSystemCoursesHandler(courseReadRepo, logger, tracer)
 	getMyBookmarkedCoursesQuery := app.NewGetMyBookmarkedCoursesHandler(courseReadRepo, logger, tracer)
 	getMyEnrolledCoursesQuery := app.NewGetMyEnrolledCoursesHandler(courseReadRepo, logger, tracer)
+	getCourseLandingPageQuery := app.NewGetCourseLandingPageHandler(courseReadRepo, logger, tracer)
 	queries := &app.Queries{
 		GetCourse:               getCourseQuery,
 		GetCourseDetail:         getCourseDetailQuery,
@@ -122,6 +125,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		GetSystemCourses:        getSystemCoursesQuery,
 		GetMyBookmarkedCourses:  getMyBookmarkedCoursesQuery,
 		GetMyEnrolledCourses:    getMyEnrolledCoursesQuery,
+		GetCourseLandingPage:    getCourseLandingPageQuery,
 	}
 	appApp := &app.App{
 		Cmds:    cmds,

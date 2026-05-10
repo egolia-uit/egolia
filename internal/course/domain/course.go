@@ -380,6 +380,12 @@ func (c *Course) Hidden() bool {
 	return c.hidden
 }
 
+func (c *Course) ToggleHidden() {
+	c.hidden = !c.hidden
+}
+
+// func (c *Course) e(by *Course) {
+
 func (c *Course) Title() string {
 	return c.title
 }
