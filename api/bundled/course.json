@@ -414,6 +414,9 @@
         "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
           {
+            "$ref": "#/components/parameters/searchQuery"
+          },
+          {
             "$ref": "#/components/parameters/instructorIdQuery"
           },
           {

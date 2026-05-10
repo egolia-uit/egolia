@@ -48,6 +48,10 @@ func toGRPCError(err error) error {
 			return status.Error(codes.PermissionDenied, err.Error())
 		case errs.CodeCourseNotApproved:
 			return status.Error(codes.PermissionDenied, err.Error())
+		case errs.CodeCourseNotPublished:
+			return status.Error(codes.PermissionDenied, err.Error())
+		case errs.CodeCourseAlreadyBookmarked:
+			return status.Error(codes.AlreadyExists, err.Error())
 
 		default:
 			return status.Error(codes.Unknown, err.Error())

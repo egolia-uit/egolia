@@ -93,7 +93,10 @@ func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCo
 			Page:  page,
 			Limit: limit,
 		},
-		Order: order,
+		Order:              order,
+		Hidden:             nil,
+		Status:             nil,
+		HaveOriginalCourse: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -119,7 +122,6 @@ func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCo
 }
 
 func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.GetPublishedCoursesRequestObject) (course.GetPublishedCoursesResponseObject, error) {
-
 	page := 1
 	if request.Params.Page != nil && *request.Params.Page > 0 {
 		page = *request.Params.Page
@@ -143,9 +145,10 @@ func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.
 			Page:  page,
 			Limit: limit,
 		},
-		Order:  order,
-		Hidden: nil,
-		Status: nil,
+		Order:              order,
+		Hidden:             nil,
+		Status:             nil,
+		HaveOriginalCourse: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -186,14 +189,16 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 	}
 
 	result, err := h.App.Queries.GetSystemCourses.Handle(ctx, &app.GetCourses{
-		InstructorID: request.Params.InstructorId,
+		InstructorID: request.Params.Query,
+		Query:        request.Params.InstructorId,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,
 		},
-		Order:  order,
-		Hidden: nil,
-		Status: nil,
+		Order:              order,
+		Hidden:             nil,
+		Status:             nil,
+		HaveOriginalCourse: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -294,6 +299,8 @@ func (h *StrictHandler) GetMyBookmarkedCourses(ctx context.Context, request cour
 	}
 
 	result, err := h.App.Queries.GetMyBookmarkedCourses.Handle(ctx, &app.GetMyBookmarkedCourses{
+		Hidden: nil,
+		Status: nil,
 		UserID: userID,
 		Paginate: app.PaginationParams{
 			Page:  page,
@@ -383,7 +390,11 @@ func (h *StrictHandler) BookmarkCourse(ctx context.Context, request course.Bookm
 	}); err != nil {
 		return nil, err
 	}
-	return course.BookmarkCourse201Response{}, nil
+	return course.BookmarkCourse201Response{
+		Headers: course.BookmarkCourse201ResponseHeaders{
+			ContentLocation: "i dont know what to put here", // TODO: return the actual bookmark ID
+		},
+	}, nil
 }
 
 func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {

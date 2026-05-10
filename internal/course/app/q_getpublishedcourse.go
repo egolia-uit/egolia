@@ -21,7 +21,6 @@ func NewGetPublishedCoursesHandler(readModel GetCoursesReadModel, logger *slog.L
 var _ Query[GetCourses, *Paginated[Course]] = (*GetPublishedCoursesHandler)(nil)
 
 func (h *GetPublishedCoursesHandler) Handle(ctx context.Context, params *GetCourses) (*Paginated[Course], error) {
-
 	status := CourseStatusApproved
 	params.Status = &status
 	hidden := false

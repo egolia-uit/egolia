@@ -348,6 +348,14 @@ func (siw *ServerInterfaceWrapper) GetSystemCourses(c *gin.Context) {
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetSystemCoursesParams
 
+	// ------------- Optional query parameter "query" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "query", c.Request.URL.Query(), &params.Query, runtime.BindQueryParameterOptions{Type: "string", Format: "string"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter query: %w", err), http.StatusBadRequest)
+		return
+	}
+
 	// ------------- Optional query parameter "instructorId" -------------
 
 	err = runtime.BindQueryParameterWithOptions("form", true, false, "instructorId", c.Request.URL.Query(), &params.InstructorId, runtime.BindQueryParameterOptions{Type: "string", Format: "string"})

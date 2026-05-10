@@ -588,6 +588,8 @@ type GetPublishedCoursesParamsOrder string
 
 // GetSystemCoursesParams defines parameters for GetSystemCourses.
 type GetSystemCoursesParams struct {
+	// Query Search query to filter courses by title or description
+	Query        *SearchQuery       `form:"query,omitempty" json:"query,omitempty"`
 	InstructorId *InstructorIdQuery `form:"instructorId,omitempty" json:"instructorId,omitempty"`
 
 	// Page Page number for pagination

@@ -833,6 +833,10 @@ export type GetSystemCoursesData = {
     body?: never;
     path?: never;
     query?: {
+        /**
+         * Search query to filter courses by title or description
+         */
+        query?: string;
         instructorId?: string;
         /**
          * Page number for pagination

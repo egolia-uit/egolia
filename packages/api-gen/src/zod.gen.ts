@@ -544,6 +544,7 @@ export const zGetPublishedCoursesResponse = z.object({
 });
 
 export const zGetSystemCoursesQuery = z.object({
+    query: z.string().optional(),
     instructorId: z.string().optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),

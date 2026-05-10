@@ -69,5 +69,4 @@ func (h *BookmarkCourseHandler) Handle(ctx context.Context, cmd *BookmarkCourse)
 		)
 		return repoRegistry.Bookmark().Save(ctx, bookmark)
 	})
-
 }

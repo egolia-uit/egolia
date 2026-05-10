@@ -34,6 +34,8 @@ var _ Query[GetMyCourses, *Paginated[Course]] = (*GetMyCoursesHandler)(nil)
 func (h *GetMyCoursesHandler) Handle(ctx context.Context, params *GetMyCourses) (*Paginated[Course], error) {
 	CourseStatusApproved := CourseStatusApproved
 	myApprovedCourses, err := h.readModel.GetCourses(ctx, &GetCourses{
+		Query:              nil,
+		Hidden:             params.Hidden,
 		Status:             &CourseStatusApproved,
 		InstructorID:       &params.UserID,
 		Paginate:           params.Paginate,
@@ -47,6 +49,8 @@ func (h *GetMyCoursesHandler) Handle(ctx context.Context, params *GetMyCourses) 
 	haveOriginalCourse := false
 	CourseStatusDraft := CourseStatusDraft
 	myNewCourses, err := h.readModel.GetCourses(ctx, &GetCourses{
+		Query:              nil,
+		Hidden:             params.Hidden,
 		Status:             &CourseStatusDraft,
 		InstructorID:       &params.UserID,
 		Paginate:           params.Paginate,
