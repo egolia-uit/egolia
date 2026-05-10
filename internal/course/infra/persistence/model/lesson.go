@@ -55,9 +55,9 @@ func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
 			LessonType:  domain.LessonTypeTest,
 			VideoLesson: nil,
 			TestLesson: &TestLesson{
-				LessonID:  l.ID(),
-				Type:      lesson.LessonType(),
-				Questions: questions,
+				LessonID:     l.ID(),
+				QuestionType: lesson.QuestionType(),
+				Questions:    questions,
 			},
 			DeletedAt: gorm.DeletedAt{},
 			CreatedAt: time.Time{},
@@ -90,7 +90,7 @@ func (m *Lesson) ToDomain() domain.Lesson {
 		return domain.UnmarshalTestLesson(
 			m.ID,
 			m.Title,
-			m.TestLesson.Type,
+			m.TestLesson.QuestionType,
 			questions,
 		)
 	}

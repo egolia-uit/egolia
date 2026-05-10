@@ -1,5 +1,4 @@
 type: object
-# Thay vì bọc trong 'section', ta để 'allOf' ở cấp cao nhất
 allOf:
   - $ref: ./Section.yaml # Lấy id, title, position... từ file gốc
   - type: object

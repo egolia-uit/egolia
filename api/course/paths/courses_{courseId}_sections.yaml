@@ -10,6 +10,10 @@ post:
     - Section
   summary: Create section
   operationId: createSection
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:
@@ -21,7 +25,7 @@ post:
           required:
             - courseId
             - title
-            - preOrder
+            - order
           properties:
             courseId:
               $ref: ../components/schemas/Course.yaml#/properties/id
@@ -31,9 +35,10 @@ post:
               maxLength: 255
               example: OOP Fundamentals
 
-            preOrder:
-              type: string
-              example: ab
+            order:
+              type: integer
+              minimum: 0
+              example: 1
 
   responses:
     201:

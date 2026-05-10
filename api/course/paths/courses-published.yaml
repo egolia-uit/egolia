@@ -1,19 +1,17 @@
 get:
-  security:
-    - Oauth2:
-        - openid
-        - entitlements
-    - OIDC:
-        - openid
-        - entitlements
+  security: []
   tags:
     - Course
   summary: Get published courses
   operationId: getPublishedCourses
+  description: |
+    - public
   parameters:
+    - $ref: ../components/parameters/instructorIdQuery.yaml
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml
     - $ref: ../../common/components/parameters/orderQuery.yaml
+    - $ref: ../components/parameters/searchQuery.yaml
   responses:
     200:
       description: Published courses

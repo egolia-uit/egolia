@@ -10,6 +10,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// enum page, limit, order, course status, course visibility
+
 func (h *StrictHandler) GetMyCertificates(ctx context.Context, request course.GetMyCertificatesRequestObject) (course.GetMyCertificatesResponseObject, error) {
 	return nil, errs.Unimplemented
 }
@@ -18,63 +20,8 @@ func (h *StrictHandler) GetCertificateById(ctx context.Context, request course.G
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) SearchCourses(ctx context.Context, request course.SearchCoursesRequestObject) (course.SearchCoursesResponseObject, error) {
-	page := 1
-	if request.Params.Page != nil {
-		page = *request.Params.Page
-	}
-	limit := 20
-	if request.Params.Limit != nil {
-		limit = *request.Params.Limit
-	}
-	query := ""
-	if request.Params.Q != nil {
-		query = *request.Params.Q
-	}
-	instructorIDs := []string(nil)
-	if request.Params.InstructorId != nil {
-		instructorIDs = make([]string, 0, len(*request.Params.InstructorId))
-		for _, id := range *request.Params.InstructorId {
-			instructorIDs = append(instructorIDs, id.String())
-		}
-	}
-	var order *app.SearchCoursesOrder
-	if request.Params.Order != nil {
-		o := app.SearchCoursesOrder(*request.Params.Order)
-		order = &o
-	}
-
-	result, err := h.App.Queries.SearchCourses.Handle(ctx, &app.SearchCourses{
-		Query:         query,
-		InstructorIDs: instructorIDs,
-		Paginate: app.PaginationParams{
-			Page:  page,
-			Limit: limit,
-		},
-		Order:  order,
-		Hidden: nil,
-		Status: nil,
-	})
-	if err != nil {
-		return nil, err
-	}
-	courses := make([]course.Course, 0, len(result.Data))
-	for i := range result.Data {
-		courses = append(courses, *courseToDTO(&result.Data[i]))
-	}
-
-	pagination := result.Pagination
-	return course.SearchCourses200JSONResponse{
-		Data: courses,
-		Pagination: course.Pagination{
-			Page:       pagination.Page,
-			Limit:      pagination.Limit,
-			Total:      pagination.Total,
-			TotalPages: pagination.TotalPages,
-			HasNext:    pagination.HasNext,
-			HasPrev:    pagination.HasPrev,
-		},
-	}, nil
+func (h *StrictHandler) CreateCertificate(ctx context.Context, request course.CreateCertificateRequestObject) (course.CreateCertificateResponseObject, error) {
+	return nil, errs.Unimplemented
 }
 
 func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateCourseRequestObject) (course.CreateCourseResponseObject, error) {
@@ -96,9 +43,9 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 	if request.Body.Overview != nil {
 		overview = *request.Body.Overview
 	}
-	var introductionVideoKey string
-	if request.Body.Introduction != nil {
-		introductionVideoKey = request.Body.Introduction.VideoUrl
+	introductionVideoKey := (*string)(nil)
+	if request.Body.IntroductionVideoKey != nil {
+		introductionVideoKey = request.Body.IntroductionVideoKey
 	}
 
 	if err := h.App.Cmds.CreateCourse.Handle(ctx, &app.CreateCourse{
@@ -107,7 +54,7 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 		InstructorID:         userID,
 		Price:                request.Body.Price,
 		Overview:             overview,
-		IntroductionVideoKey: introductionVideoKey,
+		IntroductionVideoKey: *introductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}
@@ -118,47 +65,50 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 	}, nil
 }
 
-func (h *StrictHandler) GetInstructorCourses(ctx context.Context, request course.GetInstructorCoursesRequestObject) (course.GetInstructorCoursesResponseObject, error) {
-	//  TODO: only allow instructor or admin to access this endpoint
+func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCoursesRequestObject) (course.GetMyCoursesResponseObject, error) {
 	user, ok := commonHTTP.UserFromContext(ctx)
 	if !ok {
 		return nil, errs.Unauthorized
 	}
-	instructorID := user.ID
+	userID := user.ID
+
 	page := 1
-	if request.Params.Page != nil {
+	if request.Params.Page != nil && *request.Params.Page > 0 {
 		page = *request.Params.Page
 	}
 	limit := 20
 	if request.Params.Limit != nil {
 		limit = *request.Params.Limit
 	}
-	order := app.SearchCoursesOrderDesc
-	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
-	}
-	courseStatus := app.CourseStatusApproved
 
-	result, err := h.App.Queries.GetInstructorCourses.Handle(ctx, &app.GetInstructorCourses{
-		InstructorID: instructorID,
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetMyCourses.Handle(ctx, &app.GetMyCourses{
+		UserID: userID,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,
 		},
-		Order:  order,
-		Status: &courseStatus,
-		Hidden: nil,
+		Order:              order,
+		Hidden:             nil,
+		Status:             nil,
+		HaveOriginalCourse: nil,
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	courses := make([]course.Course, 0, len(result.Data))
 	for i := range result.Data {
 		courses = append(courses, *courseToDTO(&result.Data[i]))
 	}
 
 	pagination := result.Pagination
-	return course.GetInstructorCourses200JSONResponse{
+	return course.GetMyCourses200JSONResponse{
 		Data: courses,
 		Pagination: course.Pagination{
 			Page:       pagination.Page,
@@ -173,28 +123,32 @@ func (h *StrictHandler) GetInstructorCourses(ctx context.Context, request course
 
 func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.GetPublishedCoursesRequestObject) (course.GetPublishedCoursesResponseObject, error) {
 	page := 1
-	if request.Params.Page != nil {
+	if request.Params.Page != nil && *request.Params.Page > 0 {
 		page = *request.Params.Page
 	}
-	limit := 20
+
+	limit := 20 // Đặt limit mặc định
 	if request.Params.Limit != nil {
 		limit = *request.Params.Limit
 	}
-	order := app.SearchCoursesOrderDesc
-	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
-	}
-	isHidden := false
-	courseStatus := app.CourseStatusApproved
 
-	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetPublishedCourses.Handle(ctx, &app.GetCourses{
+		InstructorID: request.Params.InstructorId,
+		Query:        request.Params.Query,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,
 		},
-		Order:  order,
-		Hidden: &isHidden,
-		Status: &courseStatus,
+		Order:              order,
+		Hidden:             nil,
+		Status:             nil,
+		HaveOriginalCourse: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -228,19 +182,23 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 	if request.Params.Limit != nil {
 		limit = *request.Params.Limit
 	}
-	order := app.SearchCoursesOrderDesc
+	var order *app.SearchCoursesOrder
 	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
 	}
 
-	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
+	result, err := h.App.Queries.GetSystemCourses.Handle(ctx, &app.GetCourses{
+		InstructorID: request.Params.Query,
+		Query:        request.Params.InstructorId,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,
 		},
-		Order:  order,
-		Hidden: nil,
-		Status: nil,
+		Order:              order,
+		Hidden:             nil,
+		Status:             nil,
+		HaveOriginalCourse: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -266,7 +224,111 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 }
 
 func (h *StrictHandler) GetMyEnrolledCourses(ctx context.Context, request course.GetMyEnrolledCoursesRequestObject) (course.GetMyEnrolledCoursesResponseObject, error) {
-	return nil, errs.Unimplemented
+	// TODO: implement GetMyEnrolledCourses
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetMyEnrolledCourses.Handle(ctx, &app.GetMyEnrolledCourses{
+		LearnerID: userID,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order:  order,
+		Hidden: nil,
+		Status: nil,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetMyEnrolledCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
+}
+
+func (h *StrictHandler) GetMyBookmarkedCourses(ctx context.Context, request course.GetMyBookmarkedCoursesRequestObject) (course.GetMyBookmarkedCoursesResponseObject, error) {
+	// TODO: implement GetMyBookmarkedCourses
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetMyBookmarkedCourses.Handle(ctx, &app.GetMyBookmarkedCourses{
+		Hidden: nil,
+		Status: nil,
+		UserID: userID,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order: order,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetMyBookmarkedCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteCourseRequestObject) (course.DeleteCourseResponseObject, error) {
@@ -290,23 +352,12 @@ func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.Approv
 }
 
 func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
-	courseID := request.CourseId
-
-	overview := ""
-	if request.Body.Overview != nil {
-		overview = *request.Body.Overview
-	}
-	var introductionVideoKey string
-	if request.Body.Introduction != nil {
-		introductionVideoKey = request.Body.Introduction.VideoUrl
-	}
-
 	if err := h.App.Cmds.UpdateCourse.Handle(ctx, &app.UpdateCourse{
-		CourseID:             courseID,
+		CourseID:             request.CourseId,
 		Title:                request.Body.Title,
 		Price:                request.Body.Price,
-		Overview:             overview,
-		IntroductionVideoKey: introductionVideoKey,
+		Overview:             request.Body.Overview,
+		IntroductionVideoKey: request.Body.IntroductionVideoKey,
 	}); err != nil {
 		return nil, err
 	}
@@ -314,16 +365,66 @@ func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateC
 }
 
 func (h *StrictHandler) BookmarkCourse(ctx context.Context, request course.BookmarkCourseRequestObject) (course.BookmarkCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.BookmarkCourse.Handle(ctx, &app.BookmarkCourse{
+		CourseID: courseID,
+		UserID:   userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.BookmarkCourse201Response{
+		Headers: course.BookmarkCourse201ResponseHeaders{
+			ContentLocation: "i dont know what to put here", // TODO: return the actual bookmark ID
+		},
+	}, nil
+}
+
+func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.BookmarkCourse.Handle(ctx, &app.BookmarkCourse{
+		CourseID: courseID,
+		UserID:   userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.UnbookmarkCourse204Response{}, nil
 }
 
 func (h *StrictHandler) DeclineCourse(ctx context.Context, request course.DeclineCourseRequestObject) (course.DeclineCourseResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
+func (h *StrictHandler) GetCourseAnalytics(ctx context.Context, request course.GetCourseAnalyticsRequestObject) (course.GetCourseAnalyticsResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
 func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetCourseDetailRequestObject) (course.GetCourseDetailResponseObject, error) {
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	roles := make([]app.UserRole, 0, len(user.Roles))
+	for _, r := range user.Roles {
+		roles = append(roles, app.UserRole(r))
+	}
+
 	query := &app.GetCourseDetail{
-		CourseID: request.CourseId.String(),
+		CourseID:  request.CourseId,
+		UserID:    userID,
+		UserRoles: roles,
 	}
 	result, err := h.App.Queries.GetCourseDetail.Handle(ctx, query)
 	if err != nil {
@@ -332,27 +433,6 @@ func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetC
 	courseDetail := courseDetailToDTO(result)
 	return &course.GetCourseDetail200JSONResponse{
 		Data: *courseDetail,
-	}, nil
-}
-
-func (h *StrictHandler) EnrollInCourse(ctx context.Context, request course.EnrollInCourseRequestObject) (course.EnrollInCourseResponseObject, error) {
-	// TODO: implement enroll in course
-	user, ok := commonHTTP.UserFromContext(ctx)
-	if !ok {
-		return nil, errs.Unauthorized
-	}
-	userID := user.ID
-	courseID := request.CourseId
-	if err := h.App.Cmds.EnrollInCourse.Handle(ctx, &app.EnrollInCourse{
-		CourseID: courseID,
-		ActorID:  userID,
-	}); err != nil {
-		return nil, err
-	}
-	return course.EnrollInCourse201Response{
-		Headers: course.EnrollInCourse201ResponseHeaders{
-			ContentLocation: "i dont know what to put here", // TODO: return the actual enrollment ID or course progress ID
-		},
 	}, nil
 }
 
@@ -375,14 +455,65 @@ func (h *StrictHandler) FinishCourse(ctx context.Context, request course.FinishC
 }
 
 func (h *StrictHandler) HideCourse(ctx context.Context, request course.HideCourseRequestObject) (course.HideCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	roles := make([]app.UserRole, 0, len(user.Roles))
+	for _, r := range user.Roles {
+		roles = append(roles, app.UserRole(r))
+	}
+
+	if err := h.App.Cmds.HideCourse.Handle(ctx, &app.HideCourse{
+		CourseID: request.CourseId,
+		UserID:   userID,
+		Roles:    roles,
+	}); err != nil {
+		return nil, err
+	}
+	return course.HideCourse204Response{}, nil
+}
+
+func (h *StrictHandler) UnhideCourse(ctx context.Context, request course.UnhideCourseRequestObject) (course.UnhideCourseResponseObject, error) {
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	roles := make([]app.UserRole, 0, len(user.Roles))
+	for _, r := range user.Roles {
+		roles = append(roles, app.UserRole(r))
+	}
+
+	if err := h.App.Cmds.HideCourse.Handle(ctx, &app.HideCourse{
+		CourseID: request.CourseId,
+		UserID:   userID,
+		Roles:    roles,
+	}); err != nil {
+		return nil, err
+	}
+	return course.UnhideCourse204Response{}, nil
 }
 
 func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course.GetCourseLandingPageRequestObject) (course.GetCourseLandingPageResponseObject, error) {
-	return nil, errs.Unimplemented
+	courseID := request.CourseId
+	result, err := h.App.Queries.GetCourseLandingPage.Handle(ctx, &app.GetCourseLandingPage{
+		CourseID: courseID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &course.GetCourseLandingPage200JSONResponse{
+		Data: *courseToDTO(result),
+	}, nil
 }
 
 func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.GetCourseProgressRequestObject) (course.GetCourseProgressResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.GetCourseReviewsRequestObject) (course.GetCourseReviewsResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -410,19 +541,19 @@ func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewC
 	}, nil
 }
 
-func (h *StrictHandler) TriggerLearningReminder(ctx context.Context, request course.TriggerLearningReminderRequestObject) (course.TriggerLearningReminderResponseObject, error) {
+func (h *StrictHandler) UpdateReview(ctx context.Context, request course.UpdateReviewRequestObject) (course.UpdateReviewResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
-	return nil, errs.Unimplemented
-}
-
-func (h *StrictHandler) UnhideCourse(ctx context.Context, request course.UnhideCourseRequestObject) (course.UnhideCourseResponseObject, error) {
+func (h *StrictHandler) DeleteReview(ctx context.Context, request course.DeleteReviewRequestObject) (course.DeleteReviewResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
 func (h *StrictHandler) ReplyLessonComment(ctx context.Context, request course.ReplyLessonCommentRequestObject) (course.ReplyLessonCommentResponseObject, error) {
+	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) DeleteLessonComment(ctx context.Context, request course.DeleteLessonCommentRequestObject) (course.DeleteLessonCommentResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -451,11 +582,11 @@ func (h *StrictHandler) GetLessonDetail(ctx context.Context, request course.GetL
 	}, nil
 }
 
-func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {
+func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.EditVideoLessonRequestObject) (course.EditVideoLessonResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.EditVideoLessonRequestObject) (course.EditVideoLessonResponseObject, error) {
+func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -476,37 +607,37 @@ func (h *StrictHandler) MoveSection(ctx context.Context, request course.MoveSect
 }
 
 func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLessonRequestObject) (course.MoveLessonResponseObject, error) {
-	var afterLesson *app.MoveLessonAfterLesson
-	if request.Body.AfterLesson != nil {
-		var t app.LessonType
-		switch request.Body.AfterLesson.Type {
-		case course.LessonTypeTest:
-			t = app.LessonTypeTest
-		case course.LessonTypeVideo:
-			t = app.LessonTypeVideo
-		}
-		afterLesson = &app.MoveLessonAfterLesson{
-			ID:   request.Body.AfterLesson.Id,
-			Type: t,
-		}
-	}
-	var lessonType app.LessonType
-	switch request.Body.Type {
-	case course.LessonTypeTest:
-		lessonType = app.LessonTypeTest
-	case course.LessonTypeVideo:
-		lessonType = app.LessonTypeVideo
-	}
-	cmd := &app.MoveLesson{
-		LessonID:    request.LessonId,
-		LessonType:  lessonType,
-		AfterLesson: afterLesson,
-		SectionID:   request.Body.SectionId,
-	}
-	err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
-	if err != nil {
-		return nil, err
-	}
+	// var afterLesson *app.MoveLessonAfterLesson
+	// if request.Body.AfterLesson != nil {
+	// 	var t app.LessonType
+	// 	switch request.Body.AfterLesson.Type {
+	// 	case course.LessonTypeTest:
+	// 		t = app.LessonTypeTest
+	// 	case course.LessonTypeVideo:
+	// 		t = app.LessonTypeVideo
+	// 	}
+	// 	afterLesson = &app.MoveLessonAfterLesson{
+	// 		ID:   request.Body.AfterLesson.Id,
+	// 		Type: t,
+	// 	}
+	// }
+	// var lessonType app.LessonType
+	// switch request.Body.Type {
+	// case course.LessonTypeTest:
+	// 	lessonType = app.LessonTypeTest
+	// case course.LessonTypeVideo:
+	// 	lessonType = app.LessonTypeVideo
+	// }
+	// cmd := &app.MoveLesson{
+	// 	LessonID:    request.LessonId,
+	// 	LessonType:  lessonType,
+	// 	AfterLesson: afterLesson,
+	// 	SectionID:   request.Body.SectionId,
+	// }
+	// err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	return &course.MoveLesson201Response{}, nil
 }
 
@@ -514,11 +645,11 @@ func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.Ge
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) SaveTestLessonProgress(ctx context.Context, request course.SaveTestLessonProgressRequestObject) (course.SaveTestLessonProgressResponseObject, error) {
+func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
-func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
+func (h *StrictHandler) GetCourseStudents(ctx context.Context, request course.GetCourseStudentsRequestObject) (course.GetCourseStudentsResponseObject, error) {
 	return nil, errs.Unimplemented
 }
 
@@ -526,20 +657,16 @@ func (h *StrictHandler) UpdateSectionTitle(ctx context.Context, request course.U
 	panic("unimplemented")
 }
 
-func (h *StrictHandler) CreateTest(ctx context.Context, request course.CreateTestRequestObject) (course.CreateTestResponseObject, error) {
-	return nil, errs.Unimplemented
-}
-
-func (h *StrictHandler) GetUploadVideoLessonUrl(ctx context.Context, request course.GetUploadVideoLessonUrlRequestObject) (course.GetUploadVideoLessonUrlResponseObject, error) {
+// GetUploadVideoUrl implements [course.StrictServerInterface].
+func (h *StrictHandler) GetUploadVideoUrl(ctx context.Context, request course.GetUploadVideoUrlRequestObject) (course.GetUploadVideoUrlResponseObject, error) {
 	cmd := &app.GetUploadVideoLessonURL{
-		LessonID:      request.LessonId,
 		VideoFilename: request.Body.VideoFilename,
 	}
 	result, err := h.App.Queries.GetUploadVideoLessonURL.Handle(ctx, cmd)
 	if err != nil {
 		return nil, err
 	}
-	return &course.GetUploadVideoLessonUrl201JSONResponse{
+	return &course.GetUploadVideoUrl201JSONResponse{
 		VideoKey:  result.VideoKey,
 		UploadUrl: result.UploadURL,
 		ExpiresAt: result.ExpiresAt,

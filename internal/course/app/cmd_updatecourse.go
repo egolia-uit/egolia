@@ -13,10 +13,10 @@ import (
 
 type UpdateCourse struct {
 	CourseID             uuid.UUID
-	Title                string // emptyable
-	Price                int64  // emptyable
-	Overview             string // emptyable
-	IntroductionVideoKey string // emptyable
+	Title                string
+	Price                int64
+	Overview             *string // emptyable
+	IntroductionVideoKey *string // emptyable
 }
 
 type UpdateCourseCmd Cmd[UpdateCourse]
@@ -35,10 +35,6 @@ func NewUpdateCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer T
 var _ Cmd[UpdateCourse] = (*UpdateCourseHandler)(nil)
 
 func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) error {
-	if h.uow == nil {
-		return errs.NewInternal("unit of work is required")
-	}
-
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
 			ID: cmd.CourseID,
@@ -49,21 +45,19 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 			return err
 		}
-		if cmd.Title != "" {
-			if err := course.SetTitle(cmd.Title); err != nil {
+		if err := course.SetTitle(cmd.Title); err != nil {
+			return err
+		}
+		if err := course.SetPrice(cmd.Price); err != nil {
+			return err
+		}
+		if cmd.Overview != nil {
+			if err := course.SetOverview(*cmd.Overview); err != nil {
 				return err
 			}
 		}
-		if cmd.Price != 0 {
-			if err := course.SetPrice(float64(cmd.Price)); err != nil {
-				return err
-			}
-		}
-		if cmd.Overview != "" {
-			course.SetOverview(cmd.Overview)
-		}
-		if cmd.IntroductionVideoKey != "" {
-			if err := course.SetIntroductionVideoKey(cmd.IntroductionVideoKey); err != nil {
+		if cmd.IntroductionVideoKey != nil {
+			if err := course.SetIntroductionVideoKey(*cmd.IntroductionVideoKey); err != nil {
 				return err
 			}
 		}

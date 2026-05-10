@@ -1,0 +1,52 @@
+type: object
+
+properties:
+  courseId:
+    $ref: ./Course.yaml#/properties/id
+
+  totalRevenue:
+    type: integer
+    format: int64
+    minimum: 0
+    example: 12500000
+
+  enrolledStudents:
+    type: integer
+    format: int32
+    minimum: 0
+    example: 125
+
+  completedStudents:
+    type: integer
+    format: int32
+    minimum: 0
+    example: 84
+
+  completionRate:
+    type: number
+    format: float
+    minimum: 0
+    maximum: 100
+    example: 67.2
+
+  averageRating:
+    type: number
+    format: float
+    minimum: 0
+    maximum: 5
+    example: 4.7
+
+  reviewCount:
+    type: integer
+    format: int32
+    minimum: 0
+    example: 42
+
+required:
+  - courseId
+  - totalRevenue
+  - enrolledStudents
+  - completedStudents
+  - completionRate
+  - averageRating
+  - reviewCount

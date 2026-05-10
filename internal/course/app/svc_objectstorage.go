@@ -2,12 +2,9 @@ package app
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 type GetUploadVideoLessonURLParams struct {
-	LessonID      uuid.UUID
 	VideoFilename string
 }
 

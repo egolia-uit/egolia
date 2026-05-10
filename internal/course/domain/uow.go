@@ -10,8 +10,7 @@ type RepoRegistry interface {
 	Course() CourseRepo
 	Enrollment() EnrollmentRepo
 	LessonComment() LessonCommentRepo
-	// LessonProgressTest() LessonProgressTestRepo
-	// LessonProgressVideo() LessonProgressVideoRepo
+	LessonProgress() LessonProgressRepo
 	Review() ReviewRepo
 }
 

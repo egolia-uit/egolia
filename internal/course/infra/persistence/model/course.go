@@ -14,7 +14,7 @@ type Course struct {
 	Title                string              `gorm:"type:text;not null"`
 	InstructorID         string              `gorm:"column:instructor_id;type:text;not null"`
 	Status               domain.CourseStatus `gorm:"type:text;not null"`
-	Price                float64             `gorm:"not null;default:0"`
+	Price                int64               `gorm:"not null;default:0"`
 	Overview             string              `gorm:"type:text;not null;default:''"`
 	Hidden               bool                `gorm:"not null;default:false"`
 	IntroductionVideoKey string              `gorm:"column:introduction_video_key;type:text;not null;default:''"`
@@ -34,7 +34,7 @@ func CourseFromDomain(c *domain.Course) *Course {
 
 	sections := make([]Section, 0, len(c.Sections()))
 	for i, s := range c.Sections() {
-		sections = append(sections, *SectionFromDomain(i, s))
+		sections = append(sections, *SectionFromDomain(i, s, c.ID()))
 	}
 
 	return &Course{

@@ -22,17 +22,27 @@ func NewCourseReadRepo(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *Cour
 }
 
 var (
-	_ app.GetCourseReadModel       = (*CourseReadRepo)(nil)
-	_ app.SearchCoursesReadModel   = (*CourseReadRepo)(nil)
 	_ app.GetCourseDetailReadModel = (*CourseReadRepo)(nil)
 	_ app.GetCoursesReadModel      = (*CourseReadRepo)(nil)
 )
 
-func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.Course, error) {
-	id, err := uuid.Parse(courseID)
-	if err != nil {
-		return nil, errs.NewCourseNotFound(uuid.Nil, err)
-	}
+// GetCourseByID implements [app.GetCoursesReadModel].
+func (r *CourseReadRepo) GetCourseByID(ctx context.Context, courseID uuid.UUID) (*app.Course, error) {
+	panic("unimplemented")
+}
+
+// GetMyBookmarkedCourses implements [app.GetCoursesReadModel].
+func (r *CourseReadRepo) GetMyBookmarkedCourses(ctx context.Context, params *app.GetMyBookmarkedCourses) (*app.Paginated[app.Course], error) {
+	panic("unimplemented")
+}
+
+// GetMyEnrolledCourses implements [app.GetCoursesReadModel].
+func (r *CourseReadRepo) GetMyEnrolledCourses(ctx context.Context, params *app.GetMyEnrolledCourses) (*app.Paginated[app.Course], error) {
+	panic("unimplemented")
+}
+
+func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID uuid.UUID) (*app.Course, error) {
+	id := courseID
 
 	var m model.ReadCourse
 	if err := r.db.WithContext(ctx).First(&m, "course_id = ?", id).Error; err != nil {
@@ -45,58 +55,55 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID string) (*app.C
 	return r.toAppCourse(ctx, &m)
 }
 
-func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCourses) (*app.Paginated[app.Course], error) {
-	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
+// func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCourses) (*app.Paginated[app.Course], error) {
+// 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
 
-	if params.Query != "" {
-		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
-	}
-	if len(params.InstructorIDs) > 0 {
-		q = q.Where("full_course_content->>'instructor_id' IN ?", params.InstructorIDs)
-	}
-	if params.Hidden != nil {
-		q = q.Where("hidden = ?", *params.Hidden)
-	}
-	if params.Status != nil {
-		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
-	}
-	if params.Order != nil && *params.Order == app.SearchCoursesOrderAsc {
-		q = q.Order("published_at ASC")
-	} else {
-		q = q.Order("published_at DESC")
-	}
+// 	if params.Query != "" {
+// 		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
+// 	}
+// 	if len(params.InstructorIDs) > 0 {
+// 		q = q.Where("full_course_content->>'instructor_id' IN ?", params.InstructorIDs)
+// 	}
+// 	if params.Hidden != nil {
+// 		q = q.Where("hidden = ?", *params.Hidden)
+// 	}
+// 	if params.Status != nil {
+// 		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
+// 	}
+// 	if params.Order != nil && *params.Order == app.SearchCoursesOrderAsc {
+// 		q = q.Order("published_at ASC")
+// 	} else {
+// 		q = q.Order("published_at DESC")
+// 	}
 
-	var total int64
-	if err := q.Count(&total).Error; err != nil {
-		return nil, err
-	}
+// 	var total int64
+// 	if err := q.Count(&total).Error; err != nil {
+// 		return nil, err
+// 	}
 
-	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
-	var ms []model.ReadCourse
-	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
-		return nil, err
-	}
+// 	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
+// 	var ms []model.ReadCourse
+// 	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+// 		return nil, err
+// 	}
 
-	courses := make([]app.Course, 0, len(ms))
-	for i := range ms {
-		c, err := r.toAppCourse(ctx, &ms[i])
-		if err != nil {
-			return nil, err
-		}
-		courses = append(courses, *c)
-	}
+// 	courses := make([]app.Course, 0, len(ms))
+// 	for i := range ms {
+// 		c, err := r.toAppCourse(ctx, &ms[i])
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		courses = append(courses, *c)
+// 	}
 
-	return &app.Paginated[app.Course]{
-		Data:       courses,
-		Pagination: buildPagination(params.Paginate.Page, params.Paginate.Limit, int(total)),
-	}, nil
-}
+// 	return &app.Paginated[app.Course]{
+// 		Data:       courses,
+// 		Pagination: buildPagination(params.Paginate.Page, params.Paginate.Limit, int(total)),
+// 	}, nil
+// }
 
-func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID string) (*app.CourseDetail, error) {
-	id, err := uuid.Parse(courseID)
-	if err != nil {
-		return nil, errs.NewCourseNotFound(uuid.Nil, err)
-	}
+func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID) (*app.CourseDetail, error) {
+	id := courseID
 
 	var m model.ReadCourse
 	if err := r.db.WithContext(ctx).First(&m, "course_id = ?", id).Error; err != nil {
@@ -119,7 +126,7 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 		q = q.Where("hidden = true")
 	}
 
-	if params.Order == app.SearchCoursesOrderDesc {
+	if params.Order != nil && *params.Order == app.SearchCoursesOrderDesc {
 		q = q.Order("published_at DESC")
 	} else {
 		q = q.Order("published_at ASC")
@@ -151,21 +158,6 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 	}, nil
 }
 
-func (r *CourseReadRepo) GetInstructorCourses(ctx context.Context, params *app.GetInstructorCourses) (*app.Paginated[app.Course], error) {
-	// unimplemented
-	return &app.Paginated[app.Course]{
-		Data: nil,
-		Pagination: app.Pagination{
-			Page:       params.Paginate.Page,
-			Limit:      params.Paginate.Limit,
-			Total:      0,
-			TotalPages: 0,
-			HasNext:    false,
-			HasPrev:    false,
-		},
-	}, nil
-}
-
 func buildPagination(page, limit, total int) app.Pagination {
 	totalPages := 0
 	if limit > 0 {
@@ -182,15 +174,16 @@ func buildPagination(page, limit, total int) app.Pagination {
 	}
 }
 
-func (r *CourseReadRepo) toAppCourse(ctx context.Context, m *model.ReadCourse) (*app.Course, error) {
-	var introVideoURL string
-	if key := m.FullCourseContent.IntroVideoURL; key != "" {
-		url, err := r.objectStorageSvc.VideoKeyToURL(ctx, key)
-		if err != nil {
-			return nil, err
-		}
-		introVideoURL = url
-	}
+func (r *CourseReadRepo) toAppCourse(_ context.Context, m *model.ReadCourse) (*app.Course, error) {
+	// NOTE: Will uncomment out?
+	// var introVideoURL string
+	// if key := m.FullCourseContent.IntroVideoURL; key != "" {
+	// 	url, err := r.objectStorageSvc.VideoKeyToURL(ctx, key)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+	// 	introVideoURL = url
+	// }
 	return &app.Course{
 		ID:               m.CourseID,
 		OriginalCourseID: uuid.Nil,
@@ -200,9 +193,12 @@ func (r *CourseReadRepo) toAppCourse(ctx context.Context, m *model.ReadCourse) (
 		Status:           app.CourseStatus(m.FullCourseContent.Status),
 		Price:            int64(m.Price),
 		Overview:         m.FullCourseContent.Overview,
-		Introduction: app.CourseLandingPageIntroduction{
-			VideoUrl: introVideoURL,
-		},
+		// TODO: Deal with key and URL
+		IntroductionVideoKey: new(""),
+		IntroductionVideoURL: new(""),
+		// Introduction: app.CourseLandingPageIntroduction{
+		// 	VideoUrl: introVideoURL,
+		// },
 	}, nil
 }
 
@@ -256,9 +252,9 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			Duration:   dur,
 		}
 	case app.LessonTypeTest:
-		testType := app.TestLessonType("")
-		if l.TestType != nil {
-			testType = app.TestLessonType(*l.TestType)
+		var questionType app.QuestionType
+		if l.QuestionType != nil {
+			questionType = app.QuestionType(*l.QuestionType)
 		}
 		questions := make([]app.TestQuestion, 0, len(l.Questions))
 		for _, q := range l.Questions {
@@ -277,10 +273,15 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			})
 		}
 		return &app.TestLesson{
-			LessonBase:     base,
-			TestLessonType: testType,
-			Questions:      questions,
+			LessonBase:   base,
+			QuestionType: questionType,
+			Questions:    questions,
 		}
 	}
 	return nil
+}
+
+func (r *CourseReadRepo) GetMyCourses(ctx context.Context, params *app.GetMyCourses) (*app.Paginated[app.Course], error) {
+	// TODO: Implement GetMyCourses
+	panic("not implemented")
 }

@@ -59,6 +59,10 @@ func strictServerToHTTPErr(err errs.Error) (
 		statusCode = 403
 	case errs.CodeCourseNotApproved:
 		statusCode = 403
+	case errs.CodeCourseNotPublished:
+		statusCode = 403
+	case errs.CodeCourseAlreadyBookmarked:
+		statusCode = 400
 	}
 
 	return

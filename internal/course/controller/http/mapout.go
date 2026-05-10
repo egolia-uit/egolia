@@ -43,11 +43,11 @@ func testLessonToDTO(t *app.TestLesson) course.TestLesson {
 		questions = append(questions, testQuestionToDTO(&q))
 	}
 	return course.TestLesson{
-		Id:         new(t.GetID()),
-		Title:      t.GetTitle(),
-		LessonType: course.TestLessonLessonTypeTest,
-		Type:       testLessonTypeToDTO(t.TestLessonType),
-		Questions:  questions,
+		Id:           new(t.GetID()),
+		Title:        t.GetTitle(),
+		LessonType:   course.TestLessonLessonTypeTest,
+		QuestionType: questionTypeToDTO(t.QuestionType),
+		Questions:    questions,
 	}
 }
 
@@ -71,62 +71,45 @@ func testAnswerToDTO(a *app.TestAnswer) course.TestAnswer {
 	}
 }
 
-func lessonTypeToDTO(lt app.LessonType) course.LessonType {
-	switch lt {
-	case app.LessonTypeVideo:
-		return course.LessonTypeVideo
-	case app.LessonTypeTest:
-		return course.LessonTypeTest
+func questionTypeToDTO(qt app.QuestionType) course.QuestionType {
+	switch qt {
+	case app.QuestionTypeMultipleChoice:
+		return course.QuestionTypeMultipleChoice
+	case app.QuestionTypeSingleChoice:
+		return course.QuestionTypeSingleChoice
 	}
-	panic("invalid lesson type")
-}
-
-func testLessonTypeToDTO(lt app.TestLessonType) course.TestLessonType {
-	switch lt {
-	case app.TestLessonTypeMultipleChoice:
-		return course.TestLessonTypeMultipleChoice
-	case app.TestLessonTypeSingleChoice:
-		return course.TestLessonTypeSingleChoice
-	}
-	panic("invalid test lesson type")
+	panic("invalid question type")
 }
 
 func courseDetailToDTO(result *app.CourseDetail) *course.CourseDetail {
-	dto := &course.CourseDetail{
-		Id:               (*types.UUID)(&result.Course.ID),
-		Title:            result.Course.Title,
-		InstructorId:     &result.Course.InstructorID,
-		OriginalCourseId: nil,
-		Price:            result.Course.Price,
-		Overview:         &result.Course.Overview,
-		Hidden:           &result.Course.Hidden,
-		Status:           (*course.CourseStatus)(&result.Course.Status),
-		Introduction: &course.CourseLandingPageIntroduction{
-			VideoUrl: result.Course.Introduction.VideoUrl,
-		},
-		Sections: sectionItemsToDTO(result.Sections),
+	return &course.CourseDetail{
+		Id:                   (*types.UUID)(&result.Course.ID),
+		Title:                result.Course.Title,
+		InstructorId:         &result.Course.InstructorID,
+		OriginalCourseId:     (*types.UUID)(&result.Course.OriginalCourseID),
+		Price:                result.Course.Price,
+		Overview:             &result.Course.Overview,
+		Hidden:               &result.Course.Hidden,
+		Status:               (*course.CourseStatus)(&result.Course.Status),
+		IntroductionVideoUrl: result.Course.IntroductionVideoURL,
+		IntroductionVideoKey: nil,
+		Sections:             sectionItemsToDTO(result.Sections),
 	}
-	if result.Course.OriginalCourseID != uuid.Nil {
-		originalID := types.UUID(result.Course.OriginalCourseID)
-		dto.OriginalCourseId = &originalID
-	}
-	return dto
 }
 
 func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDetailSectionItem {
 	items := make([]course.CourseDetailSectionItem, 0, len(sections))
 	for _, s := range sections {
 		items = append(items, course.CourseDetailSectionItem{
-			Id:       (*types.UUID)(&s.ID),
-			CourseId: (*types.UUID)(&s.CourseID),
-			Title:    s.Title,
-			Lessons:  sectionLessonsToDTO(s.Lessons),
+			Id:      (*types.UUID)(&s.ID),
+			Title:   s.Title,
+			Lessons: lessonsToDTO(s.Lessons),
 		})
 	}
 	return items
 }
 
-func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
+func lessonsToDTO(lessons []app.Lesson) []course.Lesson {
 	out := make([]course.Lesson, 0, len(lessons))
 	for _, l := range lessons {
 		out = append(out, course.Lesson{
@@ -139,17 +122,16 @@ func sectionLessonsToDTO(lessons []app.Lesson) []course.Lesson {
 
 func courseToDTO(c *app.Course) *course.Course {
 	dto := &course.Course{
-		Id:               &c.ID,
-		Title:            c.Title,
-		InstructorId:     &c.InstructorID,
-		OriginalCourseId: &c.OriginalCourseID,
-		Price:            c.Price,
-		Overview:         &c.Overview,
-		Hidden:           &c.Hidden,
-		Status:           (*course.CourseStatus)(&c.Status),
-		Introduction: &course.CourseLandingPageIntroduction{
-			VideoUrl: c.Introduction.VideoUrl,
-		},
+		Id:                   (*types.UUID)(&c.ID),
+		Title:                c.Title,
+		InstructorId:         &c.InstructorID,
+		OriginalCourseId:     (*types.UUID)(&c.OriginalCourseID),
+		Price:                c.Price,
+		Overview:             &c.Overview,
+		Hidden:               &c.Hidden,
+		Status:               (*course.CourseStatus)(&c.Status),
+		IntroductionVideoUrl: c.IntroductionVideoURL,
+		IntroductionVideoKey: nil,
 	}
 	if c.OriginalCourseID != uuid.Nil {
 		dto.OriginalCourseId = &c.OriginalCourseID

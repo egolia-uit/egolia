@@ -25,6 +25,13 @@ type Paginated[T any] struct {
 	Pagination Pagination
 }
 
+type SearchCoursesOrder string
+
+const (
+	SearchCoursesOrderAsc  SearchCoursesOrder = "asc"
+	SearchCoursesOrderDesc SearchCoursesOrder = "desc"
+)
+
 type CourseStatus string
 
 const (
@@ -34,20 +41,17 @@ const (
 	CourseStatusRejected CourseStatus = "rejected"
 )
 
-type CourseLandingPageIntroduction struct {
-	VideoUrl string
-}
-
 type Course struct {
-	ID               uuid.UUID
-	OriginalCourseID uuid.UUID
-	Hidden           bool
-	Title            string
-	InstructorID     string
-	Status           CourseStatus
-	Price            int64
-	Overview         string
-	Introduction     CourseLandingPageIntroduction
+	ID                   uuid.UUID
+	OriginalCourseID     uuid.UUID
+	Hidden               bool
+	Title                string
+	InstructorID         string
+	Status               CourseStatus
+	Price                int64
+	Overview             string
+	IntroductionVideoKey *string
+	IntroductionVideoURL *string
 }
 
 type Section struct {
@@ -110,17 +114,17 @@ type TestQuestion struct {
 	Answers  []TestAnswer
 }
 
-type TestLessonType string
+type QuestionType string
 
 const (
-	TestLessonTypeMultipleChoice TestLessonType = "multipleChoice"
-	TestLessonTypeSingleChoice   TestLessonType = "singleChoice"
+	QuestionTypeMultipleChoice QuestionType = "multipleChoice"
+	QuestionTypeSingleChoice   QuestionType = "singleChoice"
 )
 
 type TestLesson struct {
 	LessonBase
-	TestLessonType TestLessonType
-	Questions      []TestQuestion
+	QuestionType QuestionType
+	Questions    []TestQuestion
 }
 
 type CourseDetailSectionItem struct {

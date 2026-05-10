@@ -10,6 +10,11 @@ post:
     - Lesson
   summary: Move lesson
   operationId: moveLesson
+  description: |
+    - authenticated:
+      - instructor
+      - admin
+
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
@@ -21,33 +26,20 @@ post:
         schema:
           type: object
           properties:
-            type:
-              $ref: ../components/schemas/LessonType.yaml
-
-            sectionId:
+            targetSectionId:
               type: string
               format: uuid
+              description: The ID of the section to move the lesson into. Use the current sectionId if only reordering.
               example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
 
-            afterLesson:
-              x-go-type-name: moveAfterLesson
-              type: object
-              nullable: true
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                  example: 2926aa3f-29ad-449b-9556-c44d4fc676a0
-                type:
-                  $ref: ../components/schemas/LessonType.yaml
-              required:
-                - id
-                - type
-
+            order:
+              type: integer
+              format: int
+              description: The new 0-based position of the lesson within the target section.
+              example: 2
           required:
-            - type
-            - sectionId
-            - afterLesson
+            - targetSectionId
+            - order
 
   responses:
     201:

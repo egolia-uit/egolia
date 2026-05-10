@@ -13,10 +13,6 @@ properties:
     maxLength: 255
     example: OOP Fundamentals
 
-  courseId:
-    $ref: ./Course.yaml#/properties/id
-
 required:
   - id
-  - courseId
   - title

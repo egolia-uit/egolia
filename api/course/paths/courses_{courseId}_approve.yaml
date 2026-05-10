@@ -10,6 +10,9 @@ post:
     - Course
   summary: Approve course
   operationId: approveCourse
+  description: |
+    - authenticated:
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:

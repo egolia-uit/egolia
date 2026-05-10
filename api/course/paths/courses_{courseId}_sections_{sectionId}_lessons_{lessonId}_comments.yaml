@@ -10,6 +10,8 @@ get:
     - Lesson
   summary: Get lesson comments
   operationId: getLessonComments
+  description: |
+    - authenticated
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
@@ -49,6 +51,8 @@ post:
     - Lesson
   summary: Comment on lesson
   operationId: commentOnLesson
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml

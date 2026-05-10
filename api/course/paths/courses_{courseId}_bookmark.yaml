@@ -10,6 +10,8 @@ post:
     - Course
   summary: Bookmark course
   operationId: bookmarkCourse
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:
@@ -22,6 +24,36 @@ post:
             format: uri
             example: http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/bookmark
           required: true
+    400:
+      $ref: ../../common/components/responses/BadRequestError.yaml
+    401:
+      $ref: ../../common/components/responses/UnauthorizedError.yaml
+    403:
+      $ref: ../../common/components/responses/ForbiddenError.yaml
+    404:
+      $ref: ../../common/components/responses/NotFoundError.yaml
+    500:
+      $ref: ../../common/components/responses/InternalServerError.yaml
+
+delete:
+  security:
+    - Oauth2:
+        - openid
+        - entitlements
+    - OIDC:
+        - openid
+        - entitlements
+  tags:
+    - Course
+  summary: Unbookmark course
+  operationId: unbookmarkCourse
+  description: |
+    - authenticated:
+  parameters:
+    - $ref: ../components/parameters/courseIdPath.yaml
+  responses:
+    204:
+      description: Course unbookmarked
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

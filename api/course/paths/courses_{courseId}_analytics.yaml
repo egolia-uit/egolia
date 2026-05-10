@@ -8,31 +8,26 @@ get:
         - entitlements
   tags:
     - Course
-  summary: Get instructor courses
-  operationId: getInstructorCourses
-  description: Maybe removed or used in the future
+  summary: Get course analytics
+  operationId: getCourseAnalytics
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
-    - $ref: ../components/parameters/instructorIdPath.yaml
-    - $ref: ../../common/components/parameters/pageQuery.yaml
-    - $ref: ../../common/components/parameters/limitQuery.yaml
-    - $ref: ../../common/components/parameters/orderQuery.yaml
+    - $ref: ../components/parameters/courseIdPath.yaml
   responses:
     200:
-      description: Courses by instructor
+      description: Course analytics
       content:
         application/json:
           schema:
             type: object
             properties:
               data:
-                type: array
-                items:
-                  $ref: ../components/schemas/Course.yaml
-              pagination:
-                $ref: ../../common/components/schemas/Pagination.yaml
+                $ref: ../components/schemas/CourseAnalytics.yaml
             required:
               - data
-              - pagination
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml
     401:

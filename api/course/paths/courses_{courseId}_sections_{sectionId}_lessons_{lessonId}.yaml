@@ -10,6 +10,8 @@ get:
     - Lesson
   summary: Get lesson detail
   operationId: getLessonDetail
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
@@ -49,6 +51,10 @@ delete:
     - Lesson
   summary: Delete lesson
   operationId: deleteLesson
+  description: |
+    - authenticated:
+      - instructor
+      - admin
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml

@@ -38,60 +38,115 @@ func (_m *MockBookmarkRepo) EXPECT() *MockBookmarkRepo_Expecter {
 	return &MockBookmarkRepo_Expecter{mock: &_m.Mock}
 }
 
-// Get provides a mock function for the type MockBookmarkRepo
-func (_mock *MockBookmarkRepo) Get(ctx context.Context, params BookmarkRepoGet, forUpdate bool) (*Bookmark, error) {
-	ret := _mock.Called(ctx, params, forUpdate)
+// Delete provides a mock function for the type MockBookmarkRepo
+func (_mock *MockBookmarkRepo) Delete(ctx context.Context, id uuid.UUID) error {
+	ret := _mock.Called(ctx, id)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Get")
+		panic("no return value specified for Delete")
 	}
 
-	var r0 *Bookmark
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, BookmarkRepoGet, bool) (*Bookmark, error)); ok {
-		return returnFunc(ctx, params, forUpdate)
-	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, BookmarkRepoGet, bool) *Bookmark); ok {
-		r0 = returnFunc(ctx, params, forUpdate)
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) error); ok {
+		r0 = returnFunc(ctx, id)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*Bookmark)
-		}
+		r0 = ret.Error(0)
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, BookmarkRepoGet, bool) error); ok {
-		r1 = returnFunc(ctx, params, forUpdate)
+	return r0
+}
+
+// MockBookmarkRepo_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
+type MockBookmarkRepo_Delete_Call struct {
+	*mock.Call
+}
+
+// Delete is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id uuid.UUID
+func (_e *MockBookmarkRepo_Expecter) Delete(ctx interface{}, id interface{}) *MockBookmarkRepo_Delete_Call {
+	return &MockBookmarkRepo_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
+}
+
+func (_c *MockBookmarkRepo_Delete_Call) Run(run func(ctx context.Context, id uuid.UUID)) *MockBookmarkRepo_Delete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockBookmarkRepo_Delete_Call) Return(err error) *MockBookmarkRepo_Delete_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockBookmarkRepo_Delete_Call) RunAndReturn(run func(ctx context.Context, id uuid.UUID) error) *MockBookmarkRepo_Delete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ExistsByUserAndCourse provides a mock function for the type MockBookmarkRepo
+func (_mock *MockBookmarkRepo) ExistsByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) (bool, error) {
+	ret := _mock.Called(ctx, userID, courseID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ExistsByUserAndCourse")
+	}
+
+	var r0 bool
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, uuid.UUID) (bool, error)); ok {
+		return returnFunc(ctx, userID, courseID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, uuid.UUID) bool); ok {
+		r0 = returnFunc(ctx, userID, courseID)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, uuid.UUID) error); ok {
+		r1 = returnFunc(ctx, userID, courseID)
 	} else {
 		r1 = ret.Error(1)
 	}
 	return r0, r1
 }
 
-// MockBookmarkRepo_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
-type MockBookmarkRepo_Get_Call struct {
+// MockBookmarkRepo_ExistsByUserAndCourse_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExistsByUserAndCourse'
+type MockBookmarkRepo_ExistsByUserAndCourse_Call struct {
 	*mock.Call
 }
 
-// Get is a helper method to define mock.On call
+// ExistsByUserAndCourse is a helper method to define mock.On call
 //   - ctx context.Context
-//   - params BookmarkRepoGet
-//   - forUpdate bool
-func (_e *MockBookmarkRepo_Expecter) Get(ctx interface{}, params interface{}, forUpdate interface{}) *MockBookmarkRepo_Get_Call {
-	return &MockBookmarkRepo_Get_Call{Call: _e.mock.On("Get", ctx, params, forUpdate)}
+//   - userID string
+//   - courseID uuid.UUID
+func (_e *MockBookmarkRepo_Expecter) ExistsByUserAndCourse(ctx interface{}, userID interface{}, courseID interface{}) *MockBookmarkRepo_ExistsByUserAndCourse_Call {
+	return &MockBookmarkRepo_ExistsByUserAndCourse_Call{Call: _e.mock.On("ExistsByUserAndCourse", ctx, userID, courseID)}
 }
 
-func (_c *MockBookmarkRepo_Get_Call) Run(run func(ctx context.Context, params BookmarkRepoGet, forUpdate bool)) *MockBookmarkRepo_Get_Call {
+func (_c *MockBookmarkRepo_ExistsByUserAndCourse_Call) Run(run func(ctx context.Context, userID string, courseID uuid.UUID)) *MockBookmarkRepo_ExistsByUserAndCourse_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 BookmarkRepoGet
+		var arg1 string
 		if args[1] != nil {
-			arg1 = args[1].(BookmarkRepoGet)
+			arg1 = args[1].(string)
 		}
-		var arg2 bool
+		var arg2 uuid.UUID
 		if args[2] != nil {
-			arg2 = args[2].(bool)
+			arg2 = args[2].(uuid.UUID)
 		}
 		run(
 			arg0,
@@ -102,12 +157,12 @@ func (_c *MockBookmarkRepo_Get_Call) Run(run func(ctx context.Context, params Bo
 	return _c
 }
 
-func (_c *MockBookmarkRepo_Get_Call) Return(bookmark *Bookmark, err error) *MockBookmarkRepo_Get_Call {
-	_c.Call.Return(bookmark, err)
+func (_c *MockBookmarkRepo_ExistsByUserAndCourse_Call) Return(b bool, err error) *MockBookmarkRepo_ExistsByUserAndCourse_Call {
+	_c.Call.Return(b, err)
 	return _c
 }
 
-func (_c *MockBookmarkRepo_Get_Call) RunAndReturn(run func(ctx context.Context, params BookmarkRepoGet, forUpdate bool) (*Bookmark, error)) *MockBookmarkRepo_Get_Call {
+func (_c *MockBookmarkRepo_ExistsByUserAndCourse_Call) RunAndReturn(run func(ctx context.Context, userID string, courseID uuid.UUID) (bool, error)) *MockBookmarkRepo_ExistsByUserAndCourse_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1081,6 +1136,90 @@ func (_c *MockLessonCommentRepo_Save_Call) RunAndReturn(run func(ctx context.Con
 	return _c
 }
 
+// NewMockLessonProgressRepo creates a new instance of MockLessonProgressRepo. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
+// The first argument is typically a *testing.T value.
+func NewMockLessonProgressRepo(t interface {
+	mock.TestingT
+	Cleanup(func())
+}) *MockLessonProgressRepo {
+	mock := &MockLessonProgressRepo{}
+	mock.Mock.Test(t)
+
+	t.Cleanup(func() { mock.AssertExpectations(t) })
+
+	return mock
+}
+
+// MockLessonProgressRepo is an autogenerated mock type for the LessonProgressRepo type
+type MockLessonProgressRepo struct {
+	mock.Mock
+}
+
+type MockLessonProgressRepo_Expecter struct {
+	mock *mock.Mock
+}
+
+func (_m *MockLessonProgressRepo) EXPECT() *MockLessonProgressRepo_Expecter {
+	return &MockLessonProgressRepo_Expecter{mock: &_m.Mock}
+}
+
+// Save provides a mock function for the type MockLessonProgressRepo
+func (_mock *MockLessonProgressRepo) Save(ctx context.Context, progress LessonProgress) error {
+	ret := _mock.Called(ctx, progress)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Save")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, LessonProgress) error); ok {
+		r0 = returnFunc(ctx, progress)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockLessonProgressRepo_Save_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Save'
+type MockLessonProgressRepo_Save_Call struct {
+	*mock.Call
+}
+
+// Save is a helper method to define mock.On call
+//   - ctx context.Context
+//   - progress LessonProgress
+func (_e *MockLessonProgressRepo_Expecter) Save(ctx interface{}, progress interface{}) *MockLessonProgressRepo_Save_Call {
+	return &MockLessonProgressRepo_Save_Call{Call: _e.mock.On("Save", ctx, progress)}
+}
+
+func (_c *MockLessonProgressRepo_Save_Call) Run(run func(ctx context.Context, progress LessonProgress)) *MockLessonProgressRepo_Save_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 LessonProgress
+		if args[1] != nil {
+			arg1 = args[1].(LessonProgress)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLessonProgressRepo_Save_Call) Return(err error) *MockLessonProgressRepo_Save_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockLessonProgressRepo_Save_Call) RunAndReturn(run func(ctx context.Context, progress LessonProgress) error) *MockLessonProgressRepo_Save_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // NewMockReviewRepo creates a new instance of MockReviewRepo. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewMockReviewRepo(t interface {
@@ -1106,6 +1245,63 @@ type MockReviewRepo_Expecter struct {
 
 func (_m *MockReviewRepo) EXPECT() *MockReviewRepo_Expecter {
 	return &MockReviewRepo_Expecter{mock: &_m.Mock}
+}
+
+// Delete provides a mock function for the type MockReviewRepo
+func (_mock *MockReviewRepo) Delete(ctx context.Context, id uuid.UUID) error {
+	ret := _mock.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Delete")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) error); ok {
+		r0 = returnFunc(ctx, id)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockReviewRepo_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
+type MockReviewRepo_Delete_Call struct {
+	*mock.Call
+}
+
+// Delete is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id uuid.UUID
+func (_e *MockReviewRepo_Expecter) Delete(ctx interface{}, id interface{}) *MockReviewRepo_Delete_Call {
+	return &MockReviewRepo_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
+}
+
+func (_c *MockReviewRepo_Delete_Call) Run(run func(ctx context.Context, id uuid.UUID)) *MockReviewRepo_Delete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockReviewRepo_Delete_Call) Return(err error) *MockReviewRepo_Delete_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockReviewRepo_Delete_Call) RunAndReturn(run func(ctx context.Context, id uuid.UUID) error) *MockReviewRepo_Delete_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // ExistsByCourseAndLearner provides a mock function for the type MockReviewRepo
@@ -1181,16 +1377,16 @@ func (_c *MockReviewRepo_ExistsByCourseAndLearner_Call) RunAndReturn(run func(ct
 }
 
 // Save provides a mock function for the type MockReviewRepo
-func (_mock *MockReviewRepo) Save(review *Review) error {
-	ret := _mock.Called(review)
+func (_mock *MockReviewRepo) Save(ctx context.Context, review *Review) error {
+	ret := _mock.Called(ctx, review)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Save")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(*Review) error); ok {
-		r0 = returnFunc(review)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *Review) error); ok {
+		r0 = returnFunc(ctx, review)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -1203,19 +1399,25 @@ type MockReviewRepo_Save_Call struct {
 }
 
 // Save is a helper method to define mock.On call
+//   - ctx context.Context
 //   - review *Review
-func (_e *MockReviewRepo_Expecter) Save(review interface{}) *MockReviewRepo_Save_Call {
-	return &MockReviewRepo_Save_Call{Call: _e.mock.On("Save", review)}
+func (_e *MockReviewRepo_Expecter) Save(ctx interface{}, review interface{}) *MockReviewRepo_Save_Call {
+	return &MockReviewRepo_Save_Call{Call: _e.mock.On("Save", ctx, review)}
 }
 
-func (_c *MockReviewRepo_Save_Call) Run(run func(review *Review)) *MockReviewRepo_Save_Call {
+func (_c *MockReviewRepo_Save_Call) Run(run func(ctx context.Context, review *Review)) *MockReviewRepo_Save_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 *Review
+		var arg0 context.Context
 		if args[0] != nil {
-			arg0 = args[0].(*Review)
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *Review
+		if args[1] != nil {
+			arg1 = args[1].(*Review)
 		}
 		run(
 			arg0,
+			arg1,
 		)
 	})
 	return _c
@@ -1226,7 +1428,7 @@ func (_c *MockReviewRepo_Save_Call) Return(err error) *MockReviewRepo_Save_Call 
 	return _c
 }
 
-func (_c *MockReviewRepo_Save_Call) RunAndReturn(run func(review *Review) error) *MockReviewRepo_Save_Call {
+func (_c *MockReviewRepo_Save_Call) RunAndReturn(run func(ctx context.Context, review *Review) error) *MockReviewRepo_Save_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1484,6 +1686,52 @@ func (_c *MockRepoRegistry_LessonComment_Call) Return(lessonCommentRepo LessonCo
 }
 
 func (_c *MockRepoRegistry_LessonComment_Call) RunAndReturn(run func() LessonCommentRepo) *MockRepoRegistry_LessonComment_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// LessonProgress provides a mock function for the type MockRepoRegistry
+func (_mock *MockRepoRegistry) LessonProgress() LessonProgressRepo {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for LessonProgress")
+	}
+
+	var r0 LessonProgressRepo
+	if returnFunc, ok := ret.Get(0).(func() LessonProgressRepo); ok {
+		r0 = returnFunc()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(LessonProgressRepo)
+		}
+	}
+	return r0
+}
+
+// MockRepoRegistry_LessonProgress_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LessonProgress'
+type MockRepoRegistry_LessonProgress_Call struct {
+	*mock.Call
+}
+
+// LessonProgress is a helper method to define mock.On call
+func (_e *MockRepoRegistry_Expecter) LessonProgress() *MockRepoRegistry_LessonProgress_Call {
+	return &MockRepoRegistry_LessonProgress_Call{Call: _e.mock.On("LessonProgress")}
+}
+
+func (_c *MockRepoRegistry_LessonProgress_Call) Run(run func()) *MockRepoRegistry_LessonProgress_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockRepoRegistry_LessonProgress_Call) Return(lessonProgressRepo LessonProgressRepo) *MockRepoRegistry_LessonProgress_Call {
+	_c.Call.Return(lessonProgressRepo)
+	return _c
+}
+
+func (_c *MockRepoRegistry_LessonProgress_Call) RunAndReturn(run func() LessonProgressRepo) *MockRepoRegistry_LessonProgress_Call {
 	_c.Call.Return(run)
 	return _c
 }

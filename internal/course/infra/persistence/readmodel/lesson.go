@@ -90,7 +90,7 @@ func (r *LessonReadRepo) GetTestLessonDetail(ctx context.Context, params *app.Ge
 			Title:      m.Title,
 			LessonType: app.LessonTypeTest,
 		},
-		TestLessonType: app.TestLessonType(m.TestLesson.Type),
-		Questions:      questions,
+		QuestionType: app.QuestionType(m.TestLesson.QuestionType),
+		Questions:    questions,
 	}, nil
 }

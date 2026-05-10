@@ -10,6 +10,8 @@ get:
     - Lesson
   summary: Get lesson progress
   operationId: getLessonProgress
+  description: |
+    - authenticated:
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml

@@ -7,20 +7,35 @@ post:
         - openid
         - entitlements
   tags:
-    - Course
-  summary: Enroll in course
-  operationId: enrollInCourse
-  parameters:
-    - $ref: ../components/parameters/courseIdPath.yaml
+    - Certificate
+  summary: Create certificate
+  operationId: createCertificate
+  description: |
+    - authenticated:
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - courseId
+            - userId
+          properties:
+            courseId:
+              $ref: ../components/schemas/Course.yaml#/properties/id
+            userId:
+              $ref: ../../common/components/schemas/User.yaml#/properties/id
   responses:
     201:
-      description: Course enrollment created
+      description: Certificate created
       headers:
         Content-Location:
           schema:
             type: string
             format: uri
-            example: http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/enroll
+            example: http://api.egolia.localhost/course/certificates/f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd
           required: true
     400:
       $ref: ../../common/components/responses/BadRequestError.yaml

@@ -109,8 +109,8 @@ func (s *Seed) createCourses() []model.Course {
 							LessonType:  domain.LessonTypeTest,
 							VideoLesson: nil,
 							TestLesson: &model.TestLesson{
-								LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000112"),
-								Type:     domain.SingleChoice,
+								LessonID:     uuid.MustParse("00000000-0000-0000-0000-000000000112"),
+								QuestionType: domain.QuestionTypeSingleChoice,
 								Questions: []model.TestQuestion{
 									{
 										ID:           uuid.MustParse("00000000-0000-0000-0000-000000001121"),

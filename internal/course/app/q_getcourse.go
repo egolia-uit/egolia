@@ -23,5 +23,5 @@ func NewGetCourseHandler(readModel GetCourseReadModel, logger *slog.Logger, trac
 var _ Query[GetCourse, *Course] = (*GetCourseHandler)(nil)
 
 func (h *GetCourseHandler) Handle(ctx context.Context, query *GetCourse) (*Course, error) {
-	return h.readModel.GetCourse(ctx, query.CourseID)
+	panic("GetCourseHandler.Handle is not implemented yet")
 }

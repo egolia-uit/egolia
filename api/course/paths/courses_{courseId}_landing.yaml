@@ -4,6 +4,8 @@ get:
     - Course
   summary: Get course landing page
   operationId: getCourseLandingPage
+  description: |
+    - public
   parameters:
     - $ref: ../components/parameters/courseIdPath.yaml
   responses:

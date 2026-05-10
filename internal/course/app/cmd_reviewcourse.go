@@ -51,6 +51,6 @@ func (h *ReviewCourseHandler) Handle(ctx context.Context, cmd *ReviewCourse) err
 			return err
 		}
 
-		return repoRegistry.Review().Save(review)
+		return repoRegistry.Review().Save(ctx, review)
 	})
 }

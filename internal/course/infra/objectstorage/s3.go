@@ -68,7 +68,6 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 	// TODO: Please check the key if it is right
 	key := NewVideoKey(&NewVideoKeyParams{
 		ID:            id,
-		LessonID:      params.LessonID,
 		VideoFilename: params.VideoFilename,
 	})
 	presignParams := &s3.PutObjectInput{
@@ -80,7 +79,7 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 		s3.WithPresignExpires(s.presignExpiration),
 	)
 	if err != nil {
-		return nil, errs.NewObjectStorageFailToRetrieveUploadURLForVideoLesson(params.LessonID, params.VideoFilename, err)
+		return nil, errs.NewObjectStorageFailToRetrieveUploadURLForVideoLesson(params.VideoFilename, err)
 	}
 	return &app.VideoLessonObject{
 		UploadURL: url.URL,
@@ -129,10 +128,9 @@ func (s *S3) getPresignedDownloadURL(ctx context.Context, videoKey string) (stri
 
 type NewVideoKeyParams struct {
 	ID            uuid.UUID
-	LessonID      uuid.UUID
 	VideoFilename string
 }
 
 func NewVideoKey(params *NewVideoKeyParams) string {
-	return fmt.Sprintf("video-lessons/%s/%s-%s", params.LessonID.String(), params.VideoFilename, params.ID.String())
+	return fmt.Sprintf("video-lessons/%s-%s", params.VideoFilename, params.ID.String())
 }
