@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Index() {
-  return <main className="min-h-screen">Hi</main>;
+  redirect("/dashboard");
 }
