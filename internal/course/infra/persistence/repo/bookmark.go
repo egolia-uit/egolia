@@ -20,6 +20,11 @@ func NewBookmarkRepo(db *gorm.DB) *BookmarkRepo {
 
 var _ domain.BookmarkRepo = (*BookmarkRepo)(nil)
 
+// DeleteByUserAndCourse implements [domain.BookmarkRepo].
+func (r *BookmarkRepo) DeleteByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) error {
+	panic("unimplemented")
+}
+
 func (r *BookmarkRepo) Get(ctx context.Context, params domain.BookmarkRepoGet, forUpdate bool) (*domain.Bookmark, error) {
 	db := r.db.WithContext(ctx)
 	if forUpdate {

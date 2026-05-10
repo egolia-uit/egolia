@@ -15,6 +15,8 @@ get:
       - instructor
       - admin
   parameters:
+    - $ref: ../components/parameters/searchQuery.yaml
+    - $ref: ../components/parameters/instructorIdQuery.yaml
     - $ref: ../../common/components/parameters/pageQuery.yaml
     - $ref: ../../common/components/parameters/limitQuery.yaml
     - $ref: ../../common/components/parameters/orderQuery.yaml

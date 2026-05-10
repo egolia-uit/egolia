@@ -380,6 +380,12 @@ func (c *Course) Hidden() bool {
 	return c.hidden
 }
 
+func (c *Course) ToggleHidden() {
+	c.hidden = !c.hidden
+}
+
+// func (c *Course) e(by *Course) {
+
 func (c *Course) Title() string {
 	return c.title
 }
@@ -392,6 +398,10 @@ func (c *Course) SetTitle(title string) error {
 
 	c.title = title
 	return nil
+}
+
+func (c *Course) IsPublic() bool {
+	return c.status == CourseStatusApproved && !c.hidden
 }
 
 func (c *Course) InstructorID() string {
@@ -422,8 +432,9 @@ func (c *Course) Overview() string {
 	return c.overview
 }
 
-func (c *Course) SetOverview(overview string) {
+func (c *Course) SetOverview(overview string) error {
 	c.overview = strings.TrimSpace(overview)
+	return nil
 }
 
 func (c *Course) IntroductionVideoKey() string {

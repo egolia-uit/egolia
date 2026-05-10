@@ -17,6 +17,8 @@ const (
 	CodeSectionInvalid             Code = "sectionInvalid"
 	CodeInstructorPermissionDenied Code = "instructorPermissionDenied"
 	CodeCourseNotApproved          Code = "courseNotApproved"
+	CodeCourseAlreadyBookmarked    Code = "courseAlreadyBookmarked"
+	CodeCourseNotPublished         Code = "courseNotPublished"
 )
 
 type CourseNotFound struct {
@@ -141,6 +143,38 @@ func NewSectionInvalid(field, message string) *SectionInvalid {
 		Err: Err{
 			message: fmt.Sprintf("section %s is invalid: %s", field, message),
 			code:    CodeSectionInvalid,
+		},
+	}
+}
+
+type CourseNotPublished struct {
+	CourseID uuid.UUID
+	Err
+}
+
+func NewCourseNotPublished(courseID uuid.UUID) *CourseNotPublished {
+	return &CourseNotPublished{
+		CourseID: courseID,
+		Err: Err{
+			message: fmt.Sprintf("course with ID %s is not published", courseID),
+			code:    CodeCourseNotPublished,
+		},
+	}
+}
+
+type CourseAlreadyBookmarked struct {
+	CourseID uuid.UUID
+	UserID   string
+	Err
+}
+
+func NewCourseAlreadyBookmarked(courseID uuid.UUID, userID string) *CourseAlreadyBookmarked {
+	return &CourseAlreadyBookmarked{
+		CourseID: courseID,
+		UserID:   userID,
+		Err: Err{
+			message: fmt.Sprintf("course with ID %s is already bookmarked by user %s", courseID, userID),
+			code:    CodeCourseAlreadyBookmarked,
 		},
 	}
 }

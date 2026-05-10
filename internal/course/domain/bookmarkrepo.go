@@ -10,6 +10,7 @@ type BookmarkRepo interface {
 	Save(ctx context.Context, bookmark *Bookmark) error
 	Delete(ctx context.Context, id uuid.UUID) error
 	ExistsByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) (bool, error)
+	DeleteByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) error
 }
 
 type BookmarkRepoGet struct {

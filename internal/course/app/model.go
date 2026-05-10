@@ -25,6 +25,13 @@ type Paginated[T any] struct {
 	Pagination Pagination
 }
 
+type SearchCoursesOrder string
+
+const (
+	SearchCoursesOrderAsc  SearchCoursesOrder = "asc"
+	SearchCoursesOrderDesc SearchCoursesOrder = "desc"
+)
+
 type CourseStatus string
 
 const (

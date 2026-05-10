@@ -350,6 +350,9 @@
           },
           {
             "$ref": "#/components/parameters/orderQuery"
+          },
+          {
+            "$ref": "#/components/parameters/searchQuery"
           }
         ],
         "responses": {
@@ -410,6 +413,12 @@
         "operationId": "getSystemCourses",
         "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/searchQuery"
+          },
+          {
+            "$ref": "#/components/parameters/instructorIdQuery"
+          },
           {
             "$ref": "#/components/parameters/pageQuery"
           },
@@ -1114,65 +1123,6 @@
                     "data"
                   ]
                 }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/courses/{courseId}/enroll": {
-      "post": {
-        "security": [
-          {
-            "Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course"
-        ],
-        "summary": "Enroll in course",
-        "operationId": "enrollInCourse",
-        "description": "- authenticated:\n",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/courseIdPath"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Course enrollment created",
-            "headers": {
-              "Content-Location": {
-                "schema": {
-                  "type": "string",
-                  "format": "uri",
-                  "example": "http://api.egolia.localhost/course/courses/123e4567-e89b-12d3-a456-426614174000/enroll"
-                },
-                "required": true
               }
             }
           },
@@ -3104,8 +3054,8 @@
         "description": "OAuth2 Security Scheme",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "http://authentik.notopia.localhost/application/o/authorize/",
-            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
+            "authorizationUrl": "http://authentik.egolia.localhost/application/o/authorize/",
+            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
             "scopes": {
               "openid": "OpenID Connect scope",
               "email": "Email scope",
@@ -3118,7 +3068,7 @@
             "x-scalar-credentials-location": "header"
           },
           "password": {
-            "tokenUrl": "http://authentik.notopia.localhost/application/o/token/",
+            "tokenUrl": "http://authentik.egolia.localhost/application/o/token/",
             "scopes": {
               "openid": "OpenID Connect scope",
               "email": "Email scope",
@@ -3193,6 +3143,17 @@
           "type": "string",
           "format": "string",
           "example": "123"
+        }
+      },
+      "searchQuery": {
+        "name": "query",
+        "in": "query",
+        "required": false,
+        "description": "Search query to filter courses by title or description",
+        "schema": {
+          "type": "string",
+          "format": "string",
+          "example": "python programming"
         }
       },
       "reviewIdPath": {

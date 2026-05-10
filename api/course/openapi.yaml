@@ -62,8 +62,6 @@ paths:
     $ref: ./paths/courses_{courseId}_decline.yaml
   /course/courses/{courseId}/detail:
     $ref: ./paths/courses_{courseId}_detail.yaml
-  /course/courses/{courseId}/enroll:
-    $ref: ./paths/courses_{courseId}_enroll.yaml
   /course/courses/{courseId}/finish:
     $ref: ./paths/courses_{courseId}_finish.yaml
   /course/courses/{courseId}/hide:

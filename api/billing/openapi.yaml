@@ -23,14 +23,12 @@ tags:
     description: Billing related operations
 
 paths:
-  /billing/checkout:
-    $ref: ./paths/checkout.yaml
+  /billing/courses/{courseId}/checkout:
+    $ref: paths/courses_{courseId}_checkout.yaml
   /billing/admin/analytics/revenue:
     $ref: ./paths/admin_analytics_revenue.yaml
   /billing/transactions:
     $ref: ./paths/transactions.yaml
-  /billing/transactions/{transactionId}/complete:
-    $ref: ./paths/transactions_{transactionId}_complete.yaml
 
 components:
   securitySchemes:
