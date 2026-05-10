@@ -8,16 +8,19 @@ type Cmds struct {
 	MoveLesson     MoveLessonCmd
 	ReviewCourse   ReviewCourseCmd
 	UpdateCourse   UpdateCourseCmd
+	BookmarkCourse BookmarkCourseCmd
 }
 
 type Queries struct {
 	GetCourse               GetCourseQuery
 	GetCourseDetail         GetCourseDetailQuery
-	GetCourses              GetCoursesQuery
-	GetInstructorCourses    GetInstructorCoursesQuery
+	GetMyCourses            GetMyCoursesQuery
+	GetPublishedCourses     GetPublishedCoursesQuery
 	GetLessonDetail         GetLessonDetailQuery
 	GetUploadVideoLessonURL GetUploadVideoLessonURLQuery
-	SearchCourses           SearchCoursesQuery
+	GetSystemCourses        GetSystemCoursesQuery
+	GetMyBookmarkedCourses  GetMyBookmarkedCoursesQuery
+	GetMyEnrolledCourses    GetMyEnrolledCoursesQuery
 }
 
 type App struct {

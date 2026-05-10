@@ -5,7 +5,6 @@ import (
 	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
-	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
 )
 
@@ -48,9 +47,6 @@ func (h *CreateCourseHandler) Handle(ctx context.Context, cmd *CreateCourse) err
 	)
 	if err != nil {
 		return err
-	}
-	if h.uow == nil {
-		return errs.NewInternal("unit of work is required")
 	}
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		return repoRegistry.Course().Save(ctx, course)

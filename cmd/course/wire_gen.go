@@ -101,19 +101,17 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getCourseQuery := app.NewGetCourseHandler(courseReadRepo, logger, tracer)
 	getCourseDetailQuery := app.NewGetCourseDetailHandler(courseReadRepo, logger, tracer)
 	getCoursesQuery := app.NewGetCoursesHandler(courseReadRepo, logger, tracer)
-	getInstructorCoursesQuery := app.NewGetInstructorCoursesHandler(courseReadRepo, logger, tracer)
+	getMyCoursesQuery := app.NewGetMyCoursesHandler(courseReadRepo, logger, tracer)
 	lessonReadRepo := readmodel.NewLessonReadRepo(db)
 	getLessonDetailQuery := app.NewGetLessonDetailHandler(lessonReadRepo, logger, tracer)
 	getUploadVideoLessonURLQuery := app.NewGetUploadVideoLessonURLHandler(objectstorageS3, logger, tracer)
-	searchCoursesQuery := app.NewSearchCoursesHandler(courseReadRepo, logger, tracer)
 	queries := &app.Queries{
 		GetCourse:               getCourseQuery,
 		GetCourseDetail:         getCourseDetailQuery,
 		GetCourses:              getCoursesQuery,
-		GetInstructorCourses:    getInstructorCoursesQuery,
+		GetMyCourses:            getMyCoursesQuery,
 		GetLessonDetail:         getLessonDetailQuery,
 		GetUploadVideoLessonURL: getUploadVideoLessonURLQuery,
-		SearchCourses:           searchCoursesQuery,
 	}
 	appApp := &app.App{
 		Cmds:    cmds,

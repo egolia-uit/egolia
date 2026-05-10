@@ -368,6 +368,9 @@
           },
           {
             "$ref": "#/components/parameters/course_orderQuery"
+          },
+          {
+            "$ref": "#/components/parameters/course_searchQuery"
           }
         ],
         "responses": {
@@ -428,6 +431,9 @@
         "operationId": "getSystemCourses",
         "description": "- authenticated:\n  - instructor\n  - admin\n",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/course_instructorIdQuery"
+          },
           {
             "$ref": "#/components/parameters/course_pageQuery"
           },
@@ -4070,6 +4076,17 @@
           "type": "string",
           "format": "string",
           "example": "123"
+        }
+      },
+      "course_searchQuery": {
+        "name": "query",
+        "in": "query",
+        "required": false,
+        "description": "Search query to filter courses by title or description",
+        "schema": {
+          "type": "string",
+          "format": "string",
+          "example": "python programming"
         }
       },
       "course_reviewIdPath": {

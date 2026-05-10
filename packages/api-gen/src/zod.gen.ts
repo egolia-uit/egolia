@@ -410,6 +410,11 @@ export const zCourseOrderQuery = z.enum(['asc', 'desc']).default('desc');
 export const zCourseInstructorIdQuery = z.string();
 
 /**
+ * Search query to filter courses by title or description
+ */
+export const zCourseSearchQuery = z.string();
+
+/**
  * Unique identifier of the course review
  */
 export const zCourseReviewIdPath = z.uuid();
@@ -526,7 +531,8 @@ export const zGetPublishedCoursesQuery = z.object({
     instructorId: z.string().optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
-    order: z.enum(['asc', 'desc']).optional().default('desc')
+    order: z.enum(['asc', 'desc']).optional().default('desc'),
+    query: z.string().optional()
 });
 
 /**
@@ -538,6 +544,7 @@ export const zGetPublishedCoursesResponse = z.object({
 });
 
 export const zGetSystemCoursesQuery = z.object({
+    instructorId: z.string().optional(),
     page: z.int().gte(1).optional().default(1),
     limit: z.int().gte(1).lte(100).optional().default(20),
     order: z.enum(['asc', 'desc']).optional().default('desc')

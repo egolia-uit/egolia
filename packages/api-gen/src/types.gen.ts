@@ -495,6 +495,11 @@ export type CourseOrderQuery = typeof CourseOrderQuery[keyof typeof CourseOrderQ
 export type CourseInstructorIdQuery = string;
 
 /**
+ * Search query to filter courses by title or description
+ */
+export type CourseSearchQuery = string;
+
+/**
  * Unique identifier of the course review
  */
 export type CourseReviewIdPath = string;
@@ -791,6 +796,10 @@ export type GetPublishedCoursesData = {
          * Sort order
          */
         order?: 'asc' | 'desc';
+        /**
+         * Search query to filter courses by title or description
+         */
+        query?: string;
     };
     url: '/course/courses-published';
 };
@@ -824,6 +833,7 @@ export type GetSystemCoursesData = {
     body?: never;
     path?: never;
     query?: {
+        instructorId?: string;
         /**
          * Page number for pagination
          */

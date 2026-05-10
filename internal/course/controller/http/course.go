@@ -10,6 +10,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// enum page, limit, order, course status, course visibility
+
 func (h *StrictHandler) GetMyCertificates(ctx context.Context, request course.GetMyCertificatesRequestObject) (course.GetMyCertificatesResponseObject, error) {
 	return nil, errs.Unimplemented
 }
@@ -64,12 +66,14 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 }
 
 func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCoursesRequestObject) (course.GetMyCoursesResponseObject, error) {
-	panic("unimplemented")
-}
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
 
-func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.GetPublishedCoursesRequestObject) (course.GetPublishedCoursesResponseObject, error) {
 	page := 1
-	if request.Params.Page != nil {
+	if request.Params.Page != nil && *request.Params.Page > 0 {
 		page = *request.Params.Page
 	}
 	limit := 20
@@ -77,26 +81,71 @@ func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.
 		limit = *request.Params.Limit
 	}
 
-	instructorID := (*string)(nil)
-	if request.Params.InstructorId != nil {
-		instructorID = request.Params.InstructorId
-	}
-	order := app.SearchCoursesOrderDesc
+	var order *app.SearchCoursesOrder
 	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
 	}
-	isHidden := false
-	courseStatus := app.CourseStatusApproved
 
-	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
-		InstructorID: instructorID,
+	result, err := h.App.Queries.GetMyCourses.Handle(ctx, &app.GetMyCourses{
+		UserID: userID,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order: order,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetMyCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
+}
+
+func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.GetPublishedCoursesRequestObject) (course.GetPublishedCoursesResponseObject, error) {
+
+	page := 1
+	if request.Params.Page != nil && *request.Params.Page > 0 {
+		page = *request.Params.Page
+	}
+
+	limit := 20 // Đặt limit mặc định
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetPublishedCourses.Handle(ctx, &app.GetCourses{
+		InstructorID: request.Params.InstructorId,
+		Query:        request.Params.Query,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,
 		},
 		Order:  order,
-		Hidden: &isHidden,
-		Status: &courseStatus,
+		Hidden: nil,
+		Status: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -130,14 +179,14 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 	if request.Params.Limit != nil {
 		limit = *request.Params.Limit
 	}
-	order := app.SearchCoursesOrderDesc
+	var order *app.SearchCoursesOrder
 	if request.Params.Order != nil {
-		order = app.SearchCoursesOrder(*request.Params.Order)
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
 	}
-	instructorID := (*string)(nil)
 
-	result, err := h.App.Queries.GetCourses.Handle(ctx, &app.GetCourses{
-		InstructorID: instructorID,
+	result, err := h.App.Queries.GetSystemCourses.Handle(ctx, &app.GetCourses{
+		InstructorID: request.Params.InstructorId,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,
@@ -170,11 +219,109 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 }
 
 func (h *StrictHandler) GetMyEnrolledCourses(ctx context.Context, request course.GetMyEnrolledCoursesRequestObject) (course.GetMyEnrolledCoursesResponseObject, error) {
-	return nil, errs.Unimplemented
+	// TODO: implement GetMyEnrolledCourses
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetMyEnrolledCourses.Handle(ctx, &app.GetMyEnrolledCourses{
+		LearnerID: userID,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order:  order,
+		Hidden: nil,
+		Status: nil,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetMyEnrolledCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) GetMyBookmarkedCourses(ctx context.Context, request course.GetMyBookmarkedCoursesRequestObject) (course.GetMyBookmarkedCoursesResponseObject, error) {
-	return nil, errs.Unimplemented
+	// TODO: implement GetMyBookmarkedCourses
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetMyBookmarkedCourses.Handle(ctx, &app.GetMyBookmarkedCourses{
+		UserID: userID,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order: order,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]course.Course, 0, len(result.Data))
+	for i := range result.Data {
+		courses = append(courses, *courseToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetMyBookmarkedCourses200JSONResponse{
+		Data: courses,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteCourseRequestObject) (course.DeleteCourseResponseObject, error) {
@@ -223,11 +370,37 @@ func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateC
 }
 
 func (h *StrictHandler) BookmarkCourse(ctx context.Context, request course.BookmarkCourseRequestObject) (course.BookmarkCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.BookmarkCourse.Handle(ctx, &app.BookmarkCourse{
+		CourseID: courseID,
+		UserID:   userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.BookmarkCourse201Response{}, nil
 }
 
 func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.UnbookmarkCourseRequestObject) (course.UnbookmarkCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.BookmarkCourse.Handle(ctx, &app.BookmarkCourse{
+		CourseID: courseID,
+		UserID:   userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.UnbookmarkCourse204Response{}, nil
 }
 
 func (h *StrictHandler) DeclineCourse(ctx context.Context, request course.DeclineCourseRequestObject) (course.DeclineCourseResponseObject, error) {

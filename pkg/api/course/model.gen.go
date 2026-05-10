@@ -516,6 +516,9 @@ type RatingQuery = int
 // ReviewIdPath defines model for reviewIdPath.
 type ReviewIdPath = openapi_types.UUID
 
+// SearchQuery defines model for searchQuery.
+type SearchQuery = string
+
 // SectionIdPath defines model for sectionIdPath.
 type SectionIdPath = openapi_types.UUID
 
@@ -575,6 +578,9 @@ type GetPublishedCoursesParams struct {
 
 	// Order Sort order
 	Order *GetPublishedCoursesParamsOrder `form:"order,omitempty" json:"order,omitempty"`
+
+	// Query Search query to filter courses by title or description
+	Query *SearchQuery `form:"query,omitempty" json:"query,omitempty"`
 }
 
 // GetPublishedCoursesParamsOrder defines parameters for GetPublishedCourses.
@@ -582,6 +588,8 @@ type GetPublishedCoursesParamsOrder string
 
 // GetSystemCoursesParams defines parameters for GetSystemCourses.
 type GetSystemCoursesParams struct {
+	InstructorId *InstructorIdQuery `form:"instructorId,omitempty" json:"instructorId,omitempty"`
+
 	// Page Page number for pagination
 	Page *PageQuery `form:"page,omitempty" json:"page,omitempty"`
 
