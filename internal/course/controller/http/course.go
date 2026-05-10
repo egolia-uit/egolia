@@ -507,7 +507,6 @@ func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course
 	return &course.GetCourseLandingPage200JSONResponse{
 		Data: *courseToDTO(result),
 	}, nil
-
 }
 
 func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.GetCourseProgressRequestObject) (course.GetCourseProgressResponseObject, error) {

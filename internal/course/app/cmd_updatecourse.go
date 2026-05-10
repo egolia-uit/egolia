@@ -35,9 +35,7 @@ func NewUpdateCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer T
 var _ Cmd[UpdateCourse] = (*UpdateCourseHandler)(nil)
 
 func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) error {
-
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
 			ID: cmd.CourseID,
 		}, true)
@@ -47,13 +45,21 @@ func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) err
 			}
 			return err
 		}
-		course.SetTitle(cmd.Title)
-		course.SetPrice(cmd.Price)
+		if err := course.SetTitle(cmd.Title); err != nil {
+			return err
+		}
+		if err := course.SetPrice(cmd.Price); err != nil {
+			return err
+		}
 		if cmd.Overview != nil {
-			course.SetOverview(*cmd.Overview)
+			if err := course.SetOverview(*cmd.Overview); err != nil {
+				return err
+			}
 		}
 		if cmd.IntroductionVideoKey != nil {
-			course.SetIntroductionVideoKey(*cmd.IntroductionVideoKey)
+			if err := course.SetIntroductionVideoKey(*cmd.IntroductionVideoKey); err != nil {
+				return err
+			}
 		}
 
 		return repoRegistry.Course().Save(ctx, course)

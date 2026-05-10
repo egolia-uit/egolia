@@ -432,8 +432,9 @@ func (c *Course) Overview() string {
 	return c.overview
 }
 
-func (c *Course) SetOverview(overview string) {
+func (c *Course) SetOverview(overview string) error {
 	c.overview = strings.TrimSpace(overview)
+	return nil
 }
 
 func (c *Course) IntroductionVideoKey() string {
