@@ -15,15 +15,13 @@ func NewRegistry(db *gorm.DB) *Registry {
 	return &Registry{db: db}
 }
 
-func (r *Registry) Course() domain.CourseRepo               { return &CourseRepo{db: r.db} }
-func (r *Registry) Enrollment() domain.EnrollmentRepo       { return &EnrollmentRepo{db: r.db} }
-func (r *Registry) Bookmark() domain.BookmarkRepo           { return &BookmarkRepo{db: r.db} }
-func (r *Registry) Certificate() domain.CertificateRepo     { return &CertificateRepo{db: r.db} }
-func (r *Registry) LessonComment() domain.LessonCommentRepo { return &LessonCommentRepo{db: r.db} }
-func (r *Registry) Review() domain.ReviewRepo               { return &ReviewRepo{db: r.db} }
-func (r *Registry) LessonProgress() domain.LessonProgressRepo {
-	panic("unimplemented")
-}
+func (r *Registry) Course() domain.CourseRepo                 { return &CourseRepo{db: r.db} }
+func (r *Registry) Enrollment() domain.EnrollmentRepo         { return &EnrollmentRepo{db: r.db} }
+func (r *Registry) Bookmark() domain.BookmarkRepo             { return &BookmarkRepo{db: r.db} }
+func (r *Registry) Certificate() domain.CertificateRepo       { return &CertificateRepo{db: r.db} }
+func (r *Registry) LessonComment() domain.LessonCommentRepo   { return &LessonCommentRepo{db: r.db} }
+func (r *Registry) Review() domain.ReviewRepo                 { return &ReviewRepo{db: r.db} }
+func (r *Registry) LessonProgress() domain.LessonProgressRepo { return &LessonProgressRepo{db: r.db} }
 
 // UnitOfWork opens a Postgres transaction and passes a Registry backed by
 // that tx to fn, keeping all repo operations atomic.

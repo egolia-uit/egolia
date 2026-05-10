@@ -22,7 +22,9 @@ var _ domain.BookmarkRepo = (*BookmarkRepo)(nil)
 
 // DeleteByUserAndCourse implements [domain.BookmarkRepo].
 func (r *BookmarkRepo) DeleteByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) error {
-	panic("unimplemented")
+	return r.db.WithContext(ctx).
+		Where("user_id = ? AND course_id = ?", userID, courseID).
+		Delete(new(model.Bookmark)).Error
 }
 
 func (r *BookmarkRepo) Get(ctx context.Context, params domain.BookmarkRepoGet, forUpdate bool) (*domain.Bookmark, error) {
@@ -44,11 +46,15 @@ func (r *BookmarkRepo) Save(ctx context.Context, bookmark *domain.Bookmark) erro
 }
 
 func (r *BookmarkRepo) Delete(ctx context.Context, id uuid.UUID) error {
-	// TODO: implement this
-	panic("unimplemented")
+	return r.db.WithContext(ctx).Delete(new(model.Bookmark), "id = ?", id).Error
 }
 
 func (r *BookmarkRepo) ExistsByUserAndCourse(ctx context.Context, userID string, courseID uuid.UUID) (bool, error) {
-	// TODO: implement this
-	panic("unimplemented")
+	var count int64
+	if err := r.db.WithContext(ctx).Model(new(model.Bookmark)).
+		Where("user_id = ? AND course_id = ?", userID, courseID).
+		Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
