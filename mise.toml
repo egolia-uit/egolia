@@ -4,6 +4,7 @@
 REDOCLY_TELEMETRY = "off"
 REDOCLY_SUPPRESS_UPDATE_NOTICE = "true"
 NEXT_TELEMETRY_DISABLED = "1"
+DISABLE_TELEMETRY = "1"
 '_'.path.paths = ["./scripts/"]
 
 [tools]
