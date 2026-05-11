@@ -27,15 +27,16 @@ var (
 )
 
 // GetCourseByID implements [app.GetCoursesReadModel].
-func (r *CourseReadRepo) GetCourseByID(ctx context.Context, courseID uuid.UUID) (*app.Course, error) {
-	var m model.ReadCourse
-	if err := r.db.WithContext(ctx).First(&m, "course_id = ?", courseID).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errs.NewCourseNotFound(courseID, err)
-		}
-		return nil, err
-	}
-	return r.toAppCourse(ctx, &m)
+func (r *CourseReadRepo) GetCourseByID(ctx context.Context, getCourseLandingPage *app.GetCourseLandingPage) (*app.Course, error) {
+	// var m model.ReadCourse
+	// if err := r.db.WithContext(ctx).First(&m, "course_id = ?", courseID).Error; err != nil {
+	// 	if errors.Is(err, gorm.ErrRecordNotFound) {
+	// 		return nil, errs.NewCourseNotFound(courseID, err)
+	// 	}
+	// 	return nil, err
+	// }
+	// return r.toAppCourse(ctx, &m)
+	panic("need to change")
 }
 
 // GetMyBookmarkedCourses implements [app.GetCoursesReadModel].
@@ -138,7 +139,7 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID uuid.UUID) (*ap
 	return r.toAppCourse(ctx, &m)
 }
 
-func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID) (*app.CourseDetail, error) {
+func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID, deleted *bool) (*app.CourseDetail, error) {
 	id := courseID
 
 	var m model.ReadCourse
