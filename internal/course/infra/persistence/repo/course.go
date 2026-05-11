@@ -6,6 +6,7 @@ import (
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/model"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -51,4 +52,8 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 		return fmt.Errorf("rebuild read course: %w", err)
 	}
 	return db.Save(readModel).Error
+}
+
+func (r *CourseRepo) GetDraftVersion(ctx context.Context, originalCourseID uuid.UUID, status domain.CourseStatus) (*domain.Course, error) {
+	panic("not implemented")
 }

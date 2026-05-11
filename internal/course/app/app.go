@@ -1,15 +1,18 @@
 package app
 
 type Cmds struct {
-	CreateCourse   CreateCourseCmd
-	DeleteCourse   DeleteCourseCmd
-	EnrollInCourse EnrollInCourseCmd
-	FinishCourse   FinishCourseCmd
-	MoveLesson     MoveLessonCmd
-	ReviewCourse   ReviewCourseCmd
-	UpdateCourse   UpdateCourseCmd
-	BookmarkCourse BookmarkCourseCmd
-	HideCourse     HideCourseCmd
+	CreateCourse       CreateCourseCmd
+	DeleteCourse       DeleteCourseCmd
+	EnrollInCourse     EnrollInCourseCmd
+	FinishCourse       FinishCourseCmd
+	MoveLesson         MoveLessonCmd
+	ReviewCourse       ReviewCourseCmd
+	UpdateCourse       UpdateCourseCmd
+	BookmarkCourse     BookmarkCourseCmd
+	HideCourse         HideCourseCmd
+	CreateSection      CreateSectionCmd
+	UpdateSectionTitle UpdateSectionTitleCmd
+	DeleteSection      DeleteSectionCmd
 }
 
 type Queries struct {

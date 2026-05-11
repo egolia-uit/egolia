@@ -63,6 +63,8 @@ func strictServerToHTTPErr(err errs.Error) (
 		statusCode = 403
 	case errs.CodeCourseAlreadyBookmarked:
 		statusCode = 400
+	case errs.CodeSectionTitleAlreadyExists:
+		statusCode = 400
 	}
 
 	return

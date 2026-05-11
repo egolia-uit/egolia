@@ -2171,7 +2171,6 @@ export type CreateSectionData = {
     body: {
         courseId: CourseId;
         title: string;
-        order: number;
     };
     path: {
         /**

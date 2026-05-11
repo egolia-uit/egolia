@@ -384,6 +384,22 @@ func (c *Course) ToggleHidden() {
 	c.hidden = !c.hidden
 }
 
+func (c *Course) DeleteSection(sectionID uuid.UUID) {
+	out := make([]*Section, 0, len(c.sections))
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		if section.id == sectionID {
+			section.Delete()
+			out = append(out, section)
+			continue
+		}
+		out = append(out, section)
+	}
+	c.sections = out
+}
+
 // func (c *Course) e(by *Course) {
 
 func (c *Course) Title() string {
@@ -418,6 +434,22 @@ func (c *Course) SetStatus(status CourseStatus) {
 
 func (c *Course) Price() int64 {
 	return c.price
+}
+
+func (c *Course) ExistsSectionWithTitle(title string) bool {
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		if section.Title() == title {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *Course) CanInstructorEdit() bool {
+	return c.status == CourseStatusDraft && c.deletedAt == nil
 }
 
 func (c *Course) SetPrice(price int64) error {

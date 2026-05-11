@@ -2119,8 +2119,7 @@
                 "type": "object",
                 "required": [
                   "courseId",
-                  "title",
-                  "order"
+                  "title"
                 ],
                 "properties": {
                   "courseId": {
@@ -2131,11 +2130,6 @@
                     "minLength": 1,
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
-                  },
-                  "order": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "example": 1
                   }
                 }
               }

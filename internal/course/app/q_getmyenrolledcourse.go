@@ -11,6 +11,7 @@ type GetMyEnrolledCourses struct {
 	Order     *SearchCoursesOrder
 	Hidden    *bool
 	Status    *CourseStatus
+	Deleted   *bool
 }
 
 type GetMyEnrolledCoursesQuery Query[GetMyEnrolledCourses, *Paginated[Course]]
@@ -33,6 +34,8 @@ func (h *GetMyEnrolledCoursesHandler) Handle(ctx context.Context, params *GetMyE
 	params.Status = &status
 	hidden := false
 	params.Hidden = &hidden
+	deleted := false
+	params.Deleted = &deleted
 
 	return h.readModel.GetMyEnrolledCourses(ctx, params)
 }

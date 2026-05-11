@@ -661,7 +661,6 @@ type ReviewCourseJSONBody struct {
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
 	CourseId *Id    `json:"courseId,omitempty"`
-	Order    int    `json:"order"`
 	Title    string `json:"title"`
 }
 

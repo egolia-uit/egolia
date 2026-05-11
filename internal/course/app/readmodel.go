@@ -11,7 +11,7 @@ type GetCourseReadModel interface {
 }
 
 type GetCourseDetailReadModel interface {
-	GetCourseDetail(ctx context.Context, courseID uuid.UUID) (*CourseDetail, error)
+	GetCourseDetail(ctx context.Context, courseID uuid.UUID, deleted *bool) (*CourseDetail, error)
 }
 
 type GetLessonDetailReadModel interface {
@@ -27,11 +27,12 @@ type GetCourses struct {
 	Hidden             *bool
 	Status             *CourseStatus
 	HaveOriginalCourse *bool
+	Deleted            *bool
 }
 
 type GetCoursesReadModel interface {
 	GetCourses(ctx context.Context, params *GetCourses) (*Paginated[Course], error)
 	GetMyBookmarkedCourses(ctx context.Context, params *GetMyBookmarkedCourses) (*Paginated[Course], error)
 	GetMyEnrolledCourses(ctx context.Context, params *GetMyEnrolledCourses) (*Paginated[Course], error)
-	GetCourseByID(ctx context.Context, courseID uuid.UUID) (*Course, error)
+	GetCourseByID(ctx context.Context, query *GetCourseLandingPage) (*Course, error)
 }

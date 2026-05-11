@@ -13,6 +13,9 @@ var ProviderSetCmds = wire.NewSet(
 	NewReviewCourseHandler,
 	NewBookmarkCourseHandler,
 	NewHideCourseHandler,
+	NewCreateSectionHandler,
+	NewUpdateSectionTitleHandler,
+	NewDeleteSectionHandler,
 	wire.Struct(new(Cmds), "*"),
 )
 

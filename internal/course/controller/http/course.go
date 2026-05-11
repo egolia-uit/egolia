@@ -97,6 +97,7 @@ func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCo
 		Hidden:             nil,
 		Status:             nil,
 		HaveOriginalCourse: nil,
+		Deleted:            nil,
 	})
 	if err != nil {
 		return nil, err
@@ -149,6 +150,7 @@ func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.
 		Hidden:             nil,
 		Status:             nil,
 		HaveOriginalCourse: nil,
+		Deleted:            nil,
 	})
 	if err != nil {
 		return nil, err
@@ -199,6 +201,7 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 		Hidden:             nil,
 		Status:             nil,
 		HaveOriginalCourse: nil,
+		Deleted:            nil,
 	})
 	if err != nil {
 		return nil, err
@@ -250,9 +253,10 @@ func (h *StrictHandler) GetMyEnrolledCourses(ctx context.Context, request course
 			Page:  page,
 			Limit: limit,
 		},
-		Order:  order,
-		Hidden: nil,
-		Status: nil,
+		Order:   order,
+		Hidden:  nil,
+		Status:  nil,
+		Deleted: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -306,7 +310,8 @@ func (h *StrictHandler) GetMyBookmarkedCourses(ctx context.Context, request cour
 			Page:  page,
 			Limit: limit,
 		},
-		Order: order,
+		Order:   order,
+		Deleted: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -500,6 +505,9 @@ func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course
 	courseID := request.CourseId
 	result, err := h.App.Queries.GetCourseLandingPage.Handle(ctx, &app.GetCourseLandingPage{
 		CourseID: courseID,
+		Status:   nil,
+		Hidden:   nil,
+		Deleted:  nil,
 	})
 	if err != nil {
 		return nil, err
@@ -654,7 +662,22 @@ func (h *StrictHandler) GetCourseStudents(ctx context.Context, request course.Ge
 }
 
 func (h *StrictHandler) UpdateSectionTitle(ctx context.Context, request course.UpdateSectionTitleRequestObject) (course.UpdateSectionTitleResponseObject, error) {
-	panic("unimplemented")
+	courseID := request.CourseId
+	sectionID := request.SectionId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	if err := h.App.Cmds.UpdateSectionTitle.Handle(ctx, &app.UpdateSectionTitle{
+		CourseID:  courseID,
+		SectionID: sectionID,
+		Title:     request.Body.Title,
+		UserID:    userID,
+	}); err != nil {
+		return nil, err
+	}
+	return &course.UpdateSectionTitle200Response{}, nil
 }
 
 // GetUploadVideoUrl implements [course.StrictServerInterface].
@@ -674,9 +697,36 @@ func (h *StrictHandler) GetUploadVideoUrl(ctx context.Context, request course.Ge
 }
 
 func (h *StrictHandler) CreateSection(ctx context.Context, request course.CreateSectionRequestObject) (course.CreateSectionResponseObject, error) {
-	return nil, errs.Unimplemented
+	cmd := &app.CreateSection{
+		CourseID: request.CourseId,
+		Title:    request.Body.Title,
+	}
+	err := h.App.Cmds.CreateSection.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return &course.CreateSection201Response{
+		Headers: course.CreateSection201ResponseHeaders{
+			ContentLocation: "i dont know what to put here", // TODO: return the actual section ID
+		},
+	}, nil
 }
 
 func (h *StrictHandler) DeleteSection(ctx context.Context, request course.DeleteSectionRequestObject) (course.DeleteSectionResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	cmd := &app.DeleteSection{
+		CourseID:  request.CourseId,
+		SectionID: request.SectionId,
+		UserID:    userID,
+	}
+	err := h.App.Cmds.DeleteSection.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return &course.DeleteSection204Response{}, nil
 }

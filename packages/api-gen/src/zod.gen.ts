@@ -843,8 +843,7 @@ export const zUpdateSectionTitlePath = z.object({
 
 export const zCreateSectionBody = z.object({
     courseId: zCourseId,
-    title: z.string().min(1).max(255),
-    order: z.int().gte(0)
+    title: z.string().min(1).max(255)
 });
 
 export const zCreateSectionPath = z.object({
