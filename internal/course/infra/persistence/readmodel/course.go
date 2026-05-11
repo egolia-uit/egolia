@@ -27,16 +27,24 @@ var (
 )
 
 // GetCourseByID implements [app.GetCoursesReadModel].
-func (r *CourseReadRepo) GetCourseByID(ctx context.Context, getCourseLandingPage *app.GetCourseLandingPage) (*app.Course, error) {
-	// var m model.ReadCourse
-	// if err := r.db.WithContext(ctx).First(&m, "course_id = ?", courseID).Error; err != nil {
-	// 	if errors.Is(err, gorm.ErrRecordNotFound) {
-	// 		return nil, errs.NewCourseNotFound(courseID, err)
-	// 	}
-	// 	return nil, err
-	// }
-	// return r.toAppCourse(ctx, &m)
-	panic("need to change")
+func (r *CourseReadRepo) GetCourseByID(ctx context.Context, query *app.GetCourseLandingPage) (*app.Course, error) {
+	q := r.db.WithContext(ctx).Where("course_id = ?", query.CourseID)
+
+	if query.Status != nil && *query.Status != "" {
+		q = q.Where("full_course_content->>'status' = ?", string(*query.Status))
+	}
+	if query.Hidden != nil {
+		q = q.Where("hidden = ?", *query.Hidden)
+	}
+
+	var m model.ReadCourse
+	if err := q.First(&m).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.NewCourseNotFound(query.CourseID, err)
+		}
+		return nil, err
+	}
+	return r.toAppCourse(ctx, &m)
 }
 
 // GetMyBookmarkedCourses implements [app.GetCoursesReadModel].
