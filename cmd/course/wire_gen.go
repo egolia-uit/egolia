@@ -84,16 +84,22 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	courseRepo := repo.NewCourseRepo(db)
 	authorizationSvc := domain.NewAuthorizationSvc(courseRepo, enrollmentRepo)
 	hideCourseCmd := app.NewHideCourseHandler(authorizationSvc, unitOfWork, logger, tracer)
+	createSectionCmd := app.NewCreateSectionHandler(unitOfWork, logger, tracer)
+	updateSectionTitleCmd := app.NewUpdateSectionTitleHandler(unitOfWork)
+	deleteSectionCmd := app.NewDeleteSectionHandler(unitOfWork, logger, tracer)
 	cmds := &app.Cmds{
-		CreateCourse:   createCourseCmd,
-		DeleteCourse:   deleteCourseCmd,
-		EnrollInCourse: enrollInCourseCmd,
-		FinishCourse:   finishCourseCmd,
-		MoveLesson:     moveLessonCmd,
-		ReviewCourse:   reviewCourseCmd,
-		UpdateCourse:   updateCourseCmd,
-		BookmarkCourse: bookmarkCourseCmd,
-		HideCourse:     hideCourseCmd,
+		CreateCourse:       createCourseCmd,
+		DeleteCourse:       deleteCourseCmd,
+		EnrollInCourse:     enrollInCourseCmd,
+		FinishCourse:       finishCourseCmd,
+		MoveLesson:         moveLessonCmd,
+		ReviewCourse:       reviewCourseCmd,
+		UpdateCourse:       updateCourseCmd,
+		BookmarkCourse:     bookmarkCourseCmd,
+		HideCourse:         hideCourseCmd,
+		CreateSection:      createSectionCmd,
+		UpdateSectionTitle: updateSectionTitleCmd,
+		DeleteSection:      deleteSectionCmd,
 	}
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
