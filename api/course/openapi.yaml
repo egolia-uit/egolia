@@ -74,6 +74,8 @@ paths:
     $ref: ./paths/courses_{courseId}_reviews.yaml
   /course/courses/{courseId}/students:
     $ref: ./paths/courses_{courseId}_students.yaml
+  /course/courses/{courseId}/submit:
+    $ref: ./paths/courses_{courseId}_submit.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
   /course/courses:

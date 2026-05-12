@@ -93,11 +93,13 @@ export type CourseCourseAnalytics = {
 export type CourseSection = {
     readonly id: string;
     title: string;
+    readonly originalSectionID?: string;
 };
 
 export type CourseLesson = {
     readonly id: string;
     title: string;
+    readonly originalLessonID?: string;
 };
 
 export type CourseCourseDetailSectionItem = CourseSection & {
@@ -1823,6 +1825,52 @@ export type GetCourseStudentsResponses = {
 
 export type GetCourseStudentsResponse = GetCourseStudentsResponses[keyof GetCourseStudentsResponses];
 
+export type SubmitCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/submit';
+};
+
+export type SubmitCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type SubmitCourseError = SubmitCourseErrors[keyof SubmitCourseErrors];
+
+export type SubmitCourseResponses = {
+    /**
+     * Course content submitted for processing
+     */
+    202: unknown;
+};
+
 export type DeleteCourseData = {
     body?: never;
     path: {
@@ -2006,7 +2054,6 @@ export type ReplyLessonCommentResponses = {
 
 export type MoveSectionData = {
     body: {
-        courseId: CourseId;
         /**
          * New order of the section within the course (0-based index)
          */

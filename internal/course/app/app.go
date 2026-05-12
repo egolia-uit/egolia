@@ -13,6 +13,10 @@ type Cmds struct {
 	CreateSection      CreateSectionCmd
 	UpdateSectionTitle UpdateSectionTitleCmd
 	DeleteSection      DeleteSectionCmd
+	MoveSection        MoveSectionCmd
+	UpdateReview       UpdateReviewCmd
+	DeleteReview       DeleteReviewCmd
+	SubmitCourse       SubmitCourseCmd
 }
 
 type Queries struct {

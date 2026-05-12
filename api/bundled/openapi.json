@@ -1632,6 +1632,55 @@
         }
       }
     },
+    "/course/courses/{courseId}/submit": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Submit course",
+        "operationId": "submitCourse",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Course content submitted for processing"
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
     "/course/courses/{courseId}": {
       "delete": {
         "security": [
@@ -1905,9 +1954,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "courseId": {
-                    "$ref": "#/components/schemas/course_id"
-                  },
                   "order": {
                     "type": "integer",
                     "description": "New order of the section within the course (0-based index)",
@@ -1915,7 +1961,6 @@
                   }
                 },
                 "required": [
-                  "courseId",
                   "order"
                 ]
               }
@@ -4510,6 +4555,12 @@
             "minLength": 1,
             "maxLength": 255,
             "example": "OOP Fundamentals"
+          },
+          "originalSectionID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+            "readOnly": true
           }
         },
         "required": [
@@ -4529,6 +4580,12 @@
           "title": {
             "type": "string",
             "example": "Introduction to Python"
+          },
+          "originalLessonID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+            "readOnly": true
           }
         },
         "required": [

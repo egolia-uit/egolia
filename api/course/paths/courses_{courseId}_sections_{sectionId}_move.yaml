@@ -24,15 +24,12 @@ post:
         schema:
           type: object
           properties:
-            courseId:
-              $ref: ../components/schemas/Course.yaml#/properties/id
             order:
               type: integer
               description: New order of the section within the course (0-based index)
               example: 1
 
           required:
-            - courseId
             - order
   responses:
     200:

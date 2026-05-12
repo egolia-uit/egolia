@@ -448,6 +448,89 @@ func (c *Course) ExistsSectionWithTitle(title string) bool {
 	return false
 }
 
+func (c *Course) MoveSection(sectionID uuid.UUID, newOrder int) {
+	var targetSection *Section
+	sections := make([]*Section, 0, len(c.sections))
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		if section.ID() == sectionID {
+			targetSection = section
+			continue
+		}
+		sections = append(sections, section)
+	}
+
+	if targetSection == nil {
+		return
+	}
+
+	if newOrder < 0 || newOrder > len(sections) {
+		return
+	}
+
+	out := make([]*Section, 0, len(c.sections))
+	out = append(out, sections[:newOrder]...)
+	out = append(out, targetSection)
+	out = append(out, sections[newOrder:]...)
+	c.sections = out
+}
+
+func (c *Course) MoveLesson(lessonID uuid.UUID, newSectionID uuid.UUID, newOrder int) {
+	var targetLesson Lesson
+	var currentSection *Section
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		for _, lesson := range section.Lessons() {
+			if lesson == nil {
+				continue
+			}
+			if lesson.ID() == lessonID {
+				targetLesson = lesson
+				currentSection = section
+				break
+			}
+		}
+	}
+
+	if targetLesson == nil || currentSection == nil {
+		return
+	}
+
+	currentSection.RemoveLesson(lessonID)
+
+	var newSection *Section
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		if section.ID() == newSectionID {
+			newSection = section
+			break
+		}
+	}
+
+	if newSection == nil {
+		return
+	}
+
+	if newOrder < 0 {
+		newOrder = 0
+	}
+	if newOrder > len(newSection.lessons) {
+		newOrder = len(newSection.lessons)
+	}
+
+	out := make([]Lesson, 0, len(newSection.lessons)+1)
+	out = append(out, newSection.lessons[:newOrder]...)
+	out = append(out, targetLesson)
+	out = append(out, newSection.lessons[newOrder:]...)
+	newSection.lessons = out
+}
+
 func (c *Course) CanInstructorEdit() bool {
 	return c.status == CourseStatusDraft && c.deletedAt == nil
 }

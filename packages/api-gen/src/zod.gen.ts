@@ -61,12 +61,14 @@ export const zCourseCourseAnalytics = z.object({
 
 export const zCourseSection = z.object({
     id: z.uuid().readonly(),
-    title: z.string().min(1).max(255)
+    title: z.string().min(1).max(255),
+    originalSectionID: z.uuid().readonly().optional()
 });
 
 export const zCourseLesson = z.object({
     id: z.uuid().readonly(),
-    title: z.string()
+    title: z.string(),
+    originalLessonID: z.uuid().readonly().optional()
 });
 
 export const zCourseCourseDetailSectionItem = zCourseSection.and(z.object({
@@ -772,6 +774,10 @@ export const zGetCourseStudentsResponse = z.object({
     pagination: zCoursePagination
 });
 
+export const zSubmitCoursePath = z.object({
+    courseId: z.uuid()
+});
+
 export const zDeleteCoursePath = z.object({
     courseId: z.uuid()
 });
@@ -801,7 +807,6 @@ export const zReplyLessonCommentPath = z.object({
 });
 
 export const zMoveSectionBody = z.object({
-    courseId: zCourseId,
     order: z.int()
 });
 

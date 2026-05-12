@@ -526,8 +526,6 @@ func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.Get
 }
 
 func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewCourseRequestObject) (course.ReviewCourseResponseObject, error) {
-	// TODO: implement review course
-	courseID := request.CourseId
 	user, ok := commonHTTP.UserFromContext(ctx)
 	if !ok {
 		return nil, errs.Unauthorized
@@ -535,7 +533,7 @@ func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewC
 	userID := user.ID
 
 	if err := h.App.Cmds.ReviewCourse.Handle(ctx, &app.ReviewCourse{
-		CourseID: courseID,
+		CourseID: request.CourseId,
 		ActorID:  userID,
 		Rating:   request.Body.Rating,
 		Comment:  request.Body.Comment,
@@ -550,11 +548,38 @@ func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewC
 }
 
 func (h *StrictHandler) UpdateReview(ctx context.Context, request course.UpdateReviewRequestObject) (course.UpdateReviewResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.UpdateReview.Handle(ctx, &app.UpdateReview{
+		ReviewID: request.ReviewId,
+		ActorID:  userID,
+		Rating:   request.Body.Rating,
+		Comment:  request.Body.Comment,
+	}); err != nil {
+		return nil, err
+	}
+	return course.UpdateReview204Response{}, nil
 }
 
 func (h *StrictHandler) DeleteReview(ctx context.Context, request course.DeleteReviewRequestObject) (course.DeleteReviewResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.DeleteReview.Handle(ctx, &app.DeleteReview{
+		ReviewID: request.ReviewId,
+		ActorID:  userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.DeleteReview204Response{}, nil
+
 }
 
 func (h *StrictHandler) ReplyLessonComment(ctx context.Context, request course.ReplyLessonCommentRequestObject) (course.ReplyLessonCommentResponseObject, error) {
@@ -611,41 +636,29 @@ func (h *StrictHandler) MarkLessonAsCompleted(ctx context.Context, request cours
 }
 
 func (h *StrictHandler) MoveSection(ctx context.Context, request course.MoveSectionRequestObject) (course.MoveSectionResponseObject, error) {
-	return nil, errs.Unimplemented
+	cmd := &app.MoveSection{
+		CourseID:  request.CourseId,
+		SectionID: request.SectionId,
+		Order:     request.Body.Order,
+	}
+	err := h.App.Cmds.MoveSection.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return &course.MoveSection200JSONResponse{}, nil
 }
 
 func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLessonRequestObject) (course.MoveLessonResponseObject, error) {
-	// var afterLesson *app.MoveLessonAfterLesson
-	// if request.Body.AfterLesson != nil {
-	// 	var t app.LessonType
-	// 	switch request.Body.AfterLesson.Type {
-	// 	case course.LessonTypeTest:
-	// 		t = app.LessonTypeTest
-	// 	case course.LessonTypeVideo:
-	// 		t = app.LessonTypeVideo
-	// 	}
-	// 	afterLesson = &app.MoveLessonAfterLesson{
-	// 		ID:   request.Body.AfterLesson.Id,
-	// 		Type: t,
-	// 	}
-	// }
-	// var lessonType app.LessonType
-	// switch request.Body.Type {
-	// case course.LessonTypeTest:
-	// 	lessonType = app.LessonTypeTest
-	// case course.LessonTypeVideo:
-	// 	lessonType = app.LessonTypeVideo
-	// }
-	// cmd := &app.MoveLesson{
-	// 	LessonID:    request.LessonId,
-	// 	LessonType:  lessonType,
-	// 	AfterLesson: afterLesson,
-	// 	SectionID:   request.Body.SectionId,
-	// }
-	// err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	cmd := &app.MoveLesson{
+		CourseID:  request.CourseId,
+		LessonID:  request.LessonId,
+		SectionID: request.SectionId,
+		Order:     request.Body.Order,
+	}
+	err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
 	return &course.MoveLesson201Response{}, nil
 }
 
@@ -655,6 +668,22 @@ func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.Ge
 
 func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
 	return nil, errs.Unimplemented
+}
+
+func (h *StrictHandler) SubmitCourse(ctx context.Context, request course.SubmitCourseRequestObject) (course.SubmitCourseResponseObject, error) {
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.SubmitCourse.Handle(ctx, &app.SubmitCourse{
+		CourseID: request.CourseId,
+		ActorID:  userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.SubmitCourse202Response{}, nil
 }
 
 func (h *StrictHandler) GetCourseStudents(ctx context.Context, request course.GetCourseStudentsRequestObject) (course.GetCourseStudentsResponseObject, error) {

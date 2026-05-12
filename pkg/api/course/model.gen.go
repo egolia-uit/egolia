@@ -286,9 +286,10 @@ type CourseDetail struct {
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
 type CourseDetailSectionItem struct {
-	Id      *openapi_types.UUID `json:"id,omitempty"`
-	Lessons []Lesson            `json:"lessons"`
-	Title   string              `json:"title"`
+	Id                *openapi_types.UUID `json:"id,omitempty"`
+	Lessons           []Lesson            `json:"lessons"`
+	OriginalSectionID *openapi_types.UUID `json:"originalSectionID,omitempty"`
+	Title             string              `json:"title"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -339,8 +340,9 @@ type Error struct {
 
 // Lesson defines model for Lesson.
 type Lesson struct {
-	Id    *openapi_types.UUID `json:"id,omitempty"`
-	Title string              `json:"title"`
+	Id               *openapi_types.UUID `json:"id,omitempty"`
+	OriginalLessonID *openapi_types.UUID `json:"originalLessonID,omitempty"`
+	Title            string              `json:"title"`
 }
 
 // LessonComment defines model for LessonComment.
@@ -414,8 +416,9 @@ type Review struct {
 
 // Section defines model for Section.
 type Section struct {
-	Id    *openapi_types.UUID `json:"id,omitempty"`
-	Title string              `json:"title"`
+	Id                *openapi_types.UUID `json:"id,omitempty"`
+	OriginalSectionID *openapi_types.UUID `json:"originalSectionID,omitempty"`
+	Title             string              `json:"title"`
 }
 
 // TestAnswer defines model for TestAnswer.
@@ -427,11 +430,12 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	Id           *openapi_types.UUID  `json:"id,omitempty"`
-	LessonType   TestLessonLessonType `json:"lessonType"`
-	QuestionType QuestionType         `json:"questionType"`
-	Questions    []TestQuestion       `json:"questions"`
-	Title        string               `json:"title"`
+	Id               *openapi_types.UUID  `json:"id,omitempty"`
+	LessonType       TestLessonLessonType `json:"lessonType"`
+	OriginalLessonID *openapi_types.UUID  `json:"originalLessonID,omitempty"`
+	QuestionType     QuestionType         `json:"questionType"`
+	Questions        []TestQuestion       `json:"questions"`
+	Title            string               `json:"title"`
 }
 
 // TestLessonLessonType defines model for TestLesson.LessonType.
@@ -446,12 +450,13 @@ type TestQuestion struct {
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	Duration   int64                 `json:"duration"`
-	Id         *openapi_types.UUID   `json:"id,omitempty"`
-	LessonType VideoLessonLessonType `json:"lessonType"`
-	Title      string                `json:"title"`
-	VideoKey   *string               `json:"videoKey,omitempty"`
-	VideoUrl   *string               `json:"videoUrl,omitempty"`
+	Duration         int64                 `json:"duration"`
+	Id               *openapi_types.UUID   `json:"id,omitempty"`
+	LessonType       VideoLessonLessonType `json:"lessonType"`
+	OriginalLessonID *openapi_types.UUID   `json:"originalLessonID,omitempty"`
+	Title            string                `json:"title"`
+	VideoKey         *string               `json:"videoKey,omitempty"`
+	VideoUrl         *string               `json:"videoUrl,omitempty"`
 }
 
 // VideoLessonLessonType defines model for VideoLesson.LessonType.
@@ -697,8 +702,6 @@ type EditVideoLessonJSONBody struct {
 
 // MoveSectionJSONBody defines parameters for MoveSection.
 type MoveSectionJSONBody struct {
-	CourseId *Id `json:"courseId,omitempty"`
-
 	// Order New order of the section within the course (0-based index)
 	Order int `json:"order"`
 }

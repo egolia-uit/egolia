@@ -9,25 +9,24 @@ import (
 	"github.com/google/uuid"
 )
 
-type MoveLesson struct {
+type MoveSection struct {
 	CourseID  uuid.UUID
 	SectionID uuid.UUID
-	LessonID  uuid.UUID
 	Order     int
 }
 
-type MoveLessonCmd Cmd[MoveLesson]
+type MoveSectionCmd Cmd[MoveSection]
 
-type MoveLessonHandler struct {
+type MoveSectionHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewMoveLessonHandler(logger *slog.Logger, tracer Tracer) MoveLessonCmd {
-	handler := &MoveLessonHandler{}
+func NewMoveSectionHandler(logger *slog.Logger, tracer Tracer) MoveSectionCmd {
+	handler := &MoveSectionHandler{}
 	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-func (h *MoveLessonHandler) Handle(ctx context.Context, command *MoveLesson) error {
+func (h *MoveSectionHandler) Handle(ctx context.Context, command *MoveSection) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: command.CourseID}, true)
 		if err != nil {
@@ -36,9 +35,9 @@ func (h *MoveLessonHandler) Handle(ctx context.Context, command *MoveLesson) err
 		if !course.CanInstructorEdit() {
 			return errs.Unauthorized
 		}
-		course.MoveLesson(command.SectionID, command.LessonID, command.Order)
+		course.MoveSection(command.SectionID, command.Order)
 		return repoRegistry.Course().Save(ctx, course)
 	})
 }
 
-var _ Cmd[MoveLesson] = (*MoveLessonHandler)(nil)
+var _ Cmd[MoveSection] = (*MoveSectionHandler)(nil)
