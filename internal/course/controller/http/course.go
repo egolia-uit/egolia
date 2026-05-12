@@ -441,6 +441,26 @@ func (h *StrictHandler) GetCourseDetail(ctx context.Context, request course.GetC
 	}, nil
 }
 
+func (h *StrictHandler) GetCourseForUpdate(ctx context.Context, request course.GetCourseForUpdateRequestObject) (course.GetCourseForUpdateResponseObject, error) {
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	query := &app.GetCourseForUpdate{
+		CourseID: request.CourseId,
+		UserID:   userID,
+	}
+	result, err := h.App.Queries.GetCourseForUpdate.Handle(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	courseDetail := courseDetailToDTO(result)
+	return &course.GetCourseForUpdate200JSONResponse{
+		Data: *courseDetail,
+	}, nil
+}
+
 func (h *StrictHandler) FinishCourse(ctx context.Context, request course.FinishCourseRequestObject) (course.FinishCourseResponseObject, error) {
 	// TODO: implement finish course
 	courseID := request.CourseId

@@ -1480,6 +1480,56 @@ export type FinishCourseResponses = {
 
 export type FinishCourseResponse = FinishCourseResponses[keyof FinishCourseResponses];
 
+export type GetCourseForUpdateData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/for-update';
+};
+
+export type GetCourseForUpdateErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetCourseForUpdateError = GetCourseForUpdateErrors[keyof GetCourseForUpdateErrors];
+
+export type GetCourseForUpdateResponses = {
+    /**
+     * Course data for update
+     */
+    200: {
+        data: CourseCourseDetail;
+    };
+};
+
+export type GetCourseForUpdateResponse = GetCourseForUpdateResponses[keyof GetCourseForUpdateResponses];
+
 export type UnhideCourseData = {
     body?: never;
     path: {

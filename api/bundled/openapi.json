@@ -1211,6 +1211,70 @@
         }
       }
     },
+    "/course/courses/{courseId}/for-update": {
+      "get": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get course for update",
+        "operationId": "getCourseForUpdate",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/course_courseIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Course data for update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/course_CourseDetail"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
     "/course/courses/{courseId}/hide": {
       "post": {
         "security": [

@@ -47,6 +47,7 @@ func (h *CreateSectionHandler) Handle(ctx context.Context, cmd *CreateSection) e
 		newSection := domain.NewSection(
 			uuid.New(),
 			cmd.Title,
+			nil,
 		)
 
 		course.AddSection(newSection)

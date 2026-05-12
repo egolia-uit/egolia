@@ -689,6 +689,17 @@ export const zFinishCoursePath = z.object({
  */
 export const zFinishCourseResponse = z.void();
 
+export const zGetCourseForUpdatePath = z.object({
+    courseId: z.uuid()
+});
+
+/**
+ * Course data for update
+ */
+export const zGetCourseForUpdateResponse = z.object({
+    data: zCourseCourseDetail
+});
+
 export const zUnhideCoursePath = z.object({
     courseId: z.uuid()
 });

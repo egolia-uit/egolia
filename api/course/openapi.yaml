@@ -64,6 +64,8 @@ paths:
     $ref: ./paths/courses_{courseId}_detail.yaml
   /course/courses/{courseId}/finish:
     $ref: ./paths/courses_{courseId}_finish.yaml
+  /course/courses/{courseId}/for-update:
+    $ref: ./paths/courses_{courseId}_for-update.yaml
   /course/courses/{courseId}/hide:
     $ref: ./paths/courses_{courseId}_hide.yaml
   /course/courses/{courseId}/landing:

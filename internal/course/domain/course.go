@@ -35,8 +35,10 @@ type Lesson interface {
 }
 
 type LessonBase struct {
-	id    uuid.UUID
-	title string
+	id               uuid.UUID
+	title            string
+	originalLessonID *uuid.UUID
+	deletedAt        *time.Time
 }
 
 var _ Lesson = (*LessonBase)(nil)
@@ -44,20 +46,26 @@ var _ Lesson = (*LessonBase)(nil)
 func NewLessonBase(
 	id uuid.UUID,
 	title string,
+	originalLessonID *uuid.UUID,
 ) *LessonBase {
 	return &LessonBase{
-		id:    id,
-		title: title,
+		id:               id,
+		title:            title,
+		originalLessonID: originalLessonID,
+		deletedAt:        nil,
 	}
 }
 
 func UnmarshalLessonBase(
 	id uuid.UUID,
 	title string,
+	originalLessonID *uuid.UUID,
 ) *LessonBase {
 	return &LessonBase{
-		id:    id,
-		title: title,
+		id:               id,
+		title:            title,
+		originalLessonID: originalLessonID,
+		deletedAt:        nil,
 	}
 }
 
@@ -76,21 +84,24 @@ func (l *LessonBase) SetTitle(title string) {
 }
 
 type Section struct {
-	id        uuid.UUID
-	title     string
-	deletedAt *time.Time
-	lessons   []Lesson
+	id                uuid.UUID
+	title             string
+	deletedAt         *time.Time
+	originalSectionID *uuid.UUID
+	lessons           []Lesson
 }
 
 func NewSection(
 	id uuid.UUID,
 	title string,
+	originalSectionID *uuid.UUID,
 ) *Section {
 	return &Section{
-		id:        id,
-		title:     title,
-		deletedAt: nil,
-		lessons:   []Lesson{},
+		id:                id,
+		title:             title,
+		deletedAt:         nil,
+		originalSectionID: originalSectionID,
+		lessons:           []Lesson{},
 	}
 }
 
@@ -98,16 +109,18 @@ func UnmarshalSection(
 	id uuid.UUID,
 	title string,
 	deletedAt *time.Time,
+	originalSectionID *uuid.UUID,
 	lessons []Lesson,
 ) *Section {
 	if lessons == nil {
 		lessons = []Lesson{}
 	}
 	return &Section{
-		id:        id,
-		title:     title,
-		deletedAt: deletedAt,
-		lessons:   lessons,
+		id:                id,
+		title:             title,
+		deletedAt:         deletedAt,
+		originalSectionID: originalSectionID,
+		lessons:           lessons,
 	}
 }
 
@@ -117,6 +130,10 @@ func (s *Section) ID() uuid.UUID {
 
 func (s *Section) Title() string {
 	return s.title
+}
+
+func (s *Section) SetOriginalSectionID(originalSectionID *uuid.UUID) {
+	s.originalSectionID = originalSectionID
 }
 
 func (s *Section) SetTitle(title string) {
@@ -208,7 +225,7 @@ func NewTestLesson(
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase:   *NewLessonBase(id, title),
+		LessonBase:   *NewLessonBase(id, title, nil),
 		questionType: questionType,
 		questions:    questions,
 	}
@@ -221,7 +238,7 @@ func UnmarshalTestLesson(
 	questions []*TestQuestion,
 ) *TestLesson {
 	return &TestLesson{
-		LessonBase:   *UnmarshalLessonBase(id, title),
+		LessonBase:   *UnmarshalLessonBase(id, title, nil),
 		questionType: questionType,
 		questions:    questions,
 	}
@@ -254,7 +271,7 @@ func NewVideoLesson(
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *NewLessonBase(id, title),
+		LessonBase: *NewLessonBase(id, title, nil),
 		VideoKey:   videoKey,
 		Duration:   duration,
 	}
@@ -267,7 +284,7 @@ func UnmarshalVideoLesson(
 	duration time.Duration,
 ) *VideoLesson {
 	return &VideoLesson{
-		LessonBase: *UnmarshalLessonBase(id, title),
+		LessonBase: *UnmarshalLessonBase(id, title, nil),
 		VideoKey:   videoKey,
 		Duration:   duration,
 	}
@@ -291,7 +308,7 @@ func (vl *VideoLesson) SetDuration(duration time.Duration) {
 
 type Course struct {
 	id                   uuid.UUID
-	originalCourseID     uuid.UUID
+	originalCourseID     *uuid.UUID
 	hidden               bool
 	title                string
 	instructorID         string
@@ -321,7 +338,7 @@ func NewCourse(
 
 	c := &Course{
 		id:                   id,
-		originalCourseID:     uuid.Nil,
+		originalCourseID:     nil,
 		hidden:               false,
 		title:                title,
 		instructorID:         instructorID,
@@ -338,7 +355,7 @@ func NewCourse(
 
 func UnmarshalCourse(
 	id uuid.UUID,
-	originalCourseID uuid.UUID,
+	originalCourseID *uuid.UUID,
 	title string,
 	instructorID string,
 	status CourseStatus,
@@ -372,7 +389,7 @@ func (c *Course) ID() uuid.UUID {
 	return c.id
 }
 
-func (c *Course) OriginalCourseID() uuid.UUID {
+func (c *Course) OriginalCourseID() *uuid.UUID {
 	return c.originalCourseID
 }
 
