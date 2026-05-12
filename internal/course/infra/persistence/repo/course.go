@@ -55,5 +55,13 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 }
 
 func (r *CourseRepo) GetDraftVersion(ctx context.Context, originalCourseID uuid.UUID, status domain.CourseStatus) (*domain.Course, error) {
-	panic("not implemented")
+	db := r.db.WithContext(ctx).
+		Preload("Sections.Lessons.VideoLesson").
+		Preload("Sections.Lessons.TestLesson.Questions.Answers")
+
+	var m model.Course
+	if err := db.First(&m, "original_course_id = ? AND status = ?", originalCourseID, status).Error; err != nil {
+		return nil, err
+	}
+	return m.ToDomain(), nil
 }

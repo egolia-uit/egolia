@@ -167,8 +167,22 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 	if params.Status != nil && *params.Status != "" {
 		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
 	}
-	if params.Hidden != nil && *params.Hidden {
-		q = q.Where("hidden = true")
+	if params.Hidden != nil {
+		q = q.Where("hidden = ?", *params.Hidden)
+	}
+	if params.InstructorID != nil && *params.InstructorID != "" {
+		q = q.Where("full_course_content->>'instructor_id' = ?", *params.InstructorID)
+	}
+	if params.Query != nil && *params.Query != "" {
+		q = q.Where("title ILIKE ?", "%"+*params.Query+"%")
+	}
+	if params.HaveOriginalCourse != nil {
+		nilUUID := uuid.Nil.String()
+		if *params.HaveOriginalCourse {
+			q = q.Joins("INNER JOIN courses ON courses.id = read_courses.course_id AND courses.deleted_at IS NULL AND courses.original_course_id != ?", nilUUID)
+		} else {
+			q = q.Joins("INNER JOIN courses ON courses.id = read_courses.course_id AND courses.deleted_at IS NULL AND courses.original_course_id = ?", nilUUID)
+		}
 	}
 
 	if params.Order != nil && *params.Order == app.SearchCoursesOrderDesc {
@@ -327,6 +341,17 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 }
 
 func (r *CourseReadRepo) GetMyCourses(ctx context.Context, params *app.GetMyCourses) (*app.Paginated[app.Course], error) {
-	// TODO: Implement GetMyCourses
-	panic("not implemented")
+	instructorID := params.UserID
+	status := app.CourseStatusApproved
+	deleted := false
+	return r.GetCourses(ctx, &app.GetCourses{
+		InstructorID:       &instructorID,
+		Status:             &status,
+		Hidden:             params.Hidden,
+		Paginate:           params.Paginate,
+		Order:              params.Order,
+		Deleted:            &deleted,
+		Query:              nil,
+		HaveOriginalCourse: nil,
+	})
 }
