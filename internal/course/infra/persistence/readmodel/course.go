@@ -363,14 +363,12 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 func (r *CourseReadRepo) GetMyCourses(ctx context.Context, params *app.GetMyCourses) (*app.Paginated[app.Course], error) {
 	instructorID := params.UserID
 	status := app.CourseStatusApproved
-	deleted := false
 	return r.GetCourses(ctx, &app.GetCourses{
 		InstructorID:       &instructorID,
 		Status:             &status,
 		Hidden:             params.Hidden,
 		Paginate:           params.Paginate,
 		Order:              params.Order,
-		Deleted:            &deleted,
 		Query:              nil,
 		HaveOriginalCourse: nil,
 	})

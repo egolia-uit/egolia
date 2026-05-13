@@ -11,7 +11,6 @@ type GetCourseLandingPage struct {
 	CourseID uuid.UUID
 	Status   *CourseStatus
 	Hidden   *bool
-	Deleted  *bool
 }
 
 type GetCourseLandingPageQuery Query[GetCourseLandingPage, *Course]
@@ -29,12 +28,10 @@ var _ Query[GetCourseLandingPage, *Course] = (*GetCourseLandingPageHandler)(nil)
 
 func (h *GetCourseLandingPageHandler) Handle(ctx context.Context, query *GetCourseLandingPage) (*Course, error) {
 	hidden := false
-	deleted := false
 	status := CourseStatusApproved
 	return h.readModel.GetCourseByID(ctx, &GetCourseLandingPage{
 		CourseID: query.CourseID,
 		Status:   &status,
 		Hidden:   &hidden,
-		Deleted:  &deleted,
 	})
 }

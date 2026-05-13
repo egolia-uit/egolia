@@ -32,6 +32,8 @@ type Lesson interface {
 	ID() uuid.UUID
 	Title() string
 	SetTitle(title string)
+	DeletedAt() *time.Time
+	Delete()
 }
 
 type LessonBase struct {
@@ -81,6 +83,15 @@ func (l *LessonBase) Title() string {
 
 func (l *LessonBase) SetTitle(title string) {
 	l.title = title
+}
+
+func (l *LessonBase) DeletedAt() *time.Time {
+	return l.deletedAt
+}
+
+func (l *LessonBase) Delete() {
+	l.deletedAt = new(time.Time)
+	*l.deletedAt = time.Now()
 }
 
 type Section struct {
@@ -402,22 +413,41 @@ func (c *Course) ToggleHidden() {
 }
 
 func (c *Course) DeleteSection(sectionID uuid.UUID) {
-	out := make([]*Section, 0, len(c.sections))
 	for _, section := range c.sections {
 		if section == nil {
 			continue
 		}
-		if section.id == sectionID {
+		if section.ID() == sectionID {
 			section.Delete()
-			out = append(out, section)
-			continue
+			for _, lesson := range section.lessons {
+				if lesson == nil {
+					continue
+				}
+				lesson.Delete()
+			}
+			return
 		}
-		out = append(out, section)
 	}
-	c.sections = out
 }
 
-// func (c *Course) e(by *Course) {
+func (c *Course) DeleteLesson(sectionID uuid.UUID, lessonID uuid.UUID) {
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		if section.ID() == sectionID {
+			for _, lesson := range section.lessons {
+				if lesson == nil {
+					continue
+				}
+				if lesson.ID() == lessonID {
+					lesson.Delete()
+					return
+				}
+			}
+		}
+	}
+}
 
 func (c *Course) Title() string {
 	return c.title
@@ -517,8 +547,6 @@ func (c *Course) MoveLesson(lessonID uuid.UUID, newSectionID uuid.UUID, newOrder
 		return
 	}
 
-	currentSection.RemoveLesson(lessonID)
-
 	var newSection *Section
 	for _, section := range c.sections {
 		if section == nil {
@@ -533,6 +561,8 @@ func (c *Course) MoveLesson(lessonID uuid.UUID, newSectionID uuid.UUID, newOrder
 	if newSection == nil {
 		return
 	}
+
+	currentSection.RemoveLesson(lessonID)
 
 	if newOrder < 0 {
 		newOrder = 0

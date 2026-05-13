@@ -25,8 +25,6 @@ func (h *GetPublishedCoursesHandler) Handle(ctx context.Context, params *GetCour
 	params.Status = &status
 	hidden := false
 	params.Hidden = &hidden
-	deleted := false
-	params.Deleted = &deleted
 
 	return h.readModel.GetCourses(ctx, params)
 }

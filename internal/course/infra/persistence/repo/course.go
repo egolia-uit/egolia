@@ -2,9 +2,11 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/model"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -46,6 +48,9 @@ func (r *CourseRepo) Get(ctx context.Context, params domain.CourseRepoGet, forUp
 
 	err := db.First(&m, "id = ?", params.ID).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.NewCourseNotFound(params.ID, err)
+		}
 		return nil, err
 	}
 	return m.ToDomain(), nil
@@ -73,6 +78,9 @@ func (r *CourseRepo) GetDraftVersion(ctx context.Context, originalCourseID uuid.
 
 	var m model.Course
 	if err := db.First(&m, "original_course_id = ? AND status = ?", originalCourseID, status).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.NewCourseNotFound(originalCourseID, err)
+		}
 		return nil, err
 	}
 	return m.ToDomain(), nil

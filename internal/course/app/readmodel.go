@@ -30,7 +30,6 @@ type GetCourses struct {
 	Hidden             *bool
 	Status             *CourseStatus
 	HaveOriginalCourse *bool
-	Deleted            *bool
 }
 
 type GetCoursesReadModel interface {

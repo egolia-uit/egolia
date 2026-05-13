@@ -2,18 +2,20 @@ package app
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type MoveLesson struct {
-	CourseID  uuid.UUID
-	SectionID uuid.UUID
-	LessonID  uuid.UUID
-	Order     int
+	CourseID        uuid.UUID
+	TargetSectionID uuid.UUID
+	LessonID        uuid.UUID
+	Order           int
 }
 
 type MoveLessonCmd Cmd[MoveLesson]
@@ -33,12 +35,15 @@ func (h *MoveLessonHandler) Handle(ctx context.Context, command *MoveLesson) err
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: command.CourseID}, true)
 		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return errs.NewCourseNotFound(command.CourseID, err)
+			}
 			return err
 		}
 		if !course.CanInstructorEdit() {
 			return errs.Unauthorized
 		}
-		course.MoveLesson(command.SectionID, command.LessonID, command.Order)
+		course.MoveLesson(command.LessonID, command.TargetSectionID, command.Order)
 		return repoRegistry.Course().Save(ctx, course)
 	})
 }

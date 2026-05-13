@@ -14,7 +14,6 @@ type GetMyCourses struct {
 	UserID             string
 	Paginate           PaginationParams
 	Order              *SearchCoursesOrder
-	Deleted            *bool
 }
 
 type GetMyCoursesQuery Query[GetMyCourses, *Paginated[Course]]
@@ -34,7 +33,6 @@ var _ Query[GetMyCourses, *Paginated[Course]] = (*GetMyCoursesHandler)(nil)
 
 func (h *GetMyCoursesHandler) Handle(ctx context.Context, params *GetMyCourses) (*Paginated[Course], error) {
 	CourseStatusApproved := CourseStatusApproved
-	Deleted := false
 	myApprovedCourses, err := h.readModel.GetCourses(ctx, &GetCourses{
 		Query:              nil,
 		Hidden:             params.Hidden,
@@ -43,7 +41,6 @@ func (h *GetMyCoursesHandler) Handle(ctx context.Context, params *GetMyCourses) 
 		Paginate:           params.Paginate,
 		Order:              params.Order,
 		HaveOriginalCourse: nil,
-		Deleted:            &Deleted,
 	})
 	if err != nil {
 		return nil, errs.NewInternalErr("failed to get approved courses", err)
@@ -59,7 +56,6 @@ func (h *GetMyCoursesHandler) Handle(ctx context.Context, params *GetMyCourses) 
 		Paginate:           params.Paginate,
 		Order:              params.Order,
 		HaveOriginalCourse: &haveOriginalCourse,
-		Deleted:            &Deleted,
 	})
 	if err != nil {
 		return nil, errs.NewInternalErr("failed to get new courses", err)

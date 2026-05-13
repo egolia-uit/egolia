@@ -109,7 +109,6 @@ func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCo
 		Hidden:             nil,
 		Status:             nil,
 		HaveOriginalCourse: nil,
-		Deleted:            nil,
 	})
 	if err != nil {
 		return nil, err
@@ -162,7 +161,6 @@ func (h *StrictHandler) GetPublishedCourses(ctx context.Context, request course.
 		Hidden:             nil,
 		Status:             nil,
 		HaveOriginalCourse: nil,
-		Deleted:            nil,
 	})
 	if err != nil {
 		return nil, err
@@ -213,7 +211,6 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 		Hidden:             nil,
 		Status:             nil,
 		HaveOriginalCourse: nil,
-		Deleted:            nil,
 	})
 	if err != nil {
 		return nil, err
@@ -265,10 +262,9 @@ func (h *StrictHandler) GetMyEnrolledCourses(ctx context.Context, request course
 			Page:  page,
 			Limit: limit,
 		},
-		Order:   order,
-		Hidden:  nil,
-		Status:  nil,
-		Deleted: nil,
+		Order:  order,
+		Hidden: nil,
+		Status: nil,
 	})
 	if err != nil {
 		return nil, err
@@ -322,8 +318,7 @@ func (h *StrictHandler) GetMyBookmarkedCourses(ctx context.Context, request cour
 			Page:  page,
 			Limit: limit,
 		},
-		Order:   order,
-		Deleted: nil,
+		Order: order,
 	})
 	if err != nil {
 		return nil, err
@@ -539,7 +534,6 @@ func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course
 		CourseID: courseID,
 		Status:   nil,
 		Hidden:   nil,
-		Deleted:  nil,
 	})
 	if err != nil {
 		return nil, err
@@ -781,10 +775,10 @@ func (h *StrictHandler) MoveSection(ctx context.Context, request course.MoveSect
 
 func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLessonRequestObject) (course.MoveLessonResponseObject, error) {
 	cmd := &app.MoveLesson{
-		CourseID:  request.CourseId,
-		LessonID:  request.LessonId,
-		SectionID: request.SectionId,
-		Order:     request.Body.Order,
+		CourseID:        request.CourseId,
+		LessonID:        request.LessonId,
+		TargetSectionID: request.Body.TargetSectionId,
+		Order:           request.Body.Order,
 	}
 	err := h.App.Cmds.MoveLesson.Handle(ctx, cmd)
 	if err != nil {

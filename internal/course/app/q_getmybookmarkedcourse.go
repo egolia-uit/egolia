@@ -11,7 +11,6 @@ type GetMyBookmarkedCourses struct {
 	Order    *SearchCoursesOrder
 	Hidden   *bool
 	Status   *CourseStatus
-	Deleted  *bool
 }
 
 type GetMyBookmarkedCoursesQuery Query[GetMyBookmarkedCourses, *Paginated[Course]]
@@ -34,8 +33,6 @@ func (h *GetMyBookmarkedCoursesHandler) Handle(ctx context.Context, params *GetM
 	params.Status = &status
 	hidden := false
 	params.Hidden = &hidden
-	deleted := false
-	params.Deleted = &deleted
 
 	return h.readModel.GetMyBookmarkedCourses(ctx, params)
 }
