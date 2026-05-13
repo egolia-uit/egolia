@@ -161,8 +161,8 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID
 	return r.toAppCourseDetail(ctx, &m)
 }
 
-func (r *CourseReadRepo) GetCourseDetailForUpdate(ctx context.Context, courseID uuid.UUID, _ *bool, status *app.CourseStatus) (*app.CourseDetail, error) {
-	q := r.db.WithContext(ctx).Where("original_course_id = ?", courseID)
+func (r *CourseReadRepo) GetCourseDetailForUpdate(ctx context.Context, originalCourseID uuid.UUID, _ *bool, status *app.CourseStatus) (*app.CourseDetail, error) {
+	q := r.db.WithContext(ctx).Where("original_course_id = ?", originalCourseID)
 
 	if status != nil && *status != "" {
 		q = q.Where("full_course_content->>'status' = ?", string(*status))
@@ -171,7 +171,7 @@ func (r *CourseReadRepo) GetCourseDetailForUpdate(ctx context.Context, courseID 
 	var m model.ReadCourse
 	if err := q.First(&m).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errs.NewCourseNotFound(courseID, err)
+			return nil, errs.NewCourseNotFound(originalCourseID, err)
 		}
 		return nil, err
 	}

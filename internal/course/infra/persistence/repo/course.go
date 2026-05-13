@@ -16,7 +16,15 @@ type CourseRepo struct {
 }
 
 func (r *CourseRepo) ExistsDraftVersion(ctx context.Context, originalCourseID uuid.UUID) (bool, error) {
-	panic("unimplemented")
+	m := &model.Course{} //nolint:exhaustruct
+	var count int64
+	err := r.db.WithContext(ctx).Model(m).
+		Where("original_course_id = ? AND status = ?", originalCourseID, domain.CourseStatusDraft).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func NewCourseRepo(db *gorm.DB) *CourseRepo {
