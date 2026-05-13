@@ -27,27 +27,31 @@ func lessonDetailToDTO(l app.Lesson) (*course.LessonDetail, error) {
 }
 
 func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
+	id := (types.UUID)(vl.GetID())
 	return course.VideoLesson{
-		Id:         new(vl.GetID()),
-		Title:      vl.GetTitle(),
-		LessonType: course.VideoLessonLessonTypeVideo,
-		VideoUrl:   &vl.VideoURL,
-		Duration:   int64(vl.Duration.Seconds()),
-		VideoKey:   nil,
+		Id:               &id,
+		Title:            vl.GetTitle(),
+		LessonType:       course.VideoLessonLessonTypeVideo,
+		VideoUrl:         &vl.VideoURL,
+		Duration:         int64(vl.Duration.Seconds()),
+		VideoKey:         nil,
+		OriginalLessonID: nil,
 	}
 }
 
 func testLessonToDTO(t *app.TestLesson) course.TestLesson {
+	id := (types.UUID)(t.GetID())
 	questions := make([]course.TestQuestion, 0, len(t.Questions))
 	for _, q := range t.Questions {
 		questions = append(questions, testQuestionToDTO(&q))
 	}
 	return course.TestLesson{
-		Id:           new(t.GetID()),
-		Title:        t.GetTitle(),
-		LessonType:   course.TestLessonLessonTypeTest,
-		QuestionType: questionTypeToDTO(t.QuestionType),
-		Questions:    questions,
+		Id:               &id,
+		Title:            t.GetTitle(),
+		LessonType:       course.TestLessonLessonTypeTest,
+		QuestionType:     questionTypeToDTO(t.QuestionType),
+		Questions:        questions,
+		OriginalLessonID: nil,
 	}
 }
 
@@ -101,9 +105,10 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 	items := make([]course.CourseDetailSectionItem, 0, len(sections))
 	for _, s := range sections {
 		items = append(items, course.CourseDetailSectionItem{
-			Id:      (*types.UUID)(&s.ID),
-			Title:   s.Title,
-			Lessons: lessonsToDTO(s.Lessons),
+			Id:                (*types.UUID)(&s.ID),
+			Title:             s.Title,
+			Lessons:           lessonsToDTO(s.Lessons),
+			OriginalSectionID: nil,
 		})
 	}
 	return items
@@ -112,9 +117,11 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 func lessonsToDTO(lessons []app.Lesson) []course.Lesson {
 	out := make([]course.Lesson, 0, len(lessons))
 	for _, l := range lessons {
+		id := (types.UUID)(l.GetID())
 		out = append(out, course.Lesson{
-			Id:    new(l.GetID()),
-			Title: l.GetTitle(),
+			Id:               &id,
+			Title:            l.GetTitle(),
+			OriginalLessonID: nil,
 		})
 	}
 	return out

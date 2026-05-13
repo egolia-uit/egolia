@@ -599,7 +599,6 @@ func (h *StrictHandler) DeleteReview(ctx context.Context, request course.DeleteR
 		return nil, err
 	}
 	return course.DeleteReview204Response{}, nil
-
 }
 
 func (h *StrictHandler) ReplyLessonComment(ctx context.Context, request course.ReplyLessonCommentRequestObject) (course.ReplyLessonCommentResponseObject, error) {
@@ -665,7 +664,7 @@ func (h *StrictHandler) MoveSection(ctx context.Context, request course.MoveSect
 	if err != nil {
 		return nil, err
 	}
-	return &course.MoveSection200JSONResponse{}, nil
+	return &course.MoveSection200JSONResponse{Data: nil}, nil
 }
 
 func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLessonRequestObject) (course.MoveLessonResponseObject, error) {

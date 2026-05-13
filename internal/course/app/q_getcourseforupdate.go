@@ -23,6 +23,7 @@ type GetCourseForUpdateHandler struct {
 func NewGetCourseForUpdateHandler(uow domain.UnitOfWork, getCourseDetailReadModel GetCourseDetailReadModel) GetCourseForUpdateQuery {
 	handler := &GetCourseForUpdateHandler{
 		getCourseDetailReadModel: getCourseDetailReadModel,
+		authorizationSvc:         nil,
 	}
 	return NewQSpan(NewQLog(handler, nil), nil)
 }

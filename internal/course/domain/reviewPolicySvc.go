@@ -2,8 +2,7 @@ package domain
 
 import "github.com/egolia-uit/egolia/internal/course/errs"
 
-type ReviewPolicySvc struct {
-}
+type ReviewPolicySvc struct{}
 
 func NewReviewPolicySvc(courseRepo CourseRepo, enrollmentRepo EnrollmentRepo, reviewRepo ReviewRepo) *ReviewPolicySvc {
 	return &ReviewPolicySvc{}
