@@ -33,7 +33,6 @@ type Queries struct {
 	GetMyEnrolledCourses    GetMyEnrolledCoursesQuery
 	GetCourseLandingPage    GetCourseLandingPageQuery
 	GetCourseForUpdate      GetCourseForUpdateQuery
-	GetCourseProgress       GetCourseProgressQuery
 }
 
 type App struct {

@@ -15,6 +15,10 @@ type CourseRepo struct {
 	db *gorm.DB
 }
 
+func (r *CourseRepo) ExistsDraftVersion(ctx context.Context, originalCourseID uuid.UUID) (bool, error) {
+	panic("unimplemented")
+}
+
 func NewCourseRepo(db *gorm.DB) *CourseRepo {
 	return &CourseRepo{db: db}
 }

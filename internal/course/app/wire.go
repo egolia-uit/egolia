@@ -20,6 +20,8 @@ var ProviderSetCmds = wire.NewSet(
 	NewCreateSectionHandler,
 	NewUpdateSectionTitleHandler,
 	NewDeleteSectionHandler,
+	NewCreateDraftVersionHandler,
+	NewCreateLessonCmd,
 	wire.Struct(new(Cmds), "*"),
 )
 
@@ -34,6 +36,7 @@ var ProviderSetQueries = wire.NewSet(
 	NewGetMyEnrolledCoursesHandler,
 	NewGetCourseLandingPageHandler,
 	NewGetCourseForUpdateHandler,
+	NewGetCourseProgressHandler,
 	wire.Struct(new(Queries), "*"),
 )
 

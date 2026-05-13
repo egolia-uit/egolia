@@ -23,6 +23,11 @@ func (r *Registry) LessonComment() domain.LessonCommentRepo   { return &LessonCo
 func (r *Registry) Review() domain.ReviewRepo                 { return &ReviewRepo{db: r.db} }
 func (r *Registry) LessonProgress() domain.LessonProgressRepo { return &LessonProgressRepo{db: r.db} }
 
+// CourseProgress implements [domain.RepoRegistry].
+func (r *Registry) CourseProgress() domain.CourseProgressRepo {
+	panic("unimplemented")
+}
+
 // UnitOfWork opens a Postgres transaction and passes a Registry backed by
 // that tx to fn, keeping all repo operations atomic.
 type UnitOfWork struct {

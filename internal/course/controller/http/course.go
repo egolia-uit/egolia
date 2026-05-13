@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -549,23 +550,24 @@ func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course
 }
 
 func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.GetCourseProgressRequestObject) (course.GetCourseProgressResponseObject, error) {
-	courseID := request.CourseId
-	user, ok := commonHTTP.UserFromContext(ctx)
-	if !ok {
-		return nil, errs.Unauthorized
-	}
-	userID := user.ID
+	// courseID := request.CourseId
+	// user, ok := commonHTTP.UserFromContext(ctx)
+	// if !ok {
+	// 	return nil, errs.Unauthorized
+	// }
+	// userID := user.ID
 
-	result, err := h.App.Queries.GetCourseProgress.Handle(ctx, &app.GetCourseProgress{
-		CourseID: courseID,
-		UserID:   userID,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &course.GetCourseProgress200JSONResponse{
-		Data: *result,
-	}, nil
+	// result, err := h.App.Queries.GetCourseProgress.Handle(ctx, &app.GetCourseProgress{
+	// 	CourseID: courseID,
+	// 	UserID:   userID,
+	// })
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// return &course.GetCourseProgress200JSONResponse{
+	// 	Data: *result,
+	// }, nil
+	return nil, errs.Unimplemented
 
 }
 
@@ -638,34 +640,90 @@ func (h *StrictHandler) DeleteLessonComment(ctx context.Context, request course.
 }
 
 func (h *StrictHandler) CreateLesson(ctx context.Context, request course.CreateLessonRequestObject) (course.CreateLessonResponseObject, error) {
-	// if request.Body == nil {
-	// 	return nil, errs.NewInvalid("request body is required")
-	// }
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
 
-	// // Sử dụng hàm tự động phân loại cấu trúc JSON sinh ra từ oapi-codegen
-	// body := course.CreateLessonJSONBody(*request.Body)
-	// lessonData, err := body.ValueByDiscriminator()
-	// if err != nil {
-	// 	return nil, errs.NewInvalid("invalid or missing lesson type")
-	// }
+	if request.Body == nil {
+		return nil, errs.NewInvalid("request body is required")
+	}
 
-	// // Type Switch an toàn với giá trị trả về
-	// switch v := lessonData.(type) {
-	// case course.VideoLesson:
-	// 	h.App.Cmds.CreateLesson.Handle(ctx, &app.CreateVideoLessonCmd{Title: v.Title, VideoKey: v.VideoKey})
+	body := course.CreateLessonJSONBody(*request.Body)
+	lessonData, err := body.ValueByDiscriminator()
+	if err != nil {
+		return nil, errs.NewInvalid("invalid or missing lesson type")
+	}
 
-	// case course.TestLesson:
-	// 	h.App.Cmds.CreateLesson.Handle(ctx, &app.CreateTestLessonCmd{Title: v.Title, Questions: v.Questions})
-	// default:
-	// 	return nil, errs.NewInvalid("unknown lesson type")
-	// }
+	lessonID, err := uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
 
-	// return course.CreateLesson201Response{
-	// 	Headers: course.CreateLesson201ResponseHeaders{
-	// 		ContentLocation: "TODO: return the actual lesson URI",
-	// 	},
-	// }, nil
-	return nil, errs.Unimplemented
+	var cmd any
+
+	switch v := lessonData.(type) {
+	case course.VideoLesson:
+		videoKey := ""
+		if v.VideoKey != nil {
+			videoKey = *v.VideoKey
+		}
+		cmd = &app.CreateVideoLesson{
+			ID:        lessonID,
+			CourseID:  request.CourseId,
+			SectionID: request.SectionId,
+			Title:     v.Title,
+			VideoKey:  videoKey,
+			Duration:  time.Duration(v.Duration) * time.Second,
+			UserID:    user.ID,
+		}
+	case course.TestLesson:
+		questions := make([]app.TestQuestion, 0, len(v.Questions))
+		for _, q := range v.Questions {
+			answers := make([]app.TestAnswer, 0, len(q.Answers))
+			for _, a := range q.Answers {
+				aID := uuid.New()
+				if a.Id != nil {
+					aID = *a.Id
+				}
+				answers = append(answers, app.TestAnswer{
+					ID:        aID,
+					Content:   a.Content,
+					IsCorrect: a.IsCorrect,
+				})
+			}
+			qID := uuid.New()
+			if q.Id != nil {
+				qID = *q.Id
+			}
+			questions = append(questions, app.TestQuestion{
+				ID:       qID,
+				Question: q.Question,
+				Answers:  answers,
+			})
+		}
+		cmd = &app.CreateTestLesson{
+			ID:           lessonID,
+			CourseID:     request.CourseId,
+			SectionID:    request.SectionId,
+			Title:        v.Title,
+			QuestionType: app.QuestionType(v.QuestionType),
+			Questions:    questions,
+			UserID:       user.ID,
+		}
+	default:
+		return nil, errs.NewInvalid("unknown lesson type")
+	}
+
+	if err := h.App.Cmds.CreateLesson.Handle(ctx, cmd); err != nil {
+		return nil, err
+	}
+
+	return course.CreateLesson201Response{
+		Headers: course.CreateLesson201ResponseHeaders{
+			ContentLocation: h.BaseURL.JoinPath("course", "courses", request.CourseId.String(), "sections", request.SectionId.String(), "lessons", lessonID.String()).String(),
+		},
+	}, nil
 }
 
 func (h *StrictHandler) DeleteLesson(ctx context.Context, request course.DeleteLessonRequestObject) (course.DeleteLessonResponseObject, error) {

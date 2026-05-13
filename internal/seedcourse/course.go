@@ -70,7 +70,7 @@ func (s *Seed) createCourses() []model.Course {
 	return []model.Course{
 		{
 			ID:                   uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-			OriginalCourseID:     uuid.MustParse("00000000-0000-0000-0000-000000000000"), // TODO: wtf?
+			OriginalCourseID:     nil,
 			Title:                "FlowChart - Chuyên đề Lưu đồ Thuật toán",
 			InstructorID:         "120",
 			Status:               domain.CourseStatusApproved,
