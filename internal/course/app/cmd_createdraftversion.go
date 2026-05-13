@@ -11,6 +11,7 @@ import (
 
 type CreateDraftVersion struct {
 	CourseID uuid.UUID
+	UserID   string
 }
 
 type CreateDraftVersionCmd Cmd[CreateDraftVersion]
@@ -30,14 +31,18 @@ var _ Cmd[CreateDraftVersion] = (*CreateDraftVersionHandler)(nil)
 
 func (h *CreateDraftVersionHandler) Handle(ctx context.Context, cmd *CreateDraftVersion) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, false)
+		// Bật forUpdate=true để lock row, ngăn chặn Race Condition khi check ExistsDraftVersion
+		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, true)
 		if err != nil {
 			return err
 		}
 
-		// if !course.CanInstructorEdit() {
-		// 	return errs.Unauthorized
-		// }
+		if course.InstructorID() != cmd.UserID {
+			return errs.NewInstructorPermissionDenied(cmd.UserID, cmd.CourseID)
+		}
+		if course.OriginalCourseID() != nil {
+			return errs.NewInvalid("cannot create a draft version from a draft course")
+		}
 
 		// check if draft version already exists
 		hasDraftVersion, err := repoRegistry.Course().ExistsDraftVersion(ctx, cmd.CourseID)

@@ -67,8 +67,14 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 }
 
 func (h *StrictHandler) CreateDraftVersion(ctx context.Context, request course.CreateDraftVersionRequestObject) (course.CreateDraftVersionResponseObject, error) {
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+
 	cmd := &app.CreateDraftVersion{
 		CourseID: request.CourseId,
+		UserID:   user.ID,
 	}
 	err := h.App.Cmds.CreateDraftVersion.Handle(ctx, cmd)
 	if err != nil {
@@ -328,7 +334,6 @@ func (h *StrictHandler) GetMyBookmarkedCourses(ctx context.Context, request cour
 	for i := range result.Data {
 		courses = append(courses, *courseToDTO(&result.Data[i]))
 	}
-
 	pagination := result.Pagination
 	return course.GetMyBookmarkedCourses200JSONResponse{
 		Data: courses,
@@ -360,7 +365,15 @@ func (h *StrictHandler) DeleteCourse(ctx context.Context, request course.DeleteC
 }
 
 func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.ApproveCourseRequestObject) (course.ApproveCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	cmd := &app.ApproveCourse{
+		CourseID: request.CourseId,
+	}
+	err := h.App.Cmds.ApproveCourse.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return &course.ApproveCourse204Response{}, nil
+
 }
 
 func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
@@ -741,7 +754,37 @@ func (h *StrictHandler) GetLessonDetail(ctx context.Context, request course.GetL
 }
 
 func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.EditVideoLessonRequestObject) (course.EditVideoLessonResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+
+	if request.Body == nil {
+		return nil, errs.NewInvalid("request body is required")
+	}
+
+	body := course.EditVideoLessonJSONBody(*request.Body)
+
+	var duration *time.Duration
+	if body.Duration != nil {
+		d := time.Duration(*body.Duration) * time.Second
+		duration = &d
+	}
+
+	cmd := &app.EditVideoLesson{
+		LessonID:  request.LessonId,
+		CourseID:  request.CourseId,
+		SectionID: request.SectionId,
+		Title:     body.Title,
+		VideoKey:  body.VideoKey,
+		Duration:  duration,
+		UserID:    user.ID,
+	}
+
+	if err := h.App.Cmds.EditVideoLesson.Handle(ctx, cmd); err != nil {
+		return nil, err
+	}
+	return course.EditVideoLesson204Response{}, nil
 }
 
 func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {

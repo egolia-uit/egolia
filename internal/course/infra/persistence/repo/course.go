@@ -60,7 +60,9 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 	db := r.db.WithContext(ctx)
 
 	m := model.CourseFromDomain(course)
-	if err := db.Session(&gorm.Session{FullSaveAssociations: true}).Save(m).Error; err != nil {
+	if err := db.Session(&gorm.Session{FullSaveAssociations: true}).
+		Clauses(clause.OnConflict{UpdateAll: true}).
+		Create(m).Error; err != nil {
 		return err
 	}
 
@@ -68,7 +70,7 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 	if err != nil {
 		return fmt.Errorf("rebuild read course: %w", err)
 	}
-	return db.Save(readModel).Error
+	return db.Clauses(clause.OnConflict{UpdateAll: true}).Create(readModel).Error
 }
 
 func (r *CourseRepo) GetDraftVersion(ctx context.Context, originalCourseID uuid.UUID, status domain.CourseStatus) (*domain.Course, error) {

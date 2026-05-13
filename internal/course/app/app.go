@@ -19,6 +19,8 @@ type Cmds struct {
 	SubmitCourse       SubmitCourseCmd
 	CreateDraftVersion CreateDraftVersionCmd
 	CreateLesson       CreateLessonCmd
+	EditVideoLesson    EditVideoLessonCmd
+	ApproveCourse      ApproveCourseCmd
 }
 
 type Queries struct {

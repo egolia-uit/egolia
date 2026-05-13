@@ -92,6 +92,8 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	submitCourseCmd := app.NewSubmitCourseHandler(unitOfWork, logger, tracer)
 	createDraftVersionCmd := app.NewCreateDraftVersionHandler(unitOfWork, logger, tracer)
 	createLessonCmd := app.NewCreateLessonCmd(unitOfWork, logger, tracer)
+	editVideoLessonCmd := app.NewEditVideoLessonHandler(unitOfWork, logger, tracer)
+	approveCourseCmd := app.NewApproveCourseHandler(unitOfWork, logger, tracer)
 	cmds := &app.Cmds{
 		CreateCourse:       createCourseCmd,
 		DeleteCourse:       deleteCourseCmd,
@@ -111,6 +113,8 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		SubmitCourse:       submitCourseCmd,
 		CreateDraftVersion: createDraftVersionCmd,
 		CreateLesson:       createLessonCmd,
+		EditVideoLesson:    editVideoLessonCmd,
+		ApproveCourse:      approveCourseCmd,
 	}
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)

@@ -22,6 +22,8 @@ var ProviderSetCmds = wire.NewSet(
 	NewDeleteSectionHandler,
 	NewCreateDraftVersionHandler,
 	NewCreateLessonCmd,
+	NewEditVideoLessonHandler,
+	NewApproveCourseHandler,
 	wire.Struct(new(Cmds), "*"),
 )
 

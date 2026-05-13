@@ -34,7 +34,6 @@ var _ Cmd[DeleteLesson] = (*DeleteLessonHandler)(nil)
 func (h *DeleteLessonHandler) Handle(ctx context.Context, cmd *DeleteLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, false)
-
 		if err != nil {
 			return err
 		}

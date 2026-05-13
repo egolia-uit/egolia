@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"strings"
 	"time"
 
@@ -412,6 +413,78 @@ func (c *Course) ToggleHidden() {
 	c.hidden = !c.hidden
 }
 
+// edit video lesson
+func (c *Course) EditVideoLesson(ctx context.Context, sectionID uuid.UUID, lessonID uuid.UUID, userID string, title *string, videoKey *string, duration *time.Duration) error {
+	if c.instructorID != userID {
+		return errs.NewInstructorPermissionDenied(userID, c.id)
+	}
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		if section.ID() == sectionID {
+			for _, lesson := range section.lessons {
+				if lesson == nil {
+					continue
+				}
+				if lesson.ID() == lessonID {
+					videoLesson, ok := lesson.(*VideoLesson)
+					if !ok {
+						return errs.NewInvalid("lesson is not a video lesson")
+					}
+					if title != nil {
+						videoLesson.SetTitle(*title)
+					}
+					if videoKey != nil {
+						videoLesson.SetVideoKey(*videoKey)
+					}
+					if duration != nil {
+						videoLesson.SetDuration(*duration)
+					}
+					return nil
+				}
+			}
+		}
+	}
+	return errs.NewCourseNotFound(c.id, nil)
+}
+
+// edit test lesson
+func (c *Course) EditTestLesson(ctx context.Context, sectionID uuid.UUID, lessonID uuid.UUID, userID string, title *string, questionType *QuestionType, questions *[]*TestQuestion) error {
+	if c.instructorID != userID {
+		return errs.NewInstructorPermissionDenied(userID, c.id)
+	}
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		if section.ID() == sectionID {
+			for _, lesson := range section.lessons {
+				if lesson == nil {
+					continue
+				}
+				if lesson.ID() == lessonID {
+					testLesson, ok := lesson.(*TestLesson)
+					if !ok {
+						return errs.NewInvalid("lesson is not a test lesson")
+					}
+					if title != nil {
+						testLesson.SetTitle(*title)
+					}
+					if questionType != nil {
+						testLesson.questionType = *questionType
+					}
+					if questions != nil {
+						testLesson.SetQuestions(*questions)
+					}
+					return nil
+				}
+			}
+		}
+	}
+	return errs.NewCourseNotFound(c.id, nil)
+}
+
 func (c *Course) DeleteSection(sectionID uuid.UUID) {
 	for _, section := range c.sections {
 		if section == nil {
@@ -578,18 +651,44 @@ func (c *Course) MoveLesson(lessonID uuid.UUID, newSectionID uuid.UUID, newOrder
 	newSection.lessons = out
 }
 
-func (c *Course) Merge(draft *Course) error {
+func areQuestionsChanged(q1, q2 []*TestQuestion) bool {
+	if len(q1) != len(q2) {
+		return true
+	}
+	for i := range q1 {
+		if q1[i].Question != q2[i].Question {
+			return true
+		}
+		if len(q1[i].Answers) != len(q2[i].Answers) {
+			return true
+		}
+		for j := range q1[i].Answers {
+			if q1[i].Answers[j].Content != q2[i].Answers[j].Content {
+				return true
+			}
+			if q1[i].Answers[j].IsCorrect != q2[i].Answers[j].IsCorrect {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (c *Course) Merge(draft *Course) ([]uuid.UUID, error) {
 	if draft == nil {
-		return errs.NewInvalid("draft course is required")
+		return nil, errs.NewInvalid("draft course is required")
 	}
 	if draft.originalCourseID == nil || c.id != *draft.originalCourseID {
-		return errs.NewInvalid("invalid original course ID")
+		return nil, errs.NewInvalid("invalid original course ID")
 	}
 
 	c.title = draft.title
 	c.price = draft.price
 	c.overview = draft.overview
 	c.introductionVideoKey = draft.introductionVideoKey
+	c.deletedAt = draft.deletedAt
+
+	var changedLessonIDs []uuid.UUID
 
 	newSections := make([]*Section, 0, len(draft.sections))
 
@@ -615,12 +714,13 @@ func (c *Course) Merge(draft *Course) error {
 			currentSection = &Section{
 				id:                uuid.New(),
 				title:             draftSection.Title(),
-				deletedAt:         nil,
+				deletedAt:         draftSection.deletedAt,
 				originalSectionID: nil,
 				lessons:           []Lesson{},
 			}
 		} else {
 			currentSection.SetTitle(draftSection.Title())
+			currentSection.deletedAt = draftSection.deletedAt
 		}
 
 		newLessons := make([]Lesson, 0, len(draftSection.lessons))
@@ -666,11 +766,13 @@ func (c *Course) Merge(draft *Course) error {
 					newLesson := *l
 					newLesson.id = uuid.New()
 					newLesson.originalLessonID = nil
+					changedLessonIDs = append(changedLessonIDs, newLesson.id)
 					newLessons = append(newLessons, &newLesson)
 				case *TestLesson:
 					newLesson := *l
 					newLesson.id = uuid.New()
 					newLesson.originalLessonID = nil
+					changedLessonIDs = append(changedLessonIDs, newLesson.id)
 					newLessons = append(newLessons, &newLesson)
 				default:
 					newLessons = append(newLessons, draftLesson)
@@ -680,20 +782,28 @@ func (c *Course) Merge(draft *Course) error {
 				case *VideoLesson:
 					currentVideoLesson, ok := currentLesson.(*VideoLesson)
 					if !ok {
-						return errs.NewInvalid("lesson type mismatch")
+						return nil, errs.NewInvalid("lesson type mismatch")
+					}
+					if currentVideoLesson.GetVideoKey() != l.GetVideoKey() {
+						changedLessonIDs = append(changedLessonIDs, currentVideoLesson.ID())
 					}
 					currentVideoLesson.SetTitle(l.Title())
 					currentVideoLesson.SetVideoKey(l.GetVideoKey())
 					currentVideoLesson.SetDuration(l.GetDuration())
+					currentVideoLesson.deletedAt = l.deletedAt
 					newLessons = append(newLessons, currentVideoLesson)
 				case *TestLesson:
 					currentTestLesson, ok := currentLesson.(*TestLesson)
 					if !ok {
-						return errs.NewInvalid("lesson type mismatch")
+						return nil, errs.NewInvalid("lesson type mismatch")
+					}
+					if currentTestLesson.QuestionType() != l.QuestionType() || areQuestionsChanged(currentTestLesson.GetQuestions(), l.GetQuestions()) {
+						changedLessonIDs = append(changedLessonIDs, currentTestLesson.ID())
 					}
 					currentTestLesson.SetTitle(l.Title())
 					currentTestLesson.questionType = l.QuestionType()
 					currentTestLesson.SetQuestions(l.GetQuestions())
+					currentTestLesson.deletedAt = l.deletedAt
 					newLessons = append(newLessons, currentTestLesson)
 				default:
 					newLessons = append(newLessons, currentLesson)
@@ -706,7 +816,7 @@ func (c *Course) Merge(draft *Course) error {
 
 	c.sections = newSections
 
-	return nil
+	return changedLessonIDs, nil
 }
 
 func (c *Course) CreateDraftVersion() *Course {
