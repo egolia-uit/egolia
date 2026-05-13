@@ -10,7 +10,7 @@ import (
 
 type Course struct {
 	ID                   uuid.UUID           `gorm:"type:uuid;primaryKey"`
-	OriginalCourseID     uuid.UUID           `gorm:"type:uuid;not null"`
+	OriginalCourseID     *uuid.UUID          `gorm:"type:uuid"`
 	Title                string              `gorm:"type:text;not null"`
 	InstructorID         string              `gorm:"column:instructor_id;type:text;not null"`
 	Status               domain.CourseStatus `gorm:"type:text;not null"`

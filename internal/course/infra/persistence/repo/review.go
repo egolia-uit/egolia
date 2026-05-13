@@ -30,6 +30,14 @@ func NewReviewRepo(db *gorm.DB) *ReviewRepo {
 
 var _ domain.ReviewRepo = (*ReviewRepo)(nil)
 
+func (r *ReviewRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.Review, error) {
+	var m model.Review
+	if err := r.db.WithContext(ctx).First(&m, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return m.ToDomain(), nil
+}
+
 func (r *ReviewRepo) ExistsByCourseAndLearner(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error) {
 	var count int64
 	if err := r.db.WithContext(ctx).Model(new(model.Review)).

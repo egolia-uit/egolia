@@ -54,6 +54,7 @@ type ReadCourseContent struct {
 
 type ReadCourse struct {
 	CourseID          uuid.UUID         `gorm:"type:uuid;primaryKey;column:course_id"`
+	OriginalCourseID  *uuid.UUID        `gorm:"type:uuid;column:original_course_id"`
 	Title             string            `gorm:"type:varchar(255);not null"`
 	Price             int64             `gorm:"not null;default:0"`
 	Hidden            bool              `gorm:"column:hidden;not null;default:false"`
@@ -89,6 +90,7 @@ func ReadCourseFromDomain(
 
 	return &ReadCourse{
 		CourseID:          c.ID(),
+		OriginalCourseID:  c.OriginalCourseID(),
 		Title:             c.Title(),
 		Price:             c.Price(),
 		Hidden:            c.Hidden(),

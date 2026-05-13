@@ -161,6 +161,23 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID
 	return r.toAppCourseDetail(ctx, &m)
 }
 
+func (r *CourseReadRepo) GetCourseDetailForUpdate(ctx context.Context, courseID uuid.UUID, _ *bool, status *app.CourseStatus) (*app.CourseDetail, error) {
+	q := r.db.WithContext(ctx).Where("original_course_id = ?", courseID)
+
+	if status != nil && *status != "" {
+		q = q.Where("full_course_content->>'status' = ?", string(*status))
+	}
+
+	var m model.ReadCourse
+	if err := q.First(&m).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.NewCourseNotFound(courseID, err)
+		}
+		return nil, err
+	}
+	return r.toAppCourseDetail(ctx, &m)
+}
+
 func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses) (*app.Paginated[app.Course], error) {
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
 
@@ -177,11 +194,10 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 		q = q.Where("title ILIKE ?", "%"+*params.Query+"%")
 	}
 	if params.HaveOriginalCourse != nil {
-		nilUUID := uuid.Nil.String()
 		if *params.HaveOriginalCourse {
-			q = q.Joins("INNER JOIN courses ON courses.id = read_courses.course_id AND courses.deleted_at IS NULL AND courses.original_course_id != ?", nilUUID)
+			q = q.Where("original_course_id IS NOT NULL")
 		} else {
-			q = q.Joins("INNER JOIN courses ON courses.id = read_courses.course_id AND courses.deleted_at IS NULL AND courses.original_course_id = ?", nilUUID)
+			q = q.Where("original_course_id IS NULL")
 		}
 	}
 
@@ -243,9 +259,13 @@ func (r *CourseReadRepo) toAppCourse(_ context.Context, m *model.ReadCourse) (*a
 	// 	}
 	// 	introVideoURL = url
 	// }
+	var originalCourseID uuid.UUID
+	if m.OriginalCourseID != nil {
+		originalCourseID = *m.OriginalCourseID
+	}
 	return &app.Course{
 		ID:               m.CourseID,
-		OriginalCourseID: uuid.Nil,
+		OriginalCourseID: originalCourseID,
 		Hidden:           m.Hidden,
 		Title:            m.FullCourseContent.Title,
 		InstructorID:     m.FullCourseContent.InstructorID,
