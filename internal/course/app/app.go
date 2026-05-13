@@ -17,6 +17,8 @@ type Cmds struct {
 	UpdateReview       UpdateReviewCmd
 	DeleteReview       DeleteReviewCmd
 	SubmitCourse       SubmitCourseCmd
+	CreateDraftVersion CreateDraftVersionCmd
+	CreateLesson       CreateLessonCmd
 }
 
 type Queries struct {
@@ -31,6 +33,7 @@ type Queries struct {
 	GetMyEnrolledCourses    GetMyEnrolledCoursesQuery
 	GetCourseLandingPage    GetCourseLandingPageQuery
 	GetCourseForUpdate      GetCourseForUpdateQuery
+	GetCourseProgress       GetCourseProgressQuery
 }
 
 type App struct {

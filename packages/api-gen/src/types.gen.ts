@@ -1432,6 +1432,52 @@ export type GetCourseDetailResponses = {
 
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
 
+export type CreateDraftVersionData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/draft';
+};
+
+export type CreateDraftVersionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type CreateDraftVersionError = CreateDraftVersionErrors[keyof CreateDraftVersionErrors];
+
+export type CreateDraftVersionResponses = {
+    /**
+     * Draft version created
+     */
+    201: unknown;
+};
+
 export type FinishCourseData = {
     body?: never;
     path: {
@@ -2881,7 +2927,11 @@ export type GetLessonDetailResponses = {
 export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
 
 export type CreateLessonData = {
-    body: CourseVideoLessonWritable | CourseTestLessonWritable;
+    body: ({
+        lessonType: 'video';
+    } & CourseVideoLessonWritable) | ({
+        lessonType: 'test';
+    } & CourseTestLessonWritable);
     path: {
         /**
          * Unique identifier of the course

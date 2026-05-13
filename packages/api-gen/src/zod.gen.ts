@@ -680,6 +680,10 @@ export const zGetCourseDetailResponse = z.object({
     data: zCourseCourseDetail
 });
 
+export const zCreateDraftVersionPath = z.object({
+    courseId: z.uuid()
+});
+
 export const zFinishCoursePath = z.object({
     courseId: z.uuid()
 });
@@ -1009,8 +1013,12 @@ export const zGetLessonDetailResponse = z.object({
 });
 
 export const zCreateLessonBody = z.union([
-    zCourseVideoLessonWritable,
-    zCourseTestLessonWritable
+    z.object({
+        lessonType: z.literal('video')
+    }).and(zCourseVideoLessonWritable),
+    z.object({
+        lessonType: z.literal('test')
+    }).and(zCourseTestLessonWritable)
 ]);
 
 export const zCreateLessonPath = z.object({

@@ -68,6 +68,9 @@ type ServerInterface interface {
 	// Get course detail
 	// (GET /course/courses/{courseId}/detail)
 	GetCourseDetail(c *gin.Context, courseId CourseIdPath)
+	// Create draft version of a course
+	// (POST /course/courses/{courseId}/draft)
+	CreateDraftVersion(c *gin.Context, courseId CourseIdPath)
 	// Finish course
 	// (POST /course/courses/{courseId}/finish)
 	FinishCourse(c *gin.Context, courseId CourseIdPath)
@@ -728,6 +731,35 @@ func (siw *ServerInterfaceWrapper) GetCourseDetail(c *gin.Context) {
 	}
 
 	siw.Handler.GetCourseDetail(c, courseId)
+}
+
+// CreateDraftVersion operation middleware
+func (siw *ServerInterfaceWrapper) CreateDraftVersion(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "courseId" -------------
+	var courseId CourseIdPath
+
+	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.CreateDraftVersion(c, courseId)
 }
 
 // FinishCourse operation middleware
@@ -1952,6 +1984,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/course/courses/:courseId/bookmark", wrapper.BookmarkCourse)
 	router.POST(options.BaseURL+"/course/courses/:courseId/decline", wrapper.DeclineCourse)
 	router.GET(options.BaseURL+"/course/courses/:courseId/detail", wrapper.GetCourseDetail)
+	router.POST(options.BaseURL+"/course/courses/:courseId/draft", wrapper.CreateDraftVersion)
 	router.POST(options.BaseURL+"/course/courses/:courseId/finish", wrapper.FinishCourse)
 	router.GET(options.BaseURL+"/course/courses/:courseId/for-update", wrapper.GetCourseForUpdate)
 	router.DELETE(options.BaseURL+"/course/courses/:courseId/hide", wrapper.UnhideCourse)
@@ -3327,6 +3360,94 @@ type GetCourseDetail500JSONResponse struct {
 }
 
 func (response GetCourseDetail500JSONResponse) VisitGetCourseDetailResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateDraftVersionRequestObject struct {
+	CourseId CourseIdPath `json:"courseId"`
+}
+
+type CreateDraftVersionResponseObject interface {
+	VisitCreateDraftVersionResponse(w http.ResponseWriter) error
+}
+
+type CreateDraftVersion201Response struct {
+}
+
+func (response CreateDraftVersion201Response) VisitCreateDraftVersionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(201)
+	return nil
+}
+
+type CreateDraftVersion400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response CreateDraftVersion400JSONResponse) VisitCreateDraftVersionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateDraftVersion401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response CreateDraftVersion401JSONResponse) VisitCreateDraftVersionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateDraftVersion403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response CreateDraftVersion403JSONResponse) VisitCreateDraftVersionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateDraftVersion404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response CreateDraftVersion404JSONResponse) VisitCreateDraftVersionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateDraftVersion500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response CreateDraftVersion500JSONResponse) VisitCreateDraftVersionResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -6170,6 +6291,9 @@ type StrictServerInterface interface {
 	// Get course detail
 	// (GET /course/courses/{courseId}/detail)
 	GetCourseDetail(ctx context.Context, request GetCourseDetailRequestObject) (GetCourseDetailResponseObject, error)
+	// Create draft version of a course
+	// (POST /course/courses/{courseId}/draft)
+	CreateDraftVersion(ctx context.Context, request CreateDraftVersionRequestObject) (CreateDraftVersionResponseObject, error)
 	// Finish course
 	// (POST /course/courses/{courseId}/finish)
 	FinishCourse(ctx context.Context, request FinishCourseRequestObject) (FinishCourseResponseObject, error)
@@ -6758,6 +6882,32 @@ func (sh *strictHandler) GetCourseDetail(ctx *gin.Context, courseId CourseIdPath
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(GetCourseDetailResponseObject); ok {
 		if err := validResponse.VisitGetCourseDetailResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// CreateDraftVersion operation middleware
+func (sh *strictHandler) CreateDraftVersion(ctx *gin.Context, courseId CourseIdPath) {
+	var request CreateDraftVersionRequestObject
+
+	request.CourseId = courseId
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateDraftVersion(ctx, request.(CreateDraftVersionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateDraftVersion")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(CreateDraftVersionResponseObject); ok {
+		if err := validResponse.VisitCreateDraftVersionResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {

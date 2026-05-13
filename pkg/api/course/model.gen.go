@@ -963,6 +963,7 @@ func (t CreateLessonJSONBody) AsVideoLesson() (VideoLesson, error) {
 
 // FromVideoLesson overwrites any union data inside the CreateLessonJSONBody as the provided VideoLesson
 func (t *CreateLessonJSONBody) FromVideoLesson(v VideoLesson) error {
+	v.LessonType = "video"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -970,6 +971,7 @@ func (t *CreateLessonJSONBody) FromVideoLesson(v VideoLesson) error {
 
 // MergeVideoLesson performs a merge with any union data inside the CreateLessonJSONBody, using the provided VideoLesson
 func (t *CreateLessonJSONBody) MergeVideoLesson(v VideoLesson) error {
+	v.LessonType = "video"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -989,6 +991,7 @@ func (t CreateLessonJSONBody) AsTestLesson() (TestLesson, error) {
 
 // FromTestLesson overwrites any union data inside the CreateLessonJSONBody as the provided TestLesson
 func (t *CreateLessonJSONBody) FromTestLesson(v TestLesson) error {
+	v.LessonType = "test"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -996,6 +999,7 @@ func (t *CreateLessonJSONBody) FromTestLesson(v TestLesson) error {
 
 // MergeTestLesson performs a merge with any union data inside the CreateLessonJSONBody, using the provided TestLesson
 func (t *CreateLessonJSONBody) MergeTestLesson(v TestLesson) error {
+	v.LessonType = "test"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -1004,6 +1008,29 @@ func (t *CreateLessonJSONBody) MergeTestLesson(v TestLesson) error {
 	merged, err := runtime.JSONMerge(t.union, b)
 	t.union = merged
 	return err
+}
+
+func (t CreateLessonJSONBody) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"lessonType"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t CreateLessonJSONBody) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "test":
+		return t.AsTestLesson()
+	case "video":
+		return t.AsVideoLesson()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
 }
 
 func (t CreateLessonJSONBody) MarshalJSON() ([]byte, error) {

@@ -38,6 +38,11 @@ func NewCourseNotFound(id uuid.UUID, err error) *CourseNotFound {
 	}
 }
 
+var DraftCourseNotFound = &Err{
+	message: "draft course not found",
+	code:    CodeCourseNotFound,
+}
+
 type CourseInvalid struct {
 	Field string
 	Err

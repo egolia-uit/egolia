@@ -22,6 +22,12 @@ post:
     content:
       application/json:
         schema:
+          discriminator:
+            propertyName: lessonType
+            # Thêm mapping ở đây
+            mapping:
+              video: '../components/schemas/VideoLesson.yaml'
+              test: '../components/schemas/TestLesson.yaml'
           oneOf:
             - $ref: ../components/schemas/VideoLesson.yaml
             - $ref: ../components/schemas/TestLesson.yaml

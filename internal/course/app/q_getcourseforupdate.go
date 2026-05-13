@@ -38,7 +38,7 @@ func (h *GetCourseForUpdateHandler) Handle(ctx context.Context, query *GetCourse
 		return nil, err
 	}
 	if courseForUpdate == nil {
-		return nil, errs.NewCourseNotFound(query.CourseID, nil)
+		return nil, errs.DraftCourseNotFound
 	}
 	return courseForUpdate, nil
 }

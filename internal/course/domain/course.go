@@ -548,6 +548,183 @@ func (c *Course) MoveLesson(lessonID uuid.UUID, newSectionID uuid.UUID, newOrder
 	newSection.lessons = out
 }
 
+func (c *Course) Merge(draft *Course) error {
+	if draft == nil {
+		return errs.NewInvalid("draft course is required")
+	}
+	if draft.originalCourseID == nil || c.id != *draft.originalCourseID {
+		return errs.NewInvalid("invalid original course ID")
+	}
+
+	c.title = draft.title
+	c.price = draft.price
+	c.overview = draft.overview
+	c.introductionVideoKey = draft.introductionVideoKey
+
+	newSections := make([]*Section, 0, len(draft.sections))
+
+	// merge sections
+	for _, draftSection := range draft.sections {
+		if draftSection == nil {
+			continue
+		}
+		var currentSection *Section
+		if draftSection.originalSectionID != nil {
+			for _, section := range c.sections {
+				if section == nil {
+					continue
+				}
+				if section.ID() == *draftSection.originalSectionID {
+					currentSection = section
+					break
+				}
+			}
+		}
+
+		if currentSection == nil {
+			currentSection = &Section{
+				id:                uuid.New(),
+				title:             draftSection.Title(),
+				deletedAt:         nil,
+				originalSectionID: nil,
+				lessons:           []Lesson{},
+			}
+		} else {
+			currentSection.SetTitle(draftSection.Title())
+		}
+
+		newLessons := make([]Lesson, 0, len(draftSection.lessons))
+
+		// merge lessons
+		for _, draftLesson := range draftSection.lessons {
+			if draftLesson == nil {
+				continue
+			}
+			var currentLesson Lesson
+			var draftOriginalLessonID *uuid.UUID
+
+			switch l := draftLesson.(type) {
+			case *VideoLesson:
+				draftOriginalLessonID = l.originalLessonID
+			case *TestLesson:
+				draftOriginalLessonID = l.originalLessonID
+			}
+
+			if draftOriginalLessonID != nil {
+				for _, section := range c.sections {
+					if section == nil {
+						continue
+					}
+					for _, lesson := range section.lessons {
+						if lesson == nil {
+							continue
+						}
+						if lesson.ID() == *draftOriginalLessonID {
+							currentLesson = lesson
+							break
+						}
+					}
+					if currentLesson != nil {
+						break
+					}
+				}
+			}
+
+			if currentLesson == nil {
+				switch l := draftLesson.(type) {
+				case *VideoLesson:
+					newLesson := *l
+					newLesson.id = uuid.New()
+					newLesson.originalLessonID = nil
+					newLessons = append(newLessons, &newLesson)
+				case *TestLesson:
+					newLesson := *l
+					newLesson.id = uuid.New()
+					newLesson.originalLessonID = nil
+					newLessons = append(newLessons, &newLesson)
+				default:
+					newLessons = append(newLessons, draftLesson)
+				}
+			} else {
+				switch l := draftLesson.(type) {
+				case *VideoLesson:
+					currentVideoLesson, ok := currentLesson.(*VideoLesson)
+					if !ok {
+						return errs.NewInvalid("lesson type mismatch")
+					}
+					currentVideoLesson.SetTitle(l.Title())
+					currentVideoLesson.SetVideoKey(l.GetVideoKey())
+					currentVideoLesson.SetDuration(l.GetDuration())
+					newLessons = append(newLessons, currentVideoLesson)
+				case *TestLesson:
+					currentTestLesson, ok := currentLesson.(*TestLesson)
+					if !ok {
+						return errs.NewInvalid("lesson type mismatch")
+					}
+					currentTestLesson.SetTitle(l.Title())
+					currentTestLesson.questionType = l.QuestionType()
+					currentTestLesson.SetQuestions(l.GetQuestions())
+					newLessons = append(newLessons, currentTestLesson)
+				default:
+					newLessons = append(newLessons, currentLesson)
+				}
+			}
+		}
+		currentSection.lessons = newLessons
+		newSections = append(newSections, currentSection)
+	}
+
+	c.sections = newSections
+
+	return nil
+}
+
+func (c *Course) CreateDraftVersion() *Course {
+	draft := *c
+	draft.id = uuid.New()
+	draft.originalCourseID = &c.id
+	draft.status = CourseStatusDraft
+	draft.hidden = false
+	draft.deletedAt = nil
+
+	draft.sections = make([]*Section, 0, len(c.sections))
+	for _, section := range c.sections {
+		if section == nil {
+			continue
+		}
+		newSection := *section
+		originalSecID := section.id
+		newSection.SetOriginalSectionID(&originalSecID)
+		newSection.id = uuid.New()
+
+		newSection.lessons = make([]Lesson, 0, len(section.lessons))
+		for _, lesson := range section.lessons {
+			if lesson == nil {
+				continue
+			}
+			switch l := lesson.(type) {
+			case *VideoLesson:
+				newLesson := *l
+				newLesson.id = uuid.New()
+				originalLessonID := l.ID()
+				newLesson.originalLessonID = &originalLessonID
+				newSection.lessons = append(newSection.lessons, &newLesson)
+			case *TestLesson:
+				newLesson := *l
+				newLesson.id = uuid.New()
+				originalLessonID := l.ID()
+				newLesson.originalLessonID = &originalLessonID
+				newSection.lessons = append(newSection.lessons, &newLesson)
+			default:
+				newSection.lessons = append(newSection.lessons, lesson)
+			}
+		}
+		draft.sections = append(draft.sections, &newSection)
+	}
+
+	return &draft
+}
+
 func (c *Course) CanInstructorEdit() bool {
 	return c.status == CourseStatusDraft && c.deletedAt == nil
 }

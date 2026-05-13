@@ -65,6 +65,17 @@ func (h *StrictHandler) CreateCourse(ctx context.Context, request course.CreateC
 	}, nil
 }
 
+func (h *StrictHandler) CreateDraftVersion(ctx context.Context, request course.CreateDraftVersionRequestObject) (course.CreateDraftVersionResponseObject, error) {
+	cmd := &app.CreateDraftVersion{
+		CourseID: request.CourseId,
+	}
+	err := h.App.Cmds.CreateDraftVersion.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return &course.CreateDraftVersion201Response{}, nil
+}
+
 func (h *StrictHandler) GetMyCourses(ctx context.Context, request course.GetMyCoursesRequestObject) (course.GetMyCoursesResponseObject, error) {
 	user, ok := commonHTTP.UserFromContext(ctx)
 	if !ok {
@@ -538,7 +549,24 @@ func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course
 }
 
 func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.GetCourseProgressRequestObject) (course.GetCourseProgressResponseObject, error) {
-	return nil, errs.Unimplemented
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	result, err := h.App.Queries.GetCourseProgress.Handle(ctx, &app.GetCourseProgress{
+		CourseID: courseID,
+		UserID:   userID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &course.GetCourseProgress200JSONResponse{
+		Data: *result,
+	}, nil
+
 }
 
 func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.GetCourseReviewsRequestObject) (course.GetCourseReviewsResponseObject, error) {
@@ -610,6 +638,33 @@ func (h *StrictHandler) DeleteLessonComment(ctx context.Context, request course.
 }
 
 func (h *StrictHandler) CreateLesson(ctx context.Context, request course.CreateLessonRequestObject) (course.CreateLessonResponseObject, error) {
+	// if request.Body == nil {
+	// 	return nil, errs.NewInvalid("request body is required")
+	// }
+
+	// // Sử dụng hàm tự động phân loại cấu trúc JSON sinh ra từ oapi-codegen
+	// body := course.CreateLessonJSONBody(*request.Body)
+	// lessonData, err := body.ValueByDiscriminator()
+	// if err != nil {
+	// 	return nil, errs.NewInvalid("invalid or missing lesson type")
+	// }
+
+	// // Type Switch an toàn với giá trị trả về
+	// switch v := lessonData.(type) {
+	// case course.VideoLesson:
+	// 	h.App.Cmds.CreateLesson.Handle(ctx, &app.CreateVideoLessonCmd{Title: v.Title, VideoKey: v.VideoKey})
+
+	// case course.TestLesson:
+	// 	h.App.Cmds.CreateLesson.Handle(ctx, &app.CreateTestLessonCmd{Title: v.Title, Questions: v.Questions})
+	// default:
+	// 	return nil, errs.NewInvalid("unknown lesson type")
+	// }
+
+	// return course.CreateLesson201Response{
+	// 	Headers: course.CreateLesson201ResponseHeaders{
+	// 		ContentLocation: "TODO: return the actual lesson URI",
+	// 	},
+	// }, nil
 	return nil, errs.Unimplemented
 }
 

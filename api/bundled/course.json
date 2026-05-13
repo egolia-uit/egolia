@@ -1144,6 +1144,55 @@
         }
       }
     },
+    "/course/courses/{courseId}/draft": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Create draft version of a course",
+        "operationId": "createDraftVersion",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Draft version created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/course/courses/{courseId}/finish": {
       "post": {
         "security": [
@@ -3101,6 +3150,13 @@
           "content": {
             "application/json": {
               "schema": {
+                "discriminator": {
+                  "propertyName": "lessonType",
+                  "mapping": {
+                    "video": "#/components/schemas/VideoLesson",
+                    "test": "#/components/schemas/TestLesson"
+                  }
+                },
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/VideoLesson"
