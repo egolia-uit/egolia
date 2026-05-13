@@ -3666,7 +3666,6 @@
           }
         },
         "required": [
-          "id",
           "title"
         ]
       },
@@ -4111,7 +4110,6 @@
             "required": [
               "lessonType",
               "videoKey",
-              "videoUrl",
               "duration"
             ]
           }

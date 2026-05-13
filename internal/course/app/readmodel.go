@@ -13,8 +13,8 @@ type GetCourseReadModel interface {
 type GetCourseDetailReadModel interface {
 	GetCourseDetail(ctx context.Context, courseID uuid.UUID, deleted *bool) (*CourseDetail, error)
 
-	// GetCourseDetailForUpdate is used to get course detail for update. It will return draft version of the course has this courseID
-	GetCourseDetailForUpdate(ctx context.Context, courseID uuid.UUID, deleted *bool, status *CourseStatus) (*CourseDetail, error)
+	// GetCourseDetailForUpdate is used to get course detail for update. It will return draft version of the course has this ID
+	GetCourseDetailForUpdate(ctx context.Context, originalCourseID uuid.UUID, deleted *bool, status *CourseStatus) (*CourseDetail, error)
 }
 
 type GetLessonDetailReadModel interface {

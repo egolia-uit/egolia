@@ -22,8 +22,10 @@ type MoveLessonHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewMoveLessonHandler(logger *slog.Logger, tracer Tracer) MoveLessonCmd {
-	handler := &MoveLessonHandler{}
+func NewMoveLessonHandler(logger *slog.Logger, tracer Tracer, uow domain.UnitOfWork) MoveLessonCmd {
+	handler := &MoveLessonHandler{
+		uow: uow,
+	}
 	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 

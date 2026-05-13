@@ -650,6 +650,7 @@ func (h *StrictHandler) CreateLesson(ctx context.Context, request course.CreateL
 
 	body := course.CreateLessonJSONBody(*request.Body)
 	lessonData, err := body.ValueByDiscriminator()
+
 	if err != nil {
 		return nil, errs.NewInvalid("invalid or missing lesson type")
 	}

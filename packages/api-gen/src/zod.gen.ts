@@ -66,7 +66,7 @@ export const zCourseSection = z.object({
 });
 
 export const zCourseLesson = z.object({
-    id: z.uuid().readonly(),
+    id: z.uuid().readonly().optional(),
     title: z.string(),
     originalLessonID: z.uuid().readonly().optional()
 });
@@ -176,7 +176,7 @@ export const zCourseTestLesson = zCourseLesson.and(z.object({
 
 export const zCourseVideoLesson = zCourseLesson.and(z.object({
     lessonType: z.enum(['video']),
-    videoUrl: z.url().readonly(),
+    videoUrl: z.url().readonly().optional(),
     duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 }));
 

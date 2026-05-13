@@ -97,7 +97,7 @@ export type CourseSection = {
 };
 
 export type CourseLesson = {
-    readonly id: string;
+    readonly id?: string;
     title: string;
     readonly originalLessonID?: string;
 };
@@ -206,7 +206,7 @@ export type CourseTestLesson = CourseLesson & {
 
 export type CourseVideoLesson = CourseLesson & {
     lessonType: 'video';
-    readonly videoUrl: string;
+    readonly videoUrl?: string;
     duration: bigint;
 };
 

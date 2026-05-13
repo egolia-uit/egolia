@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -21,11 +22,11 @@ type UpdateSectionTitleHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewUpdateSectionTitleHandler(uow domain.UnitOfWork) UpdateSectionTitleCmd {
+func NewUpdateSectionTitleHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) UpdateSectionTitleCmd {
 	handler := &UpdateSectionTitleHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(handler, nil)
+	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
 var _ Cmd[UpdateSectionTitle] = (*UpdateSectionTitleHandler)(nil)

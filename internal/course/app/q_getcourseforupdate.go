@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
@@ -20,12 +21,12 @@ type GetCourseForUpdateHandler struct {
 	authorizationSvc         *domain.AuthorizationSvc
 }
 
-func NewGetCourseForUpdateHandler(uow domain.UnitOfWork, getCourseDetailReadModel GetCourseDetailReadModel) GetCourseForUpdateQuery {
+func NewGetCourseForUpdateHandler(uow domain.UnitOfWork, getCourseDetailReadModel GetCourseDetailReadModel, logger *slog.Logger, tracer Tracer) GetCourseForUpdateQuery {
 	handler := &GetCourseForUpdateHandler{
 		getCourseDetailReadModel: getCourseDetailReadModel,
-		authorizationSvc:         nil,
+		authorizationSvc:         &domain.AuthorizationSvc{},
 	}
-	return NewQSpan(NewQLog(handler, nil), nil)
+	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
 var _ Query[GetCourseForUpdate, *CourseDetail] = (*GetCourseForUpdateHandler)(nil)

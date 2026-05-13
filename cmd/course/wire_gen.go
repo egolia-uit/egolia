@@ -73,7 +73,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	enrollInCourseCmd := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork, logger, tracer)
 	finishCourseSvc := domain.NewFinishCourseSvc()
 	finishCourseCmd := app.NewFinishCourseHandler(finishCourseSvc, unitOfWork, logger, tracer)
-	moveLessonCmd := app.NewMoveLessonHandler(logger, tracer)
+	moveLessonCmd := app.NewMoveLessonHandler(logger, tracer, unitOfWork)
 	courseRepo := repo.NewCourseRepo(db)
 	enrollmentRepo := repo.NewEnrollmentRepo(db)
 	reviewRepo := repo.NewReviewRepo(db)
@@ -84,12 +84,14 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	authorizationSvc := domain.NewAuthorizationSvc(courseRepo, enrollmentRepo)
 	hideCourseCmd := app.NewHideCourseHandler(authorizationSvc, unitOfWork, logger, tracer)
 	createSectionCmd := app.NewCreateSectionHandler(unitOfWork, logger, tracer)
-	updateSectionTitleCmd := app.NewUpdateSectionTitleHandler(unitOfWork)
+	updateSectionTitleCmd := app.NewUpdateSectionTitleHandler(unitOfWork, logger, tracer)
 	deleteSectionCmd := app.NewDeleteSectionHandler(unitOfWork, logger, tracer)
-	moveSectionCmd := app.NewMoveSectionHandler(logger, tracer)
+	moveSectionCmd := app.NewMoveSectionHandler(logger, tracer, unitOfWork)
 	updateReviewCmd := app.NewUpdateReviewHandler(reviewPolicySvc, unitOfWork, logger, tracer)
 	deleteReviewCmd := app.NewDeleteReviewHandler(reviewPolicySvc, unitOfWork, logger, tracer)
 	submitCourseCmd := app.NewSubmitCourseHandler(unitOfWork, logger, tracer)
+	createDraftVersionCmd := app.NewCreateDraftVersionHandler(unitOfWork, logger, tracer)
+	createLessonCmd := app.NewCreateLessonCmd(unitOfWork, logger, tracer)
 	cmds := &app.Cmds{
 		CreateCourse:       createCourseCmd,
 		DeleteCourse:       deleteCourseCmd,
@@ -107,6 +109,8 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		UpdateReview:       updateReviewCmd,
 		DeleteReview:       deleteReviewCmd,
 		SubmitCourse:       submitCourseCmd,
+		CreateDraftVersion: createDraftVersionCmd,
+		CreateLesson:       createLessonCmd,
 	}
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
@@ -128,7 +132,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getMyBookmarkedCoursesQuery := app.NewGetMyBookmarkedCoursesHandler(courseReadRepo, logger, tracer)
 	getMyEnrolledCoursesQuery := app.NewGetMyEnrolledCoursesHandler(courseReadRepo, logger, tracer)
 	getCourseLandingPageQuery := app.NewGetCourseLandingPageHandler(courseReadRepo, logger, tracer)
-	getCourseForUpdateQuery := app.NewGetCourseForUpdateHandler(unitOfWork, courseReadRepo)
+	getCourseForUpdateQuery := app.NewGetCourseForUpdateHandler(unitOfWork, courseReadRepo, logger, tracer)
 	queries := &app.Queries{
 		GetCourse:               getCourseQuery,
 		GetCourseDetail:         getCourseDetailQuery,

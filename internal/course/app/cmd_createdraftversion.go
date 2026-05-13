@@ -35,9 +35,9 @@ func (h *CreateDraftVersionHandler) Handle(ctx context.Context, cmd *CreateDraft
 			return err
 		}
 
-		if !course.CanInstructorEdit() {
-			return errs.Unauthorized
-		}
+		// if !course.CanInstructorEdit() {
+		// 	return errs.Unauthorized
+		// }
 
 		// check if draft version already exists
 		hasDraftVersion, err := repoRegistry.Course().ExistsDraftVersion(ctx, cmd.CourseID)

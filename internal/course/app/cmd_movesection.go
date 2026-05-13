@@ -21,8 +21,10 @@ type MoveSectionHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewMoveSectionHandler(logger *slog.Logger, tracer Tracer) MoveSectionCmd {
-	handler := &MoveSectionHandler{}
+func NewMoveSectionHandler(logger *slog.Logger, tracer Tracer, uow domain.UnitOfWork) MoveSectionCmd {
+	handler := &MoveSectionHandler{
+		uow: uow,
+	}
 	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 

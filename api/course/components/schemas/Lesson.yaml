@@ -18,5 +18,4 @@ properties:
     readOnly: true
 
 required:
-  - id
   - title
