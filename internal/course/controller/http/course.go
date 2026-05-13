@@ -568,7 +568,6 @@ func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.Ge
 	// 	Data: *result,
 	// }, nil
 	return nil, errs.Unimplemented
-
 }
 
 func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.GetCourseReviewsRequestObject) (course.GetCourseReviewsResponseObject, error) {
