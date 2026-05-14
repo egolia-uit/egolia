@@ -12,6 +12,7 @@ http:
           headerMap: &headerMap
             X-Forwarded-ID: sub
             X-Forwarded-Roles: roles
+            X-Forwarded-Email: email
 
     protect-admin:
       plugin:
