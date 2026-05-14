@@ -172,12 +172,13 @@ export type CourseLessonComment = {
 export type CourseLessonProgress = {
     readonly id: string;
     userId: CoursePropertiesId;
-    lessonId: CourseLessonPropertiesId;
+    readonly enrollmentId: string;
     isCompleted: boolean;
 };
 
 export type CourseVideoLessonProgress = CourseLessonProgress & {
     watchedSeconds: number;
+    lastWatchedAt: Date;
 };
 
 export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseLessonProgress;
@@ -428,6 +429,7 @@ export type CourseLessonProgressWritable = {
 
 export type CourseVideoLessonProgressWritable = CourseLessonProgressWritable & {
     watchedSeconds: number;
+    lastWatchedAt: Date;
 };
 
 export type CourseLessonProgressDetailWritable = CourseVideoLessonProgressWritable | CourseLessonProgressWritable;

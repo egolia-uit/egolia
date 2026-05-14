@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/google/uuid"
@@ -11,7 +12,9 @@ import (
 type SaveVideoLessonProgress struct {
 	UserID         string
 	LessonID       uuid.UUID
-	WatchedSeconds float32
+	EnrollmentID   uuid.UUID
+	WatchedSeconds *float64
+	LastViewedAt   time.Time
 	IsCompleted    bool
 }
 
@@ -32,19 +35,22 @@ var _ Cmd[SaveVideoLessonProgress] = (*SaveVideoLessonProgressHandler)(nil)
 
 func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVideoLessonProgress) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		lessonProgress, err := repoRegistry.LessonProgress().GetByUserAndLesson(ctx, cmd.UserID, cmd.LessonID)
+		lessonProgress, err := repoRegistry.LessonProgress().GetByEnrollmentAndLesson(ctx, cmd.EnrollmentID, cmd.LessonID)
 		if err != nil {
 			return err
 		}
-		lessonProgressVideoID := uuid.New()
+		videoLessonProgressID := uuid.New()
 		if lessonProgress != nil {
-			lessonProgressVideoID = lessonProgress.ID()
+			videoLessonProgressID = lessonProgress.ID()
 		}
+
 		progress := domain.NewLessonProgressVideo(
-			lessonProgressVideoID,
+			videoLessonProgressID,
 			cmd.UserID,
 			cmd.LessonID,
+			cmd.EnrollmentID,
 			cmd.WatchedSeconds,
+			cmd.LastViewedAt,
 			cmd.IsCompleted,
 		)
 		return repoRegistry.LessonProgress().Save(ctx, progress)

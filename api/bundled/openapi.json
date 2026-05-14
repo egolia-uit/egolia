@@ -4954,8 +4954,11 @@
             "$ref": "#/components/schemas/course_properties-id",
             "readOnly": true
           },
-          "lessonId": {
-            "$ref": "#/components/schemas/course_Lesson_properties-id"
+          "enrollmentId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11",
+            "readOnly": true
           },
           "isCompleted": {
             "type": "boolean",
@@ -4965,7 +4968,7 @@
         "required": [
           "id",
           "userId",
-          "lessonId",
+          "enrollmentId",
           "isCompleted"
         ]
       },
@@ -4982,10 +4985,16 @@
                 "format": "float",
                 "minimum": 0,
                 "example": 245.5
+              },
+              "lastWatchedAt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-06-01T12:34:56Z"
               }
             },
             "required": [
-              "watchedSeconds"
+              "watchedSeconds",
+              "lastWatchedAt"
             ]
           }
         ]

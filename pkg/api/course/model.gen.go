@@ -364,9 +364,9 @@ type LessonDetail struct {
 
 // LessonProgress defines model for LessonProgress.
 type LessonProgress struct {
-	Id          *openapi_types.UUID `json:"id,omitempty"`
-	IsCompleted bool                `json:"isCompleted"`
-	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
+	EnrollmentId *openapi_types.UUID `json:"enrollmentId,omitempty"`
+	Id           *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted  bool                `json:"isCompleted"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId PropertiesId `json:"userId"`
@@ -466,9 +466,10 @@ type VideoLessonLessonType string
 
 // VideoLessonProgress defines model for VideoLessonProgress.
 type VideoLessonProgress struct {
-	Id          *openapi_types.UUID `json:"id,omitempty"`
-	IsCompleted bool                `json:"isCompleted"`
-	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
+	EnrollmentId  *openapi_types.UUID `json:"enrollmentId,omitempty"`
+	Id            *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted   bool                `json:"isCompleted"`
+	LastWatchedAt time.Time           `json:"lastWatchedAt"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId         PropertiesId `json:"userId"`

@@ -141,12 +141,13 @@ export const zCourseLessonComment = z.object({
 export const zCourseLessonProgress = z.object({
     id: z.uuid().readonly(),
     userId: zCoursePropertiesId,
-    lessonId: zCourseLessonPropertiesId,
+    enrollmentId: z.uuid().readonly(),
     isCompleted: z.boolean()
 });
 
 export const zCourseVideoLessonProgress = zCourseLessonProgress.and(z.object({
-    watchedSeconds: z.number().gte(0)
+    watchedSeconds: z.number().gte(0),
+    lastWatchedAt: z.iso.datetime()
 }));
 
 export const zCourseLessonProgressDetail = z.union([
@@ -341,7 +342,8 @@ export const zCourseLessonProgressWritable = z.object({
 });
 
 export const zCourseVideoLessonProgressWritable = zCourseLessonProgressWritable.and(z.object({
-    watchedSeconds: z.number().gte(0)
+    watchedSeconds: z.number().gte(0),
+    lastWatchedAt: z.iso.datetime()
 }));
 
 export const zCourseLessonProgressDetailWritable = z.union([
