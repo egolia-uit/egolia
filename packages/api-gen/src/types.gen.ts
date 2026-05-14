@@ -125,7 +125,7 @@ export type CourseCourseProgress = {
 export type CourseReview = {
     readonly id: string;
     readonly courseId?: string;
-    readonly userId: string;
+    userId: CoursePropertiesId;
     rating: number;
     comment: string;
     readonly createdAt: Date;
@@ -410,6 +410,7 @@ export type CourseCourseProgressWritable = {
  * Represents a single review for a course.
  */
 export type CourseReviewWritable = {
+    userId: CoursePropertiesId;
     rating: number;
     comment: string;
 };
@@ -1333,9 +1334,7 @@ export type BookmarkCourseResponses = {
 };
 
 export type DeclineCourseData = {
-    body?: {
-        reason?: string;
-    };
+    body?: never;
     path: {
         /**
          * Unique identifier of the course

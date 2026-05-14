@@ -158,3 +158,19 @@ type VideoLessonObject struct {
 	VideoKey  string
 	ExpiresAt time.Time
 }
+
+type Review struct {
+	ID        uuid.UUID
+	CourseID  uuid.UUID
+	UserID    string
+	Rating    int
+	Comment   string
+	CreatedAt time.Time
+}
+
+type Certificate struct {
+	ID        uuid.UUID
+	CourseID  uuid.UUID
+	UserID    string
+	CreatedAt time.Time
+}

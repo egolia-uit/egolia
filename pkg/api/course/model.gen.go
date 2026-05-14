@@ -411,7 +411,9 @@ type Review struct {
 	CreatedAt *time.Time          `json:"createdAt,omitempty"`
 	Id        *openapi_types.UUID `json:"id,omitempty"`
 	Rating    int                 `json:"rating"`
-	UserId    *openapi_types.UUID `json:"userId,omitempty"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId PropertiesId `json:"userId"`
 }
 
 // Section defines model for Section.
@@ -640,11 +642,6 @@ type GetMyEnrolledCoursesParams struct {
 // GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParamsOrder string
 
-// DeclineCourseJSONBody defines parameters for DeclineCourse.
-type DeclineCourseJSONBody struct {
-	Reason *string `json:"reason,omitempty"`
-}
-
 // GetCourseReviewsParams defines parameters for GetCourseReviews.
 type GetCourseReviewsParams struct {
 	// Page Page number for pagination
@@ -760,9 +757,6 @@ type CreateCourseJSONRequestBody = Course
 
 // UpdateCourseJSONRequestBody defines body for UpdateCourse for application/json ContentType.
 type UpdateCourseJSONRequestBody = Course
-
-// DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
-type DeclineCourseJSONRequestBody DeclineCourseJSONBody
 
 // ReviewCourseJSONRequestBody defines body for ReviewCourse for application/json ContentType.
 type ReviewCourseJSONRequestBody ReviewCourseJSONBody

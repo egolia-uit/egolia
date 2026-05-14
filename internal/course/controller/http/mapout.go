@@ -145,3 +145,23 @@ func courseToDTO(c *app.Course) *course.Course {
 	}
 	return dto
 }
+
+func reviewToDTO(r *app.Review) *course.Review {
+	return &course.Review{
+		Id:        (*types.UUID)(&r.ID),
+		UserId:    (course.PropertiesId)(r.UserID),
+		CourseId:  (*types.UUID)(&r.CourseID),
+		Rating:    r.Rating,
+		Comment:   r.Comment,
+		CreatedAt: &r.CreatedAt,
+	}
+}
+
+func certificateToDTO(c *app.Certificate) *course.Certificate {
+	return &course.Certificate{
+		Id:        (*types.UUID)(&c.ID),
+		UserId:    (course.PropertiesId)(c.UserID),
+		CourseId:  (*types.UUID)(&c.CourseID),
+		CreatedAt: c.CreatedAt,
+	}
+}

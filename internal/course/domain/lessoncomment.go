@@ -3,6 +3,7 @@ package domain
 import (
 	"time"
 
+	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
 )
 
@@ -91,4 +92,14 @@ func (lc *LessonComment) DeletedAt() *time.Time {
 func (lc *LessonComment) Delete() {
 	lc.deletedAt = new(time.Time)
 	*lc.deletedAt = time.Now()
+}
+
+func (lc *LessonComment) CanUserEdit(userID string) error {
+	if lc.userID != userID {
+		return errs.NewForbidden("user can only edit their own comment")
+	}
+	if lc.deletedAt != nil {
+		return errs.NewForbidden("cannot edit deleted comment")
+	}
+	return nil
 }

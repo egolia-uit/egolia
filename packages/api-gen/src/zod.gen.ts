@@ -94,7 +94,7 @@ export const zCourseCourseProgress = z.object({
 export const zCourseReview = z.object({
     id: z.uuid().readonly(),
     courseId: z.uuid().readonly().optional(),
-    userId: z.uuid().readonly(),
+    userId: zCoursePropertiesId,
     rating: z.int().gte(1).lte(5),
     comment: z.string().max(2000),
     createdAt: z.iso.datetime().readonly()
@@ -324,6 +324,7 @@ export const zCourseCourseProgressWritable = z.object({
  * Represents a single review for a course.
  */
 export const zCourseReviewWritable = z.object({
+    userId: zCoursePropertiesId,
     rating: z.int().gte(1).lte(5),
     comment: z.string().max(2000)
 });
@@ -654,10 +655,6 @@ export const zUnbookmarkCourseResponse = z.void();
 
 export const zBookmarkCoursePath = z.object({
     courseId: z.uuid()
-});
-
-export const zDeclineCourseBody = z.object({
-    reason: z.string().max(1000).optional()
 });
 
 export const zDeclineCoursePath = z.object({

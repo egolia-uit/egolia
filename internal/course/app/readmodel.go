@@ -38,3 +38,11 @@ type GetCoursesReadModel interface {
 	GetMyEnrolledCourses(ctx context.Context, params *GetMyEnrolledCourses) (*Paginated[Course], error)
 	GetCourseByID(ctx context.Context, query *GetCourseLandingPage) (*Course, error)
 }
+
+type GetCourseReviewsReadModel interface {
+	GetCourseReviews(ctx context.Context, params *GetCourseReviews) (*Paginated[Review], error)
+}
+type GetMyCertificatesReadModel interface {
+	GetMyCertificates(ctx context.Context, userID string, paginate PaginationParams, order *SearchCoursesOrder) (*Paginated[Certificate], error)
+	// GetCertificateByID(ctx context.Context, certID uuid.UUID) (*Certificate, error)
+}

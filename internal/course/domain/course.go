@@ -450,7 +450,7 @@ func (c *Course) EditVideoLesson(ctx context.Context, sectionID uuid.UUID, lesso
 }
 
 // edit test lesson
-func (c *Course) EditTestLesson(ctx context.Context, sectionID uuid.UUID, lessonID uuid.UUID, userID string, title *string, questionType *QuestionType, questions *[]*TestQuestion) error {
+func (c *Course) EditTestLesson(ctx context.Context, sectionID uuid.UUID, lessonID uuid.UUID, userID string, title string, questionType QuestionType, questions []*TestQuestion) error {
 	if c.instructorID != userID {
 		return errs.NewInstructorPermissionDenied(userID, c.id)
 	}
@@ -468,15 +468,9 @@ func (c *Course) EditTestLesson(ctx context.Context, sectionID uuid.UUID, lesson
 					if !ok {
 						return errs.NewInvalid("lesson is not a test lesson")
 					}
-					if title != nil {
-						testLesson.SetTitle(*title)
-					}
-					if questionType != nil {
-						testLesson.questionType = *questionType
-					}
-					if questions != nil {
-						testLesson.SetQuestions(*questions)
-					}
+					testLesson.SetTitle(title)
+					testLesson.questionType = questionType
+					testLesson.SetQuestions(questions)
 					return nil
 				}
 			}

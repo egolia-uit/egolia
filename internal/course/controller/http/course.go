@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/app"
+	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
 	commonHTTP "github.com/egolia-uit/egolia/pkg/common/http"
@@ -14,7 +15,54 @@ import (
 // enum page, limit, order, course status, course visibility
 
 func (h *StrictHandler) GetMyCertificates(ctx context.Context, request course.GetMyCertificatesRequestObject) (course.GetMyCertificatesResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+	var order *app.SearchCoursesOrder
+	if request.Params.Order != nil {
+		val := app.SearchCoursesOrder(*request.Params.Order)
+		order = &val
+	}
+
+	result, err := h.App.Queries.GetMyCertificates.Handle(ctx, &app.GetMyCertificates{
+		UserID: userID,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+		Order: order,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	certs := make([]course.Certificate, 0, len(result.Data))
+	for i := range result.Data {
+		certs = append(certs, *certificateToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetMyCertificates200JSONResponse{
+		Data: certs,
+		Pagination: course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) GetCertificateById(ctx context.Context, request course.GetCertificateByIdRequestObject) (course.GetCertificateByIdResponseObject, error) {
@@ -428,7 +476,14 @@ func (h *StrictHandler) UnbookmarkCourse(ctx context.Context, request course.Unb
 }
 
 func (h *StrictHandler) DeclineCourse(ctx context.Context, request course.DeclineCourseRequestObject) (course.DeclineCourseResponseObject, error) {
-	return nil, errs.Unimplemented
+	cmd := &app.DeclineCourse{
+		CourseID: request.CourseId,
+	}
+	err := h.App.Cmds.DeclineCourse.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	return &course.DeclineCourse204Response{}, nil
 }
 
 func (h *StrictHandler) GetCourseAnalytics(ctx context.Context, request course.GetCourseAnalyticsRequestObject) (course.GetCourseAnalyticsResponseObject, error) {
@@ -578,7 +633,44 @@ func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.Ge
 }
 
 func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.GetCourseReviewsRequestObject) (course.GetCourseReviewsResponseObject, error) {
-	return nil, errs.Unimplemented
+	courseID := request.CourseId
+	page := 1
+	if request.Params.Page != nil {
+		page = *request.Params.Page
+	}
+	limit := 20
+	if request.Params.Limit != nil {
+		limit = *request.Params.Limit
+	}
+
+	result, err := h.App.Queries.GetCourseReviews.Handle(ctx, &app.GetCourseReviews{
+		CourseID: courseID,
+		Paginate: app.PaginationParams{
+			Page:  page,
+			Limit: limit,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	reviews := make([]course.Review, 0, len(result.Data))
+	for i := range result.Data {
+		reviews = append(reviews, *reviewToDTO(&result.Data[i]))
+	}
+
+	pagination := result.Pagination
+	return course.GetCourseReviews200JSONResponse{
+		Data: &reviews,
+		Pagination: &course.Pagination{
+			Page:       pagination.Page,
+			Limit:      pagination.Limit,
+			Total:      pagination.Total,
+			TotalPages: pagination.TotalPages,
+			HasNext:    pagination.HasNext,
+			HasPrev:    pagination.HasPrev,
+		},
+	}, nil
 }
 
 func (h *StrictHandler) ReviewCourse(ctx context.Context, request course.ReviewCourseRequestObject) (course.ReviewCourseResponseObject, error) {
@@ -638,11 +730,43 @@ func (h *StrictHandler) DeleteReview(ctx context.Context, request course.DeleteR
 }
 
 func (h *StrictHandler) ReplyLessonComment(ctx context.Context, request course.ReplyLessonCommentRequestObject) (course.ReplyLessonCommentResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	cmd := &app.ReplyOnLessonComment{
+		OriginCommentID: request.CommentId,
+		Content:         request.Body.Content,
+		UserID:          user.ID,
+	}
+	if err := h.App.Cmds.ReplyOnLessonComment.Handle(ctx, cmd); err != nil {
+		return nil, err
+	}
+	return course.ReplyLessonComment201Response{
+		Headers: course.ReplyLessonComment201ResponseHeaders{
+			ContentLocation: "i dont know what to put here", // TODO: return the actual comment ID
+		},
+	}, nil
 }
 
 func (h *StrictHandler) DeleteLessonComment(ctx context.Context, request course.DeleteLessonCommentRequestObject) (course.DeleteLessonCommentResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	roles := make([]app.UserRole, 0, len(user.Roles))
+	for _, role := range user.Roles {
+		roles = append(roles, app.UserRole(role))
+	}
+	cmd := &app.DeleteLessonComment{
+		CommentID: request.CommentId,
+		UserID:    user.ID,
+		UserRoles: roles,
+	}
+	if err := h.App.Cmds.DeleteLessonComment.Handle(ctx, cmd); err != nil {
+		return nil, err
+	}
+	return course.DeleteLessonComment204Response{}, nil
 }
 
 func (h *StrictHandler) CreateLesson(ctx context.Context, request course.CreateLessonRequestObject) (course.CreateLessonResponseObject, error) {
@@ -788,7 +912,43 @@ func (h *StrictHandler) EditVideoLesson(ctx context.Context, request course.Edit
 }
 
 func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditTestLessonRequestObject) (course.EditTestLessonResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+
+	if request.Body == nil {
+		return nil, errs.NewInvalid("request body is required")
+	}
+
+	questions := make([]app.EditTestQuestion, 0, len(request.Body.Questions))
+	for _, q := range request.Body.Questions {
+		answers := make([]app.EditTestAnswer, 0, len(q.Answers))
+		for _, a := range q.Answers {
+			answers = append(answers, app.EditTestAnswer{
+				Answer:    a.Content,
+				IsCorrect: a.IsCorrect,
+			})
+		}
+		questions = append(questions, app.EditTestQuestion{
+			Question: q.Question,
+			Answers:  answers,
+		})
+	}
+
+	cmd := &app.EditTestLesson{
+		LessonID:     request.LessonId,
+		CourseID:     request.CourseId,
+		SectionID:    request.SectionId,
+		Title:        request.Body.Title,
+		UserID:       user.ID,
+		QuestionType: domain.QuestionType(request.Body.QuestionType),
+		Questions:    questions,
+	}
+	if err := h.App.Cmds.EditTestLesson.Handle(ctx, cmd); err != nil {
+		return nil, err
+	}
+	return course.EditTestLesson204Response{}, nil
 }
 
 func (h *StrictHandler) GetLessonComments(ctx context.Context, request course.GetLessonCommentsRequestObject) (course.GetLessonCommentsResponseObject, error) {
@@ -796,7 +956,24 @@ func (h *StrictHandler) GetLessonComments(ctx context.Context, request course.Ge
 }
 
 func (h *StrictHandler) CommentOnLesson(ctx context.Context, request course.CommentOnLessonRequestObject) (course.CommentOnLessonResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.CommentOnLesson.Handle(ctx, &app.CommentOnLesson{
+		LessonID: request.LessonId,
+		Content:  request.Body.Content,
+		UserID:   userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.CommentOnLesson201Response{
+		Headers: course.CommentOnLesson201ResponseHeaders{
+			ContentLocation: "i dont know what to put here", // TODO: return the actual comment ID
+		},
+	}, nil
 }
 
 func (h *StrictHandler) MarkLessonAsCompleted(ctx context.Context, request course.MarkLessonAsCompletedRequestObject) (course.MarkLessonAsCompletedResponseObject, error) {

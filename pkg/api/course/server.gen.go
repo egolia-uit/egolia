@@ -7,9 +7,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
@@ -3188,7 +3186,6 @@ func (response BookmarkCourse500JSONResponse) VisitBookmarkCourseResponse(w http
 
 type DeclineCourseRequestObject struct {
 	CourseId CourseIdPath `json:"courseId"`
-	Body     *DeclineCourseJSONRequestBody
 }
 
 type DeclineCourseResponseObject interface {
@@ -6832,16 +6829,6 @@ func (sh *strictHandler) DeclineCourse(ctx *gin.Context, courseId CourseIdPath) 
 	var request DeclineCourseRequestObject
 
 	request.CourseId = courseId
-
-	var body DeclineCourseJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		if !errors.Is(err, io.EOF) {
-			sh.options.RequestErrorHandlerFunc(ctx, err)
-			return
-		}
-	} else {
-		request.Body = &body
-	}
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.DeclineCourse(ctx, request.(DeclineCourseRequestObject))
