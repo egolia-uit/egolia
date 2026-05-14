@@ -1011,7 +1011,22 @@ func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.Ge
 }
 
 func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.SaveVideoLessonProgress.Handle(ctx, &app.SaveVideoLessonProgress{
+		LessonID:       request.LessonId,
+		UserID:         userID,
+		EnrollmentID:   *request.Body.EnrollmentId,
+		WatchedSeconds: nil,
+		LastViewedAt:   request.Body.LastViewedAt,
+	}); err != nil {
+		return nil, err
+	}
+	return course.SaveVideoLessonProgress204Response{}, nil
 }
 
 func (h *StrictHandler) SubmitCourse(ctx context.Context, request course.SubmitCourseRequestObject) (course.SubmitCourseResponseObject, error) {

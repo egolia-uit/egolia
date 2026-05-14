@@ -466,10 +466,10 @@ type VideoLessonLessonType string
 
 // VideoLessonProgress defines model for VideoLessonProgress.
 type VideoLessonProgress struct {
-	EnrollmentId  *openapi_types.UUID `json:"enrollmentId,omitempty"`
-	Id            *openapi_types.UUID `json:"id,omitempty"`
-	IsCompleted   bool                `json:"isCompleted"`
-	LastWatchedAt time.Time           `json:"lastWatchedAt"`
+	EnrollmentId *openapi_types.UUID `json:"enrollmentId,omitempty"`
+	Id           *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted  bool                `json:"isCompleted"`
+	LastViewedAt time.Time           `json:"lastViewedAt"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId         PropertiesId `json:"userId"`

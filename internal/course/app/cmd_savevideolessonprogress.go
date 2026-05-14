@@ -43,15 +43,17 @@ func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVi
 		if lessonProgress != nil {
 			videoLessonProgressID = lessonProgress.ID()
 		}
+		watchSeconds := float64(10)
+		if cmd.WatchedSeconds != nil {
+			watchSeconds = *cmd.WatchedSeconds + 10
+		}
 
 		progress := domain.NewLessonProgressVideo(
 			videoLessonProgressID,
-			cmd.UserID,
-			cmd.LessonID,
 			cmd.EnrollmentID,
-			cmd.WatchedSeconds,
+			cmd.LessonID,
+			&watchSeconds,
 			cmd.LastViewedAt,
-			cmd.IsCompleted,
 		)
 		return repoRegistry.LessonProgress().Save(ctx, progress)
 	})

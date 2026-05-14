@@ -4986,7 +4986,7 @@
                 "minimum": 0,
                 "example": 245.5
               },
-              "lastWatchedAt": {
+              "lastViewedAt": {
                 "type": "string",
                 "format": "date-time",
                 "example": "2024-06-01T12:34:56Z"
@@ -4994,7 +4994,7 @@
             },
             "required": [
               "watchedSeconds",
-              "lastWatchedAt"
+              "lastViewedAt"
             ]
           }
         ]

@@ -147,7 +147,7 @@ export const zCourseLessonProgress = z.object({
 
 export const zCourseVideoLessonProgress = zCourseLessonProgress.and(z.object({
     watchedSeconds: z.number().gte(0),
-    lastWatchedAt: z.iso.datetime()
+    lastViewedAt: z.iso.datetime()
 }));
 
 export const zCourseLessonProgressDetail = z.union([
@@ -343,7 +343,7 @@ export const zCourseLessonProgressWritable = z.object({
 
 export const zCourseVideoLessonProgressWritable = zCourseLessonProgressWritable.and(z.object({
     watchedSeconds: z.number().gte(0),
-    lastWatchedAt: z.iso.datetime()
+    lastViewedAt: z.iso.datetime()
 }));
 
 export const zCourseLessonProgressDetailWritable = z.union([

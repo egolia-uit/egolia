@@ -178,7 +178,7 @@ export type CourseLessonProgress = {
 
 export type CourseVideoLessonProgress = CourseLessonProgress & {
     watchedSeconds: number;
-    lastWatchedAt: Date;
+    lastViewedAt: Date;
 };
 
 export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseLessonProgress;
@@ -429,7 +429,7 @@ export type CourseLessonProgressWritable = {
 
 export type CourseVideoLessonProgressWritable = CourseLessonProgressWritable & {
     watchedSeconds: number;
-    lastWatchedAt: Date;
+    lastViewedAt: Date;
 };
 
 export type CourseLessonProgressDetailWritable = CourseVideoLessonProgressWritable | CourseLessonProgressWritable;
