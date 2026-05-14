@@ -2,6 +2,7 @@
   "name": "@egolia-uit/web",
   "private": true,
   "dependencies": {
+    "@vercel/otel": "catalog:",
     "better-auth": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",

@@ -9,6 +9,11 @@ const nextConfig: WithNxOptions = {
   output: 'standalone',
   allowedDevOrigins: ['web.egolia.localhost'],
   productionBrowserSourceMaps: true,
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
 };
 
 const plugins = [
