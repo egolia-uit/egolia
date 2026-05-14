@@ -73,6 +73,24 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 	return db.Clauses(clause.OnConflict{UpdateAll: true}).Create(readModel).Error
 }
 
+func (r *CourseRepo) GetFull(ctx context.Context, id uuid.UUID) (*domain.Course, error) {
+	db := r.db.WithContext(ctx).
+		Unscoped().
+		Preload("Sections", func(db *gorm.DB) *gorm.DB { return db.Unscoped() }).
+		Preload("Sections.Lessons", func(db *gorm.DB) *gorm.DB { return db.Unscoped() }).
+		Preload("Sections.Lessons.VideoLesson").
+		Preload("Sections.Lessons.TestLesson.Questions.Answers")
+
+	var m model.Course
+	if err := db.First(&m, "id = ?", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.NewCourseNotFound(id, err)
+		}
+		return nil, err
+	}
+	return m.ToDomain(), nil
+}
+
 func (r *CourseRepo) GetDraftVersion(ctx context.Context, originalCourseID uuid.UUID, status domain.CourseStatus) (*domain.Course, error) {
 	db := r.db.WithContext(ctx).
 		Preload("Sections.Lessons.VideoLesson").

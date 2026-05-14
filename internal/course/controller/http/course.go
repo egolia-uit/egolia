@@ -421,7 +421,6 @@ func (h *StrictHandler) ApproveCourse(ctx context.Context, request course.Approv
 		return nil, err
 	}
 	return &course.ApproveCourse204Response{}, nil
-
 }
 
 func (h *StrictHandler) UpdateCourse(ctx context.Context, request course.UpdateCourseRequestObject) (course.UpdateCourseResponseObject, error) {
