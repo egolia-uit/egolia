@@ -1,8 +1,39 @@
-import { createAuthClient } from 'better-auth/react';
-import { genericOAuthClient } from 'better-auth/client/plugins';
+'use client';
 
-export const authClient = createAuthClient({
-  baseURL:
-    process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000',
+import { genericOAuthClient } from 'better-auth/client/plugins';
+import { createAuthClient } from 'better-auth/react';
+
+type AuthClientSession = {
+  user?: {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+} | null;
+
+type WebAuthClient = {
+  getSession: () => Promise<{ data: AuthClientSession }>;
+  getAccessToken: (options: {
+    providerId: string;
+  }) => Promise<{ data: { accessToken?: string } | null }>;
+  signIn: {
+    oauth2: (options: {
+      providerId: string;
+      callbackURL?: string;
+      errorCallbackURL?: string;
+    }) => Promise<unknown>;
+  };
+  signOut: (options?: {
+    fetchOptions?: {
+      onSuccess?: () => void;
+    };
+  }) => Promise<unknown>;
+};
+
+const authClientOptions = {
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000',
   plugins: [genericOAuthClient()],
-});
+};
+
+export const authClient = createAuthClient(authClientOptions) as WebAuthClient;

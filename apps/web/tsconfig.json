@@ -31,6 +31,7 @@
     "src/**/*.jsx",
     ".next/types/**/*.ts",
     "next-env.d.ts",
+    "instrumentation.ts",
     "index.d.ts"
   ],
   "exclude": [
