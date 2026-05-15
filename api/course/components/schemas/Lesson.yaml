@@ -11,6 +11,11 @@ properties:
     type: string
     example: Introduction to Python
 
+  originalLessonID:
+    type: string
+    format: uuid
+    example: 2926aa3f-29ad-449b-9556-c44d4fc676a0
+    readOnly: true
+
 required:
-  - id
   - title

@@ -44,5 +44,6 @@ func (h *GetCourseDetailHandler) Handle(ctx context.Context, query *GetCourseDet
 	if !hasPermission {
 		return nil, errs.Unauthorized
 	}
-	return h.getCourseDetailReadModel.GetCourseDetail(ctx, query.CourseID)
+	deleted := false
+	return h.getCourseDetailReadModel.GetCourseDetail(ctx, query.CourseID, &deleted)
 }

@@ -1,15 +1,33 @@
 package app
 
 type Cmds struct {
-	CreateCourse   CreateCourseCmd
-	DeleteCourse   DeleteCourseCmd
-	EnrollInCourse EnrollInCourseCmd
-	FinishCourse   FinishCourseCmd
-	MoveLesson     MoveLessonCmd
-	ReviewCourse   ReviewCourseCmd
-	UpdateCourse   UpdateCourseCmd
-	BookmarkCourse BookmarkCourseCmd
-	HideCourse     HideCourseCmd
+	CreateCourse            CreateCourseCmd
+	DeleteCourse            DeleteCourseCmd
+	EnrollInCourse          EnrollInCourseCmd
+	FinishCourse            FinishCourseCmd
+	MoveLesson              MoveLessonCmd
+	ReviewCourse            ReviewCourseCmd
+	UpdateCourse            UpdateCourseCmd
+	BookmarkCourse          BookmarkCourseCmd
+	HideCourse              HideCourseCmd
+	CreateSection           CreateSectionCmd
+	UpdateSectionTitle      UpdateSectionTitleCmd
+	DeleteSection           DeleteSectionCmd
+	MoveSection             MoveSectionCmd
+	UpdateReview            UpdateReviewCmd
+	DeleteReview            DeleteReviewCmd
+	SubmitCourse            SubmitCourseCmd
+	CreateDraftVersion      CreateDraftVersionCmd
+	CreateLesson            CreateLessonCmd
+	EditVideoLesson         EditVideoLessonCmd
+	ApproveCourse           ApproveCourseCmd
+	ReplyOnLessonComment    ReplyOnLessonCommentCmd
+	CommentOnLesson         CommentOnLessonCmd
+	EditTestLesson          EditTestLessonCmd
+	DeleteLessonComment     DeleteLessonCommentCmd
+	DeclineCourse           DeclineCourseCmd
+	SaveVideoLessonProgress SaveVideoLessonProgressCmd
+	MarkLessonAsCompleted   MarkLessonAsCompletedCmd
 }
 
 type Queries struct {
@@ -23,6 +41,11 @@ type Queries struct {
 	GetMyBookmarkedCourses  GetMyBookmarkedCoursesQuery
 	GetMyEnrolledCourses    GetMyEnrolledCoursesQuery
 	GetCourseLandingPage    GetCourseLandingPageQuery
+	GetCourseForUpdate      GetCourseForUpdateQuery
+	GetCourseReviews        GetCourseReviewsQuery
+	GetMyCertificates       GetMyCertificatesQuery
+	GetLessonComments       GetLessonCommentsQuery
+	GetLessonProgress       GetLessonProgressQuery
 }
 
 type App struct {

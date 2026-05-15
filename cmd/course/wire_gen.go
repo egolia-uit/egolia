@@ -73,27 +73,62 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	enrollInCourseCmd := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork, logger, tracer)
 	finishCourseSvc := domain.NewFinishCourseSvc()
 	finishCourseCmd := app.NewFinishCourseHandler(finishCourseSvc, unitOfWork, logger, tracer)
-	moveLessonSvc := domain.NewMoveLessonSvc()
-	moveLessonCmd := app.NewMoveLessonHandler(moveLessonSvc, unitOfWork, logger, tracer)
+	moveLessonCmd := app.NewMoveLessonHandler(logger, tracer, unitOfWork)
+	courseRepo := repo.NewCourseRepo(db)
 	enrollmentRepo := repo.NewEnrollmentRepo(db)
 	reviewRepo := repo.NewReviewRepo(db)
-	reviewCourseSvc := domain.NewReviewCourseSvc(enrollmentRepo, reviewRepo)
-	reviewCourseCmd := app.NewReviewCourseHandler(reviewCourseSvc, unitOfWork, logger, tracer)
+	reviewPolicySvc := domain.NewReviewPolicySvc(courseRepo, enrollmentRepo, reviewRepo)
+	reviewCourseCmd := app.NewReviewCourseHandler(reviewPolicySvc, unitOfWork, logger, tracer)
 	updateCourseCmd := app.NewUpdateCourseHandler(unitOfWork, logger, tracer)
 	bookmarkCourseCmd := app.NewBookmarkCourseHandler(unitOfWork, logger, tracer)
-	courseRepo := repo.NewCourseRepo(db)
 	authorizationSvc := domain.NewAuthorizationSvc(courseRepo, enrollmentRepo)
 	hideCourseCmd := app.NewHideCourseHandler(authorizationSvc, unitOfWork, logger, tracer)
+	createSectionCmd := app.NewCreateSectionHandler(unitOfWork, logger, tracer)
+	updateSectionTitleCmd := app.NewUpdateSectionTitleHandler(unitOfWork, logger, tracer)
+	deleteSectionCmd := app.NewDeleteSectionHandler(unitOfWork, logger, tracer)
+	moveSectionCmd := app.NewMoveSectionHandler(logger, tracer, unitOfWork)
+	updateReviewCmd := app.NewUpdateReviewHandler(reviewPolicySvc, unitOfWork, logger, tracer)
+	deleteReviewCmd := app.NewDeleteReviewHandler(reviewPolicySvc, unitOfWork, logger, tracer)
+	submitCourseCmd := app.NewSubmitCourseHandler(unitOfWork, logger, tracer)
+	createDraftVersionCmd := app.NewCreateDraftVersionHandler(unitOfWork, logger, tracer)
+	createLessonCmd := app.NewCreateLessonCmd(unitOfWork, logger, tracer)
+	editVideoLessonCmd := app.NewEditVideoLessonHandler(unitOfWork, logger, tracer)
+	approveCourseCmd := app.NewApproveCourseHandler(unitOfWork, logger, tracer)
+	replyOnLessonCommentCmd := app.NewReplyOnLessonCommentHandler(unitOfWork, logger, tracer)
+	commentOnLessonCmd := app.NewCommentOnLessonHandler(unitOfWork, logger, tracer)
+	editTestLessonCmd := app.NewEditTestLessonHandler(unitOfWork, logger, tracer)
+	deleteLessonCommentCmd := app.NewDeleteLessonCommentHandler(unitOfWork, logger, tracer)
+	declineCourseCmd := app.NewDeclineCourseHandler(unitOfWork, logger, tracer)
+	markLessonAsCompletedCmd := app.NewMarkLessonAsCompletedHandler(unitOfWork, logger, tracer)
+	saveVideoLessonProgressCmd := app.NewSaveVideoLessonProgressHandler(unitOfWork, markLessonAsCompletedCmd, logger, tracer)
 	cmds := &app.Cmds{
-		CreateCourse:   createCourseCmd,
-		DeleteCourse:   deleteCourseCmd,
-		EnrollInCourse: enrollInCourseCmd,
-		FinishCourse:   finishCourseCmd,
-		MoveLesson:     moveLessonCmd,
-		ReviewCourse:   reviewCourseCmd,
-		UpdateCourse:   updateCourseCmd,
-		BookmarkCourse: bookmarkCourseCmd,
-		HideCourse:     hideCourseCmd,
+		CreateCourse:            createCourseCmd,
+		DeleteCourse:            deleteCourseCmd,
+		EnrollInCourse:          enrollInCourseCmd,
+		FinishCourse:            finishCourseCmd,
+		MoveLesson:              moveLessonCmd,
+		ReviewCourse:            reviewCourseCmd,
+		UpdateCourse:            updateCourseCmd,
+		BookmarkCourse:          bookmarkCourseCmd,
+		HideCourse:              hideCourseCmd,
+		CreateSection:           createSectionCmd,
+		UpdateSectionTitle:      updateSectionTitleCmd,
+		DeleteSection:           deleteSectionCmd,
+		MoveSection:             moveSectionCmd,
+		UpdateReview:            updateReviewCmd,
+		DeleteReview:            deleteReviewCmd,
+		SubmitCourse:            submitCourseCmd,
+		CreateDraftVersion:      createDraftVersionCmd,
+		CreateLesson:            createLessonCmd,
+		EditVideoLesson:         editVideoLessonCmd,
+		ApproveCourse:           approveCourseCmd,
+		ReplyOnLessonComment:    replyOnLessonCommentCmd,
+		CommentOnLesson:         commentOnLessonCmd,
+		EditTestLesson:          editTestLessonCmd,
+		DeleteLessonComment:     deleteLessonCommentCmd,
+		DeclineCourse:           declineCourseCmd,
+		SaveVideoLessonProgress: saveVideoLessonProgressCmd,
+		MarkLessonAsCompleted:   markLessonAsCompletedCmd,
 	}
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
@@ -115,6 +150,14 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getMyBookmarkedCoursesQuery := app.NewGetMyBookmarkedCoursesHandler(courseReadRepo, logger, tracer)
 	getMyEnrolledCoursesQuery := app.NewGetMyEnrolledCoursesHandler(courseReadRepo, logger, tracer)
 	getCourseLandingPageQuery := app.NewGetCourseLandingPageHandler(courseReadRepo, logger, tracer)
+	getCourseForUpdateQuery := app.NewGetCourseForUpdateHandler(unitOfWork, courseReadRepo, logger, tracer)
+	reviewReadRepo := readmodel.NewReviewReadRepo(db)
+	getCourseReviewsQuery := app.NewGetCourseReviewsHandler(reviewReadRepo, logger, tracer)
+	certificateReadRepo := readmodel.NewCertificateReadRepo(db)
+	getMyCertificatesQuery := app.NewGetMyCertificatesHandler(certificateReadRepo, logger, tracer)
+	lessonCommentReadRepo := readmodel.NewLessonCommentReadRepo(db)
+	getLessonCommentsQuery := app.NewGetLessonCommentsHandler(lessonCommentReadRepo, logger, tracer)
+	getLessonProgressQuery := app.NewGetLessonProgressHandler(unitOfWork, logger, tracer)
 	queries := &app.Queries{
 		GetCourse:               getCourseQuery,
 		GetCourseDetail:         getCourseDetailQuery,
@@ -126,6 +169,11 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		GetMyBookmarkedCourses:  getMyBookmarkedCoursesQuery,
 		GetMyEnrolledCourses:    getMyEnrolledCoursesQuery,
 		GetCourseLandingPage:    getCourseLandingPageQuery,
+		GetCourseForUpdate:      getCourseForUpdateQuery,
+		GetCourseReviews:        getCourseReviewsQuery,
+		GetMyCertificates:       getMyCertificatesQuery,
+		GetLessonComments:       getLessonCommentsQuery,
+		GetLessonProgress:       getLessonProgressQuery,
 	}
 	appApp := &app.App{
 		Cmds:    cmds,

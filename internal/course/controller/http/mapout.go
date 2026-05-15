@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/egolia-uit/egolia/internal/course/app"
+	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
 	"github.com/google/uuid"
@@ -27,27 +28,31 @@ func lessonDetailToDTO(l app.Lesson) (*course.LessonDetail, error) {
 }
 
 func videoLessonToDTO(vl *app.VideoLesson) course.VideoLesson {
+	id := (types.UUID)(vl.GetID())
 	return course.VideoLesson{
-		Id:         new(vl.GetID()),
-		Title:      vl.GetTitle(),
-		LessonType: course.VideoLessonLessonTypeVideo,
-		VideoUrl:   &vl.VideoURL,
-		Duration:   int64(vl.Duration.Seconds()),
-		VideoKey:   nil,
+		Id:               &id,
+		Title:            vl.GetTitle(),
+		LessonType:       course.VideoLessonLessonTypeVideo,
+		VideoUrl:         &vl.VideoURL,
+		Duration:         int64(vl.Duration.Seconds()),
+		VideoKey:         nil,
+		OriginalLessonID: nil,
 	}
 }
 
 func testLessonToDTO(t *app.TestLesson) course.TestLesson {
+	id := (types.UUID)(t.GetID())
 	questions := make([]course.TestQuestion, 0, len(t.Questions))
 	for _, q := range t.Questions {
 		questions = append(questions, testQuestionToDTO(&q))
 	}
 	return course.TestLesson{
-		Id:           new(t.GetID()),
-		Title:        t.GetTitle(),
-		LessonType:   course.TestLessonLessonTypeTest,
-		QuestionType: questionTypeToDTO(t.QuestionType),
-		Questions:    questions,
+		Id:               &id,
+		Title:            t.GetTitle(),
+		LessonType:       course.TestLessonLessonTypeTest,
+		QuestionType:     questionTypeToDTO(t.QuestionType),
+		Questions:        questions,
+		OriginalLessonID: nil,
 	}
 }
 
@@ -101,9 +106,10 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 	items := make([]course.CourseDetailSectionItem, 0, len(sections))
 	for _, s := range sections {
 		items = append(items, course.CourseDetailSectionItem{
-			Id:      (*types.UUID)(&s.ID),
-			Title:   s.Title,
-			Lessons: lessonsToDTO(s.Lessons),
+			Id:                (*types.UUID)(&s.ID),
+			Title:             s.Title,
+			Lessons:           lessonsToDTO(s.Lessons),
+			OriginalSectionID: nil,
 		})
 	}
 	return items
@@ -112,9 +118,11 @@ func sectionItemsToDTO(sections []app.CourseDetailSectionItem) []course.CourseDe
 func lessonsToDTO(lessons []app.Lesson) []course.Lesson {
 	out := make([]course.Lesson, 0, len(lessons))
 	for _, l := range lessons {
+		id := (types.UUID)(l.GetID())
 		out = append(out, course.Lesson{
-			Id:    new(l.GetID()),
-			Title: l.GetTitle(),
+			Id:               &id,
+			Title:            l.GetTitle(),
+			OriginalLessonID: nil,
 		})
 	}
 	return out
@@ -137,4 +145,68 @@ func courseToDTO(c *app.Course) *course.Course {
 		dto.OriginalCourseId = &c.OriginalCourseID
 	}
 	return dto
+}
+
+func reviewToDTO(r *app.Review) *course.Review {
+	return &course.Review{
+		Id:        (*types.UUID)(&r.ID),
+		UserId:    (course.PropertiesId)(r.UserID),
+		CourseId:  (*types.UUID)(&r.CourseID),
+		Rating:    r.Rating,
+		Comment:   r.Comment,
+		CreatedAt: &r.CreatedAt,
+	}
+}
+
+func certificateToDTO(c *app.Certificate) *course.Certificate {
+	return &course.Certificate{
+		Id:        (*types.UUID)(&c.ID),
+		UserId:    (course.PropertiesId)(c.UserID),
+		CourseId:  (*types.UUID)(&c.CourseID),
+		CreatedAt: c.CreatedAt,
+	}
+}
+
+func lessonCommentToDTO(c *app.LessonComment) *course.LessonComment {
+	return &course.LessonComment{
+		Id:              (*types.UUID)(&c.ID),
+		UserId:          (course.PropertiesId)(c.UserID),
+		LessonId:        (*types.UUID)(&c.LessonID),
+		Content:         c.Content,
+		ParentCommentId: c.ParentCommentID,
+		CreatedAt:       c.CreatedAt,
+	}
+}
+
+func lessonProgressToDTO(lp domain.LessonProgress) *course.LessonProgressDetail {
+	if lp == nil {
+		return nil
+	}
+
+	detail := course.LessonProgressDetail{}
+	lessonID := (types.UUID)(lp.LessonID())
+	switch v := lp.(type) {
+	case *domain.LessonProgressVideo:
+		id := (types.UUID)(v.ID())
+		// Sử dụng From... để gán struct cụ thể vào Union Type
+		_ = detail.FromVideoLessonProgress(course.VideoLessonProgress{
+			Id:             &id,
+			LessonId:       lessonID,
+			WatchedSeconds: float32(*v.WatchedSeconds()),
+			LastViewedAt:   v.LastViewedAt(),
+			UserId:         (course.PropertiesId)(v.UserID()),
+			IsCompleted:    v.IsCompleted(),
+		})
+	case *domain.LessonProgressTest: // Hoặc gộp thành default nếu các loại khác tương tự
+		id := (types.UUID)(v.ID())
+		_ = detail.FromLessonProgress(course.LessonProgress{
+			Id:          &id,
+			LessonId:    lessonID,
+			UserId:      (course.PropertiesId)(v.UserID()),
+			IsCompleted: v.IsCompleted(),
+			// Các trường khác nếu có thể gán chung cho tất cả loại LessonProgress
+		})
+	}
+
+	return &detail
 }

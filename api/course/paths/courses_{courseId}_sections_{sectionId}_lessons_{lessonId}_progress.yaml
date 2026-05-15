@@ -16,6 +16,20 @@ get:
     - $ref: ../components/parameters/courseIdPath.yaml
     - $ref: ../components/parameters/sectionIdPath.yaml
     - $ref: ../components/parameters/lessonIdPath.yaml
+  requestBody:
+    description: Request body for get lesson progress
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            enrollmentId:
+              type: string
+              format: uuid
+              example: '123e4567-e89b-12d3-a456-426614174000'
+          required:
+            - enrollmentId
   responses:
     200:
       description: Lesson progress

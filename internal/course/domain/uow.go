@@ -12,6 +12,7 @@ type RepoRegistry interface {
 	LessonComment() LessonCommentRepo
 	LessonProgress() LessonProgressRepo
 	Review() ReviewRepo
+	CourseProgress() CourseProgressRepo
 }
 
 type UnitOfWork interface {

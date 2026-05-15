@@ -58,5 +58,5 @@ func (m *Section) ToDomain() *domain.Section {
 			lessons = append(lessons, l)
 		}
 	}
-	return domain.UnmarshalSection(m.ID, m.Title, deletedAt, lessons)
+	return domain.UnmarshalSection(m.ID, m.Title, deletedAt, nil, lessons)
 }

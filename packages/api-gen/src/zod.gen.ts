@@ -61,12 +61,14 @@ export const zCourseCourseAnalytics = z.object({
 
 export const zCourseSection = z.object({
     id: z.uuid().readonly(),
-    title: z.string().min(1).max(255)
+    title: z.string().min(1).max(255),
+    originalSectionID: z.uuid().readonly().optional()
 });
 
 export const zCourseLesson = z.object({
-    id: z.uuid().readonly(),
-    title: z.string()
+    id: z.uuid().readonly().optional(),
+    title: z.string(),
+    originalLessonID: z.uuid().readonly().optional()
 });
 
 export const zCourseCourseDetailSectionItem = zCourseSection.and(z.object({
@@ -92,7 +94,7 @@ export const zCourseCourseProgress = z.object({
 export const zCourseReview = z.object({
     id: z.uuid().readonly(),
     courseId: z.uuid().readonly().optional(),
-    userId: z.uuid().readonly(),
+    userId: zCoursePropertiesId,
     rating: z.int().gte(1).lte(5),
     comment: z.string().max(2000),
     createdAt: z.iso.datetime().readonly()
@@ -139,12 +141,13 @@ export const zCourseLessonComment = z.object({
 export const zCourseLessonProgress = z.object({
     id: z.uuid().readonly(),
     userId: zCoursePropertiesId,
-    lessonId: zCourseLessonPropertiesId,
+    lessonId: z.uuid(),
     isCompleted: z.boolean()
 });
 
 export const zCourseVideoLessonProgress = zCourseLessonProgress.and(z.object({
-    watchedSeconds: z.number().gte(0)
+    watchedSeconds: z.number().gte(0),
+    lastViewedAt: z.iso.datetime()
 }));
 
 export const zCourseLessonProgressDetail = z.union([
@@ -174,7 +177,7 @@ export const zCourseTestLesson = zCourseLesson.and(z.object({
 
 export const zCourseVideoLesson = zCourseLesson.and(z.object({
     lessonType: z.enum(['video']),
-    videoUrl: z.url().readonly(),
+    videoUrl: z.url().readonly().optional(),
     duration: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 }));
 
@@ -322,6 +325,7 @@ export const zCourseCourseProgressWritable = z.object({
  * Represents a single review for a course.
  */
 export const zCourseReviewWritable = z.object({
+    userId: zCoursePropertiesId,
     rating: z.int().gte(1).lte(5),
     comment: z.string().max(2000)
 });
@@ -334,11 +338,14 @@ export const zCourseLessonCommentWritable = z.object({
 });
 
 export const zCourseLessonProgressWritable = z.object({
+    userId: zCoursePropertiesId,
+    lessonId: z.uuid(),
     isCompleted: z.boolean()
 });
 
 export const zCourseVideoLessonProgressWritable = zCourseLessonProgressWritable.and(z.object({
-    watchedSeconds: z.number().gte(0)
+    watchedSeconds: z.number().gte(0),
+    lastViewedAt: z.iso.datetime()
 }));
 
 export const zCourseLessonProgressDetailWritable = z.union([
@@ -654,10 +661,6 @@ export const zBookmarkCoursePath = z.object({
     courseId: z.uuid()
 });
 
-export const zDeclineCourseBody = z.object({
-    reason: z.string().max(1000).optional()
-});
-
 export const zDeclineCoursePath = z.object({
     courseId: z.uuid()
 });
@@ -678,6 +681,10 @@ export const zGetCourseDetailResponse = z.object({
     data: zCourseCourseDetail
 });
 
+export const zCreateDraftVersionPath = z.object({
+    courseId: z.uuid()
+});
+
 export const zFinishCoursePath = z.object({
     courseId: z.uuid()
 });
@@ -686,6 +693,17 @@ export const zFinishCoursePath = z.object({
  * Course finished and certificate issued
  */
 export const zFinishCourseResponse = z.void();
+
+export const zGetCourseForUpdatePath = z.object({
+    courseId: z.uuid()
+});
+
+/**
+ * Course data for update
+ */
+export const zGetCourseForUpdateResponse = z.object({
+    data: zCourseCourseDetail
+});
 
 export const zUnhideCoursePath = z.object({
     courseId: z.uuid()
@@ -772,6 +790,10 @@ export const zGetCourseStudentsResponse = z.object({
     pagination: zCoursePagination
 });
 
+export const zSubmitCoursePath = z.object({
+    courseId: z.uuid()
+});
+
 export const zDeleteCoursePath = z.object({
     courseId: z.uuid()
 });
@@ -801,7 +823,6 @@ export const zReplyLessonCommentPath = z.object({
 });
 
 export const zMoveSectionBody = z.object({
-    courseId: zCourseId,
     order: z.int()
 });
 
@@ -843,8 +864,7 @@ export const zUpdateSectionTitlePath = z.object({
 
 export const zCreateSectionBody = z.object({
     courseId: zCourseId,
-    title: z.string().min(1).max(255),
-    order: z.int().gte(0)
+    title: z.string().min(1).max(255)
 });
 
 export const zCreateSectionPath = z.object({
@@ -894,6 +914,13 @@ export const zMoveLessonPath = z.object({
     courseId: z.uuid(),
     sectionId: z.uuid(),
     lessonId: z.uuid()
+});
+
+/**
+ * Request body for get lesson progress
+ */
+export const zGetLessonProgressBody = z.object({
+    enrollmentId: z.uuid()
 });
 
 export const zGetLessonProgressPath = z.object({
@@ -994,8 +1021,12 @@ export const zGetLessonDetailResponse = z.object({
 });
 
 export const zCreateLessonBody = z.union([
-    zCourseVideoLessonWritable,
-    zCourseTestLessonWritable
+    z.object({
+        lessonType: z.literal('video')
+    }).and(zCourseVideoLessonWritable),
+    z.object({
+        lessonType: z.literal('test')
+    }).and(zCourseTestLessonWritable)
 ]);
 
 export const zCreateLessonPath = z.object({

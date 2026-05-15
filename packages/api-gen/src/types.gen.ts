@@ -93,11 +93,13 @@ export type CourseCourseAnalytics = {
 export type CourseSection = {
     readonly id: string;
     title: string;
+    readonly originalSectionID?: string;
 };
 
 export type CourseLesson = {
-    readonly id: string;
+    readonly id?: string;
     title: string;
+    readonly originalLessonID?: string;
 };
 
 export type CourseCourseDetailSectionItem = CourseSection & {
@@ -123,7 +125,7 @@ export type CourseCourseProgress = {
 export type CourseReview = {
     readonly id: string;
     readonly courseId?: string;
-    readonly userId: string;
+    userId: CoursePropertiesId;
     rating: number;
     comment: string;
     readonly createdAt: Date;
@@ -170,12 +172,13 @@ export type CourseLessonComment = {
 export type CourseLessonProgress = {
     readonly id: string;
     userId: CoursePropertiesId;
-    lessonId: CourseLessonPropertiesId;
+    lessonId: string;
     isCompleted: boolean;
 };
 
 export type CourseVideoLessonProgress = CourseLessonProgress & {
     watchedSeconds: number;
+    lastViewedAt: Date;
 };
 
 export type CourseLessonProgressDetail = CourseVideoLessonProgress | CourseLessonProgress;
@@ -204,7 +207,7 @@ export type CourseTestLesson = CourseLesson & {
 
 export type CourseVideoLesson = CourseLesson & {
     lessonType: 'video';
-    readonly videoUrl: string;
+    readonly videoUrl?: string;
     duration: bigint;
 };
 
@@ -408,6 +411,7 @@ export type CourseCourseProgressWritable = {
  * Represents a single review for a course.
  */
 export type CourseReviewWritable = {
+    userId: CoursePropertiesId;
     rating: number;
     comment: string;
 };
@@ -420,11 +424,14 @@ export type CourseLessonCommentWritable = {
 };
 
 export type CourseLessonProgressWritable = {
+    userId: CoursePropertiesId;
+    lessonId: string;
     isCompleted: boolean;
 };
 
 export type CourseVideoLessonProgressWritable = CourseLessonProgressWritable & {
     watchedSeconds: number;
+    lastViewedAt: Date;
 };
 
 export type CourseLessonProgressDetailWritable = CourseVideoLessonProgressWritable | CourseLessonProgressWritable;
@@ -1331,9 +1338,7 @@ export type BookmarkCourseResponses = {
 };
 
 export type DeclineCourseData = {
-    body?: {
-        reason?: string;
-    };
+    body?: never;
     path: {
         /**
          * Unique identifier of the course
@@ -1430,6 +1435,52 @@ export type GetCourseDetailResponses = {
 
 export type GetCourseDetailResponse = GetCourseDetailResponses[keyof GetCourseDetailResponses];
 
+export type CreateDraftVersionData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/draft';
+};
+
+export type CreateDraftVersionErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type CreateDraftVersionError = CreateDraftVersionErrors[keyof CreateDraftVersionErrors];
+
+export type CreateDraftVersionResponses = {
+    /**
+     * Draft version created
+     */
+    201: unknown;
+};
+
 export type FinishCourseData = {
     body?: never;
     path: {
@@ -1477,6 +1528,56 @@ export type FinishCourseResponses = {
 };
 
 export type FinishCourseResponse = FinishCourseResponses[keyof FinishCourseResponses];
+
+export type GetCourseForUpdateData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/for-update';
+};
+
+export type GetCourseForUpdateErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetCourseForUpdateError = GetCourseForUpdateErrors[keyof GetCourseForUpdateErrors];
+
+export type GetCourseForUpdateResponses = {
+    /**
+     * Course data for update
+     */
+    200: {
+        data: CourseCourseDetail;
+    };
+};
+
+export type GetCourseForUpdateResponse = GetCourseForUpdateResponses[keyof GetCourseForUpdateResponses];
 
 export type UnhideCourseData = {
     body?: never;
@@ -1823,6 +1924,52 @@ export type GetCourseStudentsResponses = {
 
 export type GetCourseStudentsResponse = GetCourseStudentsResponses[keyof GetCourseStudentsResponses];
 
+export type SubmitCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Unique identifier of the course
+         */
+        courseId: string;
+    };
+    query?: never;
+    url: '/course/courses/{courseId}/submit';
+};
+
+export type SubmitCourseErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type SubmitCourseError = SubmitCourseErrors[keyof SubmitCourseErrors];
+
+export type SubmitCourseResponses = {
+    /**
+     * Course content submitted for processing
+     */
+    202: unknown;
+};
+
 export type DeleteCourseData = {
     body?: never;
     path: {
@@ -2006,7 +2153,6 @@ export type ReplyLessonCommentResponses = {
 
 export type MoveSectionData = {
     body: {
-        courseId: CourseId;
         /**
          * New order of the section within the course (0-based index)
          */
@@ -2171,7 +2317,6 @@ export type CreateSectionData = {
     body: {
         courseId: CourseId;
         title: string;
-        order: number;
     };
     path: {
         /**
@@ -2423,7 +2568,12 @@ export type MoveLessonResponses = {
 };
 
 export type GetLessonProgressData = {
-    body?: never;
+    /**
+     * Request body for get lesson progress
+     */
+    body: {
+        enrollmentId: string;
+    };
     path: {
         /**
          * Unique identifier of the course
@@ -2785,7 +2935,11 @@ export type GetLessonDetailResponses = {
 export type GetLessonDetailResponse = GetLessonDetailResponses[keyof GetLessonDetailResponses];
 
 export type CreateLessonData = {
-    body: CourseVideoLessonWritable | CourseTestLessonWritable;
+    body: ({
+        lessonType: 'video';
+    } & CourseVideoLessonWritable) | ({
+        lessonType: 'test';
+    } & CourseTestLessonWritable);
     path: {
         /**
          * Unique identifier of the course

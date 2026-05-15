@@ -27,18 +27,110 @@ var (
 )
 
 // GetCourseByID implements [app.GetCoursesReadModel].
-func (r *CourseReadRepo) GetCourseByID(ctx context.Context, courseID uuid.UUID) (*app.Course, error) {
-	panic("unimplemented")
+func (r *CourseReadRepo) GetCourseByID(ctx context.Context, query *app.GetCourseLandingPage) (*app.Course, error) {
+	q := r.db.WithContext(ctx).Where("course_id = ?", query.CourseID)
+
+	if query.Status != nil && *query.Status != "" {
+		q = q.Where("full_course_content->>'status' = ?", string(*query.Status))
+	}
+	if query.Hidden != nil {
+		q = q.Where("hidden = ?", *query.Hidden)
+	}
+
+	var m model.ReadCourse
+	if err := q.First(&m).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.NewCourseNotFound(query.CourseID, err)
+		}
+		return nil, err
+	}
+	return r.toAppCourse(ctx, &m)
 }
 
 // GetMyBookmarkedCourses implements [app.GetCoursesReadModel].
 func (r *CourseReadRepo) GetMyBookmarkedCourses(ctx context.Context, params *app.GetMyBookmarkedCourses) (*app.Paginated[app.Course], error) {
-	panic("unimplemented")
+	q := r.db.WithContext(ctx).Model(new(model.ReadCourse)).
+		Joins("INNER JOIN bookmarks ON bookmarks.course_id = read_courses.course_id").
+		Where("bookmarks.user_id = ?", params.UserID)
+
+	if params.Status != nil && *params.Status != "" {
+		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
+	}
+	if params.Hidden != nil {
+		q = q.Where("hidden = ?", *params.Hidden)
+	}
+	if params.Order != nil && *params.Order == app.SearchCoursesOrderDesc {
+		q = q.Order("read_courses.published_at DESC")
+	} else {
+		q = q.Order("read_courses.published_at ASC")
+	}
+
+	var total int64
+	if err := q.Count(&total).Error; err != nil {
+		return nil, err
+	}
+
+	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
+	var ms []model.ReadCourse
+	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+		return nil, err
+	}
+
+	courses := make([]app.Course, 0, len(ms))
+	for i := range ms {
+		c, err := r.toAppCourse(ctx, &ms[i])
+		if err != nil {
+			return nil, err
+		}
+		courses = append(courses, *c)
+	}
+	return &app.Paginated[app.Course]{
+		Data:       courses,
+		Pagination: buildPagination(params.Paginate.Page, params.Paginate.Limit, int(total)),
+	}, nil
 }
 
 // GetMyEnrolledCourses implements [app.GetCoursesReadModel].
 func (r *CourseReadRepo) GetMyEnrolledCourses(ctx context.Context, params *app.GetMyEnrolledCourses) (*app.Paginated[app.Course], error) {
-	panic("unimplemented")
+	q := r.db.WithContext(ctx).Model(new(model.ReadCourse)).
+		Joins("INNER JOIN enrollments ON enrollments.course_id = read_courses.course_id").
+		Where("enrollments.learner_id = ?", params.LearnerID)
+
+	if params.Status != nil && *params.Status != "" {
+		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
+	}
+	if params.Hidden != nil {
+		q = q.Where("hidden = ?", *params.Hidden)
+	}
+	if params.Order != nil && *params.Order == app.SearchCoursesOrderDesc {
+		q = q.Order("read_courses.published_at DESC")
+	} else {
+		q = q.Order("read_courses.published_at ASC")
+	}
+
+	var total int64
+	if err := q.Count(&total).Error; err != nil {
+		return nil, err
+	}
+
+	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
+	var ms []model.ReadCourse
+	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+		return nil, err
+	}
+
+	courses := make([]app.Course, 0, len(ms))
+	for i := range ms {
+		c, err := r.toAppCourse(ctx, &ms[i])
+		if err != nil {
+			return nil, err
+		}
+		courses = append(courses, *c)
+	}
+	return &app.Paginated[app.Course]{
+		Data:       courses,
+		Pagination: buildPagination(params.Paginate.Page, params.Paginate.Limit, int(total)),
+	}, nil
 }
 
 func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID uuid.UUID) (*app.Course, error) {
@@ -55,54 +147,7 @@ func (r *CourseReadRepo) GetCourse(ctx context.Context, courseID uuid.UUID) (*ap
 	return r.toAppCourse(ctx, &m)
 }
 
-// func (r *CourseReadRepo) SearchCourses(ctx context.Context, params *app.SearchCourses) (*app.Paginated[app.Course], error) {
-// 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
-
-// 	if params.Query != "" {
-// 		q = q.Where("title ILIKE ?", "%"+params.Query+"%")
-// 	}
-// 	if len(params.InstructorIDs) > 0 {
-// 		q = q.Where("full_course_content->>'instructor_id' IN ?", params.InstructorIDs)
-// 	}
-// 	if params.Hidden != nil {
-// 		q = q.Where("hidden = ?", *params.Hidden)
-// 	}
-// 	if params.Status != nil {
-// 		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
-// 	}
-// 	if params.Order != nil && *params.Order == app.SearchCoursesOrderAsc {
-// 		q = q.Order("published_at ASC")
-// 	} else {
-// 		q = q.Order("published_at DESC")
-// 	}
-
-// 	var total int64
-// 	if err := q.Count(&total).Error; err != nil {
-// 		return nil, err
-// 	}
-
-// 	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
-// 	var ms []model.ReadCourse
-// 	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
-// 		return nil, err
-// 	}
-
-// 	courses := make([]app.Course, 0, len(ms))
-// 	for i := range ms {
-// 		c, err := r.toAppCourse(ctx, &ms[i])
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		courses = append(courses, *c)
-// 	}
-
-// 	return &app.Paginated[app.Course]{
-// 		Data:       courses,
-// 		Pagination: buildPagination(params.Paginate.Page, params.Paginate.Limit, int(total)),
-// 	}, nil
-// }
-
-func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID) (*app.CourseDetail, error) {
+func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID, deleted *bool) (*app.CourseDetail, error) {
 	id := courseID
 
 	var m model.ReadCourse
@@ -116,14 +161,44 @@ func (r *CourseReadRepo) GetCourseDetail(ctx context.Context, courseID uuid.UUID
 	return r.toAppCourseDetail(ctx, &m)
 }
 
+func (r *CourseReadRepo) GetCourseDetailForUpdate(ctx context.Context, originalCourseID uuid.UUID, _ *bool, status *app.CourseStatus) (*app.CourseDetail, error) {
+	q := r.db.WithContext(ctx).Where("original_course_id = ?", originalCourseID)
+
+	if status != nil && *status != "" {
+		q = q.Where("full_course_content->>'status' = ?", string(*status))
+	}
+
+	var m model.ReadCourse
+	if err := q.First(&m).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.NewCourseNotFound(originalCourseID, err)
+		}
+		return nil, err
+	}
+	return r.toAppCourseDetail(ctx, &m)
+}
+
 func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses) (*app.Paginated[app.Course], error) {
 	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
 
 	if params.Status != nil && *params.Status != "" {
 		q = q.Where("full_course_content->>'status' = ?", string(*params.Status))
 	}
-	if params.Hidden != nil && *params.Hidden {
-		q = q.Where("hidden = true")
+	if params.Hidden != nil {
+		q = q.Where("hidden = ?", *params.Hidden)
+	}
+	if params.InstructorID != nil && *params.InstructorID != "" {
+		q = q.Where("full_course_content->>'instructor_id' = ?", *params.InstructorID)
+	}
+	if params.Query != nil && *params.Query != "" {
+		q = q.Where("title ILIKE ?", "%"+*params.Query+"%")
+	}
+	if params.HaveOriginalCourse != nil {
+		if *params.HaveOriginalCourse {
+			q = q.Where("original_course_id IS NOT NULL")
+		} else {
+			q = q.Where("original_course_id IS NULL")
+		}
 	}
 
 	if params.Order != nil && *params.Order == app.SearchCoursesOrderDesc {
@@ -184,9 +259,13 @@ func (r *CourseReadRepo) toAppCourse(_ context.Context, m *model.ReadCourse) (*a
 	// 	}
 	// 	introVideoURL = url
 	// }
+	var originalCourseID uuid.UUID
+	if m.OriginalCourseID != nil {
+		originalCourseID = *m.OriginalCourseID
+	}
 	return &app.Course{
 		ID:               m.CourseID,
-		OriginalCourseID: uuid.Nil,
+		OriginalCourseID: originalCourseID,
 		Hidden:           m.Hidden,
 		Title:            m.FullCourseContent.Title,
 		InstructorID:     m.FullCourseContent.InstructorID,
@@ -282,6 +361,15 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 }
 
 func (r *CourseReadRepo) GetMyCourses(ctx context.Context, params *app.GetMyCourses) (*app.Paginated[app.Course], error) {
-	// TODO: Implement GetMyCourses
-	panic("not implemented")
+	instructorID := params.UserID
+	status := app.CourseStatusApproved
+	return r.GetCourses(ctx, &app.GetCourses{
+		InstructorID:       &instructorID,
+		Status:             &status,
+		Hidden:             params.Hidden,
+		Paginate:           params.Paginate,
+		Order:              params.Order,
+		Query:              nil,
+		HaveOriginalCourse: nil,
+	})
 }

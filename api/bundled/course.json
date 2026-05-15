@@ -1041,23 +1041,6 @@
             "$ref": "#/components/parameters/courseIdPath"
           }
         ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "reason": {
-                    "type": "string",
-                    "maxLength": 1000,
-                    "example": "Course content does not meet quality requirements."
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "204": {
             "description": "Course declined"
@@ -1144,6 +1127,55 @@
         }
       }
     },
+    "/course/courses/{courseId}/draft": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Create draft version of a course",
+        "operationId": "createDraftVersion",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Draft version created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/course/courses/{courseId}/finish": {
       "post": {
         "security": [
@@ -1174,6 +1206,70 @@
         "responses": {
           "204": {
             "description": "Course finished and certificate issued"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/course/courses/{courseId}/for-update": {
+      "get": {
+        "security": [
+          {
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Get course for update",
+        "operationId": "getCourseForUpdate",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Course data for update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CourseDetail"
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequestError"
@@ -1614,6 +1710,55 @@
         }
       }
     },
+    "/course/courses/{courseId}/submit": {
+      "post": {
+        "security": [
+          {
+            "Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course"
+        ],
+        "summary": "Submit course",
+        "operationId": "submitCourse",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/courseIdPath"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Course content submitted for processing"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
     "/course/courses/{courseId}": {
       "delete": {
         "security": [
@@ -1887,9 +2032,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "courseId": {
-                    "$ref": "#/components/schemas/id"
-                  },
                   "order": {
                     "type": "integer",
                     "description": "New order of the section within the course (0-based index)",
@@ -1897,7 +2039,6 @@
                   }
                 },
                 "required": [
-                  "courseId",
                   "order"
                 ]
               }
@@ -2119,8 +2260,7 @@
                 "type": "object",
                 "required": [
                   "courseId",
-                  "title",
-                  "order"
+                  "title"
                 ],
                 "properties": {
                   "courseId": {
@@ -2131,11 +2271,6 @@
                     "minLength": 1,
                     "maxLength": 255,
                     "example": "OOP Fundamentals"
-                  },
-                  "order": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "example": 1
                   }
                 }
               }
@@ -2496,6 +2631,27 @@
             "$ref": "#/components/parameters/lessonIdPath"
           }
         ],
+        "requestBody": {
+          "description": "Request body for get lesson progress",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enrollmentId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                  }
+                },
+                "required": [
+                  "enrollmentId"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Lesson progress",
@@ -2998,6 +3154,13 @@
           "content": {
             "application/json": {
               "schema": {
+                "discriminator": {
+                  "propertyName": "lessonType",
+                  "mapping": {
+                    "video": "#/components/schemas/VideoLesson",
+                    "test": "#/components/schemas/TestLesson"
+                  }
+                },
                 "oneOf": [
                   {
                     "$ref": "#/components/schemas/VideoLesson"
@@ -3473,6 +3636,12 @@
             "minLength": 1,
             "maxLength": 255,
             "example": "OOP Fundamentals"
+          },
+          "originalSectionID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+            "readOnly": true
           }
         },
         "required": [
@@ -3492,10 +3661,15 @@
           "title": {
             "type": "string",
             "example": "Introduction to Python"
+          },
+          "originalLessonID": {
+            "type": "string",
+            "format": "uuid",
+            "example": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+            "readOnly": true
           }
         },
         "required": [
-          "id",
           "title"
         ]
       },
@@ -3603,10 +3777,7 @@
             "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "userId": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true,
-            "example": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+            "$ref": "#/components/schemas/properties-id"
           },
           "rating": {
             "type": "integer",
@@ -3758,11 +3929,12 @@
             "readOnly": true
           },
           "userId": {
-            "$ref": "#/components/schemas/properties-id",
-            "readOnly": true
+            "$ref": "#/components/schemas/properties-id"
           },
           "lessonId": {
-            "$ref": "#/components/schemas/Lesson_properties-id"
+            "type": "string",
+            "format": "uuid",
+            "example": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11"
           },
           "isCompleted": {
             "type": "boolean",
@@ -3789,10 +3961,16 @@
                 "format": "float",
                 "minimum": 0,
                 "example": 245.5
+              },
+              "lastViewedAt": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-06-01T12:34:56Z"
               }
             },
             "required": [
-              "watchedSeconds"
+              "watchedSeconds",
+              "lastViewedAt"
             ]
           }
         ]
@@ -3940,7 +4118,6 @@
             "required": [
               "lessonType",
               "videoKey",
-              "videoUrl",
               "duration"
             ]
           }

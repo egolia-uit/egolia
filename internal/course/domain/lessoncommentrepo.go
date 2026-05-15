@@ -7,9 +7,10 @@ import (
 )
 
 type LessonCommentRepo interface {
-	Get(ctx context.Context, params LessonCommentRepoGet, forUpdate bool) (*LessonComment, error)
+	Get(ctx context.Context, params LessonCommentRepoGet) (*LessonComment, error)
 	GetRecursive(ctx context.Context, params LessonCommentRepoGetRecursive, forUpdate bool) ([]*LessonComment, error)
 	Save(ctx context.Context, lessonComment *LessonComment) error
+	DeleteReplies(ctx context.Context, commentID uuid.UUID) error
 }
 
 type LessonCommentRepoGet struct {
