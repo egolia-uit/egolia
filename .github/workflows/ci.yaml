@@ -139,7 +139,7 @@ jobs:
       - name: Get token
         id: get-bot-token
         if: ${{ env.SHOULD_RELEASE == 'true' }}
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           private-key: ${{ secrets.EGOLIA_BOT_PRIVATE_KEY }}
           app-id: ${{ vars.EGOLIA_BOT_APP_ID }}
