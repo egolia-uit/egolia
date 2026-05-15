@@ -11,10 +11,14 @@ import (
 var ReadModelProviderSet = wire.NewSet(
 	readmodel.NewCourseReadRepo,
 	readmodel.NewLessonReadRepo,
+	readmodel.NewReviewReadRepo,
+	readmodel.NewCertificateReadRepo,
 	wire.Bind(new(app.GetCourseReadModel), new(*readmodel.CourseReadRepo)),
 	wire.Bind(new(app.GetCoursesReadModel), new(*readmodel.CourseReadRepo)),
 	wire.Bind(new(app.GetCourseDetailReadModel), new(*readmodel.CourseReadRepo)),
 	wire.Bind(new(app.GetLessonDetailReadModel), new(*readmodel.LessonReadRepo)),
+	wire.Bind(new(app.GetCourseReviewsReadModel), new(*readmodel.ReviewReadRepo)),
+	wire.Bind(new(app.GetMyCertificatesReadModel), new(*readmodel.CertificateReadRepo)),
 )
 
 var RepoProviderSet = wire.NewSet(
