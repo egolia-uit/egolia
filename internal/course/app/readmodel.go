@@ -11,7 +11,10 @@ type GetCourseReadModel interface {
 }
 
 type GetCourseDetailReadModel interface {
-	GetCourseDetail(ctx context.Context, courseID uuid.UUID) (*CourseDetail, error)
+	GetCourseDetail(ctx context.Context, courseID uuid.UUID, deleted *bool) (*CourseDetail, error)
+
+	// GetCourseDetailForUpdate is used to get course detail for update. It will return draft version of the course has this ID
+	GetCourseDetailForUpdate(ctx context.Context, originalCourseID uuid.UUID, deleted *bool, status *CourseStatus) (*CourseDetail, error)
 }
 
 type GetLessonDetailReadModel interface {
@@ -33,5 +36,16 @@ type GetCoursesReadModel interface {
 	GetCourses(ctx context.Context, params *GetCourses) (*Paginated[Course], error)
 	GetMyBookmarkedCourses(ctx context.Context, params *GetMyBookmarkedCourses) (*Paginated[Course], error)
 	GetMyEnrolledCourses(ctx context.Context, params *GetMyEnrolledCourses) (*Paginated[Course], error)
-	GetCourseByID(ctx context.Context, courseID uuid.UUID) (*Course, error)
+	GetCourseByID(ctx context.Context, query *GetCourseLandingPage) (*Course, error)
+}
+
+type GetCourseReviewsReadModel interface {
+	GetCourseReviews(ctx context.Context, params *GetCourseReviews) (*Paginated[Review], error)
+}
+type GetMyCertificatesReadModel interface {
+	GetMyCertificates(ctx context.Context, userID string, paginate PaginationParams, order *SearchCoursesOrder) (*Paginated[Certificate], error)
+	// GetCertificateByID(ctx context.Context, certID uuid.UUID) (*Certificate, error)
+}
+type GetLessonCommentsReadModel interface {
+	GetLessonComments(ctx context.Context, params *GetLessonComments) ([]*LessonComment, error)
 }

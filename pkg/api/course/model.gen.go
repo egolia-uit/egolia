@@ -286,9 +286,10 @@ type CourseDetail struct {
 
 // CourseDetailSectionItem defines model for CourseDetailSectionItem.
 type CourseDetailSectionItem struct {
-	Id      *openapi_types.UUID `json:"id,omitempty"`
-	Lessons []Lesson            `json:"lessons"`
-	Title   string              `json:"title"`
+	Id                *openapi_types.UUID `json:"id,omitempty"`
+	Lessons           []Lesson            `json:"lessons"`
+	OriginalSectionID *openapi_types.UUID `json:"originalSectionID,omitempty"`
+	Title             string              `json:"title"`
 }
 
 // CourseProgress defines model for CourseProgress.
@@ -339,8 +340,9 @@ type Error struct {
 
 // Lesson defines model for Lesson.
 type Lesson struct {
-	Id    *openapi_types.UUID `json:"id,omitempty"`
-	Title string              `json:"title"`
+	Id               *openapi_types.UUID `json:"id,omitempty"`
+	OriginalLessonID *openapi_types.UUID `json:"originalLessonID,omitempty"`
+	Title            string              `json:"title"`
 }
 
 // LessonComment defines model for LessonComment.
@@ -364,7 +366,7 @@ type LessonDetail struct {
 type LessonProgress struct {
 	Id          *openapi_types.UUID `json:"id,omitempty"`
 	IsCompleted bool                `json:"isCompleted"`
-	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
+	LessonId    openapi_types.UUID  `json:"lessonId"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId PropertiesId `json:"userId"`
@@ -409,13 +411,16 @@ type Review struct {
 	CreatedAt *time.Time          `json:"createdAt,omitempty"`
 	Id        *openapi_types.UUID `json:"id,omitempty"`
 	Rating    int                 `json:"rating"`
-	UserId    *openapi_types.UUID `json:"userId,omitempty"`
+
+	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+	UserId PropertiesId `json:"userId"`
 }
 
 // Section defines model for Section.
 type Section struct {
-	Id    *openapi_types.UUID `json:"id,omitempty"`
-	Title string              `json:"title"`
+	Id                *openapi_types.UUID `json:"id,omitempty"`
+	OriginalSectionID *openapi_types.UUID `json:"originalSectionID,omitempty"`
+	Title             string              `json:"title"`
 }
 
 // TestAnswer defines model for TestAnswer.
@@ -427,11 +432,12 @@ type TestAnswer struct {
 
 // TestLesson defines model for TestLesson.
 type TestLesson struct {
-	Id           *openapi_types.UUID  `json:"id,omitempty"`
-	LessonType   TestLessonLessonType `json:"lessonType"`
-	QuestionType QuestionType         `json:"questionType"`
-	Questions    []TestQuestion       `json:"questions"`
-	Title        string               `json:"title"`
+	Id               *openapi_types.UUID  `json:"id,omitempty"`
+	LessonType       TestLessonLessonType `json:"lessonType"`
+	OriginalLessonID *openapi_types.UUID  `json:"originalLessonID,omitempty"`
+	QuestionType     QuestionType         `json:"questionType"`
+	Questions        []TestQuestion       `json:"questions"`
+	Title            string               `json:"title"`
 }
 
 // TestLessonLessonType defines model for TestLesson.LessonType.
@@ -446,12 +452,13 @@ type TestQuestion struct {
 
 // VideoLesson defines model for VideoLesson.
 type VideoLesson struct {
-	Duration   int64                 `json:"duration"`
-	Id         *openapi_types.UUID   `json:"id,omitempty"`
-	LessonType VideoLessonLessonType `json:"lessonType"`
-	Title      string                `json:"title"`
-	VideoKey   *string               `json:"videoKey,omitempty"`
-	VideoUrl   *string               `json:"videoUrl,omitempty"`
+	Duration         int64                 `json:"duration"`
+	Id               *openapi_types.UUID   `json:"id,omitempty"`
+	LessonType       VideoLessonLessonType `json:"lessonType"`
+	OriginalLessonID *openapi_types.UUID   `json:"originalLessonID,omitempty"`
+	Title            string                `json:"title"`
+	VideoKey         *string               `json:"videoKey,omitempty"`
+	VideoUrl         *string               `json:"videoUrl,omitempty"`
 }
 
 // VideoLessonLessonType defines model for VideoLesson.LessonType.
@@ -459,9 +466,10 @@ type VideoLessonLessonType string
 
 // VideoLessonProgress defines model for VideoLessonProgress.
 type VideoLessonProgress struct {
-	Id          *openapi_types.UUID `json:"id,omitempty"`
-	IsCompleted bool                `json:"isCompleted"`
-	LessonId    *LessonPropertiesId `json:"lessonId,omitempty"`
+	Id           *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted  bool                `json:"isCompleted"`
+	LastViewedAt time.Time           `json:"lastViewedAt"`
+	LessonId     openapi_types.UUID  `json:"lessonId"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId         PropertiesId `json:"userId"`
@@ -635,11 +643,6 @@ type GetMyEnrolledCoursesParams struct {
 // GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParamsOrder string
 
-// DeclineCourseJSONBody defines parameters for DeclineCourse.
-type DeclineCourseJSONBody struct {
-	Reason *string `json:"reason,omitempty"`
-}
-
 // GetCourseReviewsParams defines parameters for GetCourseReviews.
 type GetCourseReviewsParams struct {
 	// Page Page number for pagination
@@ -661,7 +664,6 @@ type ReviewCourseJSONBody struct {
 // CreateSectionJSONBody defines parameters for CreateSection.
 type CreateSectionJSONBody struct {
 	CourseId *Id    `json:"courseId,omitempty"`
-	Order    int    `json:"order"`
 	Title    string `json:"title"`
 }
 
@@ -689,6 +691,11 @@ type MoveLessonJSONBody struct {
 	TargetSectionId openapi_types.UUID `json:"targetSectionId"`
 }
 
+// GetLessonProgressJSONBody defines parameters for GetLessonProgress.
+type GetLessonProgressJSONBody struct {
+	EnrollmentId openapi_types.UUID `json:"enrollmentId"`
+}
+
 // EditVideoLessonJSONBody defines parameters for EditVideoLesson.
 type EditVideoLessonJSONBody struct {
 	Duration *int64  `json:"duration,omitempty"`
@@ -698,8 +705,6 @@ type EditVideoLessonJSONBody struct {
 
 // MoveSectionJSONBody defines parameters for MoveSection.
 type MoveSectionJSONBody struct {
-	CourseId *Id `json:"courseId,omitempty"`
-
 	// Order New order of the section within the course (0-based index)
 	Order int `json:"order"`
 }
@@ -759,9 +764,6 @@ type CreateCourseJSONRequestBody = Course
 // UpdateCourseJSONRequestBody defines body for UpdateCourse for application/json ContentType.
 type UpdateCourseJSONRequestBody = Course
 
-// DeclineCourseJSONRequestBody defines body for DeclineCourse for application/json ContentType.
-type DeclineCourseJSONRequestBody DeclineCourseJSONBody
-
 // ReviewCourseJSONRequestBody defines body for ReviewCourse for application/json ContentType.
 type ReviewCourseJSONRequestBody ReviewCourseJSONBody
 
@@ -779,6 +781,9 @@ type CommentOnLessonJSONRequestBody CommentOnLessonJSONBody
 
 // MoveLessonJSONRequestBody defines body for MoveLesson for application/json ContentType.
 type MoveLessonJSONRequestBody MoveLessonJSONBody
+
+// GetLessonProgressJSONRequestBody defines body for GetLessonProgress for application/json ContentType.
+type GetLessonProgressJSONRequestBody GetLessonProgressJSONBody
 
 // EditTestLessonJSONRequestBody defines body for EditTestLesson for application/json ContentType.
 type EditTestLessonJSONRequestBody = TestLesson
@@ -961,6 +966,7 @@ func (t CreateLessonJSONBody) AsVideoLesson() (VideoLesson, error) {
 
 // FromVideoLesson overwrites any union data inside the CreateLessonJSONBody as the provided VideoLesson
 func (t *CreateLessonJSONBody) FromVideoLesson(v VideoLesson) error {
+	v.LessonType = "video"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -968,6 +974,7 @@ func (t *CreateLessonJSONBody) FromVideoLesson(v VideoLesson) error {
 
 // MergeVideoLesson performs a merge with any union data inside the CreateLessonJSONBody, using the provided VideoLesson
 func (t *CreateLessonJSONBody) MergeVideoLesson(v VideoLesson) error {
+	v.LessonType = "video"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -987,6 +994,7 @@ func (t CreateLessonJSONBody) AsTestLesson() (TestLesson, error) {
 
 // FromTestLesson overwrites any union data inside the CreateLessonJSONBody as the provided TestLesson
 func (t *CreateLessonJSONBody) FromTestLesson(v TestLesson) error {
+	v.LessonType = "test"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -994,6 +1002,7 @@ func (t *CreateLessonJSONBody) FromTestLesson(v TestLesson) error {
 
 // MergeTestLesson performs a merge with any union data inside the CreateLessonJSONBody, using the provided TestLesson
 func (t *CreateLessonJSONBody) MergeTestLesson(v TestLesson) error {
+	v.LessonType = "test"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -1002,6 +1011,29 @@ func (t *CreateLessonJSONBody) MergeTestLesson(v TestLesson) error {
 	merged, err := runtime.JSONMerge(t.union, b)
 	t.union = merged
 	return err
+}
+
+func (t CreateLessonJSONBody) Discriminator() (string, error) {
+	var discriminator struct {
+		Discriminator string `json:"lessonType"`
+	}
+	err := json.Unmarshal(t.union, &discriminator)
+	return discriminator.Discriminator, err
+}
+
+func (t CreateLessonJSONBody) ValueByDiscriminator() (interface{}, error) {
+	discriminator, err := t.Discriminator()
+	if err != nil {
+		return nil, err
+	}
+	switch discriminator {
+	case "test":
+		return t.AsTestLesson()
+	case "video":
+		return t.AsVideoLesson()
+	default:
+		return nil, errors.New("unknown discriminator value: " + discriminator)
+	}
 }
 
 func (t CreateLessonJSONBody) MarshalJSON() ([]byte, error) {

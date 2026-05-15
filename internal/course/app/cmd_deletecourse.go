@@ -55,7 +55,6 @@ func (h *DeleteCourseHandler) Handle(ctx context.Context, cmd *DeleteCourse) err
 		}); err != nil {
 			return err
 		}
-		// return repoRegistry.Course().Save(ctx, course)
-		return nil
+		return repoRegistry.Course().Save(ctx, course)
 	})
 }

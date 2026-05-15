@@ -62,8 +62,13 @@ paths:
     $ref: ./paths/courses_{courseId}_decline.yaml
   /course/courses/{courseId}/detail:
     $ref: ./paths/courses_{courseId}_detail.yaml
+  /course/courses/{courseId}/draft:
+    $ref: ./paths/courses_{courseId}_draft.yaml
+
   /course/courses/{courseId}/finish:
     $ref: ./paths/courses_{courseId}_finish.yaml
+  /course/courses/{courseId}/for-update:
+    $ref: ./paths/courses_{courseId}_for-update.yaml
   /course/courses/{courseId}/hide:
     $ref: ./paths/courses_{courseId}_hide.yaml
   /course/courses/{courseId}/landing:
@@ -74,6 +79,8 @@ paths:
     $ref: ./paths/courses_{courseId}_reviews.yaml
   /course/courses/{courseId}/students:
     $ref: ./paths/courses_{courseId}_students.yaml
+  /course/courses/{courseId}/submit:
+    $ref: ./paths/courses_{courseId}_submit.yaml
   /course/courses/{courseId}:
     $ref: ./paths/courses_{courseId}.yaml
   /course/courses:

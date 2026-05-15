@@ -9,6 +9,8 @@ import (
 
 type GetCourseLandingPage struct {
 	CourseID uuid.UUID
+	Status   *CourseStatus
+	Hidden   *bool
 }
 
 type GetCourseLandingPageQuery Query[GetCourseLandingPage, *Course]
@@ -25,5 +27,11 @@ func NewGetCourseLandingPageHandler(readModel GetCoursesReadModel, logger *slog.
 var _ Query[GetCourseLandingPage, *Course] = (*GetCourseLandingPageHandler)(nil)
 
 func (h *GetCourseLandingPageHandler) Handle(ctx context.Context, query *GetCourseLandingPage) (*Course, error) {
-	return h.readModel.GetCourseByID(ctx, query.CourseID)
+	hidden := false
+	status := CourseStatusApproved
+	return h.readModel.GetCourseByID(ctx, &GetCourseLandingPage{
+		CourseID: query.CourseID,
+		Status:   &status,
+		Hidden:   &hidden,
+	})
 }

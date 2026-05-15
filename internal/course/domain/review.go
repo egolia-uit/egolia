@@ -94,3 +94,8 @@ func (r *Review) Delete() {
 func (r *Review) CreatedAt() time.Time {
 	return r.createdAt
 }
+
+func (r *Review) Update(comment string, rating int) {
+	r.comment = comment
+	r.rating = rating
+}

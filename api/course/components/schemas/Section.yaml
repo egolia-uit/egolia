@@ -13,6 +13,12 @@ properties:
     maxLength: 255
     example: OOP Fundamentals
 
+  originalSectionID:
+    type: string
+    format: uuid
+    example: 0de4f8f2-3440-4e29-9b88-9cfbbf4476fc
+    readOnly: true
+
 required:
   - id
   - title

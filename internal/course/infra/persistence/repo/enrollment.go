@@ -21,20 +21,23 @@ func NewEnrollmentRepo(db *gorm.DB) *EnrollmentRepo {
 var _ domain.EnrollmentRepo = (*EnrollmentRepo)(nil)
 
 func (r *EnrollmentRepo) ExistsByCourseID(ctx context.Context, courseID uuid.UUID) (bool, error) {
-	panic("unimplemented")
+	var count int64
+	if err := r.db.WithContext(ctx).Model(new(model.Enrollment)).
+		Where("course_id = ?", courseID).
+		Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func (r *EnrollmentRepo) ExistsByCourseAndLearner(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error) {
-	// var count int64
-	// if err := r.db.WithContext(ctx).Model(&model.Enrollment{}).
-	// 	Where("course_id = ? AND learner_id = ?", courseID, learnerID).
-	// 	Count(&count).Error; err != nil {
-	// 	return false, err
-	// }
-	// return count > 0, nil
-
-	// unemplemented
-	return false, nil
+	var count int64
+	if err := r.db.WithContext(ctx).Model(new(model.Enrollment)).
+		Where("course_id = ? AND learner_id = ?", courseID, learnerID).
+		Count(&count).Error; err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func (r *EnrollmentRepo) GetByID(ctx context.Context, params domain.EnrollmentRepoGetByID, forUpdate bool) (*domain.Enrollment, error) {

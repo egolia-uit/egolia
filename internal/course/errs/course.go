@@ -19,6 +19,7 @@ const (
 	CodeCourseNotApproved          Code = "courseNotApproved"
 	CodeCourseAlreadyBookmarked    Code = "courseAlreadyBookmarked"
 	CodeCourseNotPublished         Code = "courseNotPublished"
+	CodeSectionTitleAlreadyExists  Code = "sectionTitleAlreadyExists"
 )
 
 type CourseNotFound struct {
@@ -37,6 +38,11 @@ func NewCourseNotFound(id uuid.UUID, err error) *CourseNotFound {
 	}
 }
 
+var DraftCourseNotFound = &Err{
+	message: "draft course not found",
+	code:    CodeCourseNotFound,
+}
+
 type CourseInvalid struct {
 	Field string
 	Err
@@ -48,6 +54,21 @@ func NewCourseInvalid(field, message string) *CourseInvalid {
 		Err: Err{
 			message: fmt.Sprintf("course %s is invalid: %s", field, message),
 			code:    CodeCourseInvalid,
+		},
+	}
+}
+
+type SectionTitleAlreadyExists struct {
+	Title string
+	Err
+}
+
+func NewSectionTitleAlreadyExists(title string) *SectionTitleAlreadyExists {
+	return &SectionTitleAlreadyExists{
+		Title: title,
+		Err: Err{
+			message: fmt.Sprintf("section with title %s already exists", title),
+			code:    CodeSectionTitleAlreadyExists,
 		},
 	}
 }
@@ -121,13 +142,12 @@ type SectionNotFound struct {
 	Err
 }
 
-func NewSectionNotFound(id uuid.UUID, err error) *SectionNotFound {
+func NewSectionNotFound(id uuid.UUID) *SectionNotFound {
 	return &SectionNotFound{
 		ID: id,
 		Err: Err{
 			message: fmt.Sprintf("section with ID %s not found", id),
 			code:    CodeSectionNotFound,
-			err:     err,
 		},
 	}
 }

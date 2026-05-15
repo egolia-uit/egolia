@@ -5,8 +5,8 @@ import (
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/model"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type LessonCommentRepo struct {
@@ -19,17 +19,18 @@ func NewLessonCommentRepo(db *gorm.DB) *LessonCommentRepo {
 
 var _ domain.LessonCommentRepo = (*LessonCommentRepo)(nil)
 
-func (r *LessonCommentRepo) Get(ctx context.Context, params domain.LessonCommentRepoGet, forUpdate bool) (*domain.LessonComment, error) {
-	db := r.db.WithContext(ctx)
-	if forUpdate {
-		db = db.Clauses(clause.Locking{Strength: "UPDATE"})
-	}
-
+func (r *LessonCommentRepo) Get(ctx context.Context, params domain.LessonCommentRepoGet) (*domain.LessonComment, error) {
 	var m model.LessonComment
-	if err := db.First(&m, "id = ?", params.ID).Error; err != nil {
+	if err := r.db.WithContext(ctx).First(&m, "id = ?", params.ID).Error; err != nil {
 		return nil, err
 	}
 	return m.ToDomain(), nil
+}
+
+func (r *LessonCommentRepo) DeleteReplies(ctx context.Context, commentID uuid.UUID) error {
+	return r.db.WithContext(ctx).
+		Where("parent_comment_id = ?", commentID).
+		Delete(new(model.LessonComment)).Error
 }
 
 // GetRecursive uses a Postgres recursive CTE to fetch a comment and all its descendants.
