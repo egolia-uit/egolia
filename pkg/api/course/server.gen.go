@@ -5025,6 +5025,7 @@ type GetLessonProgressRequestObject struct {
 	CourseId  CourseIdPath  `json:"courseId"`
 	SectionId SectionIdPath `json:"sectionId"`
 	LessonId  LessonIdPath  `json:"lessonId"`
+	Body      *GetLessonProgressJSONRequestBody
 }
 
 type GetLessonProgressResponseObject interface {
@@ -7435,6 +7436,13 @@ func (sh *strictHandler) GetLessonProgress(ctx *gin.Context, courseId CourseIdPa
 	request.CourseId = courseId
 	request.SectionId = sectionId
 	request.LessonId = lessonId
+
+	var body GetLessonProgressJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetLessonProgress(ctx, request.(GetLessonProgressRequestObject))

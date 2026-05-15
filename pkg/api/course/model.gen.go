@@ -364,9 +364,9 @@ type LessonDetail struct {
 
 // LessonProgress defines model for LessonProgress.
 type LessonProgress struct {
-	EnrollmentId *openapi_types.UUID `json:"enrollmentId,omitempty"`
-	Id           *openapi_types.UUID `json:"id,omitempty"`
-	IsCompleted  bool                `json:"isCompleted"`
+	Id          *openapi_types.UUID `json:"id,omitempty"`
+	IsCompleted bool                `json:"isCompleted"`
+	LessonId    openapi_types.UUID  `json:"lessonId"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId PropertiesId `json:"userId"`
@@ -466,10 +466,10 @@ type VideoLessonLessonType string
 
 // VideoLessonProgress defines model for VideoLessonProgress.
 type VideoLessonProgress struct {
-	EnrollmentId *openapi_types.UUID `json:"enrollmentId,omitempty"`
 	Id           *openapi_types.UUID `json:"id,omitempty"`
 	IsCompleted  bool                `json:"isCompleted"`
 	LastViewedAt time.Time           `json:"lastViewedAt"`
+	LessonId     openapi_types.UUID  `json:"lessonId"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
 	UserId         PropertiesId `json:"userId"`
@@ -691,6 +691,11 @@ type MoveLessonJSONBody struct {
 	TargetSectionId openapi_types.UUID `json:"targetSectionId"`
 }
 
+// GetLessonProgressJSONBody defines parameters for GetLessonProgress.
+type GetLessonProgressJSONBody struct {
+	EnrollmentId openapi_types.UUID `json:"enrollmentId"`
+}
+
 // EditVideoLessonJSONBody defines parameters for EditVideoLesson.
 type EditVideoLessonJSONBody struct {
 	Duration *int64  `json:"duration,omitempty"`
@@ -776,6 +781,9 @@ type CommentOnLessonJSONRequestBody CommentOnLessonJSONBody
 
 // MoveLessonJSONRequestBody defines body for MoveLesson for application/json ContentType.
 type MoveLessonJSONRequestBody MoveLessonJSONBody
+
+// GetLessonProgressJSONRequestBody defines body for GetLessonProgress for application/json ContentType.
+type GetLessonProgressJSONRequestBody GetLessonProgressJSONBody
 
 // EditTestLessonJSONRequestBody defines body for EditTestLesson for application/json ContentType.
 type EditTestLessonJSONRequestBody = TestLesson

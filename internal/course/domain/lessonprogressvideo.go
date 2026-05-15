@@ -14,18 +14,18 @@ type LessonProgressVideo struct {
 
 func NewLessonProgressVideo(
 	id uuid.UUID,
-	enrollmentID uuid.UUID,
+	userID string,
 	lessonID uuid.UUID,
 	watchedSeconds *float64,
 	lastViewedAt time.Time,
 ) *LessonProgressVideo {
 	return &LessonProgressVideo{
 		LessonProgressBase: LessonProgressBase{
-			id:           id,
-			enrollmentID: enrollmentID,
-			lessonID:     lessonID,
-			isCompleted:  false,
-			deletedAt:    nil,
+			id:          id,
+			userID:      userID,
+			lessonID:    lessonID,
+			isCompleted: false,
+			deletedAt:   nil,
 		},
 		watchedSeconds: watchedSeconds,
 		lastViewedAt:   lastViewedAt,
@@ -34,7 +34,7 @@ func NewLessonProgressVideo(
 
 func UnmarshalLessonProgressVideo(
 	id uuid.UUID,
-	enrollmentID uuid.UUID,
+	userID string,
 	lessonID uuid.UUID,
 	isCompleted bool,
 	deletedAt *time.Time,
@@ -43,11 +43,11 @@ func UnmarshalLessonProgressVideo(
 ) *LessonProgressVideo {
 	return &LessonProgressVideo{
 		LessonProgressBase: LessonProgressBase{
-			id:           id,
-			enrollmentID: enrollmentID,
-			lessonID:     lessonID,
-			isCompleted:  isCompleted,
-			deletedAt:    deletedAt,
+			id:          id,
+			userID:      userID,
+			lessonID:    lessonID,
+			isCompleted: isCompleted,
+			deletedAt:   deletedAt,
 		},
 		watchedSeconds: watchedSeconds,
 		lastViewedAt:   lastViewedAt,

@@ -172,7 +172,7 @@ export type CourseLessonComment = {
 export type CourseLessonProgress = {
     readonly id: string;
     userId: CoursePropertiesId;
-    readonly enrollmentId: string;
+    lessonId: string;
     isCompleted: boolean;
 };
 
@@ -424,6 +424,8 @@ export type CourseLessonCommentWritable = {
 };
 
 export type CourseLessonProgressWritable = {
+    userId: CoursePropertiesId;
+    lessonId: string;
     isCompleted: boolean;
 };
 
@@ -2566,7 +2568,12 @@ export type MoveLessonResponses = {
 };
 
 export type GetLessonProgressData = {
-    body?: never;
+    /**
+     * Request body for get lesson progress
+     */
+    body: {
+        enrollmentId: string;
+    };
     path: {
         /**
          * Unique identifier of the course

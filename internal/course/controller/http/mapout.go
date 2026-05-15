@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/egolia-uit/egolia/internal/course/app"
+	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
 	"github.com/google/uuid"
@@ -164,4 +165,48 @@ func certificateToDTO(c *app.Certificate) *course.Certificate {
 		CourseId:  (*types.UUID)(&c.CourseID),
 		CreatedAt: c.CreatedAt,
 	}
+}
+
+func lessonCommentToDTO(c *app.LessonComment) *course.LessonComment {
+	return &course.LessonComment{
+		Id:              (*types.UUID)(&c.ID),
+		UserId:          (course.PropertiesId)(c.UserID),
+		LessonId:        (*types.UUID)(&c.LessonID),
+		Content:         c.Content,
+		ParentCommentId: c.ParentCommentID,
+		CreatedAt:       c.CreatedAt,
+	}
+}
+
+func lessonProgressToDTO(lp domain.LessonProgress) *course.LessonProgressDetail {
+	if lp == nil {
+		return nil
+	}
+
+	detail := course.LessonProgressDetail{}
+	lessonID := (types.UUID)(lp.LessonID())
+	switch v := lp.(type) {
+	case *domain.LessonProgressVideo:
+		id := (types.UUID)(v.ID())
+		// Sử dụng From... để gán struct cụ thể vào Union Type
+		_ = detail.FromVideoLessonProgress(course.VideoLessonProgress{
+			Id:             &id,
+			LessonId:       lessonID,
+			WatchedSeconds: float32(*v.WatchedSeconds()),
+			LastViewedAt:   v.LastViewedAt(),
+			UserId:         (course.PropertiesId)(v.UserID()),
+			IsCompleted:    v.IsCompleted(),
+		})
+	case *domain.LessonProgressTest: // Hoặc gộp thành default nếu các loại khác tương tự
+		id := (types.UUID)(v.ID())
+		_ = detail.FromLessonProgress(course.LessonProgress{
+			Id:          &id,
+			LessonId:    lessonID,
+			UserId:      (course.PropertiesId)(v.UserID()),
+			IsCompleted: v.IsCompleted(),
+			// Các trường khác nếu có thể gán chung cho tất cả loại LessonProgress
+		})
+	}
+
+	return &detail
 }

@@ -46,3 +46,6 @@ type GetMyCertificatesReadModel interface {
 	GetMyCertificates(ctx context.Context, userID string, paginate PaginationParams, order *SearchCoursesOrder) (*Paginated[Certificate], error)
 	// GetCertificateByID(ctx context.Context, certID uuid.UUID) (*Certificate, error)
 }
+type GetLessonCommentsReadModel interface {
+	GetLessonComments(ctx context.Context, params *GetLessonComments) ([]*LessonComment, error)
+}

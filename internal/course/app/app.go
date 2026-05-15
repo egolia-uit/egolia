@@ -27,6 +27,7 @@ type Cmds struct {
 	DeleteLessonComment     DeleteLessonCommentCmd
 	DeclineCourse           DeclineCourseCmd
 	SaveVideoLessonProgress SaveVideoLessonProgressCmd
+	MarkLessonAsCompleted   MarkLessonAsCompletedCmd
 }
 
 type Queries struct {
@@ -43,6 +44,8 @@ type Queries struct {
 	GetCourseForUpdate      GetCourseForUpdateQuery
 	GetCourseReviews        GetCourseReviewsQuery
 	GetMyCertificates       GetMyCertificatesQuery
+	GetLessonComments       GetLessonCommentsQuery
+	GetLessonProgress       GetLessonProgressQuery
 }
 
 type App struct {

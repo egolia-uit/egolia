@@ -951,7 +951,23 @@ func (h *StrictHandler) EditTestLesson(ctx context.Context, request course.EditT
 }
 
 func (h *StrictHandler) GetLessonComments(ctx context.Context, request course.GetLessonCommentsRequestObject) (course.GetLessonCommentsResponseObject, error) {
-	return nil, errs.Unimplemented
+	lessonID := request.LessonId
+
+	cmd := &app.GetLessonComments{
+		LessonID: lessonID,
+	}
+	result, err := h.App.Queries.GetLessonComments.Handle(ctx, cmd)
+	if err != nil {
+		return nil, err
+	}
+	data := make([]course.LessonComment, 0, len(result))
+	for i := range result {
+		data = append(data, *lessonCommentToDTO(result[i]))
+	}
+	return &course.GetLessonComments200JSONResponse{
+		Data: data,
+	}, nil
+
 }
 
 func (h *StrictHandler) CommentOnLesson(ctx context.Context, request course.CommentOnLessonRequestObject) (course.CommentOnLessonResponseObject, error) {
@@ -976,7 +992,20 @@ func (h *StrictHandler) CommentOnLesson(ctx context.Context, request course.Comm
 }
 
 func (h *StrictHandler) MarkLessonAsCompleted(ctx context.Context, request course.MarkLessonAsCompletedRequestObject) (course.MarkLessonAsCompletedResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.MarkLessonAsCompleted.Handle(ctx, &app.MarkLessonAsCompleted{
+		CourseID: request.CourseId,
+		LessonID: request.LessonId,
+		UserID:   userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.MarkLessonAsCompleted204Response{}, nil
 }
 
 func (h *StrictHandler) MoveSection(ctx context.Context, request course.MoveSectionRequestObject) (course.MoveSectionResponseObject, error) {
@@ -1007,7 +1036,22 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 }
 
 func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.GetLessonProgressRequestObject) (course.GetLessonProgressResponseObject, error) {
-	return nil, errs.Unimplemented
+
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+	result, err := h.App.Queries.GetLessonProgress.Handle(ctx, &app.GetLessonProgress{
+		LessonID: request.LessonId,
+		UserID:   userID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &course.GetLessonProgress200JSONResponse{
+		Data: *lessonProgressToDTO(result),
+	}, nil
 }
 
 func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request course.SaveVideoLessonProgressRequestObject) (course.SaveVideoLessonProgressResponseObject, error) {
@@ -1018,9 +1062,9 @@ func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request cou
 	userID := user.ID
 
 	if err := h.App.Cmds.SaveVideoLessonProgress.Handle(ctx, &app.SaveVideoLessonProgress{
+		CourseID:       request.CourseId,
 		LessonID:       request.LessonId,
 		UserID:         userID,
-		EnrollmentID:   *request.Body.EnrollmentId,
 		WatchedSeconds: nil,
 		LastViewedAt:   request.Body.LastViewedAt,
 	}); err != nil {

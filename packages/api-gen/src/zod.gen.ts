@@ -141,7 +141,7 @@ export const zCourseLessonComment = z.object({
 export const zCourseLessonProgress = z.object({
     id: z.uuid().readonly(),
     userId: zCoursePropertiesId,
-    enrollmentId: z.uuid().readonly(),
+    lessonId: z.uuid(),
     isCompleted: z.boolean()
 });
 
@@ -338,6 +338,8 @@ export const zCourseLessonCommentWritable = z.object({
 });
 
 export const zCourseLessonProgressWritable = z.object({
+    userId: zCoursePropertiesId,
+    lessonId: z.uuid(),
     isCompleted: z.boolean()
 });
 
@@ -912,6 +914,13 @@ export const zMoveLessonPath = z.object({
     courseId: z.uuid(),
     sectionId: z.uuid(),
     lessonId: z.uuid()
+});
+
+/**
+ * Request body for get lesson progress
+ */
+export const zGetLessonProgressBody = z.object({
+    enrollmentId: z.uuid()
 });
 
 export const zGetLessonProgressPath = z.object({

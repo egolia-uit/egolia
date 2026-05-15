@@ -2631,6 +2631,27 @@
             "$ref": "#/components/parameters/lessonIdPath"
           }
         ],
+        "requestBody": {
+          "description": "Request body for get lesson progress",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enrollmentId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                  }
+                },
+                "required": [
+                  "enrollmentId"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Lesson progress",
@@ -3908,14 +3929,12 @@
             "readOnly": true
           },
           "userId": {
-            "$ref": "#/components/schemas/properties-id",
-            "readOnly": true
+            "$ref": "#/components/schemas/properties-id"
           },
-          "enrollmentId": {
+          "lessonId": {
             "type": "string",
             "format": "uuid",
-            "example": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11",
-            "readOnly": true
+            "example": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11"
           },
           "isCompleted": {
             "type": "boolean",
@@ -3925,7 +3944,7 @@
         "required": [
           "id",
           "userId",
-          "enrollmentId",
+          "lessonId",
           "isCompleted"
         ]
       },

@@ -174,3 +174,12 @@ type Certificate struct {
 	UserID    string
 	CreatedAt time.Time
 }
+
+type LessonComment struct {
+	ID              uuid.UUID
+	LessonID        uuid.UUID
+	UserID          string
+	Content         string
+	ParentCommentID *uuid.UUID
+	CreatedAt       time.Time
+}

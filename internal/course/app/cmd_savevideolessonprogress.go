@@ -11,8 +11,8 @@ import (
 
 type SaveVideoLessonProgress struct {
 	UserID         string
+	CourseID       uuid.UUID
 	LessonID       uuid.UUID
-	EnrollmentID   uuid.UUID
 	WatchedSeconds *float64
 	LastViewedAt   time.Time
 	IsCompleted    bool
@@ -21,12 +21,19 @@ type SaveVideoLessonProgress struct {
 type SaveVideoLessonProgressCmd Cmd[SaveVideoLessonProgress]
 
 type SaveVideoLessonProgressHandler struct {
-	uow domain.UnitOfWork
+	uow                      domain.UnitOfWork
+	markLessonAsCompletedCmd MarkLessonAsCompletedCmd
 }
 
-func NewSaveVideoLessonProgressHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) SaveVideoLessonProgressCmd {
+func NewSaveVideoLessonProgressHandler(
+	uow domain.UnitOfWork,
+	markLessonAsCompletedCmd MarkLessonAsCompletedCmd,
+	logger *slog.Logger,
+	tracer Tracer,
+) SaveVideoLessonProgressCmd {
 	handler := &SaveVideoLessonProgressHandler{
-		uow: uow,
+		uow:                      uow,
+		markLessonAsCompletedCmd: markLessonAsCompletedCmd,
 	}
 	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
@@ -34,8 +41,8 @@ func NewSaveVideoLessonProgressHandler(uow domain.UnitOfWork, logger *slog.Logge
 var _ Cmd[SaveVideoLessonProgress] = (*SaveVideoLessonProgressHandler)(nil)
 
 func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVideoLessonProgress) error {
-	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		lessonProgress, err := repoRegistry.LessonProgress().GetByEnrollmentAndLesson(ctx, cmd.EnrollmentID, cmd.LessonID)
+	err := h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
+		lessonProgress, err := repoRegistry.LessonProgress().GetByUserIDAndLesson(ctx, cmd.UserID, cmd.LessonID)
 		if err != nil {
 			return err
 		}
@@ -50,7 +57,7 @@ func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVi
 
 		progress := domain.NewLessonProgressVideo(
 			videoLessonProgressID,
-			cmd.EnrollmentID,
+			cmd.UserID,
 			cmd.LessonID,
 			&watchSeconds,
 			cmd.LastViewedAt,
@@ -58,4 +65,13 @@ func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVi
 		return repoRegistry.LessonProgress().Save(ctx, progress)
 	})
 
+	if err != nil {
+		return err
+	}
+
+	return h.markLessonAsCompletedCmd.Handle(ctx, &MarkLessonAsCompleted{
+		UserID:   cmd.UserID,
+		CourseID: cmd.CourseID,
+		LessonID: cmd.LessonID,
+	})
 }

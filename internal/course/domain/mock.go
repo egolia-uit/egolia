@@ -832,6 +832,74 @@ func (_c *MockCourseRepo_GetDraftVersion_Call) RunAndReturn(run func(ctx context
 	return _c
 }
 
+// GetFull provides a mock function for the type MockCourseRepo
+func (_mock *MockCourseRepo) GetFull(ctx context.Context, id uuid.UUID) (*Course, error) {
+	ret := _mock.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetFull")
+	}
+
+	var r0 *Course
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) (*Course, error)); ok {
+		return returnFunc(ctx, id)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) *Course); ok {
+		r0 = returnFunc(ctx, id)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Course)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
+		r1 = returnFunc(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockCourseRepo_GetFull_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetFull'
+type MockCourseRepo_GetFull_Call struct {
+	*mock.Call
+}
+
+// GetFull is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id uuid.UUID
+func (_e *MockCourseRepo_Expecter) GetFull(ctx interface{}, id interface{}) *MockCourseRepo_GetFull_Call {
+	return &MockCourseRepo_GetFull_Call{Call: _e.mock.On("GetFull", ctx, id)}
+}
+
+func (_c *MockCourseRepo_GetFull_Call) Run(run func(ctx context.Context, id uuid.UUID)) *MockCourseRepo_GetFull_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockCourseRepo_GetFull_Call) Return(course *Course, err error) *MockCourseRepo_GetFull_Call {
+	_c.Call.Return(course, err)
+	return _c
+}
+
+func (_c *MockCourseRepo_GetFull_Call) RunAndReturn(run func(ctx context.Context, id uuid.UUID) (*Course, error)) *MockCourseRepo_GetFull_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Save provides a mock function for the type MockCourseRepo
 func (_mock *MockCourseRepo) Save(ctx context.Context, course *Course) error {
 	ret := _mock.Called(ctx, course)
@@ -1286,9 +1354,66 @@ func (_m *MockLessonCommentRepo) EXPECT() *MockLessonCommentRepo_Expecter {
 	return &MockLessonCommentRepo_Expecter{mock: &_m.Mock}
 }
 
+// DeleteReplies provides a mock function for the type MockLessonCommentRepo
+func (_mock *MockLessonCommentRepo) DeleteReplies(ctx context.Context, commentID uuid.UUID) error {
+	ret := _mock.Called(ctx, commentID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteReplies")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) error); ok {
+		r0 = returnFunc(ctx, commentID)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockLessonCommentRepo_DeleteReplies_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteReplies'
+type MockLessonCommentRepo_DeleteReplies_Call struct {
+	*mock.Call
+}
+
+// DeleteReplies is a helper method to define mock.On call
+//   - ctx context.Context
+//   - commentID uuid.UUID
+func (_e *MockLessonCommentRepo_Expecter) DeleteReplies(ctx interface{}, commentID interface{}) *MockLessonCommentRepo_DeleteReplies_Call {
+	return &MockLessonCommentRepo_DeleteReplies_Call{Call: _e.mock.On("DeleteReplies", ctx, commentID)}
+}
+
+func (_c *MockLessonCommentRepo_DeleteReplies_Call) Run(run func(ctx context.Context, commentID uuid.UUID)) *MockLessonCommentRepo_DeleteReplies_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLessonCommentRepo_DeleteReplies_Call) Return(err error) *MockLessonCommentRepo_DeleteReplies_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockLessonCommentRepo_DeleteReplies_Call) RunAndReturn(run func(ctx context.Context, commentID uuid.UUID) error) *MockLessonCommentRepo_DeleteReplies_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockLessonCommentRepo
-func (_mock *MockLessonCommentRepo) Get(ctx context.Context, params LessonCommentRepoGet, forUpdate bool) (*LessonComment, error) {
-	ret := _mock.Called(ctx, params, forUpdate)
+func (_mock *MockLessonCommentRepo) Get(ctx context.Context, params LessonCommentRepoGet) (*LessonComment, error) {
+	ret := _mock.Called(ctx, params)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Get")
@@ -1296,18 +1421,18 @@ func (_mock *MockLessonCommentRepo) Get(ctx context.Context, params LessonCommen
 
 	var r0 *LessonComment
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, LessonCommentRepoGet, bool) (*LessonComment, error)); ok {
-		return returnFunc(ctx, params, forUpdate)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, LessonCommentRepoGet) (*LessonComment, error)); ok {
+		return returnFunc(ctx, params)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, LessonCommentRepoGet, bool) *LessonComment); ok {
-		r0 = returnFunc(ctx, params, forUpdate)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, LessonCommentRepoGet) *LessonComment); ok {
+		r0 = returnFunc(ctx, params)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*LessonComment)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, LessonCommentRepoGet, bool) error); ok {
-		r1 = returnFunc(ctx, params, forUpdate)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, LessonCommentRepoGet) error); ok {
+		r1 = returnFunc(ctx, params)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -1322,12 +1447,11 @@ type MockLessonCommentRepo_Get_Call struct {
 // Get is a helper method to define mock.On call
 //   - ctx context.Context
 //   - params LessonCommentRepoGet
-//   - forUpdate bool
-func (_e *MockLessonCommentRepo_Expecter) Get(ctx interface{}, params interface{}, forUpdate interface{}) *MockLessonCommentRepo_Get_Call {
-	return &MockLessonCommentRepo_Get_Call{Call: _e.mock.On("Get", ctx, params, forUpdate)}
+func (_e *MockLessonCommentRepo_Expecter) Get(ctx interface{}, params interface{}) *MockLessonCommentRepo_Get_Call {
+	return &MockLessonCommentRepo_Get_Call{Call: _e.mock.On("Get", ctx, params)}
 }
 
-func (_c *MockLessonCommentRepo_Get_Call) Run(run func(ctx context.Context, params LessonCommentRepoGet, forUpdate bool)) *MockLessonCommentRepo_Get_Call {
+func (_c *MockLessonCommentRepo_Get_Call) Run(run func(ctx context.Context, params LessonCommentRepoGet)) *MockLessonCommentRepo_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
@@ -1337,14 +1461,9 @@ func (_c *MockLessonCommentRepo_Get_Call) Run(run func(ctx context.Context, para
 		if args[1] != nil {
 			arg1 = args[1].(LessonCommentRepoGet)
 		}
-		var arg2 bool
-		if args[2] != nil {
-			arg2 = args[2].(bool)
-		}
 		run(
 			arg0,
 			arg1,
-			arg2,
 		)
 	})
 	return _c
@@ -1355,7 +1474,7 @@ func (_c *MockLessonCommentRepo_Get_Call) Return(lessonComment *LessonComment, e
 	return _c
 }
 
-func (_c *MockLessonCommentRepo_Get_Call) RunAndReturn(run func(ctx context.Context, params LessonCommentRepoGet, forUpdate bool) (*LessonComment, error)) *MockLessonCommentRepo_Get_Call {
+func (_c *MockLessonCommentRepo_Get_Call) RunAndReturn(run func(ctx context.Context, params LessonCommentRepoGet) (*LessonComment, error)) *MockLessonCommentRepo_Get_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1516,6 +1635,80 @@ type MockLessonProgressRepo_Expecter struct {
 
 func (_m *MockLessonProgressRepo) EXPECT() *MockLessonProgressRepo_Expecter {
 	return &MockLessonProgressRepo_Expecter{mock: &_m.Mock}
+}
+
+// GetByUserIDAndLesson provides a mock function for the type MockLessonProgressRepo
+func (_mock *MockLessonProgressRepo) GetByUserIDAndLesson(ctx context.Context, userID string, lessonID uuid.UUID) (LessonProgress, error) {
+	ret := _mock.Called(ctx, userID, lessonID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByUserIDAndLesson")
+	}
+
+	var r0 LessonProgress
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, uuid.UUID) (LessonProgress, error)); ok {
+		return returnFunc(ctx, userID, lessonID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, uuid.UUID) LessonProgress); ok {
+		r0 = returnFunc(ctx, userID, lessonID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(LessonProgress)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, uuid.UUID) error); ok {
+		r1 = returnFunc(ctx, userID, lessonID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockLessonProgressRepo_GetByUserIDAndLesson_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByUserIDAndLesson'
+type MockLessonProgressRepo_GetByUserIDAndLesson_Call struct {
+	*mock.Call
+}
+
+// GetByUserIDAndLesson is a helper method to define mock.On call
+//   - ctx context.Context
+//   - userID string
+//   - lessonID uuid.UUID
+func (_e *MockLessonProgressRepo_Expecter) GetByUserIDAndLesson(ctx interface{}, userID interface{}, lessonID interface{}) *MockLessonProgressRepo_GetByUserIDAndLesson_Call {
+	return &MockLessonProgressRepo_GetByUserIDAndLesson_Call{Call: _e.mock.On("GetByUserIDAndLesson", ctx, userID, lessonID)}
+}
+
+func (_c *MockLessonProgressRepo_GetByUserIDAndLesson_Call) Run(run func(ctx context.Context, userID string, lessonID uuid.UUID)) *MockLessonProgressRepo_GetByUserIDAndLesson_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		var arg2 uuid.UUID
+		if args[2] != nil {
+			arg2 = args[2].(uuid.UUID)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLessonProgressRepo_GetByUserIDAndLesson_Call) Return(lessonProgress LessonProgress, err error) *MockLessonProgressRepo_GetByUserIDAndLesson_Call {
+	_c.Call.Return(lessonProgress, err)
+	return _c
+}
+
+func (_c *MockLessonProgressRepo_GetByUserIDAndLesson_Call) RunAndReturn(run func(ctx context.Context, userID string, lessonID uuid.UUID) (LessonProgress, error)) *MockLessonProgressRepo_GetByUserIDAndLesson_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // Save provides a mock function for the type MockLessonProgressRepo
