@@ -23,6 +23,9 @@ export default defineConfig(
         entryPoint: './src/app/global.css',
       },
     },
+    rules: {
+      'better-tailwindcss/enforce-canonical-classes': 'off',
+    },
   },
   {
     files: ['**/*.{ts,tsx,cts,mts}'],
