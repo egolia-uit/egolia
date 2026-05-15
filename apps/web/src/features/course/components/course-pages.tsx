@@ -38,6 +38,14 @@ import {
 } from '#/components/ui/shadcn/card';
 import { Input } from '#/components/ui/shadcn/input';
 import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '#/components/ui/shadcn/sheet';
+import {
   Table,
   TableBody,
   TableCell,
@@ -71,7 +79,7 @@ import {
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import { formatDateTime, formatVnd } from '#/lib/api/format';
-import type { Viewer } from '#/lib/auth/roles';
+import { routeForViewer, type Viewer } from '#/lib/auth/roles';
 import { useViewer } from '#/lib/auth/use-viewer';
 
 import { CourseCard } from './course-card';
@@ -329,6 +337,8 @@ export function MarketplacePage() {
 
 export function PublicCoursePage({ courseId }: { courseId: string }) {
   const { viewer } = useViewer();
+  const primaryHref = viewer?.id ? routeForViewer(viewer) : '/login';
+  const primaryLabel = viewer?.id ? 'Mở dashboard' : 'Sign in để học';
   const [state, setState] = useState<ResourceState<CourseCourse>>({
     status: 'loading',
   });
@@ -378,9 +388,9 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
                   hover:bg-slate-100
                 "
               >
-                <Link href={`/learn/courses/${courseId}`}>
+                <Link href={primaryHref}>
                   <BookOpen className="size-4" />
-                  Vào lớp học
+                  {primaryLabel}
                 </Link>
               </Button>
               <Button
@@ -683,6 +693,7 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
   const router = useRouter();
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const courses = useCourseList(
     () =>
       getMyCourses({
@@ -706,6 +717,7 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
       const location = response.response.headers.get('Content-Location');
       const courseId = location?.split('/').filter(Boolean).at(-1);
       if (courseId) {
+        setCreateOpen(false);
         router.push(`/instructor/courses/${courseId}`);
       }
     } catch (error) {
@@ -713,6 +725,29 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function uploadIntroductionVideo(file: File) {
+    const uploadCourseId =
+      globalThis.crypto?.randomUUID?.() ??
+      '00000000-0000-0000-0000-000000000000';
+    const { data } = await getUploadVideoUrl({
+      body: { videoFilename: file.name },
+      client: apiClient,
+      path: { courseId: uploadCourseId },
+      throwOnError: true,
+    });
+
+    const uploadResponse = await fetch(data.uploadUrl, {
+      body: file,
+      method: 'PUT',
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error(`RustFS upload failed (${uploadResponse.status})`);
+    }
+
+    return data;
   }
 
   async function mutateCourse(action: () => Promise<unknown>) {
@@ -730,36 +765,42 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
       viewer={viewer}
       eyebrow="Instructor"
       title="Teaching console"
+      actions={
+        <Sheet open={createOpen} onOpenChange={setCreateOpen}>
+          <SheetTrigger asChild>
+            <Button type="button">
+              <FilePlus2 className="size-4" />
+              Create course
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
+            <SheetHeader>
+              <SheetTitle>Create course</SheetTitle>
+              <SheetDescription>
+                Upload intro video first. FE will put the file to RustFS and use
+                the returned videoKey when creating the course.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="px-4 pb-4">
+              <CourseForm
+                forceIntroductionVideoKey
+                submitLabel="Create course"
+                submitting={submitting}
+                error={actionError?.message}
+                onUploadIntroductionVideo={uploadIntroductionVideo}
+                onSubmit={create}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      }
       description="Quản lý course qua các endpoint đã có logic: list, create, update, hide/unhide, delete, upload URL."
     >
       <div
         className="
-        grid gap-6
-        xl:grid-cols-[360px_1fr]
+        grid gap-4
       "
       >
-        <Card className="bg-white">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FilePlus2 className="size-5" />
-              Tạo course
-            </CardTitle>
-            <CardDescription>
-              Form luôn gửi introduction video key để tránh lỗi backend hiện
-              tại.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <CourseForm
-              forceIntroductionVideoKey
-              submitLabel="Create course"
-              submitting={submitting}
-              error={actionError?.message}
-              onSubmit={create}
-            />
-          </CardContent>
-        </Card>
-
         <div className="grid gap-4">
           {actionError && <ErrorState error={actionError} />}
           <ListContent
@@ -767,7 +808,7 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
             reload={courses.reload}
             destination="instructor"
             emptyTitle="Chưa có course của bạn"
-            emptyDescription="Tạo course đầu tiên bằng form bên trái."
+            emptyDescription="Tạo course đầu tiên bằng nút Create course."
             actionFor={(course) => (
               <div className="flex flex-wrap gap-2">
                 <Button asChild variant="outline">
@@ -921,11 +962,11 @@ function InstructorCourseDetailContent({
                 </Button>
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="destructive"
                   disabled={submitting}
                   className="
-                    w-full border-white/20 text-white
-                    hover:bg-white/10 hover:text-white
+                    w-full border-red-500 bg-red-600 text-white
+                    hover:bg-red-700 hover:text-white
                   "
                   onClick={() =>
                     runAction(

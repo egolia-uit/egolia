@@ -1,6 +1,6 @@
 'use client';
 
-import { Save } from 'lucide-react';
+import { Save, UploadCloud } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { Button } from '#/components/ui/shadcn/button';
@@ -13,12 +13,19 @@ import {
 } from '#/components/ui/shadcn/field';
 import { Input } from '#/components/ui/shadcn/input';
 import type { CourseCourse, CourseCourseWritable } from '#/lib/api/course';
+import { formatDateTime } from '#/lib/api/format';
 
 type CourseFormValues = {
   title: string;
   price: string;
   overview: string;
   introductionVideoKey: string;
+};
+
+type UploadedVideo = {
+  videoKey: string;
+  uploadUrl?: string;
+  expiresAt?: Date;
 };
 
 function initialValues(course?: CourseCourse): CourseFormValues {
@@ -30,16 +37,50 @@ function initialValues(course?: CourseCourse): CourseFormValues {
   };
 }
 
+function parsePrice(value: string) {
+  const normalized = value.trim();
+  if (!normalized) {
+    return 0;
+  }
+
+  const price = Number(normalized);
+  if (!Number.isInteger(price) || price < 0) {
+    return null;
+  }
+  return price;
+}
+
+function getValidationError(
+  values: CourseFormValues,
+  forceIntroductionVideoKey: boolean,
+  canUploadVideo: boolean
+) {
+  if (!values.title.trim()) {
+    return 'Title khong duoc de trong.';
+  }
+  if (parsePrice(values.price) === null) {
+    return 'Price phai la so nguyen khong am.';
+  }
+  if (
+    forceIntroductionVideoKey &&
+    !values.introductionVideoKey.trim() &&
+    !canUploadVideo
+  ) {
+    return 'Upload video hoac nhap introduction video key truoc khi tao course.';
+  }
+  return null;
+}
+
 function toWritable(
   values: CourseFormValues,
   forceIntroductionVideoKey: boolean
 ): CourseCourseWritable {
-  const price = Number.parseInt(values.price || '0', 10);
+  const price = parsePrice(values.price) ?? 0;
   const introductionVideoKey = values.introductionVideoKey.trim();
 
   const body: CourseCourseWritable = {
     title: values.title.trim(),
-    price: BigInt(Number.isFinite(price) ? Math.max(price, 0) : 0),
+    price: price as unknown as bigint,
     overview: values.overview.trim(),
   };
 
@@ -56,6 +97,7 @@ export function CourseForm({
   submitting,
   error,
   forceIntroductionVideoKey = false,
+  onUploadIntroductionVideo,
   onSubmit,
 }: {
   course?: CourseCourse;
@@ -63,23 +105,55 @@ export function CourseForm({
   submitting?: boolean;
   error?: string | null;
   forceIntroductionVideoKey?: boolean;
+  onUploadIntroductionVideo?: (file: File) => Promise<UploadedVideo>;
   onSubmit: (body: CourseCourseWritable) => Promise<void> | void;
 }) {
   const [values, setValues] = useState<CourseFormValues>(() =>
     initialValues(course)
   );
   const [touched, setTouched] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadedVideo, setUploadedVideo] = useState<UploadedVideo | null>(
+    null
+  );
 
+  const canUploadVideo = Boolean(selectedVideo && onUploadIntroductionVideo);
   const validationError = useMemo(() => {
-    if (!values.title.trim()) {
-      return 'Title không được để trống.';
+    return getValidationError(
+      values,
+      forceIntroductionVideoKey,
+      canUploadVideo
+    );
+  }, [canUploadVideo, forceIntroductionVideoKey, values]);
+
+  async function uploadSelectedVideo() {
+    if (!selectedVideo || !onUploadIntroductionVideo) {
+      return null;
     }
-    const price = Number.parseInt(values.price || '0', 10);
-    if (!Number.isFinite(price) || price < 0) {
-      return 'Price phải là số không âm.';
+
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const result = await onUploadIntroductionVideo(selectedVideo);
+      setUploadedVideo(result);
+      setValues((current) => ({
+        ...current,
+        introductionVideoKey: result.videoKey,
+      }));
+      return result.videoKey;
+    } catch (caught) {
+      const message =
+        caught instanceof Error
+          ? caught.message
+          : 'Khong the upload video len RustFS.';
+      setUploadError(message);
+      return null;
+    } finally {
+      setUploading(false);
     }
-    return null;
-  }, [values.price, values.title]);
+  }
 
   return (
     <form
@@ -90,7 +164,33 @@ export function CourseForm({
         if (validationError) {
           return;
         }
-        await onSubmit(toWritable(values, forceIntroductionVideoKey));
+
+        let nextValues = values;
+        if (
+          forceIntroductionVideoKey &&
+          !nextValues.introductionVideoKey.trim() &&
+          canUploadVideo
+        ) {
+          const videoKey = await uploadSelectedVideo();
+          if (!videoKey) {
+            return;
+          }
+          nextValues = {
+            ...nextValues,
+            introductionVideoKey: videoKey,
+          };
+        }
+
+        const submitValidationError = getValidationError(
+          nextValues,
+          forceIntroductionVideoKey,
+          false
+        );
+        if (submitValidationError) {
+          return;
+        }
+
+        await onSubmit(toWritable(nextValues, forceIntroductionVideoKey));
       }}
     >
       <FieldGroup>
@@ -105,9 +205,9 @@ export function CourseForm({
                 title: event.target.value,
               }))
             }
-            placeholder="FlowChart - Chuyên đề Lưu đồ Thuật toán"
+            placeholder="FlowChart - Chuyen de luu do thuat toan"
           />
-          <FieldDescription>Tên hiển thị trong marketplace.</FieldDescription>
+          <FieldDescription>Ten hien thi trong marketplace.</FieldDescription>
         </Field>
 
         <Field>
@@ -116,6 +216,7 @@ export function CourseForm({
             id="course-price"
             inputMode="numeric"
             min={0}
+            step={1}
             type="number"
             value={values.price}
             onChange={(event) =>
@@ -145,7 +246,7 @@ export function CourseForm({
                 overview: event.target.value,
               }))
             }
-            placeholder="Mô tả ngắn về kết quả học viên đạt được."
+            placeholder="Mo ta ngan ve ket qua hoc vien dat duoc."
           />
         </Field>
 
@@ -153,6 +254,52 @@ export function CourseForm({
           <FieldLabel htmlFor="course-video-key">
             Introduction video key
           </FieldLabel>
+
+          {onUploadIntroductionVideo && (
+            <div
+              className="
+                grid gap-2 rounded-lg border border-dashed border-slate-200
+                bg-slate-50 p-3
+              "
+            >
+              <Input
+                id="course-video-file"
+                accept="video/*"
+                type="file"
+                onChange={(event) => {
+                  setSelectedVideo(event.target.files?.[0] ?? null);
+                  setUploadedVideo(null);
+                  setUploadError(null);
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                disabled={!selectedVideo || uploading || submitting}
+                onClick={uploadSelectedVideo}
+              >
+                <UploadCloud className="size-4" />
+                {uploading ? 'Uploading...' : 'Upload intro video'}
+              </Button>
+              {uploadedVideo && (
+                <div className="grid gap-1 text-xs text-slate-600">
+                  <div>
+                    Uploaded:{' '}
+                    <span className="font-medium text-slate-900">
+                      {selectedVideo?.name ?? 'video'}
+                    </span>
+                  </div>
+                  {uploadedVideo.expiresAt && (
+                    <div>
+                      URL expires: {formatDateTime(uploadedVideo.expiresAt)}
+                    </div>
+                  )}
+                </div>
+              )}
+              {uploadError && <FieldError>{uploadError}</FieldError>}
+            </div>
+          )}
+
           <Input
             id="course-video-key"
             value={values.introductionVideoKey}
@@ -165,8 +312,8 @@ export function CourseForm({
             placeholder="videos/course-intro.mp4"
           />
           <FieldDescription>
-            Tạo course hiện cần field này kể cả khi để trống; update có thể bỏ
-            qua.
+            Tao course can videoKey. Chon file de FE lay signed URL, upload len
+            RustFS, roi tu dien key vao field nay.
           </FieldDescription>
         </Field>
 
@@ -176,7 +323,7 @@ export function CourseForm({
         {error && <FieldError>{error}</FieldError>}
       </FieldGroup>
 
-      <Button type="submit" disabled={submitting}>
+      <Button type="submit" disabled={submitting || uploading}>
         <Save className="size-4" />
         {submitting ? 'Saving...' : submitLabel}
       </Button>

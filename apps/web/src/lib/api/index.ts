@@ -1,5 +1,11 @@
+'use client';
+
 import { client } from '../../../../../packages/api-gen/src/client.gen';
-import { authClient } from '../auth';
+import { getCachedAuthentikAccessToken } from '../auth/access-token';
+
+const optionallyAuthenticatedUrls = new Set([
+  '/course/courses/{courseId}/landing',
+]);
 
 client.setConfig({
   baseUrl:
@@ -7,12 +13,17 @@ client.setConfig({
 });
 
 client.interceptors.request.use(async (config) => {
+  if (
+    !config.security?.length &&
+    !optionallyAuthenticatedUrls.has(config.url)
+  ) {
+    return;
+  }
+
   try {
-    const { data } = await authClient.getAccessToken({
-      providerId: 'authentik',
-    });
-    if (data?.accessToken) {
-      config.headers.set('Authorization', `Bearer ${data.accessToken}`);
+    const accessToken = await getCachedAuthentikAccessToken();
+    if (accessToken) {
+      config.headers.set('Authorization', `Bearer ${accessToken}`);
     }
   } catch {
     // Public routes are allowed to call the API without an OAuth token.

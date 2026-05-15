@@ -1,4 +1,7 @@
+'use client';
+
 import { authClient } from '#/lib/auth';
+import { getCachedAuthentikAccessToken } from '#/lib/auth/access-token';
 
 export type ActorRole = 'learner' | 'instructor' | 'admin';
 
@@ -94,17 +97,16 @@ export function routeForViewer(viewer: Viewer | null | undefined) {
 }
 
 export async function getViewer(): Promise<Viewer> {
-  const [sessionResult, tokenResult] = await Promise.allSettled([
-    authClient.getSession(),
-    authClient.getAccessToken({ providerId: 'authentik' }),
-  ]);
+  const sessionResult = await authClient.getSession().catch(() => undefined);
+  const session = sessionResult?.data;
 
-  const session =
-    sessionResult.status === 'fulfilled' ? sessionResult.value.data : undefined;
-  const accessToken =
-    tokenResult.status === 'fulfilled'
-      ? tokenResult.value.data?.accessToken
-      : undefined;
+  if (!session?.user) {
+    return {
+      roles: [],
+    };
+  }
+
+  const accessToken = await getCachedAuthentikAccessToken();
   const payload = parseTokenPayload(accessToken);
   const roles = [
     ...new Set([
