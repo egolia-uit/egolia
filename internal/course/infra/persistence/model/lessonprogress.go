@@ -8,8 +8,9 @@ import (
 )
 
 type LessonProgress struct {
-	ID             uuid.UUID  `gorm:"type:uuid;primaryKey"`
-	EnrollmentID   uuid.UUID  `gorm:"type:uuid;not null"`
+	ID uuid.UUID `gorm:"type:uuid;primaryKey"`
+	// EnrollmentID   uuid.UUID  `gorm:"type:uuid;not null"`
+	UserID         string     `gorm:"index;not null"`
 	LessonID       uuid.UUID  `gorm:"type:uuid;not null"`
 	LessonType     string     `gorm:"column:lesson_type;type:text;not null"`
 	IsCompleted    bool       `gorm:"not null;default:false"`
@@ -25,7 +26,7 @@ func (LessonProgress) TableName() string { return "lesson_progresses" }
 func LessonProgressFromDomain(p domain.LessonProgress) *LessonProgress {
 	m := &LessonProgress{
 		ID:             p.ID(),
-		EnrollmentID:   p.EnrollmentID(),
+		UserID:         p.UserID(),
 		LessonID:       p.LessonID(),
 		LessonType:     "",
 		IsCompleted:    p.IsCompleted(),
@@ -55,12 +56,12 @@ func (m *LessonProgress) ToDomain() domain.LessonProgress {
 			lastViewedAt = *m.LastViewedAt
 		}
 		return domain.UnmarshalLessonProgressVideo(
-			m.ID, m.EnrollmentID, m.LessonID,
+			m.ID, m.UserID, m.LessonID,
 			m.IsCompleted, m.DeletedAt,
 			m.WatchedSeconds, lastViewedAt,
 		)
 	case domain.LessonTypeTest:
-		return domain.UnmarshalLessonProgressBase(m.ID, m.EnrollmentID, m.LessonID, m.IsCompleted, m.DeletedAt)
+		return domain.UnmarshalLessonProgressBase(m.ID, m.UserID, m.LessonID, m.IsCompleted, m.DeletedAt)
 	}
-	return domain.UnmarshalLessonProgressBase(m.ID, m.EnrollmentID, m.LessonID, m.IsCompleted, m.DeletedAt)
+	return domain.UnmarshalLessonProgressBase(m.ID, m.UserID, m.LessonID, m.IsCompleted, m.DeletedAt)
 }

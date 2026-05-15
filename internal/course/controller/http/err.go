@@ -65,6 +65,8 @@ func strictServerToHTTPErr(err errs.Error) (
 		statusCode = 400
 	case errs.CodeSectionTitleAlreadyExists:
 		statusCode = 400
+	case errs.CodeLessonCommentNotFound:
+		statusCode = 404
 	}
 
 	return

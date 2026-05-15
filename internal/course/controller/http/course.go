@@ -648,6 +648,7 @@ func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.Get
 			Page:  page,
 			Limit: limit,
 		},
+		Rating: request.Params.Rating,
 	})
 	if err != nil {
 		return nil, err
@@ -967,7 +968,6 @@ func (h *StrictHandler) GetLessonComments(ctx context.Context, request course.Ge
 	return &course.GetLessonComments200JSONResponse{
 		Data: data,
 	}, nil
-
 }
 
 func (h *StrictHandler) CommentOnLesson(ctx context.Context, request course.CommentOnLessonRequestObject) (course.CommentOnLessonResponseObject, error) {
@@ -1036,7 +1036,6 @@ func (h *StrictHandler) MoveLesson(ctx context.Context, request course.MoveLesso
 }
 
 func (h *StrictHandler) GetLessonProgress(ctx context.Context, request course.GetLessonProgressRequestObject) (course.GetLessonProgressResponseObject, error) {
-
 	user, ok := commonHTTP.UserFromContext(ctx)
 	if !ok {
 		return nil, errs.Unauthorized
@@ -1067,6 +1066,7 @@ func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request cou
 		UserID:         userID,
 		WatchedSeconds: nil,
 		LastViewedAt:   request.Body.LastViewedAt,
+		IsCompleted:    request.Body.IsCompleted,
 	}); err != nil {
 		return nil, err
 	}

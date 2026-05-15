@@ -64,11 +64,9 @@ func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVi
 		)
 		return repoRegistry.LessonProgress().Save(ctx, progress)
 	})
-
 	if err != nil {
 		return err
 	}
-
 	return h.markLessonAsCompletedCmd.Handle(ctx, &MarkLessonAsCompleted{
 		UserID:   cmd.UserID,
 		CourseID: cmd.CourseID,

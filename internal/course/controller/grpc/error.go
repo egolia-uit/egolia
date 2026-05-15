@@ -54,6 +54,8 @@ func toGRPCError(err error) error {
 			return status.Error(codes.AlreadyExists, err.Error())
 		case errs.CodeSectionTitleAlreadyExists:
 			return status.Error(codes.AlreadyExists, err.Error())
+		case errs.CodeLessonCommentNotFound:
+			return status.Error(codes.NotFound, err.Error())
 		default:
 			return status.Error(codes.Unknown, err.Error())
 		}

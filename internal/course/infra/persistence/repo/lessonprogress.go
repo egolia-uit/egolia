@@ -43,3 +43,8 @@ func (r *LessonProgressRepo) GetByEnrollmentAndLesson(ctx context.Context, enrol
 	}
 	return m.ToDomain(), nil
 }
+
+// GetByUserIDAndLesson implements [domain.LessonProgressRepo].
+func (r *LessonProgressRepo) GetByUserIDAndLesson(ctx context.Context, userID string, lessonID uuid.UUID) (domain.LessonProgress, error) {
+	panic("unimplemented")
+}

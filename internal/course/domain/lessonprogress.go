@@ -76,6 +76,7 @@ func (l *LessonProgressBase) Delete() {
 	l.deletedAt = new(time.Time)
 	*l.deletedAt = time.Now()
 }
+
 func (l *LessonProgressBase) MarkAsCompleted() {
 	l.isCompleted = true
 }
