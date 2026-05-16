@@ -70,7 +70,6 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 
 		return nil
 	})
-
 	if err != nil {
 		return err
 	}
