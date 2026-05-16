@@ -5,6 +5,11 @@ export const metadata = {
   description: 'Browse published Egolia courses',
 };
 
-export default function CoursesPage() {
-  return <MarketplacePage />;
+export default async function CoursesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const params = await searchParams;
+  return <MarketplacePage initialTab={params.tab} />;
 }

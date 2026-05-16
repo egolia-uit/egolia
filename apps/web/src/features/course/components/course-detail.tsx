@@ -57,30 +57,32 @@ export function CourseHero({
         </CardContent>
       </Card>
 
-      <Card className="bg-slate-950 text-white">
+      <Card className="bg-white">
         <CardHeader>
           <CardTitle>Course snapshot</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <div className="text-xs tracking-wide text-slate-400 uppercase">
+            <div className="text-xs tracking-wide text-slate-500 uppercase">
               Price
             </div>
-            <div className="mt-1 text-2xl font-semibold">
+            <div className="mt-1 text-2xl font-semibold text-slate-900">
               {formatVnd(course.price)}
             </div>
           </div>
           <div className="grid gap-3 text-sm">
-            <div className="flex items-center gap-2 text-slate-300">
+            <div className="flex items-center gap-2 text-slate-600">
               <BookOpen className="size-4" />
               Instructor: {course.instructorId ?? 'N/A'}
             </div>
-            <div className="flex items-center gap-2 text-slate-300">
+            <div className="flex items-center gap-2 text-slate-600">
               <ListChecks className="size-4" />
               Status: {courseStatus(course.status)}
             </div>
           </div>
-          {actions}
+          <div className="pt-2">
+            {actions}
+          </div>
         </CardContent>
       </Card>
     </section>

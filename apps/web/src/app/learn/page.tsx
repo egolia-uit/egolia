@@ -5,6 +5,11 @@ export const metadata = {
   description: 'Learner workspace for Egolia courses',
 };
 
-export default function LearnPage() {
-  return <LearnerHomePage />;
+export default async function LearnPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const params = await searchParams;
+  return <LearnerHomePage initialTab={params.tab} />;
 }

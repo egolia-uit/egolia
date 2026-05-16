@@ -21,6 +21,12 @@ const statusMessages: Record<number, ApiProblem> = {
     message: 'Dữ liệu này không còn tồn tại hoặc bạn không thể truy cập.',
     status: 404,
   },
+  502: {
+    title: 'Course service chua chay',
+    message:
+      'Traefik khong ket noi duoc course service. Chay pnpm nx run course:run roi kiem tra http://api.egolia.localhost/course/health/live.',
+    status: 502,
+  },
   501: {
     title: 'Chưa triển khai',
     message: 'Endpoint này đang có trong spec nhưng backend chưa hỗ trợ.',

@@ -22,7 +22,13 @@ type WebAuthClient = {
       providerId: string;
       callbackURL?: string;
       errorCallbackURL?: string;
-    }) => Promise<unknown>;
+      disableRedirect?: boolean;
+    }) => Promise<{
+      data?: {
+        url?: string;
+        redirect?: boolean;
+      } | null;
+    }>;
   };
   signOut: (options?: {
     fetchOptions?: {

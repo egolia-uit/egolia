@@ -5,6 +5,11 @@ export const metadata = {
   description: 'Instructor course management',
 };
 
-export default function InstructorCoursesRoute() {
-  return <InstructorCoursesPage />;
+export default async function InstructorCoursesRoute({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const params = await searchParams;
+  return <InstructorCoursesPage initialTab={params.tab} />;
 }

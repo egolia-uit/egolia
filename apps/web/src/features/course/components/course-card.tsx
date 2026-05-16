@@ -54,14 +54,17 @@ export function CourseCard({
   destination = 'public',
   className,
   action,
+  progress,
 }: {
   course: CourseCourse;
   destination?: CourseDestination;
   className?: string;
   action?: ReactNode;
+  progress?: number;
 }) {
   const courseId = course.id;
   const href = courseId ? destinationHref(courseId, destination) : '#';
+  const showProgress = destination === 'learner' && progress !== undefined;
 
   return (
     <Card
@@ -92,13 +95,32 @@ export function CourseCard({
           {course.overview ||
             'Khóa học chưa có mô tả. Nội dung sẽ được cập nhật sau.'}
         </p>
+
+        {showProgress && (
+          <div className="grid gap-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium text-slate-700">Tiến độ</span>
+              <span className="font-semibold text-indigo-600">{progress}%</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+              <div
+                className="
+                  h-full rounded-full bg-gradient-to-r from-indigo-500
+                  to-purple-500 transition-all duration-500
+                "
+                style={{ width: `${Math.min(progress, 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="
           grid grid-cols-2 gap-3 rounded-lg bg-slate-50 p-3 text-sm
         ">
           <div>
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <BookOpen className="size-3.5" />
-              Price
+              Giá
             </div>
             <div className="mt-1 font-semibold text-slate-950">
               {formatVnd(course.price)}
@@ -107,7 +129,7 @@ export function CourseCard({
           <div>
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <ShieldCheck className="size-3.5" />
-              Instructor
+              Giảng viên
             </div>
             <div className="mt-1 truncate font-medium text-slate-950">
               {course.instructorId ?? 'N/A'}

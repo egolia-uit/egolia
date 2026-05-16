@@ -3,6 +3,10 @@
 import { LogOut } from 'lucide-react';
 
 import { Button } from '#/components/ui/shadcn/button';
+import {
+  openCenteredPopup,
+  waitForAuthPopup,
+} from '#/features/auth/popup';
 import { authClient } from '#/lib/auth';
 import { clearAuthentikAccessTokenCache } from '#/lib/auth/access-token';
 
@@ -17,18 +21,46 @@ function getLogoutRedirectUrl() {
   url.searchParams.set(
     'post_logout_redirect_uri',
     process.env.NEXT_PUBLIC_AUTHENTIK_POST_LOGOUT_REDIRECT_URI ||
-      `${window.location.origin}/login`
+      `${window.location.origin}/auth/popup-logout`
   );
   return url.toString();
 }
 
 export function SignInButton() {
   const handleSignIn = async () => {
-    await authClient.signIn.oauth2({
-      providerId: 'authentik',
-      callbackURL: '/dashboard',
-      errorCallbackURL: '/login?error=auth_failed',
-    });
+    const popup = openCenteredPopup('about:blank', 'egolia-auth-login');
+
+    try {
+      const result = await authClient.signIn.oauth2({
+        providerId: 'authentik',
+        callbackURL: '/auth/popup-callback',
+        disableRedirect: true,
+        errorCallbackURL: '/login?error=auth_failed',
+      });
+      const url = result.data?.url;
+
+      if (!url) {
+        popup?.close();
+        await authClient.signIn.oauth2({
+          providerId: 'authentik',
+          callbackURL: '/dashboard',
+          errorCallbackURL: '/login?error=auth_failed',
+        });
+        return;
+      }
+
+      if (!popup) {
+        window.location.href = url;
+        return;
+      }
+
+      popup.location.href = url;
+      const message = await waitForAuthPopup(popup);
+      window.location.href = message.redirectTo || '/dashboard';
+    } catch {
+      popup?.close();
+      window.location.href = '/login?error=auth_failed';
+    }
   };
 
   return (
@@ -36,7 +68,12 @@ export function SignInButton() {
       id="sign-in-button"
       size="lg"
       onClick={handleSignIn}
-      className="w-full gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 cursor-pointer"
+      className="
+        w-full cursor-pointer gap-2 bg-gradient-to-r from-indigo-500
+        to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all
+        duration-300
+        hover:from-indigo-600 hover:to-purple-700 hover:shadow-indigo-500/40
+      "
     >
       <svg
         className="size-5"
@@ -49,22 +86,45 @@ export function SignInButton() {
         <polyline points="10 17 15 12 10 7" />
         <line x1="15" y1="12" x2="3" y2="12" />
       </svg>
-      Sign in with Authentik
+      Đăng nhập với Authentik
     </Button>
   );
 }
 
 export function SignOutButton() {
   const handleSignOut = async () => {
+    const logoutUrl = getLogoutRedirectUrl();
+    const popup =
+      logoutUrl === '/login'
+        ? null
+        : openCenteredPopup('about:blank', 'egolia-auth-logout');
+
     clearAuthentikAccessTokenCache();
     await authClient.signOut({
       fetchOptions: {
-        onSuccess: () => {
-          clearAuthentikAccessTokenCache();
-          window.location.href = getLogoutRedirectUrl();
-        },
+        onSuccess: () => clearAuthentikAccessTokenCache(),
       },
     });
+
+    if (logoutUrl === '/login') {
+      window.location.href = '/courses';
+      return;
+    }
+
+    if (!popup) {
+      window.location.href = '/courses';
+      return;
+    }
+
+    try {
+      popup.location.href = logoutUrl;
+      await waitForAuthPopup(popup, 60_000);
+    } catch {
+      // popup closed or timed out — that's fine
+    }
+
+    // Always reload the main page after logout
+    window.location.href = '/courses';
   };
 
   return (
@@ -73,10 +133,13 @@ export function SignOutButton() {
       variant="ghost"
       size="sm"
       onClick={handleSignOut}
-      className="gap-2 text-muted-foreground hover:text-foreground cursor-pointer"
+      className="
+        cursor-pointer gap-2 text-muted-foreground
+        hover:text-foreground
+      "
     >
       <LogOut className="size-4" />
-      Sign out
+      Đăng xuất
     </Button>
   );
 }

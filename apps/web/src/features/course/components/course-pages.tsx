@@ -1,18 +1,24 @@
 'use client';
 
 import {
+  BarChart3,
   BookOpen,
   Bookmark,
   CheckCircle2,
+  Clock3,
   Eye,
   EyeOff,
   FilePlus2,
   Filter,
+  Layers3,
   RefreshCw,
   Save,
   Search,
+  ShieldCheck,
   Trash2,
-  UploadCloud,
+  XCircle,
+  Pencil,
+  Star,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -38,13 +44,13 @@ import {
 } from '#/components/ui/shadcn/card';
 import { Input } from '#/components/ui/shadcn/input';
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '#/components/ui/shadcn/sheet';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '#/components/ui/shadcn/dialog';
 import {
   Table,
   TableBody,
@@ -57,14 +63,19 @@ import { apiClient } from '#/lib/api';
 import {
   type CourseCourse,
   type CourseCourseDetail,
+  type CourseReview,
   type CourseCourseWritable,
-  type GetUploadVideoUrlResponse,
+  approveCourse,
   bookmarkCourse,
   createCourse,
+  createDraftVersion,
+  declineCourse,
   deleteCourse,
   finishCourse,
   getCourseDetail,
+  getCourseForUpdate,
   getCourseLandingPage,
+  getCourseReviews,
   getMyBookmarkedCourses,
   getMyCourses,
   getMyEnrolledCourses,
@@ -79,6 +90,7 @@ import {
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import { formatDateTime, formatVnd } from '#/lib/api/format';
+import { putFileToSignedUrl } from '#/lib/api/upload';
 import { routeForViewer, type Viewer } from '#/lib/auth/roles';
 import { useViewer } from '#/lib/auth/use-viewer';
 
@@ -108,6 +120,126 @@ type CourseListResponse = {
     hasPrev: boolean;
   };
 };
+
+type CourseReviewsResponse = {
+  data?: CourseReview[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+};
+
+type UploadProgressCallback = (progress: number) => void;
+
+function normalizeTab(value: string | undefined, allowed: string[]) {
+  return value && allowed.includes(value) ? value : allowed[0];
+}
+
+function courseStatusLabel(course: CourseCourse) {
+  return course.status ?? 'draft';
+}
+
+function isDraftLike(course: CourseCourse) {
+  return courseStatusLabel(course) === 'draft';
+}
+
+function isPendingLike(course: CourseCourse) {
+  return courseStatusLabel(course) === 'pending';
+}
+
+function MockPanel({
+  title,
+  description,
+  items,
+}: {
+  title: string;
+  description: string;
+  items: string[];
+}) {
+  return (
+    <Card className="border-dashed bg-white">
+      <CardHeader>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+            Mock
+          </Badge>
+          <CardTitle>{title}</CardTitle>
+        </div>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent className="
+        grid gap-3
+        md:grid-cols-2
+      ">
+        {items.map((item) => (
+          <div
+            key={item}
+            className="
+              rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm
+              text-slate-700
+            "
+          >
+            {item}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function RoleTabs({
+  active,
+  tabs,
+}: {
+  active: string;
+  tabs: Array<{
+    href: string;
+    label: string;
+    icon: typeof BookOpen;
+    value: string;
+    }>;
+}) {
+  return (
+    <div className="
+      flex gap-2 overflow-x-auto rounded-lg border border-slate-200 bg-white p-2
+    ">
+      {tabs.map((tab) => (
+        <Button
+          key={tab.value}
+          asChild
+          size="sm"
+          variant={active === tab.value ? 'default' : 'ghost'}
+          className="shrink-0"
+        >
+          <Link href={tab.href}>
+            <tab.icon className="size-4" />
+            {tab.label}
+          </Link>
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+async function uploadCourseVideo(
+  courseId: string,
+  file: File,
+  onProgress?: UploadProgressCallback
+) {
+  const { data } = await getUploadVideoUrl({
+    body: { videoFilename: file.name },
+    client: apiClient,
+    path: { courseId },
+    throwOnError: true,
+  });
+
+  await putFileToSignedUrl(data.uploadUrl, file, onProgress);
+  return data;
+}
 
 function useCourseList(
   loader: () => Promise<CourseListResponse>,
@@ -179,13 +311,51 @@ function useCourseDetail(courseId: string) {
     };
   }, [courseId, reloadKey]);
 
+  return { state, setState, reload };
+}
+
+function useCourseReviews(courseId: string) {
+  const [state, setState] = useState<ResourceState<CourseReviewsResponse>>({
+    status: 'loading',
+  });
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const reload = useCallback(() => {
+    setReloadKey((key) => key + 1);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    getCourseReviews({
+      client: apiClient,
+      path: { courseId },
+      query: { limit: 6, page: 1 },
+      throwOnError: true,
+    })
+      .then(({ data }) => {
+        if (mounted) {
+          setState({ status: 'ready', data });
+        }
+      })
+      .catch((error) => {
+        if (mounted) {
+          setState({ status: 'error', error: normalizeApiError(error) });
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [courseId, reloadKey]);
+
   return { state, reload };
 }
 
 function ResultMeta({ result }: { result: CourseListResponse }) {
   return (
     <div className="text-sm text-slate-500">
-      {result.pagination.total} courses · page {result.pagination.page}/
+      {result.pagination.total} khóa học · trang {result.pagination.page}/
       {Math.max(result.pagination.totalPages, 1)}
     </div>
   );
@@ -203,10 +373,10 @@ function CourseGrid({
   return (
     <div
       className="
-      grid gap-4
-      md:grid-cols-2
-      xl:grid-cols-3
-    "
+        grid gap-4
+        md:grid-cols-2
+        xl:grid-cols-3
+      "
     >
       {courses.map((course) => (
         <CourseCard
@@ -259,7 +429,69 @@ function ListContent({
   );
 }
 
-export function MarketplacePage() {
+function CourseReviewsPanel({
+  state,
+  reload,
+}: {
+  state: ResourceState<CourseReviewsResponse>;
+  reload: () => void;
+}) {
+  if (state.status === 'loading') {
+    return <CourseGridSkeleton />;
+  }
+
+  if (state.status === 'error') {
+    return <ErrorState error={state.error} onRetry={reload} />;
+  }
+
+  const reviews = state.data.data ?? [];
+
+  if (!reviews.length) {
+    return (
+      <EmptyState
+        title="Chưa có đánh giá"
+        description="Khóa học này chưa có đánh giá nào."
+      />
+    );
+  }
+
+  return (
+    <Card className="bg-white">
+      <CardHeader>
+        <CardTitle>Reviews</CardTitle>
+        <CardDescription>
+          Real API: getCourseReviews. Total:{' '}
+          {state.data.pagination?.total ?? reviews.length}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-3">
+        {reviews.map((review) => (
+          <div
+            key={review.id}
+            className="rounded-lg border border-slate-200 bg-slate-50 p-4"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="font-medium">Rating {review.rating}/5</div>
+              <div className="text-xs text-slate-500">
+                {formatDateTime(review.createdAt)}
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-slate-700">{review.comment}</p>
+            <p className="mt-2 text-xs text-slate-500">
+              User: {review.userId}
+            </p>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+export function MarketplacePage({
+  initialTab = 'marketplace',
+}: {
+  initialTab?: string;
+}) {
   const { viewer } = useViewer();
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
@@ -281,9 +513,9 @@ export function MarketplacePage() {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Marketplace"
+      eyebrow="Khám phá"
       title="Khám phá khóa học"
-      description="Browse các course đã được publish. Public page không yêu cầu login; khi cần học tiếp hoặc bookmark, user sẽ sign in."
+
       actions={
         <Button type="button" variant="outline" onClick={reload}>
           <RefreshCw className="size-4" />
@@ -291,23 +523,24 @@ export function MarketplacePage() {
         </Button>
       }
     >
+
       <Card className="bg-white">
         <CardContent
           className="
-          flex flex-col gap-3 py-4
-          md:flex-row
-        "
+            flex flex-col gap-3 py-4
+            md:flex-row
+          "
         >
           <div className="relative flex-1">
             <Search
               className="
-              pointer-events-none absolute top-1/2 left-2.5 size-4
-              -translate-y-1/2 text-slate-400
-            "
+                pointer-events-none absolute top-1/2 left-2.5 size-4
+                -translate-y-1/2 text-slate-400
+              "
             />
             <Input
               className="pl-8"
-              placeholder="Tìm course theo title hoặc overview"
+              placeholder="Tìm khóa học theo tên hoặc mô tả"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={(event) => {
@@ -328,8 +561,8 @@ export function MarketplacePage() {
         state={state}
         reload={reload}
         destination="public"
-        emptyTitle="Chưa có course published"
-        emptyDescription="Course service đang chạy nhưng chưa có dữ liệu public. Chạy seedcourse nếu muốn có dữ liệu mẫu."
+        emptyTitle="Chưa có khóa học"
+        emptyDescription="Chưa có khóa học nào được xuất bản."
       />
     </AppShell>
   );
@@ -338,7 +571,8 @@ export function MarketplacePage() {
 export function PublicCoursePage({ courseId }: { courseId: string }) {
   const { viewer } = useViewer();
   const primaryHref = viewer?.id ? routeForViewer(viewer) : '/login';
-  const primaryLabel = viewer?.id ? 'Mở dashboard' : 'Sign in để học';
+  const primaryLabel = viewer?.id ? 'Má»Ÿ dashboard' : 'Sign in Ä‘á»ƒ há»c';
+  const reviews = useCourseReviews(courseId);
   const [state, setState] = useState<ResourceState<CourseCourse>>({
     status: 'loading',
   });
@@ -370,48 +604,61 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Course landing"
-      title="Course overview"
-      description="Public landing data từ endpoint published course."
+      eyebrow="Chi tiết khóa học"
+      title="Tổng quan khóa học"
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && <ErrorState error={state.error} />}
       {state.status === 'ready' && (
-        <CourseHero
-          course={state.data}
-          actions={
-            <div className="flex flex-col gap-2">
-              <Button
-                asChild
-                className="
-                  w-full bg-white text-slate-950
-                  hover:bg-slate-100
-                "
-              >
-                <Link href={primaryHref}>
-                  <BookOpen className="size-4" />
-                  {primaryLabel}
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="
-                  w-full border-white/20 text-white
-                  hover:bg-white/10 hover:text-white
-                "
-              >
-                <Link href="/courses">Back to marketplace</Link>
-              </Button>
-            </div>
-          }
-        />
+        <div className="grid gap-6">
+          <CourseHero
+            course={state.data}
+            actions={
+              <div className="flex flex-col gap-2">
+                <Button
+                  asChild
+                  className="
+                    w-full bg-white text-slate-950
+                    hover:bg-slate-100
+                  "
+                >
+                  <Link href={primaryHref}>
+                    <BookOpen className="size-4" />
+                    {primaryLabel}
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="
+                    w-full border-white/20 text-white
+                    hover:bg-white/10 hover:text-white
+                  "
+                >
+                  <Link href="/courses">Back to marketplace</Link>
+                </Button>
+              </div>
+            }
+          />
+          <CourseReviewsPanel state={reviews.state} reload={reviews.reload} />
+        </div>
       )}
     </AppShell>
   );
 }
 
-function LearnerHomeContent({ viewer }: { viewer: Viewer }) {
+function LearnerHomeContent({
+  initialTab,
+  viewer,
+}: {
+  initialTab: string;
+  viewer: Viewer;
+}) {
+  const activeTab = normalizeTab(initialTab, [
+    'home',
+    'enrolled',
+    'bookmarked',
+  ]);
   const enrolled = useCourseList(
     () =>
       getMyEnrolledCourses({
@@ -434,48 +681,70 @@ function LearnerHomeContent({ viewer }: { viewer: Viewer }) {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Learner"
+      eyebrow="Học tập"
       title="Không gian học tập"
-      description="Theo dõi enrolled courses và bookmark. Các action vẫn do backend kiểm tra quyền."
       actions={
         <Button asChild>
           <Link href="/courses">
             <Search className="size-4" />
-            Browse courses
+            Khám phá khóa học
           </Link>
         </Button>
       }
     >
-      <section className="grid gap-6">
+      {(activeTab === 'home' || activeTab === 'enrolled') && (
+        <section className="grid gap-6">
         <div className="flex flex-col gap-3">
           <h2 className="text-lg font-semibold">Đang học</h2>
           <ListContent
             state={enrolled.state}
             reload={enrolled.reload}
             destination="learner"
-            emptyTitle="Bạn chưa enrolled course nào"
-            emptyDescription="Vào marketplace để xem các khóa học đang mở."
+            emptyTitle="Bạn chưa đăng ký khóa học nào"
+            emptyDescription="Vào khám phá để xem các khóa học đang mở."
           />
         </div>
+        {activeTab === 'home' && (
         <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold">Bookmarked</h2>
+          <h2 className="text-lg font-semibold">Đã lưu</h2>
           <ListContent
             state={bookmarked.state}
             reload={bookmarked.reload}
             destination="learner"
             emptyTitle="Chưa có bookmark"
-            emptyDescription="Bookmark giúp bạn quay lại course nhanh hơn."
+            emptyDescription="Bookmark giúp bạn quay lại khóa học nhanh hơn."
           />
         </div>
+        )}
       </section>
+      )}
+
+      {activeTab === 'bookmarked' && (
+        <section className="grid gap-3">
+          <h2 className="text-lg font-semibold">Đã lưu</h2>
+          <ListContent
+            state={bookmarked.state}
+            reload={bookmarked.reload}
+            destination="learner"
+            emptyTitle="Chưa có bookmark"
+            emptyDescription="Bookmark giúp bạn quay lại khóa học nhanh hơn."
+          />
+        </section>
+      )}
     </AppShell>
   );
 }
 
-export function LearnerHomePage() {
+export function LearnerHomePage({
+  initialTab = 'home',
+}: {
+  initialTab?: string;
+}) {
   return (
-    <AuthGate allowedRoles={['learner']}>
-      {(viewer) => <LearnerHomeContent viewer={viewer} />}
+    <AuthGate allowedRoles={['learner', 'instructor', 'admin']}>
+      {(viewer) => (
+        <LearnerHomeContent initialTab={initialTab} viewer={viewer} />
+      )}
     </AuthGate>
   );
 }
@@ -494,6 +763,7 @@ function LearnerCourseContent({
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [rating, setRating] = useState('5');
   const [comment, setComment] = useState('');
+  const [reviewOpen, setReviewOpen] = useState(false);
 
   const refreshBookmarks = useCallback(() => {
     getMyBookmarkedCourses({
@@ -519,17 +789,19 @@ function LearnerCourseContent({
 
   const bookmarked = bookmarkedIds.has(courseId);
 
-  async function runAction(name: string, action: () => Promise<unknown>) {
+  async function runAction(name: string, action: () => Promise<unknown>, success: string) {
     setBusyAction(name);
     setActionError(null);
     setActionMessage(null);
     try {
       await action();
-      setActionMessage('Done. Dữ liệu đã được gửi tới backend.');
+      setActionMessage(success);
       refreshBookmarks();
       reload();
+      return true;
     } catch (error) {
       setActionError(normalizeApiError(error));
+      return false;
     } finally {
       setBusyAction(null);
     }
@@ -538,9 +810,9 @@ function LearnerCourseContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Learner detail"
-      title="Course workspace"
-      description="Learner route dùng course detail endpoint chung, chỉ khác action được render."
+      eyebrow="Chi tiết"
+      title="Nội dung khóa học"
+
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
@@ -552,26 +824,111 @@ function LearnerCourseContent({
             course={state.data}
             actions={
               <div className="grid gap-2">
+                <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      type="button"
+                      className="
+                        w-full bg-white text-slate-950
+                        hover:bg-slate-100
+                      "
+                    >
+                      <Star className="size-4" />
+                      Review course
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Review course</DialogTitle>
+                      <DialogDescription>
+                        Share your thoughts about this course with others.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form
+                      className="grid gap-4 py-4"
+                      onSubmit={async (event) => {
+                        event.preventDefault();
+                        const ok = await runAction(
+                          'review',
+                          () =>
+                            reviewCourse({
+                              body: {
+                                rating: Number.parseInt(rating, 10),
+                                comment,
+                              },
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            }),
+                          'Cảm ơn bạn đã đánh giá khóa học!'
+                        );
+                        if (ok) {
+                          setReviewOpen(false);
+                          setComment('');
+                        }
+                      }}
+                    >
+                      <div className="grid gap-2">
+                        <label className="text-sm font-medium">Rating (1-5)</label>
+                        <Input
+                          min={1}
+                          max={5}
+                          type="number"
+                          value={rating}
+                          onChange={(event) => setRating(event.target.value)}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <label className="text-sm font-medium">Your comment</label>
+                        <textarea
+                          className="
+                            min-h-24 w-full rounded-lg border border-input
+                            bg-transparent px-3 py-2 text-sm transition-colors
+                            outline-none
+                            placeholder:text-muted-foreground
+                            focus-visible:border-ring focus-visible:ring-3
+                            focus-visible:ring-ring/50
+                          "
+                          placeholder="Bạn học được gì từ khóa học này?"
+                          value={comment}
+                          onChange={(event) => setComment(event.target.value)}
+                        />
+                      </div>
+                      <Button
+                        type="submit"
+                        disabled={busyAction === 'review' || !comment.trim()}
+                      >
+                        <Save className="size-4" />
+                        Submit review
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+
                 <Button
                   type="button"
+                  variant="outline"
                   disabled={busyAction === 'bookmark'}
                   className="
-                    w-full bg-white text-slate-950
-                    hover:bg-slate-100
+                    w-full border-white/20 text-white
+                    hover:bg-white/10 hover:text-white
                   "
                   onClick={() =>
-                    runAction('bookmark', () =>
-                      bookmarked
-                        ? unbookmarkCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          })
-                        : bookmarkCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          })
+                    runAction(
+                      'bookmark',
+                      () =>
+                        bookmarked
+                          ? unbookmarkCourse({
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            })
+                          : bookmarkCourse({
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            }),
+                      bookmarked ? 'Đã bỏ lưu khóa học.' : 'Đã lưu khóa học.'
                     )
                   }
                 >
@@ -587,12 +944,15 @@ function LearnerCourseContent({
                     hover:bg-white/10 hover:text-white
                   "
                   onClick={() =>
-                    runAction('finish', () =>
-                      finishCourse({
-                        client: apiClient,
-                        path: { courseId },
-                        throwOnError: true,
-                      })
+                    runAction(
+                      'finish',
+                      () =>
+                        finishCourse({
+                          client: apiClient,
+                          path: { courseId },
+                          throwOnError: true,
+                        }),
+                      'Chúc mừng! Bạn đã hoàn thành khóa học.'
                     )
                   }
                 >
@@ -609,71 +969,12 @@ function LearnerCourseContent({
           {actionError && <ErrorState error={actionError} />}
 
           <section
-            className="
-            grid gap-6
-            lg:grid-cols-[1fr_340px]
-          "
+            className="grid gap-6"
           >
             <div className="grid gap-3">
-              <h2 className="text-lg font-semibold">Nội dung khóa học</h2>
+              <h2 className="text-lg font-semibold">Ná»™i dung khÃ³a há»c</h2>
               <CourseStructure course={state.data} />
             </div>
-
-            <Card className="bg-white">
-              <CardHeader>
-                <CardTitle>Review course</CardTitle>
-                <CardDescription>
-                  Gửi rating/comment qua endpoint reviewCourse.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form
-                  className="grid gap-3"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    runAction('review', () =>
-                      reviewCourse({
-                        body: {
-                          rating: Number.parseInt(rating, 10),
-                          comment,
-                        },
-                        client: apiClient,
-                        path: { courseId },
-                        throwOnError: true,
-                      })
-                    );
-                  }}
-                >
-                  <Input
-                    min={1}
-                    max={5}
-                    type="number"
-                    value={rating}
-                    onChange={(event) => setRating(event.target.value)}
-                  />
-                  <textarea
-                    className="
-                      min-h-24 w-full rounded-lg border border-input
-                      bg-transparent px-3 py-2 text-sm transition-colors
-                      outline-none
-                      placeholder:text-muted-foreground
-                      focus-visible:border-ring focus-visible:ring-3
-                      focus-visible:ring-ring/50
-                    "
-                    placeholder="Bạn học được gì từ course này?"
-                    value={comment}
-                    onChange={(event) => setComment(event.target.value)}
-                  />
-                  <Button
-                    type="submit"
-                    disabled={busyAction === 'review' || !comment.trim()}
-                  >
-                    <Save className="size-4" />
-                    Submit review
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
           </section>
         </div>
       )}
@@ -683,15 +984,50 @@ function LearnerCourseContent({
 
 export function LearnerCoursePage({ courseId }: { courseId: string }) {
   return (
-    <AuthGate allowedRoles={['learner']}>
+    <AuthGate allowedRoles={['learner', 'instructor', 'admin']}>
       {(viewer) => <LearnerCourseContent viewer={viewer} courseId={courseId} />}
     </AuthGate>
   );
 }
 
-function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
+async function uploadIntroVideoOnly(
+  file: File,
+  onProgress?: UploadProgressCallback
+) {
+  // Introduction video on course creation doesn't have courseId yet
+  // We use a dummy ID or the API needs to handle it.
+  // Looking at the API, getUploadVideoUrl requires courseId in path.
+  // However, for creation, we might need a different endpoint or a convention.
+  // Let's use a temporary constant for courseId if it's required by the client but not the server.
+
+  const { data } = await getUploadVideoUrl({
+    body: { videoFilename: file.name },
+    client: apiClient,
+    path: { courseId: 'new' }, // 'new' or any string if the server doesn't use it for path routing but the client requires it
+    throwOnError: true,
+  });
+
+  await putFileToSignedUrl(data.uploadUrl, file, onProgress);
+  return data;
+}
+
+function InstructorCoursesContent({
+  initialTab,
+  viewer,
+}: {
+  initialTab: string;
+  viewer: Viewer;
+}) {
   const router = useRouter();
+  const activeTab = normalizeTab(initialTab, [
+    'courses',
+    'drafts',
+    'lessons',
+    'uploads',
+    'reviews',
+  ]);
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const courses = useCourseList(
@@ -704,9 +1040,28 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
     []
   );
 
+  const displayedCourses = useMemo<ResourceState<CourseListResponse>>(() => {
+    if (courses.state.status !== 'ready') {
+      return courses.state;
+    }
+
+    if (activeTab !== 'drafts') {
+      return courses.state;
+    }
+
+    return {
+      status: 'ready',
+      data: {
+        ...courses.state.data,
+        data: courses.state.data.data.filter(isDraftLike),
+      },
+    };
+  }, [activeTab, courses.state]);
+
   async function create(body: CourseCourseWritable) {
     setSubmitting(true);
     setActionError(null);
+    setActionMessage(null);
     try {
       const response = await createCourse({
         body,
@@ -727,33 +1082,12 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
     }
   }
 
-  async function uploadIntroductionVideo(file: File) {
-    const uploadCourseId =
-      globalThis.crypto?.randomUUID?.() ??
-      '00000000-0000-0000-0000-000000000000';
-    const { data } = await getUploadVideoUrl({
-      body: { videoFilename: file.name },
-      client: apiClient,
-      path: { courseId: uploadCourseId },
-      throwOnError: true,
-    });
-
-    const uploadResponse = await fetch(data.uploadUrl, {
-      body: file,
-      method: 'PUT',
-    });
-
-    if (!uploadResponse.ok) {
-      throw new Error(`RustFS upload failed (${uploadResponse.status})`);
-    }
-
-    return data;
-  }
-
-  async function mutateCourse(action: () => Promise<unknown>) {
+  async function mutateCourse(action: () => Promise<unknown>, success: string) {
     setActionError(null);
+    setActionMessage(null);
     try {
       await action();
+      setActionMessage(success);
       courses.reload();
     } catch (error) {
       setActionError(normalizeApiError(error));
@@ -763,52 +1097,59 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Instructor"
-      title="Teaching console"
+      eyebrow="Giảng dạy"
+      title="Quản lý khóa học"
       actions={
-        <Sheet open={createOpen} onOpenChange={setCreateOpen}>
-          <SheetTrigger asChild>
+        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+          <DialogTrigger asChild>
             <Button type="button">
               <FilePlus2 className="size-4" />
               Create course
             </Button>
-          </SheetTrigger>
-          <SheetContent className="w-full overflow-y-auto sm:max-w-xl">
-            <SheetHeader>
-              <SheetTitle>Create course</SheetTitle>
-              <SheetDescription>
-                Upload intro video first. FE will put the file to RustFS and use
-                the returned videoKey when creating the course.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="px-4 pb-4">
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Create course</DialogTitle>
+              <DialogDescription>
+                Fill in basic info now. An introduction video is required.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
               <CourseForm
-                forceIntroductionVideoKey
                 submitLabel="Create course"
                 submitting={submitting}
                 error={actionError?.message}
-                onUploadIntroductionVideo={uploadIntroductionVideo}
+                forceIntroductionVideoKey={true}
+                onUploadIntroductionVideo={uploadIntroVideoOnly}
                 onSubmit={create}
               />
             </div>
-          </SheetContent>
-        </Sheet>
+          </DialogContent>
+        </Dialog>
       }
-      description="Quản lý course qua các endpoint đã có logic: list, create, update, hide/unhide, delete, upload URL."
     >
       <div
-        className="
-        grid gap-4
-      "
+        className="grid gap-4"
       >
         <div className="grid gap-4">
+          {actionMessage && (
+            <InlineNotice title="Success" description={actionMessage} />
+          )}
           {actionError && <ErrorState error={actionError} />}
           <ListContent
-            state={courses.state}
+            state={displayedCourses}
             reload={courses.reload}
             destination="instructor"
-            emptyTitle="Chưa có course của bạn"
-            emptyDescription="Tạo course đầu tiên bằng nút Create course."
+            emptyTitle={
+              activeTab === 'drafts'
+                ? 'Chưa có bản nháp'
+                : 'Chưa có khóa học của bạn'
+            }
+            emptyDescription={
+              activeTab === 'drafts'
+                ? 'Nhấn edit trong chi tiết khóa học đã duyệt để tạo bản nháp.'
+                : 'Tạo khóa học đầu tiên bằng nút Create course.'
+            }
             actionFor={(course) => (
               <div className="flex flex-wrap gap-2">
                 <Button asChild variant="outline">
@@ -821,18 +1162,21 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
                   type="button"
                   variant="outline"
                   onClick={() =>
-                    mutateCourse(() =>
-                      course.hidden
-                        ? unhideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          })
-                        : hideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          })
+                    mutateCourse(
+                      course.hidden ? 'unhide' : 'hide',
+                      () =>
+                        course.hidden
+                          ? unhideCourse({
+                              client: apiClient,
+                              path: { courseId: course.id ?? '' },
+                              throwOnError: true,
+                            })
+                          : hideCourse({
+                              client: apiClient,
+                              path: { courseId: course.id ?? '' },
+                              throwOnError: true,
+                            }),
+                      course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
                     )
                   }
                 >
@@ -847,12 +1191,15 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
                   type="button"
                   variant="destructive"
                   onClick={() =>
-                    mutateCourse(() =>
-                      deleteCourse({
-                        client: apiClient,
-                        path: { courseId: course.id ?? '' },
-                        throwOnError: true,
-                      })
+                    mutateCourse(
+                      'delete',
+                      () =>
+                        deleteCourse({
+                          client: apiClient,
+                          path: { courseId: course.id ?? '' },
+                          throwOnError: true,
+                        }),
+                      'Khóa học đã được xóa.'
                     )
                   }
                 >
@@ -868,10 +1215,16 @@ function InstructorCoursesContent({ viewer }: { viewer: Viewer }) {
   );
 }
 
-export function InstructorCoursesPage() {
+export function InstructorCoursesPage({
+  initialTab = 'courses',
+}: {
+  initialTab?: string;
+}) {
   return (
     <AuthGate allowedRoles={['instructor', 'admin']}>
-      {(viewer) => <InstructorCoursesContent viewer={viewer} />}
+      {(viewer) => (
+        <InstructorCoursesContent initialTab={initialTab} viewer={viewer} />
+      )}
     </AuthGate>
   );
 }
@@ -888,9 +1241,7 @@ function InstructorCourseDetailContent({
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [videoFilename, setVideoFilename] = useState('');
-  const [uploadResult, setUploadResult] =
-    useState<GetUploadVideoUrlResponse | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
@@ -909,12 +1260,45 @@ function InstructorCourseDetailContent({
     }
   }
 
+  async function ensureEditableCourseId() {
+    if (state.status !== 'ready') {
+      throw new Error('Course detail is not loaded yet.');
+    }
+
+    if (isDraftLike(state.data)) {
+      return state.data.id ?? courseId;
+    }
+
+    let createDraftError: unknown;
+
+    try {
+      await createDraftVersion({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
+    } catch (error) {
+      createDraftError = error;
+    }
+
+    try {
+      const { data } = await getCourseForUpdate({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
+      return data.data.id ?? courseId;
+    } catch (error) {
+      throw createDraftError ?? error;
+    }
+  }
+
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Instructor detail"
-      title="Course management"
-      description="Detail route gọi cùng endpoint course detail, nhưng render management controls cho instructor/admin."
+      eyebrow="Quản lý"
+      title="Chi tiết khóa học"
+
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
@@ -926,12 +1310,90 @@ function InstructorCourseDetailContent({
             course={state.data}
             actions={
               <div className="grid gap-2">
+                <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      type="button"
+                      disabled={submitting}
+                      className="
+                        w-full bg-white text-slate-950
+                        hover:bg-slate-100
+                      "
+                    >
+                      <Pencil className="size-4" />
+                      Edit course
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-xl">
+                    <DialogHeader>
+                      <DialogTitle>Edit basic info</DialogTitle>
+                      <DialogDescription>
+                        Update title, price, or overview. Changing these on a published course will create a new draft.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
+                      <CourseForm
+                        course={state.data}
+                        submitLabel="Save changes"
+                        submitting={submitting}
+                        onUploadIntroductionVideo={(file, onProgress) =>
+                          uploadCourseVideo(courseId, file, onProgress)
+                        }
+                        onSubmit={async (body) => {
+                          if (state.status !== 'ready') return;
+                          
+                          // Optimistic Update: Save current state for rollback
+                          const previousState = state.data;
+                          
+                          // Update local state immediately
+                          setState({
+                            status: 'ready',
+                            data: {
+                              ...previousState,
+                              title: body.title,
+                              price: body.price,
+                              overview: body.overview,
+                            }
+                          });
+
+                          let editableCourseId = courseId;
+                          const ok = await runAction(
+                            async () => {
+                              editableCourseId = await ensureEditableCourseId();
+                              await updateCourse({
+                                body,
+                                client: apiClient,
+                                path: { courseId: editableCourseId },
+                                throwOnError: true,
+                              });
+                            },
+                            isDraftLike(previousState)
+                              ? 'Khóa học đã được cập nhật.'
+                              : 'Bản nháp mới đã được tạo và cập nhật.'
+                          );
+
+                          if (ok) {
+                            setEditOpen(false);
+                            if (editableCourseId !== courseId) {
+                              router.replace(`/instructor/courses/${editableCourseId}`);
+                            }
+                          } else {
+                            // Rollback on failure
+                            setState({ status: 'ready', data: previousState });
+                          }
+                        }}
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
                 <Button
                   type="button"
+                  variant="outline"
                   disabled={submitting}
                   className="
-                    w-full bg-white text-slate-950
-                    hover:bg-slate-100
+                    w-full border-white/20 text-white
+                    hover:bg-white/10 hover:text-white
                   "
                   onClick={() =>
                     runAction(
@@ -948,8 +1410,8 @@ function InstructorCourseDetailContent({
                               throwOnError: true,
                             }),
                       state.data.hidden
-                        ? 'Course đã unhide.'
-                        : 'Course đã hide.'
+                        ? 'Khóa học đã hiện.'
+                        : 'Khóa học đã ẩn.'
                     )
                   }
                 >
@@ -976,7 +1438,7 @@ function InstructorCourseDetailContent({
                           path: { courseId },
                           throwOnError: true,
                         }),
-                      'Course đã delete.'
+                      'Khóa học đã được xóa.'
                     ).then((ok) => {
                       if (ok) {
                         router.push('/instructor/courses');
@@ -998,117 +1460,34 @@ function InstructorCourseDetailContent({
 
           <div
             className="
-            grid gap-6
-            xl:grid-cols-[360px_1fr]
-          "
+              grid gap-6
+              xl:grid-cols-[1fr_340px]
+            "
           >
-            <div className="grid gap-4">
-              <Card className="bg-white">
-                <CardHeader>
-                  <CardTitle>Edit basic info</CardTitle>
-                  <CardDescription>
-                    Gọi `updateCourse`, không đụng section/lesson mutation.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <CourseForm
-                    course={state.data}
-                    submitLabel="Save changes"
-                    submitting={submitting}
-                    onSubmit={async (body) => {
-                      await runAction(
-                        () =>
-                          updateCourse({
-                            body,
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          }),
-                        'Course đã update.'
-                      );
-                    }}
-                  />
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white">
-                <CardHeader>
-                  <CardTitle>Upload video URL</CardTitle>
-                  <CardDescription>
-                    Tạo signed URL và copy videoKey vào form khi cần.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form
-                    className="grid gap-3"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      if (!videoFilename.trim()) {
-                        return;
-                      }
-                      setSubmitting(true);
-                      setActionError(null);
-                      getUploadVideoUrl({
-                        body: { videoFilename: videoFilename.trim() },
-                        client: apiClient,
-                        path: { courseId },
-                        throwOnError: true,
-                      })
-                        .then(({ data }) => setUploadResult(data))
-                        .catch((error) =>
-                          setActionError(normalizeApiError(error))
-                        )
-                        .finally(() => setSubmitting(false));
-                    }}
-                  >
-                    <Input
-                      placeholder="intro.mp4"
-                      value={videoFilename}
-                      onChange={(event) => setVideoFilename(event.target.value)}
-                    />
-                    <Button
-                      type="submit"
-                      disabled={submitting || !videoFilename.trim()}
-                    >
-                      <UploadCloud className="size-4" />
-                      Generate URL
-                    </Button>
-                  </form>
-                  {uploadResult && (
-                    <div
-                      className="
-                      mt-4 grid gap-2 rounded-lg bg-slate-50 p-3 text-xs
-                    "
-                    >
-                      <div>
-                        <span className="font-medium">videoKey:</span>{' '}
-                        <span className="break-all">
-                          {uploadResult.videoKey}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="font-medium">expiresAt:</span>{' '}
-                        {formatDateTime(uploadResult.expiresAt)}
-                      </div>
-                      <div>
-                        <span className="font-medium">uploadUrl:</span>{' '}
-                        <span className="break-all">
-                          {uploadResult.uploadUrl}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
             <div className="grid gap-3">
               <h2 className="text-lg font-semibold">Course structure</h2>
               <CourseStructure course={state.data} />
               <InlineNotice
-                title="Section/Lesson editing tạm khóa"
-                description="Các endpoint create/edit/delete section/lesson hiện chưa usable hoặc đang panic/501, nên UI V1 chỉ hiển thị structure."
+                title="Sắp ra mắt"
+                description="Tính năng thêm Section và Lesson đang được hoàn thiện."
               />
+            </div>
+
+            <div className="grid gap-4">
+              <Card className="bg-white text-slate-600">
+                <CardHeader>
+                  <CardTitle className="text-slate-900">Ghi chú</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                  <p>
+                    Nhấn <strong>Edit course</strong> để thay đổi thông tin cơ bản.
+                  </p>
+                  <InlineNotice
+                    title="Storage"
+                    description="Video được upload trực tiếp lên hệ thống lưu trữ RustFS qua link bảo mật."
+                  />
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
@@ -1127,9 +1506,23 @@ export function InstructorCourseDetailPage({ courseId }: { courseId: string }) {
   );
 }
 
-function AdminCoursesContent({ viewer }: { viewer: Viewer }) {
+function AdminCoursesContent({
+  initialTab,
+  viewer,
+}: {
+  initialTab: string;
+  viewer: Viewer;
+}) {
+  const activeTab = normalizeTab(initialTab, [
+    'system',
+    'pending',
+    'archive',
+    'stats',
+  ]);
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
+  const [actionError, setActionError] = useState<ApiProblem | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const courses = useCourseList(
     () =>
       getSystemCourses({
@@ -1145,16 +1538,37 @@ function AdminCoursesContent({ viewer }: { viewer: Viewer }) {
   );
 
   const rows = useMemo(
-    () => (courses.state.status === 'ready' ? courses.state.data.data : []),
-    [courses.state]
+    () => {
+      if (courses.state.status !== 'ready') {
+        return [];
+      }
+
+      if (activeTab === 'pending') {
+        return courses.state.data.data.filter(isPendingLike);
+      }
+
+      return courses.state.data.data;
+    },
+    [activeTab, courses.state]
   );
+
+  async function mutateAdminCourse(action: () => Promise<unknown>, success: string) {
+    setActionError(null);
+    setActionMessage(null);
+    try {
+      await action();
+      setActionMessage(success);
+      courses.reload();
+    } catch (error) {
+      setActionError(normalizeApiError(error));
+    }
+  }
 
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Admin"
-      title="System courses"
-      description="Admin route chỉ dùng endpoint hiện usable. Approve/decline/analytics chưa render vì backend chưa triển khai."
+      eyebrow="Quản trị"
+      title="Quản lý khóa học hệ thống"
       actions={
         <Button type="button" variant="outline" onClick={courses.reload}>
           <RefreshCw className="size-4" />
@@ -1162,12 +1576,71 @@ function AdminCoursesContent({ viewer }: { viewer: Viewer }) {
         </Button>
       }
     >
+      <RoleTabs
+        active={activeTab}
+        tabs={[
+          {
+                        href: '/admin/courses',
+            icon: ShieldCheck,
+            label: 'System courses',
+            value: 'system',
+          },
+          {
+                        href: '/admin/courses?tab=pending',
+            icon: Clock3,
+            label: 'Pending',
+            value: 'pending',
+          },
+          {
+                        href: '/admin/courses?tab=archive',
+            icon: Layers3,
+            label: 'Hidden/deleted',
+            value: 'archive',
+          },
+          {
+                        href: '/admin/courses?tab=stats',
+            icon: BarChart3,
+            label: 'Stats',
+            value: 'stats',
+          },
+        ]}
+      />
+
+      {actionMessage && (
+        <InlineNotice title="Success" description={actionMessage} />
+      )}
+
+      {activeTab === 'archive' && (
+        <MockPanel
+          title="Hidden/deleted view"
+          description="Mock view vi BE hien chua co archive pagination rieng."
+          items={[
+            'Hidden courses summary.',
+            'Deleted courses audit trail.',
+            'Restore flow placeholder.',
+          ]}
+        />
+      )}
+
+      {activeTab === 'stats' && (
+        <MockPanel
+          title="System stats"
+          items={[
+            `Courses loaded this page: ${rows.length}`,
+            'Pending approvals trend: coming soon.',
+            'Revenue/course analytics: coming soon.',
+          ]}
+        />
+      )}
+
+      {(activeTab === 'system' || activeTab === 'pending') && (
+      <>
       <Card className="bg-white">
         <CardContent
           className="
-          flex flex-col gap-3 py-4
-          md:flex-row
-        "
+            flex flex-col gap-3 py-4
+            md:flex-row
+          "
         >
           <Input
             placeholder="Search system courses"
@@ -1190,10 +1663,11 @@ function AdminCoursesContent({ viewer }: { viewer: Viewer }) {
       {courses.state.status === 'error' && (
         <ErrorState error={courses.state.error} onRetry={courses.reload} />
       )}
+      {actionError && <ErrorState error={actionError} />}
       {courses.state.status === 'ready' && !rows.length && (
         <EmptyState
-          title="System chưa có course"
-          description="Chưa có dữ liệu course trong database."
+          title="Chưa có khóa học nào"
+          description="Chưa có dữ liệu khóa học trong hệ thống."
         />
       )}
       {courses.state.status === 'ready' && rows.length > 0 && (
@@ -1231,13 +1705,108 @@ function AdminCoursesContent({ viewer }: { viewer: Viewer }) {
                     <TableCell>{course.hidden ? 'Yes' : 'No'}</TableCell>
                     <TableCell>{formatVnd(course.price)}</TableCell>
                     <TableCell>{course.instructorId ?? 'N/A'}</TableCell>
-                    <TableCell className="text-right">
-                      <Button asChild variant="outline">
-                        <Link href={`/instructor/courses/${course.id}`}>
-                          <Eye className="size-4" />
-                          Detail
-                        </Link>
-                      </Button>
+                    <TableCell>
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <Button asChild variant="outline" size="sm">
+                          <Link href={`/instructor/courses/${course.id}`}>
+                            <Eye className="size-4" />
+                            Detail
+                          </Link>
+                        </Button>
+                        {isPendingLike(course) && (
+                          <>
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() =>
+                                mutateAdminCourse(
+                                  'approve',
+                                  () =>
+                                    approveCourse({
+                                      client: apiClient,
+                                      path: { courseId: course.id ?? '' },
+                                      throwOnError: true,
+                                    }),
+                                  'Khóa học đã được duyệt.'
+                                )
+                              }
+                            >
+                              <CheckCircle2 className="size-4" />
+                              Approve
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() =>
+                                mutateAdminCourse(
+                                  'decline',
+                                  () =>
+                                    declineCourse({
+                                      client: apiClient,
+                                      path: { courseId: course.id ?? '' },
+                                      throwOnError: true,
+                                    }),
+                                  'Đã từ chối khóa học.'
+                                )
+                              }
+                            >
+                              <XCircle className="size-4" />
+                              Decline
+                            </Button>
+                          </>
+                        )}
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            mutateAdminCourse(
+                              course.hidden ? 'unhide' : 'hide',
+                              () =>
+                                course.hidden
+                                  ? unhideCourse({
+                                      client: apiClient,
+                                      path: { courseId: course.id ?? '' },
+                                      throwOnError: true,
+                                    })
+                                  : hideCourse({
+                                      client: apiClient,
+                                      path: { courseId: course.id ?? '' },
+                                      throwOnError: true,
+                                    }),
+                              course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
+                            )
+                          }
+                        >
+                          {course.hidden ? (
+                            <Eye className="size-4" />
+                          ) : (
+                            <EyeOff className="size-4" />
+                          )}
+                          {course.hidden ? 'Unhide' : 'Hide'}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="destructive"
+                          onClick={() =>
+                            mutateAdminCourse(
+                              'delete',
+                              () =>
+                                deleteCourse({
+                                  client: apiClient,
+                                  path: { courseId: course.id ?? '' },
+                                  throwOnError: true,
+                                }),
+                              'Khóa học đã được xóa.'
+                            )
+                          }
+                        >
+                          <Trash2 className="size-4" />
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -1246,14 +1815,22 @@ function AdminCoursesContent({ viewer }: { viewer: Viewer }) {
           </CardContent>
         </Card>
       )}
+      </>
+      )}
     </AppShell>
   );
 }
 
-export function AdminCoursesPage() {
+export function AdminCoursesPage({
+  initialTab = 'system',
+}: {
+  initialTab?: string;
+}) {
   return (
     <AuthGate allowedRoles={['admin']}>
-      {(viewer) => <AdminCoursesContent viewer={viewer} />}
+      {(viewer) => (
+        <AdminCoursesContent initialTab={initialTab} viewer={viewer} />
+      )}
     </AuthGate>
   );
 }
@@ -1284,9 +1861,9 @@ export function DashboardRedirectPage() {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Routing"
-      title="Đang đưa bạn tới đúng workspace"
-      description="Dashboard sẽ chọn route theo role trong Authentik token."
+      eyebrow=""
+      title="Đang chuyển hướng..."
+
     >
       <CourseGridSkeleton />
     </AppShell>
