@@ -4,7 +4,7 @@ post:
         - openid
         - entitlements
     - OIDC:
-        - openid
+        - openidnx
         - entitlements
   tags:
     - Course
@@ -15,8 +15,6 @@ post:
     - authenticated:
       - instructor
       - admin
-  parameters:
-    - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:
     required: true
     content:

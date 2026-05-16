@@ -617,6 +617,19 @@ export const zGetMyEnrolledCoursesResponse = z.object({
     pagination: zCoursePagination
 });
 
+export const zGetUploadVideoUrlBody = z.object({
+    videoFilename: z.string()
+});
+
+/**
+ * Upload URL generated
+ */
+export const zGetUploadVideoUrlResponse = z.object({
+    uploadUrl: z.url(),
+    videoKey: z.string(),
+    expiresAt: z.iso.datetime()
+});
+
 export const zGetCourseAnalyticsPath = z.object({
     courseId: z.uuid()
 });
@@ -948,23 +961,6 @@ export const zEditTestLessonPath = z.object({
  * Test lesson successfully updated
  */
 export const zEditTestLessonResponse = z.void();
-
-export const zGetUploadVideoUrlBody = z.object({
-    videoFilename: z.string()
-});
-
-export const zGetUploadVideoUrlPath = z.object({
-    courseId: z.uuid()
-});
-
-/**
- * Upload URL generated
- */
-export const zGetUploadVideoUrlResponse = z.object({
-    uploadUrl: z.url(),
-    videoKey: z.string(),
-    expiresAt: z.iso.datetime()
-});
 
 export const zSaveVideoLessonProgressBody = zCourseVideoLessonProgressWritable;
 

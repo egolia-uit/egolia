@@ -754,6 +754,98 @@
         }
       }
     },
+    "/course/courses/upload-video-url": {
+      "post": {
+        "security": [
+          {
+            "course_Oauth2": [
+              "openid",
+              "entitlements"
+            ]
+          },
+          {
+            "course_OIDC": [
+              "openid",
+              "entitlements"
+            ]
+          }
+        ],
+        "tags": [
+          "Course",
+          "Lesson"
+        ],
+        "summary": "Get upload video URL",
+        "operationId": "getUploadVideoUrl",
+        "description": "- authenticated:\n  - instructor\n  - admin\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "videoFilename": {
+                    "type": "string",
+                    "example": "introduction_to_python.mp4"
+                  }
+                },
+                "required": [
+                  "videoFilename"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Upload URL generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://storage.egolia.localhost/upload/signed-url-token"
+                    },
+                    "videoKey": {
+                      "type": "string",
+                      "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4"
+                    },
+                    "expiresAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2026-03-22T10:30:00Z"
+                    }
+                  },
+                  "required": [
+                    "uploadUrl",
+                    "videoKey",
+                    "expiresAt"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/course_BadRequestError"
+          },
+          "401": {
+            "$ref": "#/components/responses/course_UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/course_ForbiddenError"
+          },
+          "404": {
+            "$ref": "#/components/responses/course_NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/course_InternalServerError"
+          }
+        }
+      }
+    },
     "/course/courses/{courseId}/analytics": {
       "get": {
         "security": [
@@ -2753,103 +2845,6 @@
         "responses": {
           "204": {
             "description": "Test lesson successfully updated"
-          },
-          "400": {
-            "$ref": "#/components/responses/course_BadRequestError"
-          },
-          "401": {
-            "$ref": "#/components/responses/course_UnauthorizedError"
-          },
-          "403": {
-            "$ref": "#/components/responses/course_ForbiddenError"
-          },
-          "404": {
-            "$ref": "#/components/responses/course_NotFoundError"
-          },
-          "500": {
-            "$ref": "#/components/responses/course_InternalServerError"
-          }
-        }
-      }
-    },
-    "/course/courses/{courseId}/upload-video-url": {
-      "post": {
-        "security": [
-          {
-            "course_Oauth2": [
-              "openid",
-              "entitlements"
-            ]
-          },
-          {
-            "course_OIDC": [
-              "openid",
-              "entitlements"
-            ]
-          }
-        ],
-        "tags": [
-          "Course",
-          "Lesson"
-        ],
-        "summary": "Get upload video URL",
-        "operationId": "getUploadVideoUrl",
-        "description": "- authenticated:\n  - instructor\n  - admin\n",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/course_courseIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "videoFilename": {
-                    "type": "string",
-                    "example": "introduction_to_python.mp4"
-                  }
-                },
-                "required": [
-                  "videoFilename"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Upload URL generated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "uploadUrl": {
-                      "type": "string",
-                      "format": "uri",
-                      "example": "https://storage.egolia.localhost/upload/signed-url-token"
-                    },
-                    "videoKey": {
-                      "type": "string",
-                      "example": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4"
-                    },
-                    "expiresAt": {
-                      "type": "string",
-                      "format": "date-time",
-                      "example": "2026-03-22T10:30:00Z"
-                    }
-                  },
-                  "required": [
-                    "uploadUrl",
-                    "videoKey",
-                    "expiresAt"
-                  ]
-                }
-              }
-            }
           },
           "400": {
             "$ref": "#/components/responses/course_BadRequestError"

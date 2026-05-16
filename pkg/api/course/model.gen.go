@@ -643,6 +643,11 @@ type GetMyEnrolledCoursesParams struct {
 // GetMyEnrolledCoursesParamsOrder defines parameters for GetMyEnrolledCourses.
 type GetMyEnrolledCoursesParamsOrder string
 
+// GetUploadVideoUrlJSONBody defines parameters for GetUploadVideoUrl.
+type GetUploadVideoUrlJSONBody struct {
+	VideoFilename string `json:"videoFilename"`
+}
+
 // GetCourseReviewsParams defines parameters for GetCourseReviews.
 type GetCourseReviewsParams struct {
 	// Page Page number for pagination
@@ -724,11 +729,6 @@ type GetCourseStudentsParams struct {
 // GetCourseStudentsParamsOrder defines parameters for GetCourseStudents.
 type GetCourseStudentsParamsOrder string
 
-// GetUploadVideoUrlJSONBody defines parameters for GetUploadVideoUrl.
-type GetUploadVideoUrlJSONBody struct {
-	VideoFilename string `json:"videoFilename"`
-}
-
 // ReplyLessonCommentJSONBody defines parameters for ReplyLessonComment.
 type ReplyLessonCommentJSONBody struct {
 	Content Content `json:"content"`
@@ -760,6 +760,9 @@ type CreateCertificateJSONRequestBody CreateCertificateJSONBody
 
 // CreateCourseJSONRequestBody defines body for CreateCourse for application/json ContentType.
 type CreateCourseJSONRequestBody = Course
+
+// GetUploadVideoUrlJSONRequestBody defines body for GetUploadVideoUrl for application/json ContentType.
+type GetUploadVideoUrlJSONRequestBody GetUploadVideoUrlJSONBody
 
 // UpdateCourseJSONRequestBody defines body for UpdateCourse for application/json ContentType.
 type UpdateCourseJSONRequestBody = Course
@@ -796,9 +799,6 @@ type SaveVideoLessonProgressJSONRequestBody = VideoLessonProgress
 
 // MoveSectionJSONRequestBody defines body for MoveSection for application/json ContentType.
 type MoveSectionJSONRequestBody MoveSectionJSONBody
-
-// GetUploadVideoUrlJSONRequestBody defines body for GetUploadVideoUrl for application/json ContentType.
-type GetUploadVideoUrlJSONRequestBody GetUploadVideoUrlJSONBody
 
 // ReplyLessonCommentJSONRequestBody defines body for ReplyLessonComment for application/json ContentType.
 type ReplyLessonCommentJSONRequestBody ReplyLessonCommentJSONBody

@@ -47,6 +47,11 @@ export const getMyEnrolledCoursesResponseTransformer = async (data: any): Promis
     return data;
 };
 
+export const getUploadVideoUrlResponseTransformer = async (data: any): Promise<GetUploadVideoUrlResponse> => {
+    data.expiresAt = new Date(data.expiresAt);
+    return data;
+};
+
 const courseCourseAnalyticsSchemaResponseTransformer = (data: any) => {
     data.totalRevenue = BigInt(data.totalRevenue.toString());
     return data;
@@ -106,11 +111,6 @@ const courseLessonCommentSchemaResponseTransformer = (data: any) => {
 
 export const getLessonCommentsResponseTransformer = async (data: any): Promise<GetLessonCommentsResponse> => {
     data.data = data.data.map((item: any) => courseLessonCommentSchemaResponseTransformer(item));
-    return data;
-};
-
-export const getUploadVideoUrlResponseTransformer = async (data: any): Promise<GetUploadVideoUrlResponse> => {
-    data.expiresAt = new Date(data.expiresAt);
     return data;
 };
 

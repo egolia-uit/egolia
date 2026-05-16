@@ -50,6 +50,9 @@ paths:
   /course/courses/me/enrolled:
     $ref: ./paths/courses_me_enrolled.yaml
 
+  /course/courses/upload-video-url:
+    $ref: ./paths/courses_upload-video-url.yaml
+
   /course/courses/{courseId}/analytics:
     $ref: ./paths/courses_{courseId}_analytics.yaml
   /course/courses/{courseId}/approve:
@@ -108,8 +111,6 @@ paths:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_progress.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_test.yaml
-  /course/courses/{courseId}/upload-video-url:
-    $ref: ./paths/courses_{courseId}_upload-video-url.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress:
     $ref: ./paths/courses_{courseId}_sections_{sectionId}_lessons_{lessonId}_video-progress.yaml
   /course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video:

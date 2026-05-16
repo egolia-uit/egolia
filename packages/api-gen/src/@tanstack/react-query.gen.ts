@@ -467,6 +467,28 @@ export const getMyEnrolledCoursesInfiniteOptions = (options?: Options<GetMyEnrol
     queryKey: getMyEnrolledCoursesInfiniteQueryKey(options)
 });
 
+/**
+ * Get upload video URL
+ *
+ * - authenticated:
+ * - instructor
+ * - admin
+ *
+ */
+export const getUploadVideoUrlMutation = (options?: Partial<Options<GetUploadVideoUrlData>>): UseMutationOptions<GetUploadVideoUrlResponse, GetUploadVideoUrlError, Options<GetUploadVideoUrlData>> => {
+    const mutationOptions: UseMutationOptions<GetUploadVideoUrlResponse, GetUploadVideoUrlError, Options<GetUploadVideoUrlData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await getUploadVideoUrl({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const getCourseAnalyticsQueryKey = (options: Options<GetCourseAnalyticsData>) => createQueryKey('getCourseAnalytics', options);
 
 /**
@@ -1204,28 +1226,6 @@ export const editTestLessonMutation = (options?: Partial<Options<EditTestLessonD
     const mutationOptions: UseMutationOptions<EditTestLessonResponse, EditTestLessonError, Options<EditTestLessonData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await editTestLesson({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Get upload video URL
- *
- * - authenticated:
- * - instructor
- * - admin
- *
- */
-export const getUploadVideoUrlMutation = (options?: Partial<Options<GetUploadVideoUrlData>>): UseMutationOptions<GetUploadVideoUrlResponse, GetUploadVideoUrlError, Options<GetUploadVideoUrlData>> => {
-    const mutationOptions: UseMutationOptions<GetUploadVideoUrlResponse, GetUploadVideoUrlError, Options<GetUploadVideoUrlData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await getUploadVideoUrl({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
