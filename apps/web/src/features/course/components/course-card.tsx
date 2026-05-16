@@ -11,15 +11,15 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
-import { Badge } from '#/components/ui/shadcn/badge';
-import { Button } from '#/components/ui/shadcn/button';
+import { Badge } from '#/components/ui/neumorphism/badge';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '#/components/ui/shadcn/card';
+} from '#/components/ui/neumorphism/card';
 import type { CourseCourse } from '#/lib/api/course';
 import { formatVnd } from '#/lib/api/format';
 
@@ -54,19 +54,22 @@ export function CourseCard({
   destination = 'public',
   className,
   action,
+  progress,
 }: {
   course: CourseCourse;
   destination?: CourseDestination;
   className?: string;
   action?: ReactNode;
+  progress?: number;
 }) {
   const courseId = course.id;
   const href = courseId ? destinationHref(courseId, destination) : '#';
+  const showProgress = destination === 'learner' && progress !== undefined;
 
   return (
     <Card
       className={cn(`
-        bg-white transition-shadow
+        bg-nm-bg transition-shadow
         hover:shadow-sm
       `, className)}
     >
@@ -92,13 +95,34 @@ export function CourseCard({
           {course.overview ||
             'Khóa học chưa có mô tả. Nội dung sẽ được cập nhật sau.'}
         </p>
+
+        {showProgress && (
+          <div className="grid gap-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium text-slate-700">Tiến độ</span>
+              <span className="font-semibold text-indigo-600">{progress}%</span>
+            </div>
+            <div className="
+              h-2 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
+            ">
+              <div
+                className="
+                  h-full rounded-full bg-primary shadow-nm-flat-sm
+                  transition-all duration-500
+                "
+                style={{ width: `${Math.min(progress, 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
+
         <div className="
           grid grid-cols-2 gap-3 rounded-lg bg-slate-50 p-3 text-sm
         ">
           <div>
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <BookOpen className="size-3.5" />
-              Price
+              Giá
             </div>
             <div className="mt-1 font-semibold text-slate-950">
               {formatVnd(course.price)}
@@ -107,7 +131,7 @@ export function CourseCard({
           <div>
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <ShieldCheck className="size-3.5" />
-              Instructor
+              Giảng viên
             </div>
             <div className="mt-1 truncate font-medium text-slate-950">
               {course.instructorId ?? 'N/A'}

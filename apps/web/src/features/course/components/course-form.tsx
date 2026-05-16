@@ -3,7 +3,7 @@
 import { Save, UploadCloud } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { Button } from '#/components/ui/shadcn/button';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Field,
   FieldDescription,
@@ -11,7 +11,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from '#/components/ui/shadcn/field';
-import { Input } from '#/components/ui/shadcn/input';
+import { Input } from '#/components/ui/neumorphism/input';
 import type { CourseCourse, CourseCourseWritable } from '#/lib/api/course';
 import { formatDateTime } from '#/lib/api/format';
 
@@ -105,7 +105,10 @@ export function CourseForm({
   submitting?: boolean;
   error?: string | null;
   forceIntroductionVideoKey?: boolean;
-  onUploadIntroductionVideo?: (file: File) => Promise<UploadedVideo>;
+  onUploadIntroductionVideo?: (
+    file: File,
+    onProgress?: (progress: number) => void
+  ) => Promise<UploadedVideo>;
   onSubmit: (body: CourseCourseWritable) => Promise<void> | void;
 }) {
   const [values, setValues] = useState<CourseFormValues>(() =>
@@ -114,6 +117,7 @@ export function CourseForm({
   const [touched, setTouched] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadedVideo, setUploadedVideo] = useState<UploadedVideo | null>(
     null
@@ -134,9 +138,13 @@ export function CourseForm({
     }
 
     setUploading(true);
+    setUploadProgress(0);
     setUploadError(null);
     try {
-      const result = await onUploadIntroductionVideo(selectedVideo);
+      const result = await onUploadIntroductionVideo(
+        selectedVideo,
+        setUploadProgress
+      );
       setUploadedVideo(result);
       setValues((current) => ({
         ...current,
@@ -233,11 +241,11 @@ export function CourseForm({
           <textarea
             id="course-overview"
             className="
-              min-h-24 w-full rounded-lg border border-input bg-transparent px-3
-              py-2 text-sm transition-colors outline-none
+              min-h-24 w-full rounded-xl border-none bg-nm-bg px-4 py-2 text-sm
+              shadow-nm-inset transition-colors outline-none
               placeholder:text-muted-foreground
-              focus-visible:border-ring focus-visible:ring-3
-              focus-visible:ring-ring/50
+              focus-visible:ring-2 focus-visible:ring-ring
+              focus-visible:ring-offset-2
             "
             value={values.overview}
             onChange={(event) =>
@@ -269,6 +277,7 @@ export function CourseForm({
                 onChange={(event) => {
                   setSelectedVideo(event.target.files?.[0] ?? null);
                   setUploadedVideo(null);
+                  setUploadProgress(null);
                   setUploadError(null);
                 }}
               />
@@ -281,6 +290,21 @@ export function CourseForm({
                 <UploadCloud className="size-4" />
                 {uploading ? 'Uploading...' : 'Upload intro video'}
               </Button>
+              {uploadProgress !== null && (
+                <div className="grid gap-1">
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+                    <div
+                      className="
+                        h-full rounded-full bg-slate-950 transition-all
+                      "
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    Upload progress: {uploadProgress}%
+                  </div>
+                </div>
+              )}
               {uploadedVideo && (
                 <div className="grid gap-1 text-xs text-slate-600">
                   <div>
@@ -312,8 +336,7 @@ export function CourseForm({
             placeholder="videos/course-intro.mp4"
           />
           <FieldDescription>
-            Tao course can videoKey. Chon file de FE lay signed URL, upload len
-            RustFS, roi tu dien key vao field nay.
+            Intro video is optional. Upload to get a video key, or add it later.
           </FieldDescription>
         </Field>
 
