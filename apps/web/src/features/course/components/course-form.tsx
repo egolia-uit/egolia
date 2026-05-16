@@ -3,7 +3,7 @@
 import { Save, UploadCloud } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { Button } from '#/components/ui/shadcn/button';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Field,
   FieldDescription,
@@ -11,7 +11,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from '#/components/ui/shadcn/field';
-import { Input } from '#/components/ui/shadcn/input';
+import { Input } from '#/components/ui/neumorphism/input';
 import type { CourseCourse, CourseCourseWritable } from '#/lib/api/course';
 import { formatDateTime } from '#/lib/api/format';
 
@@ -241,11 +241,11 @@ export function CourseForm({
           <textarea
             id="course-overview"
             className="
-              min-h-24 w-full rounded-lg border border-input bg-transparent px-3
-              py-2 text-sm transition-colors outline-none
+              min-h-24 w-full rounded-xl border-none bg-nm-bg px-4 py-2 text-sm
+              shadow-nm-inset transition-colors outline-none
               placeholder:text-muted-foreground
-              focus-visible:border-ring focus-visible:ring-3
-              focus-visible:ring-ring/50
+              focus-visible:ring-2 focus-visible:ring-ring
+              focus-visible:ring-offset-2
             "
             value={values.overview}
             onChange={(event) =>

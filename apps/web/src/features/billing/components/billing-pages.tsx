@@ -5,11 +5,11 @@ import { CreditCard, Download, Receipt } from 'lucide-react';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
-import { Badge } from '#/components/ui/shadcn/badge';
+import { Badge } from '#/components/ui/neumorphism/badge';
 import {
   Card,
   CardContent,
-} from '#/components/ui/shadcn/card';
+} from '#/components/ui/neumorphism/card';
 import {
   Table,
   TableBody,
@@ -48,7 +48,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function TransactionTable({ transactions }: { transactions: typeof MOCK_TRANSACTIONS }) {
   return (
-    <Card className="bg-white">
+    <Card className="bg-nm-bg">
       <CardContent className="py-4">
         <Table>
           <TableHeader>
@@ -88,7 +88,7 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
         grid gap-4
         md:grid-cols-3
       ">
-        <Card className="bg-white">
+        <Card className="bg-nm-bg">
           <CardContent className="flex items-center gap-3 py-4">
             <div className="
               flex size-10 items-center justify-center rounded-lg bg-indigo-100
@@ -102,7 +102,7 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-white">
+        <Card className="bg-nm-bg">
           <CardContent className="flex items-center gap-3 py-4">
             <div className="
               flex size-10 items-center justify-center rounded-lg bg-emerald-100
@@ -116,7 +116,7 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-white">
+        <Card className="bg-nm-bg">
           <CardContent className="flex items-center gap-3 py-4">
             <div className="
               flex size-10 items-center justify-center rounded-lg bg-amber-100
@@ -156,27 +156,25 @@ function AdminBillingContent({ viewer }: { viewer: Viewer }) {
         grid gap-4
         md:grid-cols-4
       ">
-        <Card className="
-          bg-gradient-to-br from-indigo-500 to-purple-600 text-white
-        ">
+        <Card className="bg-nm-bg">
           <CardContent className="py-4">
-            <div className="text-sm text-indigo-100">Tổng doanh thu</div>
+            <div className="text-sm text-slate-500">Tổng doanh thu</div>
             <div className="mt-1 text-2xl font-bold">{formatVnd(MOCK_ADMIN_STATS.totalRevenue)}</div>
           </CardContent>
         </Card>
-        <Card className="bg-white">
+        <Card className="bg-nm-bg">
           <CardContent className="py-4">
             <div className="text-sm text-slate-500">Tổng giao dịch</div>
             <div className="mt-1 text-2xl font-semibold">{MOCK_ADMIN_STATS.totalTransactions}</div>
           </CardContent>
         </Card>
-        <Card className="bg-white">
+        <Card className="bg-nm-bg">
           <CardContent className="py-4">
             <div className="text-sm text-slate-500">Hoàn thành</div>
             <div className="mt-1 text-2xl font-semibold text-emerald-600">{MOCK_ADMIN_STATS.completedPayments}</div>
           </CardContent>
         </Card>
-        <Card className="bg-white">
+        <Card className="bg-nm-bg">
           <CardContent className="py-4">
             <div className="text-sm text-slate-500">Đang xử lý</div>
             <div className="mt-1 text-2xl font-semibold text-amber-600">{MOCK_ADMIN_STATS.pendingPayments}</div>

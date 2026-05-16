@@ -34,6 +34,14 @@
   --color-input: hsl(214.3 31.8% 91.4%);
   --color-ring: hsl(221.2 83.2% 53.3%);
 
+  --color-nm-bg: #e6e7ee;
+  --color-nm-shadow-dark: #b8b9be;
+  --color-nm-shadow-light: #ffffff;
+
+  --shadow-nm-flat: 6px 6px 12px var(--color-nm-shadow-dark), -6px -6px 12px var(--color-nm-shadow-light);
+  --shadow-nm-flat-sm: 3px 3px 6px var(--color-nm-shadow-dark), -3px -3px 6px var(--color-nm-shadow-light);
+  --shadow-nm-inset: inset 2px 2px 5px var(--color-nm-shadow-dark), inset -3px -3px 7px var(--color-nm-shadow-light);
+
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;

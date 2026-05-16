@@ -1,14 +1,14 @@
 import { AlertCircle, Inbox, RefreshCw } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button } from '#/components/ui/shadcn/button';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/shadcn/card';
+} from '#/components/ui/neumorphism/card';
 import { Skeleton } from '#/components/ui/shadcn/skeleton';
 import type { ApiProblem } from '#/lib/api/errors';
 
@@ -20,7 +20,7 @@ export function CourseGridSkeleton() {
       xl:grid-cols-3
     ">
       {Array.from({ length: 6 }).map((_, index) => (
-        <Card key={index} className="bg-white">
+        <Card key={index} className="bg-nm-bg">
           <CardHeader>
             <Skeleton className="h-5 w-3/4" />
             <Skeleton className="h-4 w-1/2" />
@@ -45,7 +45,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <Card className="border-dashed bg-white">
+    <Card className="border-dashed bg-nm-bg">
       <CardContent className="
         flex flex-col items-center justify-center gap-3 py-14 text-center
       ">
@@ -75,7 +75,7 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <Card className="border-destructive/30 bg-white">
+    <Card className="border-destructive/30 bg-nm-bg">
       <CardHeader>
         <div className="flex items-start gap-3">
           <div className="
@@ -113,7 +113,7 @@ export function InlineNotice({
   description: string;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm">
+    <div className="rounded-lg border border-slate-200 bg-nm-bg p-4 text-sm">
       <div className="font-medium text-slate-950">{title}</div>
       <p className="mt-1 text-slate-600">{description}</p>
     </div>

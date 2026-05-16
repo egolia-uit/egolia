@@ -2,7 +2,7 @@
 
 import { LogOut } from 'lucide-react';
 
-import { Button } from '#/components/ui/shadcn/button';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   openCenteredPopup,
   waitForAuthPopup,
@@ -68,12 +68,7 @@ export function SignInButton() {
       id="sign-in-button"
       size="lg"
       onClick={handleSignIn}
-      className="
-        w-full cursor-pointer gap-2 bg-gradient-to-r from-indigo-500
-        to-purple-600 text-white shadow-lg shadow-indigo-500/25 transition-all
-        duration-300
-        hover:from-indigo-600 hover:to-purple-700 hover:shadow-indigo-500/40
-      "
+      className="w-full cursor-pointer gap-2"
     >
       <svg
         className="size-5"

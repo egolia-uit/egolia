@@ -5,15 +5,15 @@ import Link from 'next/link';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
-import { Badge } from '#/components/ui/shadcn/badge';
-import { Button } from '#/components/ui/shadcn/button';
+import { Badge } from '#/components/ui/neumorphism/badge';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '#/components/ui/shadcn/card';
+} from '#/components/ui/neumorphism/card';
 import type { Viewer } from '#/lib/auth/roles';
 import { useViewer } from '#/lib/auth/use-viewer';
 
@@ -59,7 +59,7 @@ const MOCK_POSTS = [
 function BlogCard({ post }: { post: typeof MOCK_POSTS[0] }) {
   return (
     <Card className="
-      bg-white transition-shadow
+      bg-nm-bg transition-shadow
       hover:shadow-md
     ">
       <CardHeader>
@@ -119,7 +119,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
       eyebrow="Blog"
       title={post.title}
     >
-      <Card className="bg-white">
+      <Card className="bg-nm-bg">
         <CardHeader>
           <div className="flex items-center gap-3 text-sm text-slate-500">
             <Badge variant="secondary" className="bg-indigo-50 text-indigo-700">{post.category}</Badge>
@@ -159,7 +159,7 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
         </Button>
       }
     >
-      <Card className="bg-white">
+      <Card className="bg-nm-bg">
         <CardContent className="py-4">
           <div className="grid gap-3">
             {MOCK_POSTS.map((post) => (

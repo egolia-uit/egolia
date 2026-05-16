@@ -11,15 +11,15 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
-import { Badge } from '#/components/ui/shadcn/badge';
-import { Button } from '#/components/ui/shadcn/button';
+import { Badge } from '#/components/ui/neumorphism/badge';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '#/components/ui/shadcn/card';
+} from '#/components/ui/neumorphism/card';
 import type { CourseCourse } from '#/lib/api/course';
 import { formatVnd } from '#/lib/api/format';
 
@@ -69,7 +69,7 @@ export function CourseCard({
   return (
     <Card
       className={cn(`
-        bg-white transition-shadow
+        bg-nm-bg transition-shadow
         hover:shadow-sm
       `, className)}
     >
@@ -102,11 +102,13 @@ export function CourseCard({
               <span className="font-medium text-slate-700">Tiến độ</span>
               <span className="font-semibold text-indigo-600">{progress}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+            <div className="
+              h-2 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
+            ">
               <div
                 className="
-                  h-full rounded-full bg-gradient-to-r from-indigo-500
-                  to-purple-500 transition-all duration-500
+                  h-full rounded-full bg-primary shadow-nm-flat-sm
+                  transition-all duration-500
                 "
                 style={{ width: `${Math.min(progress, 100)}%` }}
               />

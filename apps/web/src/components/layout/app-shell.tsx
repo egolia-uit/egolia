@@ -165,15 +165,12 @@ function NavList({
                   onClick={onNavigate}
                   className={cn(
                     `
-                      flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm
-                      font-medium text-slate-600 transition-colors
-                      hover:bg-slate-100 hover:text-slate-950
+                      flex min-h-10 items-center gap-3 rounded-xl px-3 text-sm
+                      font-medium text-slate-600 transition-all
+                      hover:bg-nm-bg hover:text-primary hover:shadow-nm-flat-sm
                     `,
                     active &&
-                      `
-                        bg-slate-950 text-white
-                        hover:bg-slate-900 hover:text-white
-                      `
+                      `bg-nm-bg text-primary shadow-nm-inset`
                   )}
                 >
                   <item.icon className="size-4 shrink-0" />
@@ -209,10 +206,8 @@ export function AppShell({
   }, [pathname]);
 
   return (
-    <div className="min-h-dvh bg-slate-50 text-slate-950">
-      <header className="
-        sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-sm
-      ">
+    <div className="min-h-dvh bg-nm-bg text-slate-950">
+      <header className="sticky top-0 z-40 bg-nm-bg shadow-nm-flat-sm">
         <div
           className="
             mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4
@@ -316,8 +311,8 @@ export function AppShell({
           lg:block
         ">
           <div className="sticky top-24 grid gap-4">
-            <div className="rounded-lg border border-slate-200 bg-white p-3">
-              <div className="mb-3 flex items-center gap-2 px-2">
+            <div className="rounded-2xl border-none bg-nm-bg p-4 shadow-nm-flat">
+              <div className="mb-4 flex items-center gap-3 px-2">
                 <UserRound className="size-4 text-slate-500" />
                 <div className="min-w-0">
                   <div className="truncate text-sm font-medium">
