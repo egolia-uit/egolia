@@ -255,7 +255,6 @@ function AdminCoursesContent({
                               size="sm"
                               onClick={() =>
                                 mutateAdminCourse(
-                                  'approve',
                                   () =>
                                     approveCourse({
                                       client: apiClient,
@@ -275,7 +274,6 @@ function AdminCoursesContent({
                               variant="destructive"
                               onClick={() =>
                                 mutateAdminCourse(
-                                  'decline',
                                   () =>
                                     declineCourse({
                                       client: apiClient,
@@ -297,7 +295,6 @@ function AdminCoursesContent({
                           variant="outline"
                           onClick={() =>
                             mutateAdminCourse(
-                              course.hidden ? 'unhide' : 'hide',
                               () =>
                                 course.hidden
                                   ? unhideCourse({
@@ -327,7 +324,6 @@ function AdminCoursesContent({
                           variant="destructive"
                           onClick={() =>
                             mutateAdminCourse(
-                              'delete',
                               () =>
                                 deleteCourse({
                                   client: apiClient,

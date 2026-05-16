@@ -19,10 +19,12 @@ A specialized agent skill designed to review, fix, and enforce the Neumorphism U
     -   When modifying or reviewing code, ensure that imports point to the custom neumorphic components (e.g., `#/components/ui/neumorphism/*`) instead of the default shadcn components when applicable.
     -   If a shadcn component does not have a dedicated Neumorphism wrapper, update its base implementation or apply the `nm-bg` and `nm-shadow` utilities directly via `className`.
 
-3.  **Mandatory Linting Workflow**:
-    -   **Crucial Rule**: After making any changes to the codebase, you MUST run the linter to verify formatting and best practices.
-    -   Execute the following command: `npx nx lint web --fix`
-    -   Address any auto-fixable errors and review any remaining warnings or errors before concluding your task.
+3.  **Mandatory Linting & Build Workflow**:
+    -   **Crucial Rule**: After making any changes to the codebase, you MUST run the linter and the builder to verify formatting, types, and best practices.
+    -   Execute the following commands sequentially:
+        1.  `npx nx lint web --fix`
+        2.  `npx nx build web`
+    -   Address any auto-fixable errors, review remaining lint warnings/errors, and fix any build failures (e.g., TypeScript errors) before concluding your task.
 
 4.  **Reviewing & Feedback**:
     -   If an element looks visually "flat" or lacks depth, apply the correct inset or flat shadow.

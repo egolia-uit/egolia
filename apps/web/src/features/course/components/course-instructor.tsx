@@ -186,7 +186,6 @@ function InstructorCoursesContent({
                 variant="outline"
                 onClick={() =>
                   mutateCourse(
-                    course.hidden ? 'unhide' : 'hide',
                     () =>
                       course.hidden
                         ? unhideCourse({
@@ -215,7 +214,6 @@ function InstructorCoursesContent({
                 variant="destructive"
                 onClick={() =>
                   mutateCourse(
-                    'delete',
                     () =>
                       deleteCourse({
                         client: apiClient,
