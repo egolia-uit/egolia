@@ -3,7 +3,7 @@
 import { Eye, EyeOff, FilePlus2, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
@@ -19,6 +19,7 @@ import {
 } from '#/components/ui/shadcn/dialog';
 import { apiClient } from '#/lib/api';
 import {
+  type CourseCourseDetail,
   type CourseCourseWritable,
   createCourse,
   createDraftVersion,
@@ -32,7 +33,8 @@ import {
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import type { Viewer } from '#/lib/auth/roles';
 
-import { CourseHero, CourseStructure } from './course-detail';
+import { CourseHero } from './course-detail';
+import { CourseCurriculumEditor } from './course-curriculum-editor';
 import { CourseForm } from './course-form';
 import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
 import { isDraftLike, ListContent, normalizeTab, type ResourceState, uploadCourseVideo, useCourseDetail, useCourseList } from './course-shared';
@@ -189,15 +191,15 @@ function InstructorCoursesContent({
                     () =>
                       course.hidden
                         ? unhideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          })
+                          client: apiClient,
+                          path: { courseId: course.id ?? '' },
+                          throwOnError: true,
+                        })
                         : hideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          }),
+                          client: apiClient,
+                          path: { courseId: course.id ?? '' },
+                          throwOnError: true,
+                        }),
                     course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
                   )
                 }
@@ -262,6 +264,19 @@ function InstructorCourseDetailContent({
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const setCourse = useCallback(
+    (updater: (course: CourseCourseDetail) => CourseCourseDetail) => {
+      setState((current) =>
+        current.status === 'ready'
+          ? {
+              status: 'ready',
+              data: updater(current.data),
+            }
+          : current
+      );
+    },
+    [setState]
+  );
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
@@ -357,9 +372,9 @@ function InstructorCourseDetailContent({
                         }
                         onSubmit={async (body) => {
                           if (state.status !== 'ready') return;
-                          
+
                           const previousState = state.data;
-                          
+
                           setState({
                             status: 'ready',
                             data: {
@@ -410,15 +425,15 @@ function InstructorCourseDetailContent({
                       () =>
                         state.data.hidden
                           ? unhideCourse({
-                              client: apiClient,
-                              path: { courseId },
-                              throwOnError: true,
-                            })
+                            client: apiClient,
+                            path: { courseId },
+                            throwOnError: true,
+                          })
                           : hideCourse({
-                              client: apiClient,
-                              path: { courseId },
-                              throwOnError: true,
-                            }),
+                            client: apiClient,
+                            path: { courseId },
+                            throwOnError: true,
+                          }),
                       state.data.hidden
                         ? 'Khóa học đã hiện.'
                         : 'Khóa học đã ẩn.'
@@ -473,10 +488,11 @@ function InstructorCourseDetailContent({
           >
             <div className="grid gap-3">
               <h2 className="text-lg font-semibold">Course structure</h2>
-              <CourseStructure course={state.data} />
-              <InlineNotice
-                title="Sắp ra mắt"
-                description="Tính năng thêm Section và Lesson đang được hoàn thiện."
+              <CourseCurriculumEditor
+                course={state.data}
+                courseId={courseId}
+                reload={reload}
+                setCourse={setCourse}
               />
             </div>
 
