@@ -249,35 +249,30 @@ func buildPagination(page, limit, total int) app.Pagination {
 	}
 }
 
-func (r *CourseReadRepo) toAppCourse(_ context.Context, m *model.ReadCourse) (*app.Course, error) {
-	// NOTE: Will uncomment out?
-	// var introVideoURL string
-	// if key := m.FullCourseContent.IntroVideoURL; key != "" {
-	// 	url, err := r.objectStorageSvc.VideoKeyToURL(ctx, key)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-	// 	introVideoURL = url
-	// }
+func (r *CourseReadRepo) toAppCourse(ctx context.Context, m *model.ReadCourse) (*app.Course, error) {
+	var introVideoURL *string
+	if key := m.FullCourseContent.IntroVideoURL; key != "" {
+		url, err := r.objectStorageSvc.VideoKeyToURL(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+		introVideoURL = &url
+	}
 	var originalCourseID uuid.UUID
 	if m.OriginalCourseID != nil {
 		originalCourseID = *m.OriginalCourseID
 	}
 	return &app.Course{
-		ID:               m.CourseID,
-		OriginalCourseID: originalCourseID,
-		Hidden:           m.Hidden,
-		Title:            m.FullCourseContent.Title,
-		InstructorID:     m.FullCourseContent.InstructorID,
-		Status:           app.CourseStatus(m.FullCourseContent.Status),
-		Price:            int64(m.Price),
-		Overview:         m.FullCourseContent.Overview,
-		// TODO: Deal with key and URL
-		IntroductionVideoKey: new(""),
-		IntroductionVideoURL: new(""),
-		// Introduction: app.CourseLandingPageIntroduction{
-		// 	VideoUrl: introVideoURL,
-		// },
+		ID:                   m.CourseID,
+		OriginalCourseID:     originalCourseID,
+		Hidden:               m.Hidden,
+		Title:                m.FullCourseContent.Title,
+		InstructorID:         m.FullCourseContent.InstructorID,
+		Status:               app.CourseStatus(m.FullCourseContent.Status),
+		Price:                int64(m.Price),
+		Overview:             m.FullCourseContent.Overview,
+		IntroductionVideoKey: nil,
+		IntroductionVideoURL: introVideoURL,
 	}, nil
 }
 
@@ -288,7 +283,11 @@ func (r *CourseReadRepo) toAppCourseDetail(ctx context.Context, m *model.ReadCou
 	}
 	sections := make([]app.CourseDetailSectionItem, 0, len(m.FullCourseContent.Sections))
 	for i := range m.FullCourseContent.Sections {
-		sections = append(sections, toAppSectionItem(m.CourseID, &m.FullCourseContent.Sections[i]))
+		section, err := r.toAppSectionItem(ctx, m.CourseID, &m.FullCourseContent.Sections[i])
+		if err != nil {
+			return nil, err
+		}
+		sections = append(sections, section)
 	}
 	return &app.CourseDetail{
 		Course:   *c,
@@ -296,20 +295,24 @@ func (r *CourseReadRepo) toAppCourseDetail(ctx context.Context, m *model.ReadCou
 	}, nil
 }
 
-func toAppSectionItem(courseID uuid.UUID, s *model.ReadCourseSectionContent) app.CourseDetailSectionItem {
+func (r *CourseReadRepo) toAppSectionItem(ctx context.Context, courseID uuid.UUID, s *model.ReadCourseSectionContent) (app.CourseDetailSectionItem, error) {
 	lessons := make([]app.Lesson, 0, len(s.Lessons))
 	for i := range s.Lessons {
-		lessons = append(lessons, toAppLesson(&s.Lessons[i]))
+		l, err := r.toAppLesson(ctx, &s.Lessons[i])
+		if err != nil {
+			return app.CourseDetailSectionItem{}, err
+		}
+		lessons = append(lessons, l)
 	}
 	return app.CourseDetailSectionItem{
 		ID:       s.ID,
 		CourseID: courseID,
 		Title:    s.Title,
 		Lessons:  lessons,
-	}
+	}, nil
 }
 
-func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
+func (r *CourseReadRepo) toAppLesson(ctx context.Context, l *model.ReadCourseLessonContent) (app.Lesson, error) {
 	base := app.LessonBase{
 		ID:         l.ID,
 		Title:      l.Title,
@@ -318,8 +321,12 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 	switch app.LessonType(l.LessonType) {
 	case app.LessonTypeVideo:
 		videoURL := ""
-		if l.VideoKey != nil {
-			videoURL = *l.VideoKey
+		if l.VideoKey != nil && *l.VideoKey != "" {
+			url, err := r.objectStorageSvc.VideoKeyToURL(ctx, *l.VideoKey)
+			if err != nil {
+				return nil, err
+			}
+			videoURL = url
 		}
 		dur := time.Duration(0)
 		if l.Duration != nil {
@@ -329,7 +336,7 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			LessonBase: base,
 			VideoURL:   videoURL,
 			Duration:   dur,
-		}
+		}, nil
 	case app.LessonTypeTest:
 		var questionType app.QuestionType
 		if l.QuestionType != nil {
@@ -355,9 +362,9 @@ func toAppLesson(l *model.ReadCourseLessonContent) app.Lesson {
 			LessonBase:   base,
 			QuestionType: questionType,
 			Questions:    questions,
-		}
+		}, nil
 	}
-	return nil
+	return nil, nil
 }
 
 func (r *CourseReadRepo) GetMyCourses(ctx context.Context, params *app.GetMyCourses) (*app.Paginated[app.Course], error) {

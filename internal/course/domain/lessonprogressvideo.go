@@ -69,3 +69,9 @@ func (lpv *LessonProgressVideo) LastViewedAt() time.Time {
 func (lpv *LessonProgressVideo) SetLastViewedAt(lastViewedAt time.Time) {
 	lpv.lastViewedAt = lastViewedAt
 }
+
+func (lpv *LessonProgressVideo) ResetProgress() {
+	lpv.watchedSeconds = nil
+	lpv.lastViewedAt = time.Time{}
+	lpv.LessonProgressBase.ResetProgress()
+}

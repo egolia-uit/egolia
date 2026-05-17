@@ -5,3 +5,4 @@ enum:
   - approved
 default: draft
 example: draft
+readOnly: true

@@ -32,7 +32,7 @@ var _ Cmd[CreateDraftVersion] = (*CreateDraftVersionHandler)(nil)
 func (h *CreateDraftVersionHandler) Handle(ctx context.Context, cmd *CreateDraftVersion) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		// Bật forUpdate=true để lock row, ngăn chặn Race Condition khi check ExistsDraftVersion
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			return err
 		}

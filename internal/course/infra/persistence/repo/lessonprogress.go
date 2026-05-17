@@ -31,10 +31,10 @@ func (r *LessonProgressRepo) Save(ctx context.Context, progress domain.LessonPro
 		Create(m).Error
 }
 
-func (r *LessonProgressRepo) GetByEnrollmentAndLesson(ctx context.Context, enrollmentID uuid.UUID, lessonID uuid.UUID) (domain.LessonProgress, error) {
+func (r *LessonProgressRepo) GetByUserIDAndLesson(ctx context.Context, userID string, lessonID uuid.UUID) (domain.LessonProgress, error) {
 	var m model.LessonProgress
 	if err := r.db.WithContext(ctx).
-		Where("enrollment_id = ? AND lesson_id = ?", enrollmentID, lessonID).
+		Where("user_id = ? AND lesson_id = ?", userID, lessonID).
 		First(&m).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -42,9 +42,4 @@ func (r *LessonProgressRepo) GetByEnrollmentAndLesson(ctx context.Context, enrol
 		return nil, err
 	}
 	return m.ToDomain(), nil
-}
-
-// GetByUserIDAndLesson implements [domain.LessonProgressRepo].
-func (r *LessonProgressRepo) GetByUserIDAndLesson(ctx context.Context, userID string, lessonID uuid.UUID) (domain.LessonProgress, error) {
-	panic("unimplemented")
 }

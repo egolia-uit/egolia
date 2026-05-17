@@ -53,7 +53,7 @@ func (e SearchPostsParamsOrder) Valid() bool {
 // Comment defines model for Comment.
 type Comment struct {
 	// AuthorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	AuthorId        Id                  `json:"authorId"`
+	AuthorId        *Id                 `json:"authorId,omitempty"`
 	Content         string              `json:"content"`
 	CreatedAt       *time.Time          `json:"createdAt,omitempty"`
 	Id              *openapi_types.UUID `json:"id,omitempty"`
@@ -97,7 +97,7 @@ type Pagination struct {
 // Post defines model for Post.
 type Post struct {
 	// AuthorId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	AuthorId     Id                  `json:"authorId"`
+	AuthorId     *Id                 `json:"authorId,omitempty"`
 	CommentCount *int                `json:"commentCount,omitempty"`
 	Content      string              `json:"content"`
 	CreatedAt    *time.Time          `json:"createdAt,omitempty"`
