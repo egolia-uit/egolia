@@ -66,6 +66,10 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 		return err
 	}
 
+	if course.DeletedAt() != nil {
+		return db.Delete(&model.ReadCourse{}, "course_id = ?", course.ID()).Error //nolint:exhaustruct
+	}
+
 	readModel, err := model.ReadCourseFromDomain(course)
 	if err != nil {
 		return fmt.Errorf("rebuild read course: %w", err)
