@@ -31,7 +31,7 @@ var _ Cmd[SubmitCourse] = (*SubmitCourseHandler)(nil)
 
 func (h *SubmitCourseHandler) Handle(ctx context.Context, cmd *SubmitCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			return err
 		}

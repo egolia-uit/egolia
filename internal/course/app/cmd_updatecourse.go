@@ -36,9 +36,7 @@ var _ Cmd[UpdateCourse] = (*UpdateCourseHandler)(nil)
 
 func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID: cmd.CourseID,
-		}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errs.NewCourseNotFound(cmd.CourseID, err)

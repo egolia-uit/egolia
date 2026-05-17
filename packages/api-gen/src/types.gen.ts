@@ -363,7 +363,6 @@ export type BlogComment = {
 };
 
 export type CourseCertificateWritable = {
-    userId: CoursePropertiesId;
     createdAt: Date;
 };
 
@@ -400,7 +399,6 @@ export type CourseCourseDetailWritable = CourseCourseWritable & {
 };
 
 export type CourseCourseProgressWritable = {
-    userId: CoursePropertiesId;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
@@ -411,20 +409,26 @@ export type CourseCourseProgressWritable = {
  * Represents a single review for a course.
  */
 export type CourseReviewWritable = {
-    userId: CoursePropertiesId;
     rating: number;
     comment: string;
 };
 
+export type CourseCourseStudentWritable = {
+    username: CourseUsername;
+    name: CourseName;
+    email: CourseEmail;
+    enrolledAt: Date;
+    progressPercentage: number;
+    completed: boolean;
+};
+
 export type CourseLessonCommentWritable = {
-    userId: CoursePropertiesId;
     content: string;
     createdAt: Date;
     parentCommentId?: string | null;
 };
 
 export type CourseLessonProgressWritable = {
-    userId: CoursePropertiesId;
     lessonId: string;
     isCompleted: boolean;
 };
@@ -1096,6 +1100,55 @@ export type GetMyEnrolledCoursesResponses = {
 };
 
 export type GetMyEnrolledCoursesResponse = GetMyEnrolledCoursesResponses[keyof GetMyEnrolledCoursesResponses];
+
+export type GetUploadVideoUrlData = {
+    body: {
+        videoFilename: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/course/courses/upload-video-url';
+};
+
+export type GetUploadVideoUrlErrors = {
+    /**
+     * Bad Request Error response
+     */
+    400: CourseError;
+    /**
+     * Unauthorized Error response
+     */
+    401: {
+        [key: string]: unknown;
+    };
+    /**
+     * Forbidden Error response
+     */
+    403: CourseError;
+    /**
+     * Not Found Error response
+     */
+    404: CourseError;
+    /**
+     * Internal Server Error response
+     */
+    500: CourseError;
+};
+
+export type GetUploadVideoUrlError = GetUploadVideoUrlErrors[keyof GetUploadVideoUrlErrors];
+
+export type GetUploadVideoUrlResponses = {
+    /**
+     * Upload URL generated
+     */
+    201: {
+        uploadUrl: string;
+        videoKey: string;
+        expiresAt: Date;
+    };
+};
+
+export type GetUploadVideoUrlResponse = GetUploadVideoUrlResponses[keyof GetUploadVideoUrlResponses];
 
 export type GetCourseAnalyticsData = {
     body?: never;
@@ -2673,60 +2726,6 @@ export type EditTestLessonResponses = {
 };
 
 export type EditTestLessonResponse = EditTestLessonResponses[keyof EditTestLessonResponses];
-
-export type GetUploadVideoUrlData = {
-    body: {
-        videoFilename: string;
-    };
-    path: {
-        /**
-         * Unique identifier of the course
-         */
-        courseId: string;
-    };
-    query?: never;
-    url: '/course/courses/{courseId}/upload-video-url';
-};
-
-export type GetUploadVideoUrlErrors = {
-    /**
-     * Bad Request Error response
-     */
-    400: CourseError;
-    /**
-     * Unauthorized Error response
-     */
-    401: {
-        [key: string]: unknown;
-    };
-    /**
-     * Forbidden Error response
-     */
-    403: CourseError;
-    /**
-     * Not Found Error response
-     */
-    404: CourseError;
-    /**
-     * Internal Server Error response
-     */
-    500: CourseError;
-};
-
-export type GetUploadVideoUrlError = GetUploadVideoUrlErrors[keyof GetUploadVideoUrlErrors];
-
-export type GetUploadVideoUrlResponses = {
-    /**
-     * Upload URL generated
-     */
-    201: {
-        uploadUrl: string;
-        videoKey: string;
-        expiresAt: Date;
-    };
-};
-
-export type GetUploadVideoUrlResponse = GetUploadVideoUrlResponses[keyof GetUploadVideoUrlResponses];
 
 export type SaveVideoLessonProgressData = {
     body: CourseVideoLessonProgressWritable;

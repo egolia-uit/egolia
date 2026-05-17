@@ -42,6 +42,9 @@ type ServerInterface interface {
 	// Get my enrolled courses
 	// (GET /course/courses/me/enrolled)
 	GetMyEnrolledCourses(c *gin.Context, params GetMyEnrolledCoursesParams)
+	// Get upload video URL
+	// (POST /course/courses/upload-video-url)
+	GetUploadVideoUrl(c *gin.Context)
 	// Delete course
 	// (DELETE /course/courses/{courseId})
 	DeleteCourse(c *gin.Context, courseId CourseIdPath)
@@ -144,9 +147,6 @@ type ServerInterface interface {
 	// Submit course
 	// (POST /course/courses/{courseId}/submit)
 	SubmitCourse(c *gin.Context, courseId CourseIdPath)
-	// Get upload video URL
-	// (POST /course/courses/{courseId}/upload-video-url)
-	GetUploadVideoUrl(c *gin.Context, courseId CourseIdPath)
 	// Delete lesson comment
 	// (DELETE /course/lesson-comments/{commentId})
 	DeleteLessonComment(c *gin.Context, commentId CommentIdPath)
@@ -497,6 +497,23 @@ func (siw *ServerInterfaceWrapper) GetMyEnrolledCourses(c *gin.Context) {
 	}
 
 	siw.Handler.GetMyEnrolledCourses(c, params)
+}
+
+// GetUploadVideoUrl operation middleware
+func (siw *ServerInterfaceWrapper) GetUploadVideoUrl(c *gin.Context) {
+
+	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
+
+	c.Set(string(OIDCScopes), []string{"openidnx", "entitlements"})
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetUploadVideoUrl(c)
 }
 
 // DeleteCourse operation middleware
@@ -1747,35 +1764,6 @@ func (siw *ServerInterfaceWrapper) SubmitCourse(c *gin.Context) {
 	siw.Handler.SubmitCourse(c, courseId)
 }
 
-// GetUploadVideoUrl operation middleware
-func (siw *ServerInterfaceWrapper) GetUploadVideoUrl(c *gin.Context) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "courseId" -------------
-	var courseId CourseIdPath
-
-	err = runtime.BindStyledParameterWithOptions("simple", "courseId", c.Param("courseId"), &courseId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid"})
-	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter courseId: %w", err), http.StatusBadRequest)
-		return
-	}
-
-	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
-
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		middleware(c)
-		if c.IsAborted() {
-			return
-		}
-	}
-
-	siw.Handler.GetUploadVideoUrl(c, courseId)
-}
-
 // DeleteLessonComment operation middleware
 func (siw *ServerInterfaceWrapper) DeleteLessonComment(c *gin.Context) {
 
@@ -1974,6 +1962,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/course/courses-system", wrapper.GetSystemCourses)
 	router.GET(options.BaseURL+"/course/courses/me/bookmarked", wrapper.GetMyBookmarkedCourses)
 	router.GET(options.BaseURL+"/course/courses/me/enrolled", wrapper.GetMyEnrolledCourses)
+	router.POST(options.BaseURL+"/course/courses/upload-video-url", wrapper.GetUploadVideoUrl)
 	router.DELETE(options.BaseURL+"/course/courses/:courseId", wrapper.DeleteCourse)
 	router.GET(options.BaseURL+"/course/courses/:courseId/analytics", wrapper.GetCourseAnalytics)
 	router.POST(options.BaseURL+"/course/courses/:courseId/approve", wrapper.ApproveCourse)
@@ -2008,7 +1997,6 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.POST(options.BaseURL+"/course/courses/:courseId/sections/:sectionId/move", wrapper.MoveSection)
 	router.GET(options.BaseURL+"/course/courses/:courseId/students", wrapper.GetCourseStudents)
 	router.POST(options.BaseURL+"/course/courses/:courseId/submit", wrapper.SubmitCourse)
-	router.POST(options.BaseURL+"/course/courses/:courseId/upload-video-url", wrapper.GetUploadVideoUrl)
 	router.DELETE(options.BaseURL+"/course/lesson-comments/:commentId", wrapper.DeleteLessonComment)
 	router.POST(options.BaseURL+"/course/lesson-comments/:commentId/reply", wrapper.ReplyLessonComment)
 	router.GET(options.BaseURL+"/course/my-courses", wrapper.GetMyCourses)
@@ -2630,6 +2618,104 @@ type GetMyEnrolledCourses500JSONResponse struct {
 }
 
 func (response GetMyEnrolledCourses500JSONResponse) VisitGetMyEnrolledCoursesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoUrlRequestObject struct {
+	Body *GetUploadVideoUrlJSONRequestBody
+}
+
+type GetUploadVideoUrlResponseObject interface {
+	VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error
+}
+
+type GetUploadVideoUrl201JSONResponse struct {
+	ExpiresAt time.Time `json:"expiresAt"`
+	UploadUrl string    `json:"uploadUrl"`
+	VideoKey  string    `json:"videoKey"`
+}
+
+func (response GetUploadVideoUrl201JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoUrl400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response GetUploadVideoUrl400JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoUrl401JSONResponse struct{ UnauthorizedErrorJSONResponse }
+
+func (response GetUploadVideoUrl401JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(401)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoUrl403JSONResponse struct{ ForbiddenErrorJSONResponse }
+
+func (response GetUploadVideoUrl403JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoUrl404JSONResponse struct{ NotFoundErrorJSONResponse }
+
+func (response GetUploadVideoUrl404JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetUploadVideoUrl500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response GetUploadVideoUrl500JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -5683,105 +5769,6 @@ func (response SubmitCourse500JSONResponse) VisitSubmitCourseResponse(w http.Res
 	return err
 }
 
-type GetUploadVideoUrlRequestObject struct {
-	CourseId CourseIdPath `json:"courseId"`
-	Body     *GetUploadVideoUrlJSONRequestBody
-}
-
-type GetUploadVideoUrlResponseObject interface {
-	VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error
-}
-
-type GetUploadVideoUrl201JSONResponse struct {
-	ExpiresAt time.Time `json:"expiresAt"`
-	UploadUrl string    `json:"uploadUrl"`
-	VideoKey  string    `json:"videoKey"`
-}
-
-func (response GetUploadVideoUrl201JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoUrl400JSONResponse struct{ BadRequestErrorJSONResponse }
-
-func (response GetUploadVideoUrl400JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoUrl401JSONResponse struct{ UnauthorizedErrorJSONResponse }
-
-func (response GetUploadVideoUrl401JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoUrl403JSONResponse struct{ ForbiddenErrorJSONResponse }
-
-func (response GetUploadVideoUrl403JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoUrl404JSONResponse struct{ NotFoundErrorJSONResponse }
-
-func (response GetUploadVideoUrl404JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetUploadVideoUrl500JSONResponse struct {
-	InternalServerErrorJSONResponse
-}
-
-func (response GetUploadVideoUrl500JSONResponse) VisitGetUploadVideoUrlResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 type DeleteLessonCommentRequestObject struct {
 	CommentId CommentIdPath `json:"commentId"`
 }
@@ -6265,6 +6252,9 @@ type StrictServerInterface interface {
 	// Get my enrolled courses
 	// (GET /course/courses/me/enrolled)
 	GetMyEnrolledCourses(ctx context.Context, request GetMyEnrolledCoursesRequestObject) (GetMyEnrolledCoursesResponseObject, error)
+	// Get upload video URL
+	// (POST /course/courses/upload-video-url)
+	GetUploadVideoUrl(ctx context.Context, request GetUploadVideoUrlRequestObject) (GetUploadVideoUrlResponseObject, error)
 	// Delete course
 	// (DELETE /course/courses/{courseId})
 	DeleteCourse(ctx context.Context, request DeleteCourseRequestObject) (DeleteCourseResponseObject, error)
@@ -6367,9 +6357,6 @@ type StrictServerInterface interface {
 	// Submit course
 	// (POST /course/courses/{courseId}/submit)
 	SubmitCourse(ctx context.Context, request SubmitCourseRequestObject) (SubmitCourseResponseObject, error)
-	// Get upload video URL
-	// (POST /course/courses/{courseId}/upload-video-url)
-	GetUploadVideoUrl(ctx context.Context, request GetUploadVideoUrlRequestObject) (GetUploadVideoUrlResponseObject, error)
 	// Delete lesson comment
 	// (DELETE /course/lesson-comments/{commentId})
 	DeleteLessonComment(ctx context.Context, request DeleteLessonCommentRequestObject) (DeleteLessonCommentResponseObject, error)
@@ -6655,6 +6642,37 @@ func (sh *strictHandler) GetMyEnrolledCourses(ctx *gin.Context, params GetMyEnro
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(GetMyEnrolledCoursesResponseObject); ok {
 		if err := validResponse.VisitGetMyEnrolledCoursesResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetUploadVideoUrl operation middleware
+func (sh *strictHandler) GetUploadVideoUrl(ctx *gin.Context) {
+	var request GetUploadVideoUrlRequestObject
+
+	var body GetUploadVideoUrlJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(ctx, err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetUploadVideoUrl(ctx, request.(GetUploadVideoUrlRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetUploadVideoUrl")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(GetUploadVideoUrlResponseObject); ok {
+		if err := validResponse.VisitGetUploadVideoUrlResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {
@@ -7649,39 +7667,6 @@ func (sh *strictHandler) SubmitCourse(ctx *gin.Context, courseId CourseIdPath) {
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(SubmitCourseResponseObject); ok {
 		if err := validResponse.VisitSubmitCourseResponse(ctx.Writer); err != nil {
-			sh.options.ResponseErrorHandlerFunc(ctx, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetUploadVideoUrl operation middleware
-func (sh *strictHandler) GetUploadVideoUrl(ctx *gin.Context, courseId CourseIdPath) {
-	var request GetUploadVideoUrlRequestObject
-
-	request.CourseId = courseId
-
-	var body GetUploadVideoUrlJSONRequestBody
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(ctx, err)
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetUploadVideoUrl(ctx, request.(GetUploadVideoUrlRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetUploadVideoUrl")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		sh.options.HandlerErrorFunc(ctx, err)
-	} else if validResponse, ok := response.(GetUploadVideoUrlResponseObject); ok {
-		if err := validResponse.VisitGetUploadVideoUrlResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {

@@ -14,6 +14,7 @@ type LessonProgress interface {
 	DeletedAt() *time.Time
 	UserID() string
 	MarkAsCompleted()
+	ResetProgress()
 }
 
 type LessonProgressBase struct {
@@ -79,4 +80,8 @@ func (l *LessonProgressBase) Delete() {
 
 func (l *LessonProgressBase) MarkAsCompleted() {
 	l.isCompleted = true
+}
+
+func (l *LessonProgressBase) ResetProgress() {
+	l.isCompleted = false
 }

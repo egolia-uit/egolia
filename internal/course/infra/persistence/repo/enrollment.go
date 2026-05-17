@@ -66,6 +66,20 @@ func (r *EnrollmentRepo) GetByCourseAndLearner(ctx context.Context, params domai
 	return m.ToDomain(), nil
 }
 
+func (r *EnrollmentRepo) GetByCourseID(ctx context.Context, courseID uuid.UUID) ([]*domain.Enrollment, error) {
+	var ms []model.Enrollment
+	if err := r.db.WithContext(ctx).
+		Where("course_id = ?", courseID).
+		Find(&ms).Error; err != nil {
+		return nil, err
+	}
+	result := make([]*domain.Enrollment, 0, len(ms))
+	for i := range ms {
+		result = append(result, ms[i].ToDomain())
+	}
+	return result, nil
+}
+
 func (r *EnrollmentRepo) Save(ctx context.Context, enrollment *domain.Enrollment) error {
 	m := model.EnrollmentFromDomain(enrollment)
 	return r.db.WithContext(ctx).Save(m).Error

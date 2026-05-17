@@ -13,11 +13,12 @@ import (
 )
 
 type LessonReadRepo struct {
-	db *gorm.DB
+	db               *gorm.DB
+	objectStorageSvc app.ObjectStorageSvc
 }
 
-func NewLessonReadRepo(db *gorm.DB) *LessonReadRepo {
-	return &LessonReadRepo{db: db}
+func NewLessonReadRepo(db *gorm.DB, objectStorageSvc app.ObjectStorageSvc) *LessonReadRepo {
+	return &LessonReadRepo{db: db, objectStorageSvc: objectStorageSvc}
 }
 
 var _ app.GetLessonDetailReadModel = (*LessonReadRepo)(nil)
@@ -39,13 +40,20 @@ func (r *LessonReadRepo) GetVideoLessonDetail(ctx context.Context, params *app.G
 		return nil, errs.NewLessonNotFound(params.LessonID, nil)
 	}
 
+	videoURL := ""
+	if key := m.VideoLesson.VideoKey; key != "" {
+		videoURL, err = r.objectStorageSvc.VideoKeyToURL(ctx, key)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &app.VideoLesson{
 		LessonBase: app.LessonBase{
 			ID:         m.ID,
 			Title:      m.Title,
 			LessonType: app.LessonTypeVideo,
 		},
-		VideoURL: m.VideoLesson.VideoKey, // TODO: transform video key to URL using objectStorageSvc
+		VideoURL: videoURL,
 		Duration: time.Duration(m.VideoLesson.Duration) * time.Second,
 	}, nil
 }

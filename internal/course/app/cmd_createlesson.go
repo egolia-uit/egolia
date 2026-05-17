@@ -100,7 +100,7 @@ type CreateVideoLessonHandler struct {
 
 func (h *CreateVideoLessonHandler) Handle(ctx context.Context, cmd *CreateVideoLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			return err
 		}
