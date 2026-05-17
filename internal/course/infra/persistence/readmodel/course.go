@@ -66,13 +66,13 @@ func (r *CourseReadRepo) GetMyBookmarkedCourses(ctx context.Context, params *app
 	}
 
 	var total int64
-	if err := q.Count(&total).Error; err != nil {
+	if err := q.Session(&gorm.Session{}).Count(&total).Error; err != nil {
 		return nil, err
 	}
 
 	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
 	var ms []model.ReadCourse
-	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+	if err := q.Session(&gorm.Session{}).Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
 		return nil, err
 	}
 
@@ -109,13 +109,13 @@ func (r *CourseReadRepo) GetMyEnrolledCourses(ctx context.Context, params *app.G
 	}
 
 	var total int64
-	if err := q.Count(&total).Error; err != nil {
+	if err := q.Session(&gorm.Session{}).Count(&total).Error; err != nil {
 		return nil, err
 	}
 
 	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
 	var ms []model.ReadCourse
-	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+	if err := q.Session(&gorm.Session{}).Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
 		return nil, err
 	}
 
@@ -208,13 +208,13 @@ func (r *CourseReadRepo) GetCourses(ctx context.Context, params *app.GetCourses)
 	}
 
 	var total int64
-	if err := q.Count(&total).Error; err != nil {
+	if err := q.Session(&gorm.Session{}).Count(&total).Error; err != nil {
 		return nil, err
 	}
 
 	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
 	var ms []model.ReadCourse
-	if err := q.Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+	if err := q.Session(&gorm.Session{}).Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
 		return nil, err
 	}
 
@@ -241,11 +241,13 @@ func buildPagination(page, limit, total int) app.Pagination {
 			totalPages++
 		}
 	}
-	return app.Pagination{ //nolint:exhaustruct
+	return app.Pagination{
 		Page:       page,
 		Limit:      limit,
 		Total:      total,
 		TotalPages: totalPages,
+		HasNext:    page < totalPages,
+		HasPrev:    page > 1,
 	}
 }
 

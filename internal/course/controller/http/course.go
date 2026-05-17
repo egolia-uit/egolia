@@ -255,8 +255,8 @@ func (h *StrictHandler) GetSystemCourses(ctx context.Context, request course.Get
 	}
 
 	result, err := h.App.Queries.GetSystemCourses.Handle(ctx, &app.GetCourses{
-		InstructorID: request.Params.Query,
-		Query:        request.Params.InstructorId,
+		InstructorID: request.Params.InstructorId,
+		Query:        request.Params.Query,
 		Paginate: app.PaginationParams{
 			Page:  page,
 			Limit: limit,

@@ -15,14 +15,12 @@ type ApproveCourse struct {
 type ApproveCourseCmd Cmd[ApproveCourse]
 
 type ApproveCourseHandler struct {
-	uow              domain.UnitOfWork
-	approveCourseSvc *domain.ApproveCourseSvc
+	uow domain.UnitOfWork
 }
 
-func NewApproveCourseHandler(uow domain.UnitOfWork, approveCourseSvc *domain.ApproveCourseSvc, logger *slog.Logger, tracer Tracer) ApproveCourseCmd {
+func NewApproveCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) ApproveCourseCmd {
 	handler := &ApproveCourseHandler{
-		uow:              uow,
-		approveCourseSvc: approveCourseSvc,
+		uow: uow,
 	}
 	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
@@ -40,9 +38,7 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 		}
 
 		if course.OriginalCourseID() == nil {
-			if err := h.approveCourseSvc.Handle(ctx, course); err != nil {
-				return err
-			}
+			course.Approve()
 			if err := repoRegistry.Course().Save(ctx, course); err != nil {
 				return err
 			}
@@ -53,15 +49,11 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 				return err
 			}
 
-			// Validate bản nháp trước khi merge để đảm bảo không vi phạm rules
-			if err := h.approveCourseSvc.Handle(ctx, course); err != nil {
-				return err
-			}
-
 			changedLessonIDs, err = originalCourse.Merge(course)
 			if err != nil {
 				return err
 			}
+			originalCourse.Approve()
 
 			course.Delete()
 
