@@ -74,16 +74,26 @@ export function CourseCard({
   return (
     <Card
       className={cn(
-        'group flex flex-col overflow-hidden bg-nm-bg transition-all duration-300 hover:shadow-nm-inset',
+        `
+          group flex flex-col overflow-hidden bg-nm-bg transition-all
+          duration-300
+          hover:shadow-nm-inset
+        `,
         className
       )}
     >
       <div className="p-3 pb-0">
-        <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-nm-bg shadow-nm-inset">
+        <div className="
+          relative aspect-video w-full overflow-hidden rounded-xl bg-nm-bg
+          shadow-nm-inset
+        ">
           {videoSrc ? (
             <video
               className={cn(
-                'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                `
+                  h-full w-full object-cover transition-transform duration-500
+                  group-hover:scale-105
+                `
               )}
               muted
               playsInline
@@ -117,7 +127,9 @@ export function CourseCard({
       </div>
 
       <CardHeader className="px-5 pt-4 pb-2">
-        <CardTitle className="line-clamp-2 min-h-12 text-lg font-bold leading-tight text-slate-800">
+        <CardTitle className="
+          line-clamp-2 min-h-12 text-lg leading-tight font-bold text-slate-800
+        ">
           {course.title}
         </CardTitle>
       </CardHeader>
@@ -130,18 +142,24 @@ export function CourseCard({
 
         {showProgress && (
           <div className="grid gap-2">
-            <div className="flex items-center justify-between text-xs px-1">
+            <div className="flex items-center justify-between px-1 text-xs">
               <span className="font-medium text-slate-500">Tiến độ học tập</span>
               <span className="font-bold text-primary">{progress}%</span>
             </div>
             <div
               className={cn(
-                'h-2.5 w-full overflow-hidden rounded-full bg-nm-bg shadow-nm-inset'
+                `
+                  h-2.5 w-full overflow-hidden rounded-full bg-nm-bg
+                  shadow-nm-inset
+                `
               )}
             >
               <div
                 className={cn(
-                  'h-full rounded-full bg-primary shadow-nm-flat-sm transition-all duration-1000 ease-out'
+                  `
+                    h-full rounded-full bg-primary shadow-nm-flat-sm
+                    transition-all duration-1000 ease-out
+                  `
                 )}
                 style={{ width: `${Math.min(progress, 100)}%` }}
               />
@@ -151,11 +169,16 @@ export function CourseCard({
 
         <div
           className={cn(
-            'mt-auto grid grid-cols-2 gap-4 rounded-xl bg-nm-bg p-4 shadow-nm-inset'
+            `
+              mt-auto grid grid-cols-2 gap-4 rounded-xl bg-nm-bg p-4
+              shadow-nm-inset
+            `
           )}
         >
           <div className="space-y-1">
-            <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <div className="
+              flex items-center gap-1.5 text-xs font-medium text-slate-500
+            ">
               <BookOpen className="size-3.5" />
               Giá khóa học
             </div>
@@ -164,7 +187,9 @@ export function CourseCard({
             </div>
           </div>
           <div className="space-y-1 border-l border-slate-200/50 pl-4">
-            <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <div className="
+              flex items-center gap-1.5 text-xs font-medium text-slate-500
+            ">
               <ShieldCheck className="size-3.5" />
               Giảng viên
             </div>

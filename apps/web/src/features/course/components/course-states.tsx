@@ -45,7 +45,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <Card className="bg-nm-bg border-none">
+    <Card className="border-none bg-nm-bg">
       <CardContent className="
         flex flex-col items-center justify-center gap-4 py-16 text-center
       ">

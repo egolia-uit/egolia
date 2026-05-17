@@ -123,7 +123,7 @@ export function CourseStructure({
             <CardTitle className="flex items-center gap-2">
               <span className="
                 flex size-7 items-center justify-center rounded-xl bg-nm-bg
-                text-xs shadow-nm-inset font-bold text-primary
+                text-xs font-bold text-primary shadow-nm-inset
               ">
                 {sectionIndex + 1}
               </span>
@@ -137,8 +137,7 @@ export function CourseStructure({
                   const content = (
                     <div className="
                       flex items-center justify-between gap-3 rounded-2xl
-                      bg-nm-bg px-4 py-3 text-sm shadow-nm-inset
-                      transition-all
+                      bg-nm-bg px-4 py-3 text-sm shadow-nm-inset transition-all
                     ">
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="
@@ -174,8 +173,7 @@ export function CourseStructure({
                 })
               ) : (
                 <div className="
-                  rounded-xl bg-nm-bg p-4 text-sm
-                  text-slate-500 shadow-nm-inset
+                  rounded-xl bg-nm-bg p-4 text-sm text-slate-500 shadow-nm-inset
                 ">
                   Section này chưa có lesson.
                 </div>

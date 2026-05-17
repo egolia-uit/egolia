@@ -295,8 +295,10 @@ export function CourseForm({
                 {uploading ? 'Uploading...' : 'Upload intro video'}
               </Button>
               {uploadProgress !== null && (
-                <div className="grid gap-2 mt-2">
-                  <div className="h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset">
+                <div className="mt-2 grid gap-2">
+                  <div className="
+                    h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
+                  ">
                     <div
                       className="
                         h-full rounded-full bg-primary shadow-nm-flat-sm
@@ -305,7 +307,7 @@ export function CourseForm({
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
-                  <div className="text-xs font-bold text-slate-500 text-right">
+                  <div className="text-right text-xs font-bold text-slate-500">
                     {uploadProgress}%
                   </div>
                 </div>

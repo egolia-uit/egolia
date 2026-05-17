@@ -461,8 +461,8 @@ function LearnerLessonContent({
               ) : (
                 <div
                   className="
-                    rounded-xl bg-nm-bg p-6 text-sm
-                    text-slate-500 shadow-nm-inset
+                    rounded-xl bg-nm-bg p-6 text-sm text-slate-500
+                    shadow-nm-inset
                   "
                 >
                   Lesson này chưa có video để phát.

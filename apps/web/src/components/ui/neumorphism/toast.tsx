@@ -69,19 +69,29 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         className={cn(
-          'fixed top-4 right-4 z-[9999] flex w-full max-w-[350px] flex-col gap-3'
+          `
+            fixed top-4 right-4 z-[9999] flex w-full max-w-[350px] flex-col
+            gap-3
+          `
         )}
       >
         {toasts.map((t) => (
           <div
             key={t.id}
             className={cn(
-              'pointer-events-auto flex animate-fade-in flex-col overflow-hidden rounded-xl border border-[#D1D9E6]/50 bg-nm-bg shadow-nm-flat'
+              `
+                pointer-events-auto flex animate-fade-in flex-col
+                overflow-hidden rounded-xl border border-[#D1D9E6]/50 bg-nm-bg
+                shadow-nm-flat
+              `
             )}
           >
             <div
               className={cn(
-                'flex items-center justify-between border-b border-[#D1D9E6]/30 px-4 py-2'
+                `
+                  flex items-center justify-between border-b border-[#D1D9E6]/30
+                  px-4 py-2
+                `
               )}
             >
               <div className="flex items-center gap-2">
@@ -93,14 +103,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     'bg-amber-500': t.type === 'warning',
                   })}
                 />
-                <span className="text-xs font-bold tracking-wider text-slate-600 uppercase">
+                <span className="
+                  text-xs font-bold tracking-wider text-slate-600 uppercase
+                ">
                   {t.title || t.type}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => removeToast(t.id)}
-                className="text-slate-400 transition-colors hover:text-slate-600"
+                className="
+                  text-slate-400 transition-colors
+                  hover:text-slate-600
+                "
               >
                 <X className="size-4" />
               </button>

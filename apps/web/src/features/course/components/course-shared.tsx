@@ -102,10 +102,12 @@ export function MockPanel({
         </div>
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
-      <CardContent className="
-        grid gap-3
-        md:grid-cols-2
-      ">
+      <CardContent
+        className="
+          grid gap-3
+          md:grid-cols-2
+        "
+      >
         {items.map((item) => (
           <div
             key={item}
@@ -131,12 +133,14 @@ export function RoleTabs({
     label: string;
     icon: typeof BookOpen;
     value: string;
-    }>;
+  }>;
 }) {
   return (
-    <div className="
-      flex gap-2 overflow-x-auto rounded-xl bg-nm-bg p-2 shadow-nm-inset
-    ">
+    <div
+      className="
+        flex gap-2 overflow-x-auto rounded-xl bg-nm-bg p-2 shadow-nm-inset
+      "
+    >
       {tabs.map((tab) => (
         <Button
           key={tab.value}
@@ -169,7 +173,6 @@ export async function uploadCourseVideo(
     const { data } = await getUploadVideoUrl({
       body: { videoFilename: file.name },
       client: apiClient,
-      path: { courseId },
       throwOnError: true,
       responseValidator: async (data: any) => data,
     });
@@ -428,9 +431,7 @@ export function CourseReviewsPanel({
               </div>
             </div>
             <p className="mt-2 text-sm text-slate-700">{review.comment}</p>
-            <p className="mt-2 text-xs text-slate-500">
-              User: {review.userId}
-            </p>
+            <p className="mt-2 text-xs text-slate-500">User: {review.userId}</p>
           </div>
         ))}
       </CardContent>
