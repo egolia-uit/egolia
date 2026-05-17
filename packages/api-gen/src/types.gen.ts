@@ -363,7 +363,6 @@ export type BlogComment = {
 };
 
 export type CourseCertificateWritable = {
-    userId: CoursePropertiesId;
     createdAt: Date;
 };
 
@@ -400,7 +399,6 @@ export type CourseCourseDetailWritable = CourseCourseWritable & {
 };
 
 export type CourseCourseProgressWritable = {
-    userId: CoursePropertiesId;
     totalLessons: number;
     completedLessons: number;
     progressPercent: number;
@@ -411,20 +409,26 @@ export type CourseCourseProgressWritable = {
  * Represents a single review for a course.
  */
 export type CourseReviewWritable = {
-    userId: CoursePropertiesId;
     rating: number;
     comment: string;
 };
 
+export type CourseCourseStudentWritable = {
+    username: CourseUsername;
+    name: CourseName;
+    email: CourseEmail;
+    enrolledAt: Date;
+    progressPercentage: number;
+    completed: boolean;
+};
+
 export type CourseLessonCommentWritable = {
-    userId: CoursePropertiesId;
     content: string;
     createdAt: Date;
     parentCommentId?: string | null;
 };
 
 export type CourseLessonProgressWritable = {
-    userId: CoursePropertiesId;
     lessonId: string;
     isCompleted: boolean;
 };

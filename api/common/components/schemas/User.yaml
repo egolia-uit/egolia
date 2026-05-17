@@ -7,6 +7,7 @@ properties:
     format: number
     description: User ID from Authentik (need to change subject mode to User's ID instead of hashed)
     example: '100'
+    readOnly: true
 
   username:
     type: string

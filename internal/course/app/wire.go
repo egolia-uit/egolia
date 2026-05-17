@@ -1,6 +1,8 @@
 package app
 
-import "github.com/goforj/wire"
+import (
+	"github.com/goforj/wire"
+)
 
 var ProviderSetCmds = wire.NewSet(
 	NewCreateCourseHandler,

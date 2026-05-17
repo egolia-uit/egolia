@@ -7,7 +7,7 @@ export const zCourseId = z.uuid().readonly();
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
-export const zCoursePropertiesId = z.string();
+export const zCoursePropertiesId = z.string().readonly();
 
 export const zCourseCertificate = z.object({
     id: z.uuid().readonly(),
@@ -35,7 +35,7 @@ export const zCourseCourseStatus = z.enum([
     'draft',
     'pending',
     'approved'
-]).default('draft');
+]).readonly().default('draft');
 
 export const zCourseCourse = z.object({
     id: z.uuid().readonly().optional(),
@@ -207,7 +207,7 @@ export const zBillingRevenueAnalytics = z.object({
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
-export const zBillingId = z.string();
+export const zBillingId = z.string().readonly();
 
 /**
  * Current status of a billing transaction
@@ -240,7 +240,7 @@ export const zBillingPagination = z.object({
 /**
  * User ID from Authentik (need to change subject mode to User's ID instead of hashed)
  */
-export const zBlogId = z.string();
+export const zBlogId = z.string().readonly();
 
 export const zBlogPost = z.object({
     id: z.uuid().readonly(),
@@ -277,7 +277,6 @@ export const zBlogComment = z.object({
 });
 
 export const zCourseCertificateWritable = z.object({
-    userId: zCoursePropertiesId,
     createdAt: z.iso.datetime()
 });
 
@@ -314,7 +313,6 @@ export const zCourseCourseDetailWritable = zCourseCourseWritable.and(z.object({
 }));
 
 export const zCourseCourseProgressWritable = z.object({
-    userId: zCoursePropertiesId,
     totalLessons: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
     completedLessons: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
     progressPercent: z.number().gte(0).lte(100),
@@ -325,20 +323,26 @@ export const zCourseCourseProgressWritable = z.object({
  * Represents a single review for a course.
  */
 export const zCourseReviewWritable = z.object({
-    userId: zCoursePropertiesId,
     rating: z.int().gte(1).lte(5),
     comment: z.string().max(2000)
 });
 
+export const zCourseCourseStudentWritable = z.object({
+    username: zCourseUsername,
+    name: zCourseName,
+    email: zCourseEmail,
+    enrolledAt: z.iso.datetime(),
+    progressPercentage: z.number().gte(0).lte(100),
+    completed: z.boolean()
+});
+
 export const zCourseLessonCommentWritable = z.object({
-    userId: zCoursePropertiesId,
     content: z.string().min(1).max(4000),
     createdAt: z.iso.datetime(),
     parentCommentId: z.uuid().nullish()
 });
 
 export const zCourseLessonProgressWritable = z.object({
-    userId: zCoursePropertiesId,
     lessonId: z.uuid(),
     isCompleted: z.boolean()
 });

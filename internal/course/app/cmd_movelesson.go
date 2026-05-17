@@ -33,7 +33,7 @@ func NewMoveLessonHandler(logger *slog.Logger, tracer Tracer, uow domain.UnitOfW
 
 func (h *MoveLessonHandler) Handle(ctx context.Context, command *MoveLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: command.CourseID}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, command.CourseID)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errs.NewCourseNotFound(command.CourseID, err)

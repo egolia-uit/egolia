@@ -15,12 +15,14 @@ type ApproveCourse struct {
 type ApproveCourseCmd Cmd[ApproveCourse]
 
 type ApproveCourseHandler struct {
-	uow domain.UnitOfWork
+	uow              domain.UnitOfWork
+	approveCourseSvc *domain.ApproveCourseSvc
 }
 
-func NewApproveCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) ApproveCourseCmd {
+func NewApproveCourseHandler(uow domain.UnitOfWork, approveCourseSvc *domain.ApproveCourseSvc, logger *slog.Logger, tracer Tracer) ApproveCourseCmd {
 	handler := &ApproveCourseHandler{
-		uow: uow,
+		uow:              uow,
+		approveCourseSvc: approveCourseSvc,
 	}
 	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
@@ -32,24 +34,27 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 	var publishedCourseID uuid.UUID
 
 	err := h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID: cmd.CourseID,
-		}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			return err
 		}
 
 		if course.OriginalCourseID() == nil {
-			course.SetStatus(domain.CourseStatusApproved)
+			if err := h.approveCourseSvc.Handle(ctx, course); err != nil {
+				return err
+			}
 			if err := repoRegistry.Course().Save(ctx, course); err != nil {
 				return err
 			}
 		} else {
 			publishedCourseID = *course.OriginalCourseID()
-			originalCourse, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-				ID: publishedCourseID,
-			}, true)
+			originalCourse, err := repoRegistry.Course().GetFull(ctx, publishedCourseID)
 			if err != nil {
+				return err
+			}
+
+			// Validate bản nháp trước khi merge để đảm bảo không vi phạm rules
+			if err := h.approveCourseSvc.Handle(ctx, course); err != nil {
 				return err
 			}
 

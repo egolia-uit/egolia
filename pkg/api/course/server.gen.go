@@ -504,7 +504,7 @@ func (siw *ServerInterfaceWrapper) GetUploadVideoUrl(c *gin.Context) {
 
 	c.Set(string(Oauth2Scopes), []string{"openid", "entitlements"})
 
-	c.Set(string(OIDCScopes), []string{"openid", "entitlements"})
+	c.Set(string(OIDCScopes), []string{"openidnx", "entitlements"})
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
