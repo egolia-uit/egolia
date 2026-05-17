@@ -92,7 +92,7 @@ export function MockPanel({
   items: string[];
 }) {
   return (
-    <Card className="border-dashed bg-nm-bg">
+    <Card className="bg-nm-bg shadow-nm-flat">
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary" className="bg-amber-100 text-amber-800">
@@ -160,15 +160,35 @@ export async function uploadCourseVideo(
   file: File,
   onProgress?: UploadProgressCallback
 ) {
-  const { data } = await getUploadVideoUrl({
-    body: { videoFilename: file.name },
-    client: apiClient,
-    path: { courseId },
-    throwOnError: true,
-  });
+  console.log('>>> START uploadCourseVideo');
+  console.log('>>> courseId:', courseId);
+  console.log('>>> File:', file.name, file.size, file.type);
 
-  await putFileToSignedUrl(data.uploadUrl, file, onProgress);
-  return data;
+  try {
+    console.log('>>> Calling getUploadVideoUrl...');
+    const { data } = await getUploadVideoUrl({
+      body: { videoFilename: file.name },
+      client: apiClient,
+      path: { courseId },
+      throwOnError: true,
+      responseValidator: async (data: any) => data,
+    });
+
+    console.log('>>> Backend response data:', data);
+
+    if (!data.uploadUrl) {
+      console.error('>>> No uploadUrl in response!');
+      throw new Error('Backend did not return uploadUrl');
+    }
+
+    console.log('>>> Initiating PUT to RustFS:', data.uploadUrl);
+    await putFileToSignedUrl(data.uploadUrl, file, onProgress);
+    console.log('>>> PUT Completed!');
+    return data;
+  } catch (error) {
+    console.error('>>> FATAL ERROR in uploadCourseVideo:', error);
+    throw error;
+  }
 }
 
 export function useCourseList(

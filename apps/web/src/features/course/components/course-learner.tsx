@@ -1,12 +1,27 @@
 'use client';
 
-import { Bookmark, CheckCircle2, Save, Search, Star } from 'lucide-react';
+import {
+  ArrowLeft,
+  Bookmark,
+  CheckCircle2,
+  ClipboardList,
+  PlayCircle,
+  Save,
+  Search,
+  Star,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
 import { Button } from '#/components/ui/neumorphism/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui/neumorphism/card';
 import {
   Dialog,
   DialogContent,
@@ -20,17 +35,26 @@ import { apiClient } from '#/lib/api';
 import {
   bookmarkCourse,
   finishCourse,
+  getLessonDetail,
   getMyBookmarkedCourses,
   getMyEnrolledCourses,
   reviewCourse,
   unbookmarkCourse,
 } from '#/lib/api/course';
+import type { CourseLessonDetail } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import type { Viewer } from '#/lib/auth/roles';
 
 import { CourseHero, CourseStructure } from './course-detail';
+import { CourseVideoPlayer } from './course-video-player';
 import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
-import { ListContent, normalizeTab, useCourseDetail, useCourseList } from './course-shared';
+import {
+  type ResourceState,
+  ListContent,
+  normalizeTab,
+  useCourseDetail,
+  useCourseList,
+} from './course-shared';
 
 function LearnerHomeContent({
   initialTab,
@@ -343,7 +367,10 @@ function LearnerCourseContent({
           <section className="grid gap-6">
             <div className="grid gap-3">
               <h2 className="text-lg font-semibold">Nội dung khóa học</h2>
-              <CourseStructure course={state.data} />
+              <CourseStructure
+                course={state.data}
+                baseHref={`/learn/courses/${courseId}`}
+              />
             </div>
           </section>
         </div>
@@ -356,6 +383,118 @@ export function LearnerCoursePage({ courseId }: { courseId: string }) {
   return (
     <AuthGate allowedRoles={['learner', 'instructor', 'admin']}>
       {(viewer) => <LearnerCourseContent viewer={viewer} courseId={courseId} />}
+    </AuthGate>
+  );
+}
+
+function LearnerLessonContent({
+  courseId,
+  lessonId,
+  sectionId,
+  viewer,
+}: {
+  courseId: string;
+  lessonId: string;
+  sectionId: string;
+  viewer: Viewer;
+}) {
+  const [state, setState] = useState<ResourceState<CourseLessonDetail>>({
+    status: 'loading',
+  });
+
+  useEffect(() => {
+    let mounted = true;
+
+    getLessonDetail({
+      client: apiClient,
+      path: { courseId, lessonId, sectionId },
+      throwOnError: true,
+    })
+      .then(({ data }) => {
+        if (mounted) {
+          setState({ status: 'ready', data: data.data });
+        }
+      })
+      .catch((error) => {
+        if (mounted) {
+          setState({ status: 'error', error: normalizeApiError(error) });
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [courseId, lessonId, sectionId]);
+
+  return (
+    <AppShell viewer={viewer} eyebrow="Bài học" title="Nội dung bài học">
+      <div className="grid gap-4">
+        <div>
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/learn/courses/${courseId}`}>
+              <ArrowLeft className="mr-2 size-4" />
+              Back to course
+            </Link>
+          </Button>
+        </div>
+
+        {state.status === 'loading' && <CourseGridSkeleton />}
+        {state.status === 'error' && <ErrorState error={state.error} />}
+        {state.status === 'ready' && (
+          <Card className="bg-nm-bg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                {state.data.lessonType === 'video' ? (
+                  <PlayCircle className="size-5 text-primary" />
+                ) : (
+                  <ClipboardList className="size-5 text-primary" />
+                )}
+                {state.data.title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {state.data.lessonType === 'video' && state.data.videoUrl ? (
+                <CourseVideoPlayer
+                  src={state.data.videoUrl}
+                  title={state.data.title}
+                />
+              ) : (
+                <div
+                  className="
+                    rounded-xl bg-nm-bg p-6 text-sm
+                    text-slate-500 shadow-nm-inset
+                  "
+                >
+                  Lesson này chưa có video để phát.
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </AppShell>
+  );
+}
+
+export function LearnerLessonPage({
+  courseId,
+  lessonId,
+  sectionId,
+}: {
+  courseId: string;
+  lessonId: string;
+  sectionId: string;
+}) {
+  return (
+    <AuthGate allowedRoles={['learner', 'instructor', 'admin']}>
+      {(viewer) => (
+        <LearnerLessonContent
+          courseId={courseId}
+          lessonId={lessonId}
+          sectionId={sectionId}
+          viewer={viewer}
+        />
+      )}
     </AuthGate>
   );
 }

@@ -1,3 +1,8 @@
+---
+name: neumorphism-checker
+description: "Specialized agent for enforcing Neumorphism UI style, checking design tokens (shadows, colors, borders), and ensuring code quality through mandatory linting and building."
+---
+
 # Neumorphism UI Checker
 
 ## Description

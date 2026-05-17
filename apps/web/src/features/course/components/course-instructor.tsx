@@ -9,6 +9,7 @@ import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
 import { Button } from '#/components/ui/neumorphism/button';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/neumorphism/card';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Dialog,
   DialogContent,
@@ -52,8 +53,8 @@ function InstructorCoursesContent({
     'uploads',
     'reviews',
   ]);
+  const { success: showToast } = useToast();
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const courses = useCourseList(
@@ -87,7 +88,6 @@ function InstructorCoursesContent({
   async function create(body: CourseCourseWritable) {
     setSubmitting(true);
     setActionError(null);
-    setActionMessage(null);
     try {
       const response = await createCourse({
         body,
@@ -95,10 +95,11 @@ function InstructorCoursesContent({
         throwOnError: true,
       });
       courses.reload();
+      showToast('Khóa học đã được tạo thành công!');
+      setCreateOpen(false);
       const location = response.response.headers.get('Content-Location');
       const courseId = location?.split('/').filter(Boolean).at(-1);
       if (courseId) {
-        setCreateOpen(false);
         router.push(`/instructor/courses/${courseId}`);
       }
     } catch (error) {
@@ -110,10 +111,9 @@ function InstructorCoursesContent({
 
   async function mutateCourse(action: () => Promise<unknown>, success: string) {
     setActionError(null);
-    setActionMessage(null);
     try {
       await action();
-      setActionMessage(success);
+      showToast(success);
       courses.reload();
     } catch (error) {
       setActionError(normalizeApiError(error));
@@ -146,7 +146,7 @@ function InstructorCoursesContent({
                 submitting={submitting}
                 error={actionError?.message}
                 forceIntroductionVideoKey={true}
-                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo('new', file, onProgress)}
+                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo(crypto.randomUUID(), file, onProgress)}
                 onSubmit={create}
               />
             </div>
@@ -155,9 +155,6 @@ function InstructorCoursesContent({
       }
     >
       <div className="grid gap-4">
-        {actionMessage && (
-          <InlineNotice title="Success" description={actionMessage} />
-        )}
         {actionError && <ErrorState error={actionError} />}
         <ListContent
           state={displayedCourses}
@@ -257,19 +254,18 @@ function InstructorCourseDetailContent({
   courseId: string;
 }) {
   const router = useRouter();
+  const { success: showToast } = useToast();
   const { state, reload, setState } = useCourseDetail(courseId);
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
     setActionError(null);
-    setActionMessage(null);
     try {
       await action();
-      setActionMessage(success);
+      showToast(success);
       reload();
       return true;
     } catch (error) {
@@ -460,9 +456,6 @@ function InstructorCourseDetailContent({
             }
           />
 
-          {actionMessage && (
-            <InlineNotice title="Success" description={actionMessage} />
-          )}
           {actionError && <ErrorState error={actionError} />}
 
           <div
@@ -481,7 +474,7 @@ function InstructorCourseDetailContent({
             </div>
 
             <div className="grid gap-4">
-              <Card className="bg-nm-bg">
+              <Card className="bg-nm-bg shadow-nm-flat">
                 <CardHeader>
                   <CardTitle>Ghi chú</CardTitle>
                 </CardHeader>

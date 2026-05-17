@@ -1,28 +1,48 @@
 'use client';
 
-import { LogOut } from 'lucide-react';
+import { LogOut, UserPlus } from 'lucide-react';
 
 import { Button } from '#/components/ui/neumorphism/button';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '#/components/ui/shadcn/dropdown-menu';
+import {
   openCenteredPopup,
+  postAuthPopupMessage,
   waitForAuthPopup,
 } from '#/features/auth/popup';
 import { authClient } from '#/lib/auth';
 import { clearAuthentikAccessTokenCache } from '#/lib/auth/access-token';
 
-function getLogoutRedirectUrl() {
-  const endSessionUrl = process.env.NEXT_PUBLIC_AUTHENTIK_END_SESSION_URL;
+const defaultAuthentikEnrollmentUrl =
+  'http://authentik.egolia.localhost/if/flow/egolia-enrollment/';
+const defaultAuthentikLogoutUrl =
+  'http://authentik.egolia.localhost/if/flow/default-invalidation-flow/';
 
-  if (!endSessionUrl) {
-    return '/login';
-  }
-
-  const url = new URL(endSessionUrl);
-  url.searchParams.set(
-    'post_logout_redirect_uri',
+function getPopupLogoutRedirectUri() {
+  return (
     process.env.NEXT_PUBLIC_AUTHENTIK_POST_LOGOUT_REDIRECT_URI ||
-      `${window.location.origin}/auth/popup-logout`
+    `${window.location.origin}/auth/popup-logout`
   );
+}
+
+function getAuthentikEnrollmentUrl(nextUrl: string) {
+  const url = new URL(
+    process.env.NEXT_PUBLIC_AUTHENTIK_ENROLLMENT_URL ||
+      defaultAuthentikEnrollmentUrl
+  );
+  url.searchParams.set('next', nextUrl);
+  return url.toString();
+}
+
+function getAuthentikLogoutUrl(redirectUri: string) {
+  const url = new URL(
+    process.env.NEXT_PUBLIC_AUTHENTIK_LOGOUT_URL || defaultAuthentikLogoutUrl
+  );
+  url.searchParams.set('next', redirectUri);
   return url.toString();
 }
 
@@ -86,13 +106,62 @@ export function SignInButton() {
   );
 }
 
+export function SignUpButton() {
+  const handleSignUp = async () => {
+    const popup = openCenteredPopup('about:blank', 'egolia-auth-sign-up');
+
+    try {
+      const result = await authClient.signIn.oauth2({
+        providerId: 'authentik',
+        callbackURL: '/auth/popup-callback',
+        disableRedirect: true,
+        errorCallbackURL: '/login?error=auth_failed',
+      });
+      const url = result.data?.url;
+
+      if (!url) {
+        popup?.close();
+        window.location.href = getAuthentikEnrollmentUrl(
+          `${window.location.origin}/login`
+        );
+        return;
+      }
+
+      const enrollmentUrl = getAuthentikEnrollmentUrl(url);
+
+      if (!popup) {
+        window.location.href = enrollmentUrl;
+        return;
+      }
+
+      popup.location.href = enrollmentUrl;
+      const message = await waitForAuthPopup(popup);
+      window.location.href = message.redirectTo || '/dashboard';
+    } catch {
+      popup?.close();
+      window.location.href = '/login?error=auth_failed';
+    }
+  };
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="lg"
+      onClick={handleSignUp}
+      className="w-full cursor-pointer gap-2"
+    >
+      <UserPlus className="size-5" />
+      Tạo tài khoản
+    </Button>
+  );
+}
+
 export function SignOutButton() {
-  const handleSignOut = async () => {
-    const logoutUrl = getLogoutRedirectUrl();
-    const popup =
-      logoutUrl === '/login'
-        ? null
-        : openCenteredPopup('about:blank', 'egolia-auth-logout');
+  const handleSignOut = async (logoutAuthentik: boolean) => {
+    const popup = logoutAuthentik
+      ? openCenteredPopup('about:blank', 'egolia-auth-logout')
+      : null;
 
     clearAuthentikAccessTokenCache();
     await authClient.signOut({
@@ -101,40 +170,57 @@ export function SignOutButton() {
       },
     });
 
-    if (logoutUrl === '/login') {
-      window.location.href = '/courses';
+    if (!logoutAuthentik) {
+      if (window.opener) {
+        postAuthPopupMessage('signed-out', '/courses');
+        window.close();
+      } else {
+        window.location.href = '/courses';
+      }
       return;
     }
 
     if (!popup) {
-      window.location.href = '/courses';
+      window.location.href = getAuthentikLogoutUrl(
+        `${window.location.origin}/courses`
+      );
       return;
     }
 
     try {
-      popup.location.href = logoutUrl;
+      popup.location.href = getAuthentikLogoutUrl(getPopupLogoutRedirectUri());
       await waitForAuthPopup(popup, 60_000);
+      window.location.href = '/courses';
     } catch {
-      // popup closed or timed out — that's fine
+      popup.close();
+      window.location.href = '/courses';
     }
-
-    // Always reload the main page after logout
-    window.location.href = '/courses';
   };
 
   return (
-    <Button
-      id="sign-out-button"
-      variant="ghost"
-      size="sm"
-      onClick={handleSignOut}
-      className="
-        cursor-pointer gap-2 text-muted-foreground
-        hover:text-foreground
-      "
-    >
-      <LogOut className="size-4" />
-      Đăng xuất
-    </Button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          id="sign-out-button"
+          variant="ghost"
+          size="sm"
+          className="
+            cursor-pointer gap-2 text-muted-foreground
+            hover:text-foreground
+          "
+        >
+          <LogOut className="size-4" />
+          Đăng xuất
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem onSelect={() => handleSignOut(false)}>
+          Chỉ đăng xuất Egolia
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => handleSignOut(true)}>
+          Đăng xuất cả Authentik
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

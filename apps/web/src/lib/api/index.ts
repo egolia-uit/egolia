@@ -34,6 +34,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
+export function resolveVideoUrl(videoKeyOrUrl: string | undefined): string | undefined {
+  if (!videoKeyOrUrl) return undefined;
+  if (videoKeyOrUrl.startsWith('http')) return videoKeyOrUrl;
+
+  // Assuming RustFS API is the source for internal video keys
+  const rustfsBaseUrl = 'http://rustfs-api.egolia.localhost/course';
+  return `${rustfsBaseUrl}/${videoKeyOrUrl.startsWith('/') ? videoKeyOrUrl.slice(1) : videoKeyOrUrl}`;
+}
+
 function normalizeIntroductionVideoUrl(value: unknown): void {
   if (Array.isArray(value)) {
     value.forEach((item) => normalizeIntroductionVideoUrl(item));
@@ -44,8 +53,18 @@ function normalizeIntroductionVideoUrl(value: unknown): void {
     return;
   }
 
-  if (value.introductionVideoUrl === '') {
+  // Handle introductionVideoKey/Url
+  const videoKey = value.introductionVideoKey || value.introductionVideoUrl;
+  if (typeof videoKey === 'string' && videoKey !== '') {
+    value.introductionVideoUrl = resolveVideoUrl(videoKey);
+  } else if (value.introductionVideoUrl === '') {
     delete value.introductionVideoUrl;
+  }
+
+  // Handle videoUrl in lessons or other components
+  const generalVideoKey = value.videoKey || value.videoUrl;
+  if (typeof generalVideoKey === 'string' && generalVideoKey !== '') {
+    value.videoUrl = resolveVideoUrl(generalVideoKey);
   }
 
   Object.values(value).forEach((item) => normalizeIntroductionVideoUrl(item));

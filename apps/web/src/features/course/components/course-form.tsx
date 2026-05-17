@@ -3,7 +3,9 @@
 import { Save, UploadCloud } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
+import { cn } from '#/components/lib/shadcn/utils';
 import { Button } from '#/components/ui/neumorphism/button';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Field,
   FieldDescription,
@@ -132,6 +134,8 @@ export function CourseForm({
     );
   }, [canUploadVideo, forceIntroductionVideoKey, values]);
 
+  const { success } = useToast();
+
   async function uploadSelectedVideo() {
     if (!selectedVideo || !onUploadIntroductionVideo) {
       return null;
@@ -150,6 +154,7 @@ export function CourseForm({
         ...current,
         introductionVideoKey: result.videoKey,
       }));
+      success(`Video ${selectedVideo.name} upload thanh cong!`);
       return result.videoKey;
     } catch (caught) {
       const message =
@@ -265,10 +270,9 @@ export function CourseForm({
 
           {onUploadIntroductionVideo && (
             <div
-              className="
-                grid gap-2 rounded-lg border border-dashed border-slate-200
-                bg-slate-50 p-3
-              "
+              className={cn(
+                'grid gap-2 rounded-xl bg-nm-bg p-4 shadow-nm-inset'
+              )}
             >
               <Input
                 id="course-video-file"
@@ -291,17 +295,18 @@ export function CourseForm({
                 {uploading ? 'Uploading...' : 'Upload intro video'}
               </Button>
               {uploadProgress !== null && (
-                <div className="grid gap-1">
-                  <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+                <div className="grid gap-2 mt-2">
+                  <div className="h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset">
                     <div
                       className="
-                        h-full rounded-full bg-slate-950 transition-all
+                        h-full rounded-full bg-primary shadow-nm-flat-sm
+                        transition-all duration-300
                       "
                       style={{ width: `${uploadProgress}%` }}
                     />
                   </div>
-                  <div className="text-xs text-slate-500">
-                    Upload progress: {uploadProgress}%
+                  <div className="text-xs font-bold text-slate-500 text-right">
+                    {uploadProgress}%
                   </div>
                 </div>
               )}

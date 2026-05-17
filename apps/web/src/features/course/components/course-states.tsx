@@ -45,23 +45,23 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <Card className="border-dashed bg-nm-bg">
+    <Card className="bg-nm-bg border-none">
       <CardContent className="
-        flex flex-col items-center justify-center gap-3 py-14 text-center
+        flex flex-col items-center justify-center gap-4 py-16 text-center
       ">
         <div className="
-          flex size-12 items-center justify-center rounded-lg bg-slate-100
-          text-slate-500
+          flex size-14 items-center justify-center rounded-2xl bg-nm-bg
+          text-slate-400 shadow-nm-inset
         ">
-          <Inbox className="size-6" />
+          <Inbox className="size-7 opacity-50" />
         </div>
-        <div>
-          <CardTitle>{title}</CardTitle>
-          <CardDescription className="mt-1 max-w-md">
+        <div className="space-y-1">
+          <CardTitle className="text-xl font-bold text-slate-800">{title}</CardTitle>
+          <CardDescription className="mx-auto max-w-sm text-sm/relaxed">
             {description}
           </CardDescription>
         </div>
-        {action}
+        {action && <div className="pt-2">{action}</div>}
       </CardContent>
     </Card>
   );
