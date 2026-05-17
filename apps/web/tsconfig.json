@@ -31,6 +31,7 @@
     "src/**/*.jsx",
     ".next/types/**/*.ts",
     "next-env.d.ts",
+    "instrumentation.ts",
     "index.d.ts"
   ],
   "exclude": [
@@ -45,5 +46,10 @@
     "eslint.config.js",
     "eslint.config.cjs",
     "eslint.config.mjs"
+  ],
+  "references": [
+    {
+      "path": "../../packages/api-gen"
+    }
   ]
 }

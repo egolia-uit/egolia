@@ -237,7 +237,7 @@ type Certificate struct {
 	Id        *openapi_types.UUID `json:"id,omitempty"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
+	UserId *PropertiesId `json:"userId,omitempty"`
 }
 
 // Course defines model for Course.
@@ -301,7 +301,7 @@ type CourseProgress struct {
 	TotalLessons     int32   `json:"totalLessons"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
+	UserId *PropertiesId `json:"userId,omitempty"`
 }
 
 // CourseStatus defines model for CourseStatus.
@@ -320,7 +320,7 @@ type CourseStudent struct {
 	ProgressPercentage float32 `json:"progressPercentage"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
+	UserId *PropertiesId `json:"userId,omitempty"`
 
 	// Username Username from Authentik
 	Username Username `json:"username"`
@@ -354,7 +354,7 @@ type LessonComment struct {
 	ParentCommentId *openapi_types.UUID `json:"parentCommentId,omitempty"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
+	UserId *PropertiesId `json:"userId,omitempty"`
 }
 
 // LessonDetail defines model for LessonDetail.
@@ -369,7 +369,7 @@ type LessonProgress struct {
 	LessonId    openapi_types.UUID  `json:"lessonId"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
+	UserId *PropertiesId `json:"userId,omitempty"`
 }
 
 // LessonProgressDetail defines model for LessonProgressDetail.
@@ -413,7 +413,7 @@ type Review struct {
 	Rating    int                 `json:"rating"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
+	UserId *PropertiesId `json:"userId,omitempty"`
 }
 
 // Section defines model for Section.
@@ -472,8 +472,8 @@ type VideoLessonProgress struct {
 	LessonId     openapi_types.UUID  `json:"lessonId"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId         PropertiesId `json:"userId"`
-	WatchedSeconds float32      `json:"watchedSeconds"`
+	UserId         *PropertiesId `json:"userId,omitempty"`
+	WatchedSeconds float32       `json:"watchedSeconds"`
 }
 
 // Content defines model for content.
@@ -556,7 +556,7 @@ type CreateCertificateJSONBody struct {
 	CourseId *Id `json:"courseId,omitempty"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId PropertiesId `json:"userId"`
+	UserId *PropertiesId `json:"userId,omitempty"`
 }
 
 // GetMyCertificatesParams defines parameters for GetMyCertificates.

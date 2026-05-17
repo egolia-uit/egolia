@@ -10,6 +10,7 @@ const ALLOWED_USERS = [
   'minhlephan1901@gmail.com',
   '23520320@gm.uit.edu.vn',
   'nhattri172@gmail.com',
+  'dangphuthien2005@gmail.com',
 ];
 
 try {
@@ -25,7 +26,7 @@ try {
 
   // Run pnpm nx affected
   execSync(
-    'pnpm nx affected --target typecheck --target lint --target format:check --tui false',
+    'mise exec -- pnpm nx affected --target typecheck --target lint --target format:check --tui false',
     {
       stdio: 'inherit',
       shell: true,

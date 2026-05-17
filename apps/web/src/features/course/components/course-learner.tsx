@@ -1,0 +1,361 @@
+'use client';
+
+import { Bookmark, CheckCircle2, Save, Search, Star } from 'lucide-react';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+
+import { AppShell } from '#/components/layout/app-shell';
+import { AuthGate } from '#/components/layout/auth-gate';
+import { Button } from '#/components/ui/neumorphism/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '#/components/ui/shadcn/dialog';
+import { Input } from '#/components/ui/neumorphism/input';
+import { apiClient } from '#/lib/api';
+import {
+  bookmarkCourse,
+  finishCourse,
+  getMyBookmarkedCourses,
+  getMyEnrolledCourses,
+  reviewCourse,
+  unbookmarkCourse,
+} from '#/lib/api/course';
+import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
+import type { Viewer } from '#/lib/auth/roles';
+
+import { CourseHero, CourseStructure } from './course-detail';
+import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
+import { ListContent, normalizeTab, useCourseDetail, useCourseList } from './course-shared';
+
+function LearnerHomeContent({
+  initialTab,
+  viewer,
+}: {
+  initialTab: string;
+  viewer: Viewer;
+}) {
+  const activeTab = normalizeTab(initialTab, [
+    'home',
+    'enrolled',
+    'bookmarked',
+  ]);
+  const enrolled = useCourseList(
+    () =>
+      getMyEnrolledCourses({
+        client: apiClient,
+        query: { limit: 12, page: 1 },
+        throwOnError: true,
+      }).then(({ data }) => data),
+    []
+  );
+  const bookmarked = useCourseList(
+    () =>
+      getMyBookmarkedCourses({
+        client: apiClient,
+        query: { limit: 12, page: 1 },
+        throwOnError: true,
+      }).then(({ data }) => data),
+    []
+  );
+
+  return (
+    <AppShell
+      viewer={viewer}
+      eyebrow="Học tập"
+      title="Không gian học tập"
+      actions={
+        <Button asChild>
+          <Link href="/courses">
+            <Search className="mr-2 size-4" />
+            Khám phá khóa học
+          </Link>
+        </Button>
+      }
+    >
+      {(activeTab === 'home' || activeTab === 'enrolled') && (
+        <section className="grid gap-6">
+          <div className="flex flex-col gap-3">
+            <h2 className="text-lg font-semibold">Đang học</h2>
+            <ListContent
+              state={enrolled.state}
+              reload={enrolled.reload}
+              destination="learner"
+              emptyTitle="Bạn chưa đăng ký khóa học nào"
+              emptyDescription="Vào khám phá để xem các khóa học đang mở."
+            />
+          </div>
+          {activeTab === 'home' && (
+            <div className="flex flex-col gap-3">
+              <h2 className="text-lg font-semibold">Đã lưu</h2>
+              <ListContent
+                state={bookmarked.state}
+                reload={bookmarked.reload}
+                destination="learner"
+                emptyTitle="Chưa có bookmark"
+                emptyDescription="Bookmark giúp bạn quay lại khóa học nhanh hơn."
+              />
+            </div>
+          )}
+        </section>
+      )}
+
+      {activeTab === 'bookmarked' && (
+        <section className="grid gap-3">
+          <h2 className="text-lg font-semibold">Đã lưu</h2>
+          <ListContent
+            state={bookmarked.state}
+            reload={bookmarked.reload}
+            destination="learner"
+            emptyTitle="Chưa có bookmark"
+            emptyDescription="Bookmark giúp bạn quay lại khóa học nhanh hơn."
+          />
+        </section>
+      )}
+    </AppShell>
+  );
+}
+
+export function LearnerHomePage({
+  initialTab = 'home',
+}: {
+  initialTab?: string;
+}) {
+  return (
+    <AuthGate allowedRoles={['learner', 'instructor', 'admin']}>
+      {(viewer) => (
+        <LearnerHomeContent initialTab={initialTab} viewer={viewer} />
+      )}
+    </AuthGate>
+  );
+}
+
+function LearnerCourseContent({
+  viewer,
+  courseId,
+}: {
+  viewer: Viewer;
+  courseId: string;
+}) {
+  const { state, reload } = useCourseDetail(courseId);
+  const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
+  const [actionError, setActionError] = useState<ApiProblem | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<string | null>(null);
+  const [rating, setRating] = useState('5');
+  const [comment, setComment] = useState('');
+  const [reviewOpen, setReviewOpen] = useState(false);
+
+  const refreshBookmarks = useCallback(() => {
+    getMyBookmarkedCourses({
+      client: apiClient,
+      query: { limit: 100, page: 1 },
+      throwOnError: true,
+    })
+      .then(({ data }) =>
+        setBookmarkedIds(
+          new Set(
+            data.data
+              .map((course) => course.id)
+              .filter((id): id is string => Boolean(id))
+          )
+        )
+      )
+      .catch(() => setBookmarkedIds(new Set()));
+  }, []);
+
+  useEffect(() => {
+    refreshBookmarks();
+  }, [refreshBookmarks]);
+
+  const bookmarked = bookmarkedIds.has(courseId);
+
+  async function runAction(name: string, action: () => Promise<unknown>, success: string) {
+    setBusyAction(name);
+    setActionError(null);
+    setActionMessage(null);
+    try {
+      await action();
+      setActionMessage(success);
+      refreshBookmarks();
+      reload();
+      return true;
+    } catch (error) {
+      setActionError(normalizeApiError(error));
+      return false;
+    } finally {
+      setBusyAction(null);
+    }
+  }
+
+  return (
+    <AppShell
+      viewer={viewer}
+      eyebrow="Chi tiết"
+      title="Nội dung khóa học"
+    >
+      {state.status === 'loading' && <CourseGridSkeleton />}
+      {state.status === 'error' && (
+        <ErrorState error={state.error} onRetry={reload} />
+      )}
+      {state.status === 'ready' && (
+        <div className="grid gap-6">
+          <CourseHero
+            course={state.data}
+            actions={
+              <div className="grid gap-2">
+                <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
+                  <DialogTrigger asChild>
+                    <Button type="button" className="w-full">
+                      <Star className="mr-2 size-4" />
+                      Review course
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Review course</DialogTitle>
+                      <DialogDescription>
+                        Share your thoughts about this course with others.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form
+                      className="grid gap-4 py-4"
+                      onSubmit={async (event) => {
+                        event.preventDefault();
+                        const ok = await runAction(
+                          'review',
+                          () =>
+                            reviewCourse({
+                              body: {
+                                rating: Number.parseInt(rating, 10),
+                                comment,
+                              },
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            }),
+                          'Cảm ơn bạn đã đánh giá khóa học!'
+                        );
+                        if (ok) {
+                          setReviewOpen(false);
+                          setComment('');
+                        }
+                      }}
+                    >
+                      <div className="grid gap-2">
+                        <label className="text-sm font-medium">Rating (1-5)</label>
+                        <Input
+                          min={1}
+                          max={5}
+                          type="number"
+                          value={rating}
+                          onChange={(event) => setRating(event.target.value)}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <label className="text-sm font-medium">Your comment</label>
+                        <textarea
+                          className="
+                            min-h-24 w-full rounded-xl border-none bg-nm-bg px-4
+                            py-2 text-sm shadow-nm-inset transition-colors
+                            outline-none
+                            placeholder:text-muted-foreground
+                            focus-visible:ring-2 focus-visible:ring-ring
+                            focus-visible:ring-offset-2
+                          "
+                          placeholder="Bạn học được gì từ khóa học này?"
+                          value={comment}
+                          onChange={(event) => setComment(event.target.value)}
+                        />
+                      </div>
+                      <Button
+                        type="submit"
+                        disabled={busyAction === 'review' || !comment.trim()}
+                      >
+                        <Save className="mr-2 size-4" />
+                        Submit review
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={busyAction === 'bookmark'}
+                  className="w-full"
+                  onClick={() =>
+                    runAction(
+                      'bookmark',
+                      () =>
+                        bookmarked
+                          ? unbookmarkCourse({
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            })
+                          : bookmarkCourse({
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            }),
+                      bookmarked ? 'Đã bỏ lưu khóa học.' : 'Đã lưu khóa học.'
+                    )
+                  }
+                >
+                  <Bookmark className="mr-2 size-4" />
+                  {bookmarked ? 'Unbookmark' : 'Bookmark'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={busyAction === 'finish'}
+                  className="w-full"
+                  onClick={() =>
+                    runAction(
+                      'finish',
+                      () =>
+                        finishCourse({
+                          client: apiClient,
+                          path: { courseId },
+                          throwOnError: true,
+                        }),
+                      'Chúc mừng! Bạn đã hoàn thành khóa học.'
+                    )
+                  }
+                >
+                  <CheckCircle2 className="mr-2 size-4" />
+                  Mark finished
+                </Button>
+              </div>
+            }
+          />
+
+          {actionMessage && (
+            <InlineNotice title="Success" description={actionMessage} />
+          )}
+          {actionError && <ErrorState error={actionError} />}
+
+          <section className="grid gap-6">
+            <div className="grid gap-3">
+              <h2 className="text-lg font-semibold">Nội dung khóa học</h2>
+              <CourseStructure course={state.data} />
+            </div>
+          </section>
+        </div>
+      )}
+    </AppShell>
+  );
+}
+
+export function LearnerCoursePage({ courseId }: { courseId: string }) {
+  return (
+    <AuthGate allowedRoles={['learner', 'instructor', 'admin']}>
+      {(viewer) => <LearnerCourseContent viewer={viewer} courseId={courseId} />}
+    </AuthGate>
+  );
+}

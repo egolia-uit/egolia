@@ -1,0 +1,12 @@
+[2026-05-08T05:28:16.013Z] Error: ENOTEMPTY, Directory not empty: \\?\D:\1. UIT\HK6\SE109.Q21\egolia\packages\api-gen\src '\\?\D:\1. UIT\HK6\SE109.Q21\egolia\packages\api-gen\src'
+Stack:
+Error: ENOTEMPTY, Directory not empty: \\?\D:\1. UIT\HK6\SE109.Q21\egolia\packages\api-gen\src '\\?\D:\1. UIT\HK6\SE109.Q21\egolia\packages\api-gen\src'
+    at Object.rmSync (node:fs:1222:18)
+    at generateOutput (file:///D:/1.%20UIT/HK6/SE109.Q21/egolia/node_modules/.pnpm/@hey-api+openapi-ts@0.97.1_typescript@5.9.3/node_modules/@hey-api/openapi-ts/dist/src-CSz9FXkH.mjs:16:37)
+    at createClient$1 (file:///D:/1.%20UIT/HK6/SE109.Q21/egolia/node_modules/.pnpm/@hey-api+openapi-ts@0.97.1_typescript@5.9.3/node_modules/@hey-api/openapi-ts/dist/src-CSz9FXkH.mjs:152:31)
+    at async file:///D:/1.%20UIT/HK6/SE109.Q21/egolia/node_modules/.pnpm/@hey-api+openapi-ts@0.97.1_typescript@5.9.3/node_modules/@hey-api/openapi-ts/dist/src-CSz9FXkH.mjs:212:12
+    at async Promise.all (index 0)
+    at async createClient (file:///D:/1.%20UIT/HK6/SE109.Q21/egolia/node_modules/.pnpm/@hey-api+openapi-ts@0.97.1_typescript@5.9.3/node_modules/@hey-api/openapi-ts/dist/src-CSz9FXkH.mjs:210:21)
+    at async Command.<anonymous> (file:///D:/1.%20UIT/HK6/SE109.Q21/egolia/node_modules/.pnpm/@hey-api+openapi-ts@0.97.1_typescript@5.9.3/node_modules/@hey-api/openapi-ts/dist/run.mjs:35:8)
+    at async Command.parseAsync (D:\1. UIT\HK6\SE109.Q21\egolia\node_modules\.pnpm\commander@14.0.3\node_modules\commander\lib\command.js:1122:5)
+    at async runCli (file:///D:/1.%20UIT/HK6/SE109.Q21/egolia/node_modules/.pnpm/@hey-api+openapi-ts@0.97.1_typescript@5.9.3/node_modules/@hey-api/openapi-ts/dist/run.mjs:39:3)
