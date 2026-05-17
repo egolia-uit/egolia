@@ -11,16 +11,21 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { Badge } from '#/components/ui/shadcn/badge';
-import { Button } from '#/components/ui/shadcn/button';
+import { Badge } from '#/components/ui/neumorphism/badge';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/shadcn/card';
-import { Checkbox } from '#/components/ui/shadcn/checkbox';
+} from '#/components/ui/neumorphism/card';
+import { Checkbox } from '#/components/ui/neumorphism/checkbox';
+import { Input } from '#/components/ui/neumorphism/input';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '#/components/ui/neumorphism/radio-group';
 import {
   Dialog,
   DialogContent,
@@ -28,9 +33,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '#/components/ui/shadcn/dialog';
-import { Input } from '#/components/ui/shadcn/input';
 import { Label } from '#/components/ui/shadcn/label';
-import { RadioGroup, RadioGroupItem } from '#/components/ui/shadcn/radio-group';
 import {
   Select,
   SelectContent,
@@ -41,6 +44,8 @@ import {
 import { Separator } from '#/components/ui/shadcn/separator';
 import { apiClient } from '#/lib/api';
 import {
+  type CourseCourseDetail,
+  type CourseLesson,
   createLesson,
   deleteLesson,
   deleteSection,
@@ -48,11 +53,9 @@ import {
   getLessonDetail,
   moveLesson,
   moveSection,
-  type CourseCourseDetail,
-  type CourseLesson,
   updateSectionTitle,
 } from '#/lib/api/course';
-import { normalizeApiError, type ApiProblem } from '#/lib/api/errors';
+import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 
 import { ErrorState, InlineNotice } from './course-states';
 
@@ -74,7 +77,9 @@ type CourseCurriculumEditorProps = {
   courseId: string;
   course: CourseCourseDetail;
   reload: () => void;
-  setCourse: (updater: (course: CourseCourseDetail) => CourseCourseDetail) => void;
+  setCourse: (
+    updater: (course: CourseCourseDetail) => CourseCourseDetail
+  ) => void;
 };
 
 type LessonEditorState = {
@@ -131,10 +136,17 @@ function isLocalId(value?: string) {
 }
 
 function createUuid() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+  if (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
+  ) {
     return crypto.randomUUID();
   }
-  const suffix = Math.random().toString(16).slice(2).padEnd(12, '0').slice(0, 12);
+  const suffix = Math.random()
+    .toString(16)
+    .slice(2)
+    .padEnd(12, '0')
+    .slice(0, 12);
   return `00000000-0000-4000-8000-${suffix}`;
 }
 
@@ -203,17 +215,24 @@ function normalizeQuestionsForType(
   if (!questions.length) {
     return [createQuestionDraft(questionType)];
   }
-  return questions.map((question) => normalizeQuestionForType(question, questionType));
+  return questions.map((question) =>
+    normalizeQuestionForType(question, questionType)
+  );
 }
 
-function parseQuestions(raw: unknown, questionType: QuestionType): LessonQuestionDraft[] {
+function parseQuestions(
+  raw: unknown,
+  questionType: QuestionType
+): LessonQuestionDraft[] {
   if (!Array.isArray(raw) || raw.length === 0) {
     return [createQuestionDraft(questionType)];
   }
 
   const parsed: LessonQuestionDraft[] = raw.map((item) => {
     const record =
-      typeof item === 'object' && item !== null ? (item as Record<string, unknown>) : {};
+      typeof item === 'object' && item !== null
+        ? (item as Record<string, unknown>)
+        : {};
     const rawAnswers = Array.isArray(record.answers) ? record.answers : [];
 
     const answers = rawAnswers
@@ -223,9 +242,14 @@ function parseQuestions(raw: unknown, questionType: QuestionType): LessonQuestio
             ? (answer as Record<string, unknown>)
             : {};
         return {
-          id: typeof answerRecord.id === 'string' ? answerRecord.id : createUuid(),
+          id:
+            typeof answerRecord.id === 'string'
+              ? answerRecord.id
+              : createUuid(),
           content:
-            typeof answerRecord.content === 'string' ? answerRecord.content : '',
+            typeof answerRecord.content === 'string'
+              ? answerRecord.content
+              : '',
           isCorrect: answerRecord.isCorrect === true,
         };
       })
@@ -252,7 +276,11 @@ function validateTestQuestions(
     return 'Test lesson cần ít nhất 1 câu hỏi.';
   }
 
-  for (let questionIndex = 0; questionIndex < questions.length; questionIndex += 1) {
+  for (
+    let questionIndex = 0;
+    questionIndex < questions.length;
+    questionIndex += 1
+  ) {
     const question = questions[questionIndex];
     if (!question.question.trim()) {
       return `Câu hỏi ${questionIndex + 1} chưa có nội dung.`;
@@ -261,13 +289,19 @@ function validateTestQuestions(
       return `Câu hỏi ${questionIndex + 1} cần ít nhất 2 đáp án.`;
     }
 
-    for (let answerIndex = 0; answerIndex < question.answers.length; answerIndex += 1) {
+    for (
+      let answerIndex = 0;
+      answerIndex < question.answers.length;
+      answerIndex += 1
+    ) {
       if (!question.answers[answerIndex].content.trim()) {
         return `Đáp án ${answerIndex + 1} của câu hỏi ${questionIndex + 1} đang trống.`;
       }
     }
 
-    const correctCount = question.answers.filter((answer) => answer.isCorrect).length;
+    const correctCount = question.answers.filter(
+      (answer) => answer.isCorrect
+    ).length;
     if (questionType === 'singleChoice' && correctCount !== 1) {
       return `Câu hỏi ${questionIndex + 1} phải có đúng 1 đáp án đúng.`;
     }
@@ -290,7 +324,13 @@ function toApiQuestions(questions: LessonQuestionDraft[]) {
 }
 
 function moveItem<T>(items: T[], from: number, to: number) {
-  if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) {
+  if (
+    from === to ||
+    from < 0 ||
+    to < 0 ||
+    from >= items.length ||
+    to >= items.length
+  ) {
     return items;
   }
   const next = [...items];
@@ -334,8 +374,13 @@ function removeAnswer(
     if (question.id !== questionId || question.answers.length <= 2) {
       return question;
     }
-    const nextAnswers = question.answers.filter((answer) => answer.id !== answerId);
-    return normalizeQuestionForType({ ...question, answers: nextAnswers }, questionType);
+    const nextAnswers = question.answers.filter(
+      (answer) => answer.id !== answerId
+    );
+    return normalizeQuestionForType(
+      { ...question, answers: nextAnswers },
+      questionType
+    );
   });
 }
 
@@ -461,11 +506,11 @@ function TestQuestionBuilder({
   onAnswerCorrectChange,
 }: TestQuestionBuilderProps) {
   return (
-    <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
+    <div className="space-y-4 rounded-2xl border border-white/55 bg-nm-bg/75 p-4 shadow-nm-inset">
       <div className="grid gap-2 md:grid-cols-[220px_1fr] md:items-center">
         <div className="space-y-1">
           <Label>Question type</Label>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-slate-500">
             `Single choice` dùng radio, `Multiple choice` dùng checkbox.
           </p>
         </div>
@@ -474,17 +519,38 @@ function TestQuestionBuilder({
           value={questionType}
           onValueChange={(value) => onQuestionTypeChange(value as QuestionType)}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger
+            className="
+              h-10 w-full rounded-xl border-none bg-nm-bg px-4 shadow-nm-inset
+              focus-visible:ring-2 focus-visible:ring-ring
+            "
+          >
             <SelectValue placeholder="Chọn kiểu câu hỏi" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="singleChoice">Single choice</SelectItem>
-            <SelectItem value="multipleChoice">Multiple choice</SelectItem>
+          <SelectContent className="border-none bg-nm-bg shadow-nm-flat">
+            <SelectItem
+              className="
+                rounded-lg
+                data-[highlighted]:bg-nm-bg data-[highlighted]:shadow-nm-inset
+              "
+              value="singleChoice"
+            >
+              Single choice
+            </SelectItem>
+            <SelectItem
+              className="
+                rounded-lg
+                data-[highlighted]:bg-nm-bg data-[highlighted]:shadow-nm-inset
+              "
+              value="multipleChoice"
+            >
+              Multiple choice
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <Separator />
+      <Separator className="bg-slate-300/60" />
 
       <div className="space-y-3">
         {questions.map((question, questionIndex) => {
@@ -492,10 +558,17 @@ function TestQuestionBuilder({
             question.answers.find((answer) => answer.isCorrect)?.id ?? '';
 
           return (
-            <Card key={question.id} className="border-border bg-background py-3">
+            <Card
+              key={question.id}
+              className="
+                border border-white/55 bg-nm-bg/85 py-3 shadow-nm-flat-sm
+              "
+            >
               <CardHeader className="px-3 pb-2">
                 <div className="flex items-center justify-between gap-2">
-                  <CardTitle className="text-sm">Question {questionIndex + 1}</CardTitle>
+                  <CardTitle className="text-sm">
+                    Question {questionIndex + 1}
+                  </CardTitle>
                   <Button
                     type="button"
                     variant="ghost"
@@ -510,7 +583,9 @@ function TestQuestionBuilder({
               </CardHeader>
               <CardContent className="space-y-3 px-3">
                 <div className="space-y-1">
-                  <Label htmlFor={`question-${question.id}`}>Question content</Label>
+                  <Label htmlFor={`question-${question.id}`}>
+                    Question content
+                  </Label>
                   <Input
                     id={`question-${question.id}`}
                     disabled={disabled}
@@ -536,7 +611,9 @@ function TestQuestionBuilder({
                       {question.answers.map((answer, answerIndex) => (
                         <div
                           key={answer.id}
-                          className="grid grid-cols-[auto_1fr_auto] items-center gap-2"
+                          className="
+                            grid grid-cols-[auto_1fr_auto] items-center gap-2
+                          "
                         >
                           <RadioGroupItem
                             id={`single-answer-${answer.id}`}
@@ -546,7 +623,11 @@ function TestQuestionBuilder({
                             placeholder={`Answer ${answerIndex + 1}`}
                             value={answer.content}
                             onChange={(event) =>
-                              onAnswerChange(question.id, answer.id, event.target.value)
+                              onAnswerChange(
+                                question.id,
+                                answer.id,
+                                event.target.value
+                              )
                             }
                           />
                           <Button
@@ -554,7 +635,9 @@ function TestQuestionBuilder({
                             variant="ghost"
                             size="icon-sm"
                             disabled={disabled || question.answers.length <= 2}
-                            onClick={() => onRemoveAnswer(question.id, answer.id)}
+                            onClick={() =>
+                              onRemoveAnswer(question.id, answer.id)
+                            }
                           >
                             <Trash2 className="size-4" />
                           </Button>
@@ -566,7 +649,9 @@ function TestQuestionBuilder({
                       {question.answers.map((answer, answerIndex) => (
                         <div
                           key={answer.id}
-                          className="grid grid-cols-[auto_1fr_auto] items-center gap-2"
+                          className="
+                            grid grid-cols-[auto_1fr_auto] items-center gap-2
+                          "
                         >
                           <Checkbox
                             checked={answer.isCorrect}
@@ -583,7 +668,11 @@ function TestQuestionBuilder({
                             placeholder={`Answer ${answerIndex + 1}`}
                             value={answer.content}
                             onChange={(event) =>
-                              onAnswerChange(question.id, answer.id, event.target.value)
+                              onAnswerChange(
+                                question.id,
+                                answer.id,
+                                event.target.value
+                              )
                             }
                           />
                           <Button
@@ -591,7 +680,9 @@ function TestQuestionBuilder({
                             variant="ghost"
                             size="icon-sm"
                             disabled={disabled || question.answers.length <= 2}
-                            onClick={() => onRemoveAnswer(question.id, answer.id)}
+                            onClick={() =>
+                              onRemoveAnswer(question.id, answer.id)
+                            }
                           >
                             <Trash2 className="size-4" />
                           </Button>
@@ -606,6 +697,7 @@ function TestQuestionBuilder({
                   variant="outline"
                   size="sm"
                   disabled={disabled}
+                  className="gap-1.5"
                   onClick={() => onAddAnswer(question.id)}
                 >
                   <Plus className="size-4" />
@@ -617,7 +709,14 @@ function TestQuestionBuilder({
         })}
       </div>
 
-      <Button type="button" variant="secondary" size="sm" disabled={disabled} onClick={onAddQuestion}>
+      <Button
+        type="button"
+        variant="secondary"
+        size="sm"
+        disabled={disabled}
+        className="gap-1.5"
+        onClick={onAddQuestion}
+      >
         <Plus className="size-4" />
         Add question
       </Button>
@@ -636,25 +735,31 @@ export function CourseCurriculumEditor({
   const [busyAction, setBusyAction] = useState<string | null>(null);
 
   const [createSectionTitle, setCreateSectionTitle] = useState('');
-  const [renamingSectionId, setRenamingSectionId] = useState<string | null>(null);
+  const [renamingSectionId, setRenamingSectionId] = useState<string | null>(
+    null
+  );
   const [renamingSectionTitle, setRenamingSectionTitle] = useState('');
 
-  const [addingLessonSectionId, setAddingLessonSectionId] = useState<string | null>(null);
+  const [addingLessonSectionId, setAddingLessonSectionId] = useState<
+    string | null
+  >(null);
   const [newLessonTitle, setNewLessonTitle] = useState('');
   const [newLessonType, setNewLessonType] = useState<'video' | 'test'>('video');
   const [newLessonQuestionType, setNewLessonQuestionType] =
     useState<QuestionType>(DEFAULT_QUESTION_TYPE);
-  const [newLessonQuestions, setNewLessonQuestions] = useState<LessonQuestionDraft[]>([
-    createQuestionDraft(DEFAULT_QUESTION_TYPE),
-  ]);
+  const [newLessonQuestions, setNewLessonQuestions] = useState<
+    LessonQuestionDraft[]
+  >([createQuestionDraft(DEFAULT_QUESTION_TYPE)]);
   const [newLessonVideoKey, setNewLessonVideoKey] = useState('');
   const [newLessonDuration, setNewLessonDuration] = useState('0');
 
-  const [lessonEditor, setLessonEditor] = useState<LessonEditorState | null>(null);
-  const [lessonEditorOpen, setLessonEditorOpen] = useState(false);
-  const [localLessonMeta, setLocalLessonMeta] = useState<Record<string, LocalLessonMeta>>(
-    {}
+  const [lessonEditor, setLessonEditor] = useState<LessonEditorState | null>(
+    null
   );
+  const [lessonEditorOpen, setLessonEditorOpen] = useState(false);
+  const [localLessonMeta, setLocalLessonMeta] = useState<
+    Record<string, LocalLessonMeta>
+  >({});
 
   function begin(actionKey: string) {
     setBusyAction(actionKey);
@@ -667,7 +772,9 @@ export function CourseCurriculumEditor({
   }
 
   function setSections(
-    updater: (sections: CourseCourseDetail['sections']) => CourseCourseDetail['sections']
+    updater: (
+      sections: CourseCourseDetail['sections']
+    ) => CourseCourseDetail['sections']
   ) {
     setCourse((current) => ({
       ...current,
@@ -711,20 +818,28 @@ export function CourseCurriculumEditor({
         return {
           ...section,
           lessons: section.lessons.filter(
-            (lesson, lessonIndex) => lessonKey(sectionId, lesson, lessonIndex) !== key
+            (lesson, lessonIndex) =>
+              lessonKey(sectionId, lesson, lessonIndex) !== key
           ),
         };
       })
     );
   }
 
-  function moveLessonLocally(sectionId: string, fromIndex: number, toIndex: number) {
+  function moveLessonLocally(
+    sectionId: string,
+    fromIndex: number,
+    toIndex: number
+  ) {
     setSections((sections) =>
       sections.map((section) => {
         if (section.id !== sectionId) {
           return section;
         }
-        return { ...section, lessons: moveItem(section.lessons, fromIndex, toIndex) };
+        return {
+          ...section,
+          lessons: moveItem(section.lessons, fromIndex, toIndex),
+        };
       })
     );
   }
@@ -759,8 +874,13 @@ export function CourseCurriculumEditor({
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
-        setSections((sections) => [...sections, { id: localId('section'), title, lessons: [] }]);
-        setActionMessage('Create section chưa có ở backend, đã mock dữ liệu trên FE.');
+        setSections((sections) => [
+          ...sections,
+          { id: localId('section'), title, lessons: [] },
+        ]);
+        setActionMessage(
+          'Create section chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
         setCreateSectionTitle('');
       } else {
         setActionError(problem);
@@ -808,7 +928,9 @@ export function CourseCurriculumEditor({
             section.id === sectionId ? { ...section, title } : section
           )
         );
-        setActionMessage('Update section chưa có ở backend, đã mock dữ liệu trên FE.');
+        setActionMessage(
+          'Update section chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
         setRenamingSectionId(null);
         setRenamingSectionTitle('');
       } else {
@@ -823,7 +945,9 @@ export function CourseCurriculumEditor({
     begin(`delete-section-${sectionId}`);
     try {
       if (isLocalId(sectionId)) {
-        setSections((sections) => sections.filter((section) => section.id !== sectionId));
+        setSections((sections) =>
+          sections.filter((section) => section.id !== sectionId)
+        );
       } else {
         await deleteSection({
           client: apiClient,
@@ -836,8 +960,12 @@ export function CourseCurriculumEditor({
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
-        setSections((sections) => sections.filter((section) => section.id !== sectionId));
-        setActionMessage('Delete section chưa có ở backend, đã mock dữ liệu trên FE.');
+        setSections((sections) =>
+          sections.filter((section) => section.id !== sectionId)
+        );
+        setActionMessage(
+          'Delete section chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
       } else {
         setActionError(problem);
       }
@@ -847,15 +975,23 @@ export function CourseCurriculumEditor({
   }
 
   async function handleMoveSection(sectionId: string, targetIndex: number) {
-    const currentIndex = course.sections.findIndex((section) => section.id === sectionId);
-    if (currentIndex < 0 || targetIndex < 0 || targetIndex >= course.sections.length) {
+    const currentIndex = course.sections.findIndex(
+      (section) => section.id === sectionId
+    );
+    if (
+      currentIndex < 0 ||
+      targetIndex < 0 ||
+      targetIndex >= course.sections.length
+    ) {
       return;
     }
 
     begin(`move-section-${sectionId}-${targetIndex}`);
     try {
       if (isLocalId(sectionId)) {
-        setSections((sections) => moveItem(sections, currentIndex, targetIndex));
+        setSections((sections) =>
+          moveItem(sections, currentIndex, targetIndex)
+        );
       } else {
         await moveSection({
           body: { order: targetIndex },
@@ -869,8 +1005,12 @@ export function CourseCurriculumEditor({
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
-        setSections((sections) => moveItem(sections, currentIndex, targetIndex));
-        setActionMessage('Move section chưa có ở backend, đã mock dữ liệu trên FE.');
+        setSections((sections) =>
+          moveItem(sections, currentIndex, targetIndex)
+        );
+        setActionMessage(
+          'Move section chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
       } else {
         setActionError(problem);
       }
@@ -920,7 +1060,10 @@ export function CourseCurriculumEditor({
           throwOnError: true,
         });
       } else {
-        const validationError = validateTestQuestions(newLessonQuestionType, newLessonQuestions);
+        const validationError = validateTestQuestions(
+          newLessonQuestionType,
+          newLessonQuestions
+        );
         if (validationError) {
           setActionError({
             title: 'Sai dữ liệu',
@@ -956,14 +1099,20 @@ export function CourseCurriculumEditor({
           ...current,
           [id]: {
             lessonType: newLessonType,
-            questionType: newLessonType === 'test' ? newLessonQuestionType : undefined,
-            videoKey: newLessonType === 'video' ? newLessonVideoKey.trim() : undefined,
+            questionType:
+              newLessonType === 'test' ? newLessonQuestionType : undefined,
+            videoKey:
+              newLessonType === 'video' ? newLessonVideoKey.trim() : undefined,
             duration: newLessonType === 'video' ? newLessonDuration : undefined,
             questions:
-              newLessonType === 'test' ? cloneQuestions(newLessonQuestions) : undefined,
+              newLessonType === 'test'
+                ? cloneQuestions(newLessonQuestions)
+                : undefined,
           },
         }));
-        setActionMessage('Create lesson chưa có ở backend, đã mock dữ liệu trên FE.');
+        setActionMessage(
+          'Create lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
         setAddingLessonSectionId(null);
         resetLessonForm();
       } else {
@@ -974,12 +1123,17 @@ export function CourseCurriculumEditor({
     }
   }
 
-  async function openLessonEditor(sectionId: string, lesson: CourseLesson, index: number) {
+  async function openLessonEditor(
+    sectionId: string,
+    lesson: CourseLesson,
+    index: number
+  ) {
     const key = lessonKey(sectionId, lesson, index);
     begin(`open-lesson-editor-${key}`);
 
     try {
-      const persistedMeta = localLessonMeta[lesson.id ?? ''] ?? localLessonMeta[key];
+      const persistedMeta =
+        localLessonMeta[lesson.id ?? ''] ?? localLessonMeta[key];
       if (persistedMeta) {
         setLessonEditor({
           key,
@@ -991,7 +1145,9 @@ export function CourseCurriculumEditor({
           videoKey: persistedMeta.videoKey ?? '',
           duration: persistedMeta.duration ?? '0',
           questions: cloneQuestions(
-            persistedMeta.questions ?? [createQuestionDraft(DEFAULT_QUESTION_TYPE)]
+            persistedMeta.questions ?? [
+              createQuestionDraft(DEFAULT_QUESTION_TYPE),
+            ]
           ),
         });
         setLessonEditorOpen(true);
@@ -1129,13 +1285,17 @@ export function CourseCurriculumEditor({
         [lessonEditor.lessonId ?? lessonEditor.key]: {
           lessonType: lessonEditor.lessonType,
           questionType:
-            lessonEditor.lessonType === 'test' ? lessonEditor.questionType : undefined,
+            lessonEditor.lessonType === 'test'
+              ? lessonEditor.questionType
+              : undefined,
           videoKey:
             lessonEditor.lessonType === 'video'
               ? lessonEditor.videoKey.trim()
               : undefined,
           duration:
-            lessonEditor.lessonType === 'video' ? lessonEditor.duration : undefined,
+            lessonEditor.lessonType === 'video'
+              ? lessonEditor.duration
+              : undefined,
           questions:
             lessonEditor.lessonType === 'test'
               ? cloneQuestions(lessonEditor.questions)
@@ -1163,14 +1323,18 @@ export function CourseCurriculumEditor({
                 ? lessonEditor.videoKey.trim()
                 : undefined,
             duration:
-              lessonEditor.lessonType === 'video' ? lessonEditor.duration : undefined,
+              lessonEditor.lessonType === 'video'
+                ? lessonEditor.duration
+                : undefined,
             questions:
               lessonEditor.lessonType === 'test'
                 ? cloneQuestions(lessonEditor.questions)
                 : undefined,
           },
         }));
-        setActionMessage('Update lesson chưa có ở backend, đã mock dữ liệu trên FE.');
+        setActionMessage(
+          'Update lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
         setLessonEditorOpen(false);
         setLessonEditor(null);
       } else {
@@ -1214,7 +1378,9 @@ export function CourseCurriculumEditor({
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
         moveLessonLocally(sectionId, fromIndex, targetIndex);
-        setActionMessage('Move lesson chưa có ở backend, đã mock dữ liệu trên FE.');
+        setActionMessage(
+          'Move lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
       } else {
         setActionError(problem);
       }
@@ -1262,7 +1428,9 @@ export function CourseCurriculumEditor({
           }
           return next;
         });
-        setActionMessage('Delete lesson chưa có ở backend, đã mock dữ liệu trên FE.');
+        setActionMessage(
+          'Delete lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+        );
       } else {
         setActionError(problem);
       }
@@ -1273,10 +1441,12 @@ export function CourseCurriculumEditor({
 
   return (
     <div className="grid gap-4">
-      {actionMessage && <InlineNotice title="Success" description={actionMessage} />}
+      {actionMessage && (
+        <InlineNotice title="Success" description={actionMessage} />
+      )}
       {actionError && <ErrorState error={actionError} />}
 
-      <Card className="border-border bg-card py-4">
+      <Card className="border border-white/55 bg-nm-bg/90 py-4 shadow-nm-flat-sm">
         <CardHeader>
           <CardTitle>Create section</CardTitle>
           <CardDescription>
@@ -1289,7 +1459,12 @@ export function CourseCurriculumEditor({
             value={createSectionTitle}
             onChange={(event) => setCreateSectionTitle(event.target.value)}
           />
-          <Button type="button" disabled={Boolean(busyAction)} onClick={handleCreateSection}>
+          <Button
+            type="button"
+            className="gap-1.5"
+            disabled={Boolean(busyAction)}
+            onClick={handleCreateSection}
+          >
             {busyAction === 'create-section' ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
@@ -1301,8 +1476,8 @@ export function CourseCurriculumEditor({
       </Card>
 
       {!course.sections.length && (
-        <Card className="border-dashed py-6">
-          <CardContent className="text-sm text-muted-foreground">
+        <Card className="border border-dashed border-white/60 py-6">
+          <CardContent className="text-sm text-slate-500">
             Chưa có section nào. Hãy tạo section đầu tiên.
           </CardContent>
         </Card>
@@ -1315,13 +1490,20 @@ export function CourseCurriculumEditor({
           const isAddingLesson = addingLessonSectionId === section.id;
 
           return (
-            <Card key={section.id} className="border-border bg-card py-4">
+            <Card
+              key={section.id}
+              className="border border-white/55 bg-nm-bg/90 py-4 shadow-nm-flat-sm"
+            >
               <CardHeader className="gap-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary">Section {sectionIndex + 1}</Badge>
-                      <CardTitle className="text-base">{section.title}</CardTitle>
+                      <Badge variant="secondary">
+                        Section {sectionIndex + 1}
+                      </Badge>
+                      <CardTitle className="text-base">
+                        {section.title}
+                      </CardTitle>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -1330,7 +1512,9 @@ export function CourseCurriculumEditor({
                       variant="outline"
                       size="icon-sm"
                       disabled={sectionIndex === 0 || isSectionBusy}
-                      onClick={() => handleMoveSection(section.id, sectionIndex - 1)}
+                      onClick={() =>
+                        handleMoveSection(section.id, sectionIndex - 1)
+                      }
                     >
                       <ArrowUp className="size-4" />
                     </Button>
@@ -1338,8 +1522,13 @@ export function CourseCurriculumEditor({
                       type="button"
                       variant="outline"
                       size="icon-sm"
-                      disabled={sectionIndex === course.sections.length - 1 || isSectionBusy}
-                      onClick={() => handleMoveSection(section.id, sectionIndex + 1)}
+                      disabled={
+                        sectionIndex === course.sections.length - 1 ||
+                        isSectionBusy
+                      }
+                      onClick={() =>
+                        handleMoveSection(section.id, sectionIndex + 1)
+                      }
                     >
                       <ArrowDown className="size-4" />
                     </Button>
@@ -1368,10 +1557,18 @@ export function CourseCurriculumEditor({
                 </div>
 
                 {isRenaming && (
-                  <div className="grid gap-2 md:grid-cols-[1fr_auto_auto]">
+                  <div
+                    className="
+                      grid gap-2 rounded-2xl border border-white/50 bg-nm-bg/70
+                      p-3 shadow-nm-inset
+                      md:grid-cols-[1fr_auto_auto]
+                    "
+                  >
                     <Input
                       value={renamingSectionTitle}
-                      onChange={(event) => setRenamingSectionTitle(event.target.value)}
+                      onChange={(event) =>
+                        setRenamingSectionTitle(event.target.value)
+                      }
                     />
                     <Button
                       type="button"
@@ -1400,14 +1597,19 @@ export function CourseCurriculumEditor({
 
               <CardContent className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm text-muted-foreground">{section.lessons.length} lesson(s)</p>
+                  <p className="text-sm text-slate-500">
+                    {section.lessons.length} lesson(s)
+                  </p>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
+                    className="gap-1.5"
                     disabled={isSectionBusy}
                     onClick={() => {
-                      setAddingLessonSectionId(isAddingLesson ? null : section.id);
+                      setAddingLessonSectionId(
+                        isAddingLesson ? null : section.id
+                      );
                       resetLessonForm();
                     }}
                   >
@@ -1417,15 +1619,19 @@ export function CourseCurriculumEditor({
                 </div>
 
                 {isAddingLesson && (
-                  <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-4">
+                  <div className="space-y-4 rounded-2xl border border-white/55 bg-nm-bg/75 p-4 shadow-nm-inset">
                     <div className="grid gap-3 md:grid-cols-2">
                       <div className="space-y-1">
-                        <Label htmlFor={`new-lesson-title-${section.id}`}>Lesson title</Label>
+                        <Label htmlFor={`new-lesson-title-${section.id}`}>
+                          Lesson title
+                        </Label>
                         <Input
                           id={`new-lesson-title-${section.id}`}
                           placeholder="Tên lesson"
                           value={newLessonTitle}
-                          onChange={(event) => setNewLessonTitle(event.target.value)}
+                          onChange={(event) =>
+                            setNewLessonTitle(event.target.value)
+                          }
                         />
                       </div>
                       <div className="space-y-1">
@@ -1436,12 +1642,30 @@ export function CourseCurriculumEditor({
                             setNewLessonType(value as 'video' | 'test')
                           }
                         >
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className="h-10 w-full rounded-xl border-none bg-nm-bg px-4 shadow-nm-inset focus-visible:ring-2 focus-visible:ring-ring">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="video">Video lesson</SelectItem>
-                            <SelectItem value="test">Test lesson</SelectItem>
+                          <SelectContent className="border-none bg-nm-bg shadow-nm-flat">
+                            <SelectItem
+                              className="
+                                rounded-lg
+                                data-[highlighted]:bg-nm-bg
+                                data-[highlighted]:shadow-nm-inset
+                              "
+                              value="video"
+                            >
+                              Video lesson
+                            </SelectItem>
+                            <SelectItem
+                              className="
+                                rounded-lg
+                                data-[highlighted]:bg-nm-bg
+                                data-[highlighted]:shadow-nm-inset
+                              "
+                              value="test"
+                            >
+                              Test lesson
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -1450,16 +1674,22 @@ export function CourseCurriculumEditor({
                     {newLessonType === 'video' ? (
                       <div className="grid gap-3 md:grid-cols-[1fr_180px]">
                         <div className="space-y-1">
-                          <Label htmlFor={`new-video-key-${section.id}`}>Video key</Label>
+                          <Label htmlFor={`new-video-key-${section.id}`}>
+                            Video key
+                          </Label>
                           <Input
                             id={`new-video-key-${section.id}`}
                             placeholder="lessons/<course-id>/<file>.mp4"
                             value={newLessonVideoKey}
-                            onChange={(event) => setNewLessonVideoKey(event.target.value)}
+                            onChange={(event) =>
+                              setNewLessonVideoKey(event.target.value)
+                            }
                           />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor={`new-video-duration-${section.id}`}>Duration (seconds)</Label>
+                          <Label htmlFor={`new-video-duration-${section.id}`}>
+                            Duration (seconds)
+                          </Label>
                           <Input
                             id={`new-video-duration-${section.id}`}
                             inputMode="numeric"
@@ -1467,7 +1697,9 @@ export function CourseCurriculumEditor({
                             step={1}
                             type="number"
                             value={newLessonDuration}
-                            onChange={(event) => setNewLessonDuration(event.target.value)}
+                            onChange={(event) =>
+                              setNewLessonDuration(event.target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -1492,7 +1724,9 @@ export function CourseCurriculumEditor({
                           setNewLessonQuestions((current) =>
                             current.length <= 1
                               ? current
-                              : current.filter((question) => question.id !== questionId)
+                              : current.filter(
+                                  (question) => question.id !== questionId
+                                )
                           )
                         }
                         onQuestionChange={(questionId, value) =>
@@ -1501,7 +1735,9 @@ export function CourseCurriculumEditor({
                           )
                         }
                         onAddAnswer={(questionId) =>
-                          setNewLessonQuestions((current) => addAnswer(current, questionId))
+                          setNewLessonQuestions((current) =>
+                            addAnswer(current, questionId)
+                          )
                         }
                         onRemoveAnswer={(questionId, answerId) =>
                           setNewLessonQuestions((current) =>
@@ -1515,10 +1751,19 @@ export function CourseCurriculumEditor({
                         }
                         onAnswerChange={(questionId, answerId, value) =>
                           setNewLessonQuestions((current) =>
-                            updateAnswerContent(current, questionId, answerId, value)
+                            updateAnswerContent(
+                              current,
+                              questionId,
+                              answerId,
+                              value
+                            )
                           )
                         }
-                        onAnswerCorrectChange={(questionId, answerId, checked) =>
+                        onAnswerCorrectChange={(
+                          questionId,
+                          answerId,
+                          checked
+                        ) =>
                           setNewLessonQuestions((current) =>
                             updateAnswerCorrect(
                               current,
@@ -1535,6 +1780,7 @@ export function CourseCurriculumEditor({
                     <div className="flex flex-wrap gap-2">
                       <Button
                         type="button"
+                        className="gap-1.5"
                         disabled={Boolean(busyAction)}
                         onClick={() => handleCreateLesson(section.id)}
                       >
@@ -1548,6 +1794,7 @@ export function CourseCurriculumEditor({
                       <Button
                         type="button"
                         variant="outline"
+                        className="gap-1.5"
                         disabled={Boolean(busyAction)}
                         onClick={() => setAddingLessonSectionId(null)}
                       >
@@ -1558,7 +1805,12 @@ export function CourseCurriculumEditor({
                 )}
 
                 {!section.lessons.length && (
-                  <div className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
+                  <div
+                    className="
+                      rounded-xl border border-dashed border-white/55
+                      bg-nm-bg/70 p-4 text-sm text-slate-500
+                    "
+                  >
                     Section này chưa có lesson.
                   </div>
                 )}
@@ -1567,16 +1819,23 @@ export function CourseCurriculumEditor({
                   {section.lessons.map((lesson, lessonIndex) => {
                     const key = lessonKey(section.id, lesson, lessonIndex);
                     const isLessonBusy = busyAction?.includes(key) ?? false;
-                    const meta = localLessonMeta[lesson.id ?? ''] ?? localLessonMeta[key];
+                    const meta =
+                      localLessonMeta[lesson.id ?? ''] ?? localLessonMeta[key];
 
                     return (
                       <div
                         key={key}
-                        className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-background/70 p-3"
+                        className="
+                          flex flex-wrap items-center justify-between gap-3
+                          rounded-xl border border-white/50 bg-nm-bg/75 p-3
+                          shadow-nm-inset
+                        "
                       >
                         <div className="min-w-0 space-y-1">
-                          <div className="truncate font-medium">{lesson.title}</div>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <div className="truncate font-medium">
+                            {lesson.title}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-slate-500">
                             <span>Lesson {lessonIndex + 1}</span>
                             {meta?.lessonType && (
                               <Badge variant="outline">
@@ -1607,7 +1866,10 @@ export function CourseCurriculumEditor({
                             type="button"
                             variant="outline"
                             size="icon-sm"
-                            disabled={lessonIndex === section.lessons.length - 1 || isLessonBusy}
+                            disabled={
+                              lessonIndex === section.lessons.length - 1 ||
+                              isLessonBusy
+                            }
                             onClick={() =>
                               handleMoveLesson(
                                 section.id,
@@ -1625,7 +1887,9 @@ export function CourseCurriculumEditor({
                             variant="outline"
                             size="icon-sm"
                             disabled={isLessonBusy}
-                            onClick={() => openLessonEditor(section.id, lesson, lessonIndex)}
+                            onClick={() =>
+                              openLessonEditor(section.id, lesson, lessonIndex)
+                            }
                           >
                             <FilePenLine className="size-4" />
                           </Button>
@@ -1634,7 +1898,9 @@ export function CourseCurriculumEditor({
                             variant="destructive"
                             size="icon-sm"
                             disabled={isLessonBusy}
-                            onClick={() => handleDeleteLesson(section.id, lesson.id, key)}
+                            onClick={() =>
+                              handleDeleteLesson(section.id, lesson.id, key)
+                            }
                           >
                             <Trash2 className="size-4" />
                           </Button>
@@ -1676,7 +1942,9 @@ export function CourseCurriculumEditor({
                     value={lessonEditor.title}
                     onChange={(event) =>
                       setLessonEditor((current) =>
-                        current ? { ...current, title: event.target.value } : current
+                        current
+                          ? { ...current, title: event.target.value }
+                          : current
                       )
                     }
                   />
@@ -1697,13 +1965,17 @@ export function CourseCurriculumEditor({
                       value={lessonEditor.videoKey}
                       onChange={(event) =>
                         setLessonEditor((current) =>
-                          current ? { ...current, videoKey: event.target.value } : current
+                          current
+                            ? { ...current, videoKey: event.target.value }
+                            : current
                         )
                       }
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="edit-video-duration">Duration (seconds)</Label>
+                    <Label htmlFor="edit-video-duration">
+                      Duration (seconds)
+                    </Label>
                     <Input
                       id="edit-video-duration"
                       inputMode="numeric"
@@ -1713,7 +1985,9 @@ export function CourseCurriculumEditor({
                       value={lessonEditor.duration}
                       onChange={(event) =>
                         setLessonEditor((current) =>
-                          current ? { ...current, duration: event.target.value } : current
+                          current
+                            ? { ...current, duration: event.target.value }
+                            : current
                         )
                       }
                     />
@@ -1730,7 +2004,10 @@ export function CourseCurriculumEditor({
                         ? {
                             ...current,
                             questionType: value,
-                            questions: normalizeQuestionsForType(current.questions, value),
+                            questions: normalizeQuestionsForType(
+                              current.questions,
+                              value
+                            ),
                           }
                         : current
                     )
@@ -1747,7 +2024,9 @@ export function CourseCurriculumEditor({
                     updateLessonEditorQuestions((current) =>
                       current.length <= 1
                         ? current
-                        : current.filter((question) => question.id !== questionId)
+                        : current.filter(
+                            (question) => question.id !== questionId
+                          )
                     )
                   }
                   onQuestionChange={(questionId, value) =>
@@ -1756,7 +2035,9 @@ export function CourseCurriculumEditor({
                     )
                   }
                   onAddAnswer={(questionId) =>
-                    updateLessonEditorQuestions((current) => addAnswer(current, questionId))
+                    updateLessonEditorQuestions((current) =>
+                      addAnswer(current, questionId)
+                    )
                   }
                   onRemoveAnswer={(questionId, answerId) =>
                     updateLessonEditorQuestions((current) =>

@@ -8,7 +8,12 @@ import { useCallback, useMemo, useState } from 'react';
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
 import { Button } from '#/components/ui/neumorphism/button';
-import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/neumorphism/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui/neumorphism/card';
 import {
   Dialog,
   DialogContent,
@@ -33,11 +38,19 @@ import {
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import type { Viewer } from '#/lib/auth/roles';
 
-import { CourseHero } from './course-detail';
 import { CourseCurriculumEditor } from './course-curriculum-editor';
+import { CourseHero } from './course-detail';
 import { CourseForm } from './course-form';
+import {
+  ListContent,
+  type ResourceState,
+  isDraftLike,
+  normalizeTab,
+  uploadCourseVideo,
+  useCourseDetail,
+  useCourseList,
+} from './course-shared';
 import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
-import { isDraftLike, ListContent, normalizeTab, type ResourceState, uploadCourseVideo, useCourseDetail, useCourseList } from './course-shared';
 
 function InstructorCoursesContent({
   initialTab,
@@ -148,7 +161,9 @@ function InstructorCoursesContent({
                 submitting={submitting}
                 error={actionError?.message}
                 forceIntroductionVideoKey={true}
-                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo('new', file, onProgress)}
+                onUploadIntroductionVideo={(file, onProgress) =>
+                  uploadCourseVideo('new', file, onProgress)
+                }
                 onSubmit={create}
               />
             </div>
@@ -176,43 +191,47 @@ function InstructorCoursesContent({
               : 'Tạo khóa học đầu tiên bằng nút Create course.'
           }
           actionFor={(course) => (
-            <div className="flex flex-wrap gap-2">
-              <Button asChild variant="outline">
+            <div className="grid w-full grid-cols-2 gap-2">
+              <Button asChild className="gap-1.5" size="sm" variant="outline">
                 <Link href={`/instructor/courses/${course.id}`}>
-                  <Eye className="mr-2 size-4" />
+                  <Eye className="size-4" />
                   Manage
                 </Link>
               </Button>
               <Button
                 type="button"
+                className="gap-1.5"
+                size="sm"
                 variant="outline"
                 onClick={() =>
                   mutateCourse(
                     () =>
                       course.hidden
                         ? unhideCourse({
-                          client: apiClient,
-                          path: { courseId: course.id ?? '' },
-                          throwOnError: true,
-                        })
+                            client: apiClient,
+                            path: { courseId: course.id ?? '' },
+                            throwOnError: true,
+                          })
                         : hideCourse({
-                          client: apiClient,
-                          path: { courseId: course.id ?? '' },
-                          throwOnError: true,
-                        }),
+                            client: apiClient,
+                            path: { courseId: course.id ?? '' },
+                            throwOnError: true,
+                          }),
                     course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
                   )
                 }
               >
                 {course.hidden ? (
-                  <Eye className="mr-2 size-4" />
+                  <Eye className="size-4" />
                 ) : (
-                  <EyeOff className="mr-2 size-4" />
+                  <EyeOff className="size-4" />
                 )}
                 {course.hidden ? 'Unhide' : 'Hide'}
               </Button>
               <Button
                 type="button"
+                className="col-span-2 justify-center gap-1.5"
+                size="sm"
                 variant="destructive"
                 onClick={() =>
                   mutateCourse(
@@ -226,7 +245,7 @@ function InstructorCoursesContent({
                   )
                 }
               >
-                <Trash2 className="mr-2 size-4" />
+                <Trash2 className="size-4" />
                 Delete
               </Button>
             </div>
@@ -329,11 +348,7 @@ function InstructorCourseDetailContent({
   }
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Quản lý"
-      title="Chi tiết khóa học"
-    >
+    <AppShell viewer={viewer} eyebrow="Quản lý" title="Chi tiết khóa học">
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
@@ -359,7 +374,8 @@ function InstructorCourseDetailContent({
                     <DialogHeader>
                       <DialogTitle>Edit basic info</DialogTitle>
                       <DialogDescription>
-                        Update title, price, or overview. Changing these on a published course will create a new draft.
+                        Update title, price, or overview. Changing these on a
+                        published course will create a new draft.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
@@ -382,7 +398,7 @@ function InstructorCourseDetailContent({
                               title: body.title,
                               price: body.price,
                               overview: body.overview,
-                            }
+                            },
                           });
 
                           let editableCourseId = courseId;
@@ -404,7 +420,9 @@ function InstructorCourseDetailContent({
                           if (ok) {
                             setEditOpen(false);
                             if (editableCourseId !== courseId) {
-                              router.replace(`/instructor/courses/${editableCourseId}`);
+                              router.replace(
+                                `/instructor/courses/${editableCourseId}`
+                              );
                             }
                           } else {
                             setState({ status: 'ready', data: previousState });
@@ -425,15 +443,15 @@ function InstructorCourseDetailContent({
                       () =>
                         state.data.hidden
                           ? unhideCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          })
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            })
                           : hideCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          }),
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            }),
                       state.data.hidden
                         ? 'Khóa học đã hiện.'
                         : 'Khóa học đã ẩn.'
@@ -503,7 +521,8 @@ function InstructorCourseDetailContent({
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm text-slate-600">
                   <p>
-                    Nhấn <strong>Edit course</strong> để thay đổi thông tin cơ bản.
+                    Nhấn <strong>Edit course</strong> để thay đổi thông tin cơ
+                    bản.
                   </p>
                   <InlineNotice
                     title="Storage"

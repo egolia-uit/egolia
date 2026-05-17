@@ -68,12 +68,17 @@ export function CourseCard({
 
   return (
     <Card
-      className={cn(`
-        bg-nm-bg transition-shadow
-        hover:shadow-sm
-      `, className)}
+      className={cn(
+        `
+          group flex h-full flex-col rounded-[22px]
+          border border-white/45 bg-nm-bg/95 shadow-nm-flat-sm
+          transition-[transform,box-shadow] duration-200
+          hover:-translate-y-0.5 hover:shadow-nm-flat
+        `,
+        className
+      )}
     >
-      <CardHeader>
+      <CardHeader className="pb-4">
         <div className="mb-3 flex items-center justify-between gap-2">
           <Badge
             variant={course.status === 'approved' ? 'default' : 'secondary'}
@@ -90,7 +95,7 @@ export function CourseCard({
         <CardTitle className="line-clamp-2 min-h-10">{course.title}</CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-1 flex-col gap-4">
+      <CardContent className="flex flex-1 flex-col gap-4 pt-0">
         <p className="line-clamp-3 min-h-16 text-sm/6 text-slate-600">
           {course.overview ||
             'Khóa học chưa có mô tả. Nội dung sẽ được cập nhật sau.'}
@@ -102,9 +107,11 @@ export function CourseCard({
               <span className="font-medium text-slate-700">Tiến độ</span>
               <span className="font-semibold text-indigo-600">{progress}%</span>
             </div>
-            <div className="
+            <div
+              className="
               h-2 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
-            ">
+            "
+            >
               <div
                 className="
                   h-full rounded-full bg-primary shadow-nm-flat-sm
@@ -116,9 +123,12 @@ export function CourseCard({
           </div>
         )}
 
-        <div className="
-          grid grid-cols-2 gap-3 rounded-lg bg-slate-50 p-3 text-sm
-        ">
+        <div
+          className="
+            grid grid-cols-2 gap-3 rounded-xl border border-white/55
+            bg-nm-bg/75 p-3 text-sm shadow-nm-inset
+          "
+        >
           <div>
             <div className="flex items-center gap-1.5 text-xs text-slate-500">
               <BookOpen className="size-3.5" />
@@ -140,7 +150,12 @@ export function CourseCard({
         </div>
       </CardContent>
 
-      <CardFooter className="justify-between gap-2 bg-slate-50">
+      <CardFooter
+        className="
+          mt-auto items-start gap-2 rounded-b-[22px] border-t border-white/45
+          bg-nm-bg/85 pt-4
+        "
+      >
         {action ?? (
           <Button asChild variant="outline">
             <Link href={href}>
