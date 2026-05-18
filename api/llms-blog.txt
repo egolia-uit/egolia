@@ -1,0 +1,1832 @@
+# Egolia API
+
+- **OpenAPI Version:** `3.1.1`
+- **API Version:** `0.0.0`
+
+Egolia API
+
+## Servers
+
+- **URL:** `http://api.egolia.localhost`
+
+## Operations
+
+### Search posts
+
+- **Method:** `GET`
+- **Path:** `/blog/posts`
+- **Tags:** Post
+
+#### Parameters
+
+##### `q`
+
+- **In:** `query`
+
+Full-text keyword for post search
+
+`string`
+
+##### `tag`
+
+- **In:** `query`
+
+Filter posts by tag
+
+`string`
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 Matched blog posts
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`authorId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`commentCount` (required)**
+
+    `integer`
+
+  - **`content` (required)**
+
+    `string`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`tags` (required)**
+
+    `array`
+
+    **Items:**
+
+    `string`
+
+  - **`title` (required)**
+
+    `string`
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+      "authorId": null,
+      "title": "Cach toi toi uu hanh trinh hoc tap",
+      "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+      "tags": [
+        "learning",
+        "productivity"
+      ],
+      "createdAt": "2026-03-25T08:00:00Z",
+      "commentCount": 12
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Create post
+
+- **Method:** `POST`
+- **Path:** `/blog/posts`
+- **Tags:** Post
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+#### Responses
+
+##### Status: 201 Post created
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get post detail
+
+- **Method:** `GET`
+- **Path:** `/blog/posts/{postId}`
+- **Tags:** Post
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Blog post detail
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Update post
+
+- **Method:** `PUT`
+- **Path:** `/blog/posts/{postId}`
+- **Tags:** Post
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`content` (required)**
+
+  `string`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ]
+}
+```
+
+#### Responses
+
+##### Status: 200 Post updated
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete post
+
+- **Method:** `DELETE`
+- **Path:** `/blog/posts/{postId}`
+- **Tags:** Post
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Post deleted successfully
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get post comments
+
+- **Method:** `GET`
+- **Path:** `/blog/posts/{postId}/comments`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Top-level comments for the post
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`authorId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`content` (required)**
+
+    `string`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`parentCommentId` (required)**
+
+    `string | null`, format: `uuid`
+
+  - **`postId` (required)**
+
+    `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+      "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+      "authorId": null,
+      "content": "Bai viet nay rat huu ich.",
+      "parentCommentId": null,
+      "createdAt": "2026-03-25T09:00:00Z"
+    }
+  ]
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Comment on post
+
+- **Method:** `POST`
+- **Path:** `/blog/posts/{postId}/comments`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+#### Responses
+
+##### Status: 201 Comment created
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Update comment
+
+- **Method:** `PUT`
+- **Path:** `/blog/comments/{commentId}`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+#### Responses
+
+##### Status: 200 Comment updated
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete comment
+
+- **Method:** `DELETE`
+- **Path:** `/blog/comments/{commentId}`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Comment deleted successfully
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Reply comment
+
+- **Method:** `POST`
+- **Path:** `/blog/comments/{commentId}/replies`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+#### Responses
+
+##### Status: 201 Reply created
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+## Schemas
+
+### id
+
+- **Type:**`string`
+
+User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+### Post
+
+- **Type:**`object`
+
+* **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`commentCount` (required)**
+
+  `integer`
+
+* **`content` (required)**
+
+  `string`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+* **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+### Pagination
+
+- **Type:**`object`
+
+* **`hasNext` (required)**
+
+  `boolean` — Whether there is a next page
+
+* **`hasPrev` (required)**
+
+  `boolean` — Whether there is a previous page
+
+* **`limit` (required)**
+
+  `integer` — Number of items per page
+
+* **`page` (required)**
+
+  `integer` — Current page number
+
+* **`total` (required)**
+
+  `integer` — Total number of items
+
+* **`totalPages` (required)**
+
+  `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "page": 1,
+  "limit": 20,
+  "total": 100,
+  "totalPages": 5,
+  "hasNext": true,
+  "hasPrev": false
+}
+```
+
+### Error
+
+- **Type:**`object`
+
+* **`code` (required)**
+
+  `string` — Error code
+
+* **`message` (required)**
+
+  `string` — Human-readable error message
+
+* **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Comment
+
+- **Type:**`object`
+
+* **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`content` (required)**
+
+  `string`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+* **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```

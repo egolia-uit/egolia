@@ -1,0 +1,604 @@
+# Egolia API
+
+- **OpenAPI Version:** `3.1.1`
+- **API Version:** `0.0.0`
+
+Egolia API
+
+## Servers
+
+- **URL:** `http://api.egolia.localhost`
+
+## Operations
+
+### Checkout course
+
+- **Method:** `POST`
+- **Path:** `/billing/courses/{courseId}/checkout`
+- **Tags:** Billing
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 201 Checkout successful, transaction created
+
+###### Content-Type: application/json
+
+- **`paymentUrl` (required)**
+
+  `string`, format: `uri`
+
+- **`transactionId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "transactionId": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc",
+  "paymentUrl": "https://api.egolia.com/billing/transactions/0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get platform revenue analytics
+
+- **Method:** `GET`
+- **Path:** `/billing/admin/analytics/revenue`
+- **Tags:** Billing
+
+#### Parameters
+
+##### `from` required
+
+- **In:** `query`
+
+`string`, format: `date`
+
+##### `to` required
+
+- **In:** `query`
+
+`string`, format: `date`
+
+#### Responses
+
+##### Status: 200 Revenue analytics
+
+###### Content-Type: application/json
+
+- **`completedTransactions` (required)**
+
+  `integer`
+
+- **`failedTransactions` (required)**
+
+  `integer`
+
+- **`from` (required)**
+
+  `string`, format: `date-time`
+
+- **`to` (required)**
+
+  `string`, format: `date-time`
+
+- **`totalRevenue` (required)**
+
+  `integer`, format: `int64`
+
+**Example:**
+
+```json
+{
+  "from": "2026-03-22T10:30:00Z",
+  "to": "2026-03-22T10:30:00Z",
+  "totalRevenue": 152000000,
+  "completedTransactions": 421,
+  "failedTransactions": 9
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get transactions
+
+- **Method:** `GET`
+- **Path:** `/billing/transactions`
+- **Tags:** Billing
+
+#### Parameters
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+##### `courseId`
+
+- **In:** `query`
+
+`string`, format: `uuid`
+
+##### `learnerId`
+
+- **In:** `query`
+
+If requested by non admin, then it will be that user
+
+`string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+#### Responses
+
+##### Status: 200 Learner billing history
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`amount` (required)**
+
+    `integer`, format: `int64`
+
+  - **`courseId` (required)**
+
+    `string`, format: `uuid`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`status` (required)**
+
+    `string`, possible values: `"pending", "completed", "failed"` — Current status of a billing transaction
+
+  - **`updatedAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+      "userId": null,
+      "courseId": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc",
+      "amount": 499000,
+      "status": null,
+      "createdAt": "2026-03-25T08:30:00Z",
+      "updatedAt": "2026-03-25T08:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+## Schemas
+
+### Error
+
+- **Type:**`object`
+
+* **`code` (required)**
+
+  `string` — Error code
+
+* **`message` (required)**
+
+  `string` — Human-readable error message
+
+* **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### RevenueAnalytics
+
+- **Type:**`object`
+
+* **`completedTransactions` (required)**
+
+  `integer`
+
+* **`failedTransactions` (required)**
+
+  `integer`
+
+* **`from` (required)**
+
+  `string`, format: `date-time`
+
+* **`to` (required)**
+
+  `string`, format: `date-time`
+
+* **`totalRevenue` (required)**
+
+  `integer`, format: `int64`
+
+**Example:**
+
+```json
+{
+  "from": "2026-03-22T10:30:00Z",
+  "to": "2026-03-22T10:30:00Z",
+  "totalRevenue": 152000000,
+  "completedTransactions": 421,
+  "failedTransactions": 9
+}
+```
+
+### id
+
+- **Type:**`string`
+
+User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+### TransactionStatus
+
+- **Type:**`string`
+
+Current status of a billing transaction
+
+**Example:**
+
+### Transaction
+
+- **Type:**`object`
+
+* **`amount` (required)**
+
+  `integer`, format: `int64`
+
+* **`courseId` (required)**
+
+  `string`, format: `uuid`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`status` (required)**
+
+  `string`, possible values: `"pending", "completed", "failed"` — Current status of a billing transaction
+
+* **`updatedAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "id": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+  "userId": "100",
+  "courseId": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc",
+  "amount": 499000,
+  "status": "completed",
+  "createdAt": "2026-03-25T08:30:00Z",
+  "updatedAt": "2026-03-25T08:30:00Z"
+}
+```
+
+### Pagination
+
+- **Type:**`object`
+
+* **`hasNext` (required)**
+
+  `boolean` — Whether there is a next page
+
+* **`hasPrev` (required)**
+
+  `boolean` — Whether there is a previous page
+
+* **`limit` (required)**
+
+  `integer` — Number of items per page
+
+* **`page` (required)**
+
+  `integer` — Current page number
+
+* **`total` (required)**
+
+  `integer` — Total number of items
+
+* **`totalPages` (required)**
+
+  `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "page": 1,
+  "limit": 20,
+  "total": 100,
+  "totalPages": 5,
+  "hasNext": true,
+  "hasPrev": false
+}
+```

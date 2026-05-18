@@ -1,0 +1,11526 @@
+# Egolia API
+
+- **OpenAPI Version:** `3.1.1`
+- **API Version:** `0.0.0`
+
+Egolia API
+
+## Servers
+
+- **URL:** `http://api.egolia.localhost`
+
+## Operations
+
+### Get certificate by id
+
+- **Method:** `GET`
+- **Path:** `/course/certificates/{certificateId}`
+- **Tags:** Certificate
+
+* authenticated:
+
+#### Parameters
+
+##### `certificateId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Certificate detail
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+  - **`courseId` (required)**
+
+    `string`, format: `uuid`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "data": {
+    "id": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd",
+    "courseId": null,
+    "userId": null,
+    "createdAt": "2026-05-01T07:30:00Z"
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get my certificates
+
+- **Method:** `GET`
+- **Path:** `/course/certificates/me`
+- **Tags:** Certificate
+
+* authenticated
+
+#### Parameters
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 My certificates
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`courseId` (required)**
+
+    `string`, format: `uuid`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd",
+      "courseId": null,
+      "userId": null,
+      "createdAt": "2026-05-01T07:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Create certificate
+
+- **Method:** `POST`
+- **Path:** `/course/certificates`
+- **Tags:** Certificate
+
+* authenticated:
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`courseId` (required)**
+
+  `string`, format: `uuid`
+
+- **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "courseId": "123e4567-e89b-12d3-a456-426614174000",
+  "userId": "100"
+}
+```
+
+#### Responses
+
+##### Status: 201 Certificate created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get my courses
+
+- **Method:** `GET`
+- **Path:** `/course/my-courses`
+- **Tags:** Course
+
+* display courses of the authenticated instructor .
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 My courses
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+      "title": "Introduction to Programming",
+      "price": 1000000,
+      "hidden": true,
+      "instructorId": "100",
+      "status": null,
+      "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+      "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+      "introductionVideoKey": "videos/course-intro.mp4"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get published courses
+
+- **Method:** `GET`
+- **Path:** `/course/courses-published`
+- **Tags:** Course
+
+* public
+
+#### Parameters
+
+##### `instructorId`
+
+- **In:** `query`
+
+`string`, format: `string`
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+##### `query`
+
+- **In:** `query`
+
+Search query to filter courses by title or description
+
+`string`, format: `string`
+
+#### Responses
+
+##### Status: 200 Published courses
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+      "title": "Introduction to Programming",
+      "price": 1000000,
+      "hidden": true,
+      "instructorId": "100",
+      "status": null,
+      "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+      "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+      "introductionVideoKey": "videos/course-intro.mp4"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get system courses
+
+- **Method:** `GET`
+- **Path:** `/course/courses-system`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `query`
+
+- **In:** `query`
+
+Search query to filter courses by title or description
+
+`string`, format: `string`
+
+##### `instructorId`
+
+- **In:** `query`
+
+`string`, format: `string`
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 Courses in system
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+      "title": "Introduction to Programming",
+      "price": 1000000,
+      "hidden": true,
+      "instructorId": "100",
+      "status": null,
+      "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+      "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+      "introductionVideoKey": "videos/course-intro.mp4"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Update review
+
+- **Method:** `PUT`
+- **Path:** `/course/reviews/{reviewId}`
+- **Tags:** Course
+
+* authenticated:
+  - review owner
+
+#### Parameters
+
+##### `reviewId` required
+
+- **In:** `path`
+
+Unique identifier of the course review
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`comment` (required)**
+
+  `string`
+
+- **`rating` (required)**
+
+  `integer`, format: `int32`
+
+**Example:**
+
+```json
+{
+  "rating": 5,
+  "comment": "Great course with practical examples."
+}
+```
+
+#### Responses
+
+##### Status: 204 Review updated
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete review
+
+- **Method:** `DELETE`
+- **Path:** `/course/reviews/{reviewId}`
+- **Tags:** Course
+
+* authenticated:
+  - review owner
+
+#### Parameters
+
+##### `reviewId` required
+
+- **In:** `path`
+
+Unique identifier of the course review
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Review deleted
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get my bookmarked courses
+
+- **Method:** `GET`
+- **Path:** `/course/courses/me/bookmarked`
+- **Tags:** Course
+
+* authenticated:
+
+#### Parameters
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 My bookmarked courses
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+      "title": "Introduction to Programming",
+      "price": 1000000,
+      "hidden": true,
+      "instructorId": "100",
+      "status": null,
+      "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+      "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+      "introductionVideoKey": "videos/course-intro.mp4"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get my enrolled courses
+
+- **Method:** `GET`
+- **Path:** `/course/courses/me/enrolled`
+- **Tags:** Course
+
+* authenticated
+
+#### Parameters
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 My enrolled courses
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+      "title": "Introduction to Programming",
+      "price": 1000000,
+      "hidden": true,
+      "instructorId": "100",
+      "status": null,
+      "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+      "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+      "introductionVideoKey": "videos/course-intro.mp4"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get upload video URL
+
+- **Method:** `POST`
+- **Path:** `/course/courses/upload-video-url`
+- **Tags:** Course, Lesson
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`videoFilename` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "videoFilename": "introduction_to_python.mp4"
+}
+```
+
+#### Responses
+
+##### Status: 201 Upload URL generated
+
+###### Content-Type: application/json
+
+- **`expiresAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`uploadUrl` (required)**
+
+  `string`, format: `uri`
+
+- **`videoKey` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "uploadUrl": "https://storage.egolia.localhost/upload/signed-url-token",
+  "videoKey": "video-lessons/introduction_to_python.mp4-019612ab-1234-7abc-8def-270fb9a49c97",
+  "expiresAt": "2026-03-22T10:30:00Z"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get course analytics
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/analytics`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Course analytics
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+  - **`averageRating` (required)**
+
+    `number`, format: `float`
+
+  - **`completedStudents` (required)**
+
+    `integer`, format: `int32`
+
+  - **`completionRate` (required)**
+
+    `number`, format: `float`
+
+  - **`courseId` (required)**
+
+    `string`, format: `uuid`
+
+  - **`enrolledStudents` (required)**
+
+    `integer`, format: `int32`
+
+  - **`reviewCount` (required)**
+
+    `integer`, format: `int32`
+
+  - **`totalRevenue` (required)**
+
+    `integer`, format: `int64`
+
+**Example:**
+
+```json
+{
+  "data": {
+    "courseId": null,
+    "totalRevenue": 12500000,
+    "enrolledStudents": 125,
+    "completedStudents": 84,
+    "completionRate": 67.2,
+    "averageRating": 4.7,
+    "reviewCount": 42
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Approve course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/approve`
+- **Tags:** Course
+
+* authenticated:
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Course approved
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Update course
+
+- **Method:** `PUT`
+- **Path:** `/course/courses/{courseId}/basic-info`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`price` (required)**
+
+  `integer`, format: `int64`
+
+- **`title` (required)**
+
+  `string`
+
+- **`hidden`**
+
+  `boolean`, default: `true`
+
+- **`id`**
+
+  `string`, format: `uuid`
+
+- **`instructorId`**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`introductionVideoKey`**
+
+  `string`
+
+- **`introductionVideoUrl`**
+
+  `string`, format: `uri`
+
+- **`originalCourseId`**
+
+  `string`, format: `uuid`
+
+- **`overview`**
+
+  `string`
+
+- **`status`**
+
+  `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+**Example:**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Introduction to Programming",
+  "price": 1000000,
+  "hidden": true,
+  "instructorId": "100",
+  "status": "draft",
+  "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+  "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+  "introductionVideoKey": "videos/course-intro.mp4"
+}
+```
+
+#### Responses
+
+##### Status: 204 Course basic information updated
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Bookmark course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/bookmark`
+- **Tags:** Course
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 201 Course bookmarked
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Unbookmark course
+
+- **Method:** `DELETE`
+- **Path:** `/course/courses/{courseId}/bookmark`
+- **Tags:** Course
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Course unbookmarked
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Decline course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/decline`
+- **Tags:** Course
+
+* authenticated:
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Course declined
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get course detail
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/detail`
+- **Tags:** Course
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Full course content with section and lesson references
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+  **All of:**
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+  * **`sections` (required)**
+
+    `array`
+
+    **Items:**
+
+    **All of:**
+
+    - **`id` (required)**
+
+      `string`, format: `uuid`
+
+    - **`title` (required)**
+
+      `string`
+
+    - **`originalSectionID`**
+
+      `string`, format: `uuid`
+
+    * **`lessons` (required)**
+
+      `array`
+
+      **Items:**
+
+      - **`title` (required)**
+
+        `string`
+
+      - **`id`**
+
+        `string`, format: `uuid`
+
+      - **`originalLessonID`**
+
+        `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "data": {
+    "sections": []
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Create draft version of a course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/draft`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 201 Draft version created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Finish course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/finish`
+- **Tags:** Course
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Course finished and certificate issued
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get course for update
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/for-update`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Course data for update
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+  **All of:**
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+  * **`sections` (required)**
+
+    `array`
+
+    **Items:**
+
+    **All of:**
+
+    - **`id` (required)**
+
+      `string`, format: `uuid`
+
+    - **`title` (required)**
+
+      `string`
+
+    - **`originalSectionID`**
+
+      `string`, format: `uuid`
+
+    * **`lessons` (required)**
+
+      `array`
+
+      **Items:**
+
+      - **`title` (required)**
+
+        `string`
+
+      - **`id`**
+
+        `string`, format: `uuid`
+
+      - **`originalLessonID`**
+
+        `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "data": {
+    "sections": []
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Hide course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/hide`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Course hidden
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Unhide course
+
+- **Method:** `DELETE`
+- **Path:** `/course/courses/{courseId}/hide`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Course unhidden
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get course landing page
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/landing`
+- **Tags:** Course
+
+* public
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Course landing page data
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+  - **`price` (required)**
+
+    `integer`, format: `int64`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`hidden`**
+
+    `boolean`, default: `true`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`instructorId`**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`introductionVideoKey`**
+
+    `string`
+
+  - **`introductionVideoUrl`**
+
+    `string`, format: `uri`
+
+  - **`originalCourseId`**
+
+    `string`, format: `uuid`
+
+  - **`overview`**
+
+    `string`
+
+  - **`status`**
+
+    `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+**Example:**
+
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+    "title": "Introduction to Programming",
+    "price": 1000000,
+    "hidden": true,
+    "instructorId": "100",
+    "status": null,
+    "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+    "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+    "introductionVideoKey": "videos/course-intro.mp4"
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get course progress
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/progress`
+- **Tags:** Course
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Course progress
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+  - **`completedLessons` (required)**
+
+    `integer`, format: `int32`
+
+  - **`courseId` (required)**
+
+    `string`, format: `uuid`
+
+  - **`isCompleted` (required)**
+
+    `boolean`
+
+  - **`progressPercent` (required)**
+
+    `number`, format: `float`
+
+  - **`totalLessons` (required)**
+
+    `integer`, format: `int32`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "data": {
+    "courseId": "123e4567-e89b-12d3-a456-426614174000",
+    "userId": null,
+    "totalLessons": 20,
+    "completedLessons": 14,
+    "progressPercent": 70,
+    "isCompleted": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get course reviews
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/reviews`
+- **Tags:** Course
+
+* public
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `rating`
+
+- **In:** `query`
+
+Filter reviews by a specific rating (1-5)
+
+`integer`
+
+#### Responses
+
+##### Status: 200 A paginated list of course reviews.
+
+###### Content-Type: application/json
+
+- **`data`**
+
+  `array`
+
+  **Items:**
+
+  - **`comment` (required)**
+
+    `string`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`rating` (required)**
+
+    `integer`, format: `int`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`courseId`**
+
+    `string`, format: `uuid`
+
+- **`pagination`**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "8a9b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
+      "courseId": "123e4567-e89b-12d3-a456-426614174000",
+      "userId": null,
+      "rating": 5,
+      "comment": "Great course with practical examples.",
+      "createdAt": "2026-04-15T14:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Review course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/reviews`
+- **Tags:** Course
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`comment` (required)**
+
+  `string`
+
+- **`rating` (required)**
+
+  `integer`, format: `int32`
+
+**Example:**
+
+```json
+{
+  "rating": 5,
+  "comment": "Great course with practical examples."
+}
+```
+
+#### Responses
+
+##### Status: 201 Course review created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get course students
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/students`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 Course students
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`completed` (required)**
+
+    `boolean`
+
+  - **`email` (required)**
+
+    `string | null`, format: `email` — Email from Authentik
+
+  - **`enrolledAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`name` (required)**
+
+    `string | null` — Full name from Authentik
+
+  - **`progressPercentage` (required)**
+
+    `number`, format: `float`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`username` (required)**
+
+    `string` — Username from Authentik
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "userId": null,
+      "username": null,
+      "name": null,
+      "email": null,
+      "enrolledAt": "2026-04-15T14:30:00Z",
+      "progressPercentage": 72.5,
+      "completed": false
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Submit course
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/submit`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 202 Course content submitted for processing
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete course
+
+- **Method:** `DELETE`
+- **Path:** `/course/courses/{courseId}`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Course successfully deleted
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Create course
+
+- **Method:** `POST`
+- **Path:** `/course/courses`
+- **Tags:** Course
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`price` (required)**
+
+  `integer`, format: `int64`
+
+- **`title` (required)**
+
+  `string`
+
+- **`hidden`**
+
+  `boolean`, default: `true`
+
+- **`id`**
+
+  `string`, format: `uuid`
+
+- **`instructorId`**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`introductionVideoKey`**
+
+  `string`
+
+- **`introductionVideoUrl`**
+
+  `string`, format: `uri`
+
+- **`originalCourseId`**
+
+  `string`, format: `uuid`
+
+- **`overview`**
+
+  `string`
+
+- **`status`**
+
+  `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+**Example:**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Introduction to Programming",
+  "price": 1000000,
+  "hidden": true,
+  "instructorId": "100",
+  "status": "draft",
+  "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+  "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+  "introductionVideoKey": "videos/course-intro.mp4"
+}
+```
+
+#### Responses
+
+##### Status: 201 Course created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete lesson comment
+
+- **Method:** `DELETE`
+- **Path:** `/course/lesson-comments/{commentId}`
+- **Tags:** Lesson
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Lesson comment deleted
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Reply lesson comment
+
+- **Method:** `POST`
+- **Path:** `/course/lesson-comments/{commentId}/reply`
+- **Tags:** Lesson
+
+* authenticated:
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`content` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "content": "This explanation of polymorphism is very clear."
+}
+```
+
+#### Responses
+
+##### Status: 201 Lesson comment reply created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Move section
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/move`
+- **Tags:** Section
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`order` (required)**
+
+  `integer` — New order of the section within the course (0-based index)
+
+**Example:**
+
+```json
+{
+  "order": 1
+}
+```
+
+#### Responses
+
+##### Status: 200 Section moved successfully
+
+###### Content-Type: application/json
+
+- **`data`**
+
+  `object`
+
+  - **`structure`**
+
+    `array` — Resulting course structure after moving the section, including all sections and their lessons
+
+    **Items:**
+
+    - **`lessonIds`**
+
+      `array`
+
+      **Items:**
+
+      `string`, format: `uuid`
+
+    - **`sectionId`**
+
+      `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "data": {
+    "structure": [
+      {
+        "sectionId": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+        "lessonIds": [
+          ""
+        ]
+      }
+    ]
+  }
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete section
+
+- **Method:** `DELETE`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}`
+- **Tags:** Section
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Section successfully deleted
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Update section
+
+- **Method:** `PATCH`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}`
+- **Tags:** Section
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "title": "OOP Fundamentals"
+}
+```
+
+#### Responses
+
+##### Status: 200 Section title successfully updated
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Create section
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/sections`
+- **Tags:** Section
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`courseId` (required)**
+
+  `string`, format: `uuid`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "courseId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "OOP Fundamentals"
+}
+```
+
+#### Responses
+
+##### Status: 201 Section created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get lesson comments
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments`
+- **Tags:** Lesson
+
+* authenticated
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Top-level comments for the lesson
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`content` (required)**
+
+    `string`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`lessonId` (required)**
+
+    `string`, format: `uuid`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`parentCommentId`**
+
+    `string | null`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "1c948f26-c6db-4f20-b6ac-2d10164fb8c0",
+      "userId": null,
+      "lessonId": null,
+      "content": "This explanation of polymorphism is very clear.",
+      "createdAt": "2026-03-22T10:30:00Z",
+      "parentCommentId": "8fd4f406-583d-4cd5-9c24-23c490a06711"
+    }
+  ]
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Comment on lesson
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/comments`
+- **Tags:** Lesson
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`content` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "content": "This explanation of polymorphism is very clear."
+}
+```
+
+#### Responses
+
+##### Status: 201 Lesson comment created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Mark lesson as completed
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/mark-completed`
+- **Tags:** Lesson
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Lesson marked as completed
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Move lesson
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/move`
+- **Tags:** Lesson
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`order` (required)**
+
+  `integer`, format: `int` — The new 0-based position of the lesson within the target section.
+
+- **`targetSectionId` (required)**
+
+  `string`, format: `uuid` — The ID of the section to move the lesson into. Use the current sectionId if only reordering.
+
+**Example:**
+
+```json
+{
+  "targetSectionId": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+  "order": 2
+}
+```
+
+#### Responses
+
+##### Status: 201 Lesson moved successfully
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get lesson progress
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/progress`
+- **Tags:** Lesson
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`enrollmentId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "enrollmentId": "123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+#### Responses
+
+##### Status: 200 Lesson progress
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+**Example:**
+
+```json
+{
+  "data": null
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Edit test lesson
+
+- **Method:** `PUT`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/test`
+- **Tags:** Lesson
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+**All of:**
+
+- **`title` (required)**
+
+  `string`
+
+- **`id`**
+
+  `string`, format: `uuid`
+
+- **`originalLessonID`**
+
+  `string`, format: `uuid`
+
+* **`lessonType` (required)**
+
+  `string`, possible values: `"test"`
+
+* **`questions` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`answers` (required)**
+
+    `array`
+
+    **Items:**
+
+    - **`content` (required)**
+
+      `string`
+
+    - **`id` (required)**
+
+      `string`, format: `uuid`
+
+    - **`isCorrect` (required)**
+
+      `boolean`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`question` (required)**
+
+    `string`
+
+* **`questionType` (required)**
+
+  `string`, possible values: `"multipleChoice", "singleChoice"`
+
+**Example:**
+
+```json
+{
+  "id": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+  "title": "Introduction to Python",
+  "originalLessonID": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+  "lessonType": "test",
+  "questionType": "singleChoice",
+  "questions": [
+    {
+      "id": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
+      "question": "Which principle of OOP enables exposing only essential behavior?",
+      "answers": []
+    }
+  ]
+}
+```
+
+#### Responses
+
+##### Status: 204 Test lesson successfully updated
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Save video lesson progress
+
+- **Method:** `PUT`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video-progress`
+- **Tags:** Lesson
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+**All of:**
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`isCompleted` (required)**
+
+  `boolean`
+
+- **`lessonId` (required)**
+
+  `string`, format: `uuid`
+
+- **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`lastViewedAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`watchedSeconds` (required)**
+
+  `number`, format: `float`
+
+**Example:**
+
+```json
+{
+  "id": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11",
+  "userId": null,
+  "lessonId": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11",
+  "isCompleted": true,
+  "watchedSeconds": 245.5,
+  "lastViewedAt": "2024-06-01T12:34:56Z"
+}
+```
+
+#### Responses
+
+##### Status: 204 Video lesson progress saved
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Edit video lesson
+
+- **Method:** `PATCH`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}/video`
+- **Tags:** Lesson
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`duration`**
+
+  `integer`, format: `int64`
+
+- **`title`**
+
+  `string`
+
+- **`videoKey`**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "videoKey": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
+  "title": "Introduction to Python",
+  "duration": 300
+}
+```
+
+#### Responses
+
+##### Status: 204 Video lesson successfully updated
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get lesson detail
+
+- **Method:** `GET`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}`
+- **Tags:** Lesson
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Lesson detail
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `object`
+
+**Example:**
+
+```json
+{
+  "data": null
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete lesson
+
+- **Method:** `DELETE`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons/{lessonId}`
+- **Tags:** Lesson
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+##### `lessonId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Lesson successfully deleted
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Create lesson
+
+- **Method:** `POST`
+- **Path:** `/course/courses/{courseId}/sections/{sectionId}/lessons`
+- **Tags:** Lesson
+
+* authenticated:
+
+  - instructor
+  - admin
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+##### `sectionId` required
+
+- **In:** `path`
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+**One of:**
+
+**All of:**
+
+- **`title` (required)**
+
+  `string`
+
+- **`id`**
+
+  `string`, format: `uuid`
+
+- **`originalLessonID`**
+
+  `string`, format: `uuid`
+
+* **`duration` (required)**
+
+  `integer`, format: `int64`
+
+* **`lessonType` (required)**
+
+  `string`, possible values: `"video"`
+
+* **`videoKey` (required)**
+
+  `string`
+
+* **`videoUrl`**
+
+  `string`, format: `uri`
+
+**All of:**
+
+- **`title` (required)**
+
+  `string`
+
+- **`id`**
+
+  `string`, format: `uuid`
+
+- **`originalLessonID`**
+
+  `string`, format: `uuid`
+
+* **`lessonType` (required)**
+
+  `string`, possible values: `"test"`
+
+* **`questions` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`answers` (required)**
+
+    `array`
+
+    **Items:**
+
+    - **`content` (required)**
+
+      `string`
+
+    - **`id` (required)**
+
+      `string`, format: `uuid`
+
+    - **`isCorrect` (required)**
+
+      `boolean`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`question` (required)**
+
+    `string`
+
+* **`questionType` (required)**
+
+  `string`, possible values: `"multipleChoice", "singleChoice"`
+
+**Example:**
+
+```json
+{
+  "lessonType": "video",
+  "videoKey": "lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4",
+  "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "duration": 300
+}
+```
+
+#### Responses
+
+##### Status: 201 Lesson created
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Checkout course
+
+- **Method:** `POST`
+- **Path:** `/billing/courses/{courseId}/checkout`
+- **Tags:** Billing
+
+* authenticated:
+
+#### Parameters
+
+##### `courseId` required
+
+- **In:** `path`
+
+Unique identifier of the course
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 201 Checkout successful, transaction created
+
+###### Content-Type: application/json
+
+- **`paymentUrl` (required)**
+
+  `string`, format: `uri`
+
+- **`transactionId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "transactionId": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc",
+  "paymentUrl": "https://api.egolia.com/billing/transactions/0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get platform revenue analytics
+
+- **Method:** `GET`
+- **Path:** `/billing/admin/analytics/revenue`
+- **Tags:** Billing
+
+#### Parameters
+
+##### `from` required
+
+- **In:** `query`
+
+`string`, format: `date`
+
+##### `to` required
+
+- **In:** `query`
+
+`string`, format: `date`
+
+#### Responses
+
+##### Status: 200 Revenue analytics
+
+###### Content-Type: application/json
+
+- **`completedTransactions` (required)**
+
+  `integer`
+
+- **`failedTransactions` (required)**
+
+  `integer`
+
+- **`from` (required)**
+
+  `string`, format: `date-time`
+
+- **`to` (required)**
+
+  `string`, format: `date-time`
+
+- **`totalRevenue` (required)**
+
+  `integer`, format: `int64`
+
+**Example:**
+
+```json
+{
+  "from": "2026-03-22T10:30:00Z",
+  "to": "2026-03-22T10:30:00Z",
+  "totalRevenue": 152000000,
+  "completedTransactions": 421,
+  "failedTransactions": 9
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get transactions
+
+- **Method:** `GET`
+- **Path:** `/billing/transactions`
+- **Tags:** Billing
+
+#### Parameters
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+##### `courseId`
+
+- **In:** `query`
+
+`string`, format: `uuid`
+
+##### `learnerId`
+
+- **In:** `query`
+
+If requested by non admin, then it will be that user
+
+`string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+#### Responses
+
+##### Status: 200 Learner billing history
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`amount` (required)**
+
+    `integer`, format: `int64`
+
+  - **`courseId` (required)**
+
+    `string`, format: `uuid`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`status` (required)**
+
+    `string`, possible values: `"pending", "completed", "failed"` — Current status of a billing transaction
+
+  - **`updatedAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`userId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+      "userId": null,
+      "courseId": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc",
+      "amount": 499000,
+      "status": null,
+      "createdAt": "2026-03-25T08:30:00Z",
+      "updatedAt": "2026-03-25T08:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Search posts
+
+- **Method:** `GET`
+- **Path:** `/blog/posts`
+- **Tags:** Post
+
+#### Parameters
+
+##### `q`
+
+- **In:** `query`
+
+Full-text keyword for post search
+
+`string`
+
+##### `tag`
+
+- **In:** `query`
+
+Filter posts by tag
+
+`string`
+
+##### `page`
+
+- **In:** `query`
+
+Page number for pagination
+
+`integer`, default: `1`
+
+##### `limit`
+
+- **In:** `query`
+
+Number of items per page
+
+`integer`, default: `20`
+
+##### `order`
+
+- **In:** `query`
+
+Sort order
+
+`string`, possible values: `"asc", "desc"`, default: `"desc"`
+
+#### Responses
+
+##### Status: 200 Matched blog posts
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`authorId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`commentCount` (required)**
+
+    `integer`
+
+  - **`content` (required)**
+
+    `string`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`tags` (required)**
+
+    `array`
+
+    **Items:**
+
+    `string`
+
+  - **`title` (required)**
+
+    `string`
+
+- **`pagination` (required)**
+
+  `object`
+
+  - **`hasNext` (required)**
+
+    `boolean` — Whether there is a next page
+
+  - **`hasPrev` (required)**
+
+    `boolean` — Whether there is a previous page
+
+  - **`limit` (required)**
+
+    `integer` — Number of items per page
+
+  - **`page` (required)**
+
+    `integer` — Current page number
+
+  - **`total` (required)**
+
+    `integer` — Total number of items
+
+  - **`totalPages` (required)**
+
+    `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+      "authorId": null,
+      "title": "Cach toi toi uu hanh trinh hoc tap",
+      "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+      "tags": [
+        "learning",
+        "productivity"
+      ],
+      "createdAt": "2026-03-25T08:00:00Z",
+      "commentCount": 12
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Create post
+
+- **Method:** `POST`
+- **Path:** `/blog/posts`
+- **Tags:** Post
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+#### Responses
+
+##### Status: 201 Post created
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get post detail
+
+- **Method:** `GET`
+- **Path:** `/blog/posts/{postId}`
+- **Tags:** Post
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Blog post detail
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Update post
+
+- **Method:** `PUT`
+- **Path:** `/blog/posts/{postId}`
+- **Tags:** Post
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`content` (required)**
+
+  `string`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ]
+}
+```
+
+#### Responses
+
+##### Status: 200 Post updated
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`commentCount` (required)**
+
+  `integer`
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+- **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete post
+
+- **Method:** `DELETE`
+- **Path:** `/blog/posts/{postId}`
+- **Tags:** Post
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Post deleted successfully
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Get post comments
+
+- **Method:** `GET`
+- **Path:** `/blog/posts/{postId}/comments`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 200 Top-level comments for the post
+
+###### Content-Type: application/json
+
+- **`data` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`authorId` (required)**
+
+    `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+  - **`content` (required)**
+
+    `string`
+
+  - **`createdAt` (required)**
+
+    `string`, format: `date-time`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`parentCommentId` (required)**
+
+    `string | null`, format: `uuid`
+
+  - **`postId` (required)**
+
+    `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "data": [
+    {
+      "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+      "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+      "authorId": null,
+      "content": "Bai viet nay rat huu ich.",
+      "parentCommentId": null,
+      "createdAt": "2026-03-25T09:00:00Z"
+    }
+  ]
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Comment on post
+
+- **Method:** `POST`
+- **Path:** `/blog/posts/{postId}/comments`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `postId` required
+
+- **In:** `path`
+
+Unique identifier of the blog post
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+#### Responses
+
+##### Status: 201 Comment created
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Update comment
+
+- **Method:** `PUT`
+- **Path:** `/blog/comments/{commentId}`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+#### Responses
+
+##### Status: 200 Comment updated
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Delete comment
+
+- **Method:** `DELETE`
+- **Path:** `/blog/comments/{commentId}`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Responses
+
+##### Status: 204 Comment deleted successfully
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 403 Forbidden Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### Reply comment
+
+- **Method:** `POST`
+- **Path:** `/blog/comments/{commentId}/replies`
+- **Tags:** Comment
+
+#### Parameters
+
+##### `commentId` required
+
+- **In:** `path`
+
+Unique identifier of the post comment
+
+`string`, format: `uuid`
+
+#### Request Body
+
+##### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+#### Responses
+
+##### Status: 201 Reply created
+
+###### Content-Type: application/json
+
+- **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`content` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+- **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
+
+##### Status: 400 Bad Request Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 401 Unauthorized Error response
+
+###### Content-Type: application/json
+
+**Example:**
+
+```json
+{}
+```
+
+##### Status: 404 Not Found Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+##### Status: 500 Internal Server Error response
+
+###### Content-Type: application/json
+
+- **`code` (required)**
+
+  `string` — Error code
+
+- **`message` (required)**
+
+  `string` — Human-readable error message
+
+- **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+## Schemas
+
+### course\_id
+
+- **Type:**`string`
+
+**Example:**
+
+### course\_properties-id
+
+- **Type:**`string`
+
+User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+### course\_Certificate
+
+- **Type:**`object`
+
+* **`courseId` (required)**
+
+  `string`, format: `uuid`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "id": "f56b56cb-4dc9-4f84-b9d0-f20f73de2ffd",
+  "courseId": "123e4567-e89b-12d3-a456-426614174000",
+  "userId": "100",
+  "createdAt": "2026-05-01T07:30:00Z"
+}
+```
+
+### course\_Error
+
+- **Type:**`object`
+
+* **`code` (required)**
+
+  `string` — Error code
+
+* **`message` (required)**
+
+  `string` — Human-readable error message
+
+* **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### course\_Pagination
+
+- **Type:**`object`
+
+* **`hasNext` (required)**
+
+  `boolean` — Whether there is a next page
+
+* **`hasPrev` (required)**
+
+  `boolean` — Whether there is a previous page
+
+* **`limit` (required)**
+
+  `integer` — Number of items per page
+
+* **`page` (required)**
+
+  `integer` — Current page number
+
+* **`total` (required)**
+
+  `integer` — Total number of items
+
+* **`totalPages` (required)**
+
+  `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "page": 1,
+  "limit": 20,
+  "total": 100,
+  "totalPages": 5,
+  "hasNext": true,
+  "hasPrev": false
+}
+```
+
+### course\_CourseStatus
+
+- **Type:**`string`
+
+**Example:**
+
+### course\_Course
+
+- **Type:**`object`
+
+* **`price` (required)**
+
+  `integer`, format: `int64`
+
+* **`title` (required)**
+
+  `string`
+
+* **`hidden`**
+
+  `boolean`, default: `true`
+
+* **`id`**
+
+  `string`, format: `uuid`
+
+* **`instructorId`**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`introductionVideoKey`**
+
+  `string`
+
+* **`introductionVideoUrl`**
+
+  `string`, format: `uri`
+
+* **`originalCourseId`**
+
+  `string`, format: `uuid`
+
+* **`overview`**
+
+  `string`
+
+* **`status`**
+
+  `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+**Example:**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Introduction to Programming",
+  "price": 1000000,
+  "hidden": true,
+  "instructorId": "100",
+  "status": "draft",
+  "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+  "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+  "introductionVideoKey": "videos/course-intro.mp4"
+}
+```
+
+### course\_CourseAnalytics
+
+- **Type:**`object`
+
+* **`averageRating` (required)**
+
+  `number`, format: `float`
+
+* **`completedStudents` (required)**
+
+  `integer`, format: `int32`
+
+* **`completionRate` (required)**
+
+  `number`, format: `float`
+
+* **`courseId` (required)**
+
+  `string`, format: `uuid`
+
+* **`enrolledStudents` (required)**
+
+  `integer`, format: `int32`
+
+* **`reviewCount` (required)**
+
+  `integer`, format: `int32`
+
+* **`totalRevenue` (required)**
+
+  `integer`, format: `int64`
+
+**Example:**
+
+```json
+{
+  "courseId": "123e4567-e89b-12d3-a456-426614174000",
+  "totalRevenue": 12500000,
+  "enrolledStudents": 125,
+  "completedStudents": 84,
+  "completionRate": 67.2,
+  "averageRating": 4.7,
+  "reviewCount": 42
+}
+```
+
+### course\_Section
+
+- **Type:**`object`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`title` (required)**
+
+  `string`
+
+* **`originalSectionID`**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+  "title": "OOP Fundamentals",
+  "originalSectionID": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc"
+}
+```
+
+### course\_Lesson
+
+- **Type:**`object`
+
+* **`title` (required)**
+
+  `string`
+
+* **`id`**
+
+  `string`, format: `uuid`
+
+* **`originalLessonID`**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+  "title": "Introduction to Python",
+  "originalLessonID": "2926aa3f-29ad-449b-9556-c44d4fc676a0"
+}
+```
+
+### course\_CourseDetailSectionItem
+
+- **Type:**`object`
+
+**All of:**
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`title` (required)**
+
+  `string`
+
+- **`originalSectionID`**
+
+  `string`, format: `uuid`
+
+* **`lessons` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`id`**
+
+    `string`, format: `uuid`
+
+  - **`originalLessonID`**
+
+    `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+  "title": "OOP Fundamentals",
+  "originalSectionID": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+  "lessons": [
+    {
+      "id": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+      "title": "Introduction to Python",
+      "originalLessonID": "2926aa3f-29ad-449b-9556-c44d4fc676a0"
+    }
+  ]
+}
+```
+
+### course\_CourseDetail
+
+- **Type:**`object`
+
+**All of:**
+
+- **`price` (required)**
+
+  `integer`, format: `int64`
+
+- **`title` (required)**
+
+  `string`
+
+- **`hidden`**
+
+  `boolean`, default: `true`
+
+- **`id`**
+
+  `string`, format: `uuid`
+
+- **`instructorId`**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`introductionVideoKey`**
+
+  `string`
+
+- **`introductionVideoUrl`**
+
+  `string`, format: `uri`
+
+- **`originalCourseId`**
+
+  `string`, format: `uuid`
+
+- **`overview`**
+
+  `string`
+
+- **`status`**
+
+  `string`, possible values: `"draft", "pending", "approved"`, default: `"draft"`
+
+* **`sections` (required)**
+
+  `array`
+
+  **Items:**
+
+  **All of:**
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`title` (required)**
+
+    `string`
+
+  - **`originalSectionID`**
+
+    `string`, format: `uuid`
+
+  * **`lessons` (required)**
+
+    `array`
+
+    **Items:**
+
+    - **`title` (required)**
+
+      `string`
+
+    - **`id`**
+
+      `string`, format: `uuid`
+
+    - **`originalLessonID`**
+
+      `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "originalCourseId": "123e4567-e89b-12d3-a456-426614174000",
+  "title": "Introduction to Programming",
+  "price": 1000000,
+  "hidden": true,
+  "instructorId": "100",
+  "status": null,
+  "overview": "Learn practical Go backend concepts in this beginner-friendly course.",
+  "introductionVideoUrl": "https://cdn.egolia.localhost/videos/course-intro.mp4",
+  "introductionVideoKey": "videos/course-intro.mp4",
+  "sections": [
+    {
+      "id": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+      "title": "OOP Fundamentals",
+      "originalSectionID": "0de4f8f2-3440-4e29-9b88-9cfbbf4476fc",
+      "lessons": [
+        {
+          "id": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+          "title": "Introduction to Python",
+          "originalLessonID": "2926aa3f-29ad-449b-9556-c44d4fc676a0"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### course\_CourseProgress
+
+- **Type:**`object`
+
+* **`completedLessons` (required)**
+
+  `integer`, format: `int32`
+
+* **`courseId` (required)**
+
+  `string`, format: `uuid`
+
+* **`isCompleted` (required)**
+
+  `boolean`
+
+* **`progressPercent` (required)**
+
+  `number`, format: `float`
+
+* **`totalLessons` (required)**
+
+  `integer`, format: `int32`
+
+* **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "courseId": "123e4567-e89b-12d3-a456-426614174000",
+  "userId": "100",
+  "totalLessons": 20,
+  "completedLessons": 14,
+  "progressPercent": 70,
+  "isCompleted": false
+}
+```
+
+### course\_Review
+
+- **Type:**`object`
+
+Represents a single review for a course.
+
+- **`comment` (required)**
+
+  `string`
+
+- **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+- **`id` (required)**
+
+  `string`, format: `uuid`
+
+- **`rating` (required)**
+
+  `integer`, format: `int`
+
+- **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+- **`courseId`**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "8a9b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d",
+  "courseId": "123e4567-e89b-12d3-a456-426614174000",
+  "userId": "100",
+  "rating": 5,
+  "comment": "Great course with practical examples.",
+  "createdAt": "2026-04-15T14:30:00Z"
+}
+```
+
+### course\_username
+
+- **Type:**`string`
+
+Username from Authentik
+
+**Example:**
+
+### course\_name
+
+- **Type:**`[ "string", "null" ]`
+
+Full name from Authentik
+
+**Example:**
+
+### course\_email
+
+- **Type:**`[ "string", "null" ]`
+
+Email from Authentik
+
+**Example:**
+
+### course\_CourseStudent
+
+- **Type:**`object`
+
+* **`completed` (required)**
+
+  `boolean`
+
+* **`email` (required)**
+
+  `string | null`, format: `email` — Email from Authentik
+
+* **`enrolledAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`name` (required)**
+
+  `string | null` — Full name from Authentik
+
+* **`progressPercentage` (required)**
+
+  `number`, format: `float`
+
+* **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`username` (required)**
+
+  `string` — Username from Authentik
+
+**Example:**
+
+```json
+{
+  "userId": "100",
+  "username": "user",
+  "name": "User",
+  "email": "user@egolia.com",
+  "enrolledAt": "2026-04-15T14:30:00Z",
+  "progressPercentage": 72.5,
+  "completed": false
+}
+```
+
+### course\_content
+
+- **Type:**`string`
+
+**Example:**
+
+### course\_Lesson\_properties-id
+
+- **Type:**`string`
+
+**Example:**
+
+### course\_LessonComment
+
+- **Type:**`object`
+
+* **`content` (required)**
+
+  `string`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`lessonId` (required)**
+
+  `string`, format: `uuid`
+
+* **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`parentCommentId`**
+
+  `string | null`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "1c948f26-c6db-4f20-b6ac-2d10164fb8c0",
+  "userId": "100",
+  "lessonId": "2926aa3f-29ad-449b-9556-c44d4fc676a0",
+  "content": "This explanation of polymorphism is very clear.",
+  "createdAt": "2026-03-22T10:30:00Z",
+  "parentCommentId": "8fd4f406-583d-4cd5-9c24-23c490a06711"
+}
+```
+
+### course\_LessonProgress
+
+- **Type:**`object`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`isCompleted` (required)**
+
+  `boolean`
+
+* **`lessonId` (required)**
+
+  `string`, format: `uuid`
+
+* **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "id": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11",
+  "userId": "100",
+  "lessonId": "1e3a0a43-d6df-4f6d-a58d-60f0e5162f11",
+  "isCompleted": true
+}
+```
+
+### course\_VideoLessonProgress
+
+- **Type:**
+
+**Example:**
+
+### course\_LessonProgressDetail
+
+- **Type:**
+
+**Example:**
+
+### course\_QuestionType
+
+- **Type:**`string`
+
+**Example:**
+
+### course\_TestAnswer
+
+- **Type:**`object`
+
+* **`content` (required)**
+
+  `string`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`isCorrect` (required)**
+
+  `boolean`
+
+**Example:**
+
+```json
+{
+  "id": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
+  "content": "Encapsulation hides implementation details behind a stable API.",
+  "isCorrect": true
+}
+```
+
+### course\_TestQuestion
+
+- **Type:**`object`
+
+* **`answers` (required)**
+
+  `array`
+
+  **Items:**
+
+  - **`content` (required)**
+
+    `string`
+
+  - **`id` (required)**
+
+    `string`, format: `uuid`
+
+  - **`isCorrect` (required)**
+
+    `boolean`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`question` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "af2fb7f2-cf11-40d4-8628-b28f7d40f933",
+  "question": "Which principle of OOP enables exposing only essential behavior?",
+  "answers": [
+    {
+      "id": "4c413364-151d-44e4-a357-c0c5cf7c5f4a",
+      "content": "Encapsulation hides implementation details behind a stable API.",
+      "isCorrect": true
+    }
+  ]
+}
+```
+
+### course\_TestLesson
+
+- **Type:**
+
+**Example:**
+
+### course\_VideoLesson
+
+- **Type:**
+
+**Example:**
+
+### course\_LessonDetail
+
+- **Type:**
+
+**Example:**
+
+### billing\_Error
+
+- **Type:**`object`
+
+* **`code` (required)**
+
+  `string` — Error code
+
+* **`message` (required)**
+
+  `string` — Human-readable error message
+
+* **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### billing\_RevenueAnalytics
+
+- **Type:**`object`
+
+* **`completedTransactions` (required)**
+
+  `integer`
+
+* **`failedTransactions` (required)**
+
+  `integer`
+
+* **`from` (required)**
+
+  `string`, format: `date-time`
+
+* **`to` (required)**
+
+  `string`, format: `date-time`
+
+* **`totalRevenue` (required)**
+
+  `integer`, format: `int64`
+
+**Example:**
+
+```json
+{
+  "from": "2026-03-22T10:30:00Z",
+  "to": "2026-03-22T10:30:00Z",
+  "totalRevenue": 152000000,
+  "completedTransactions": 421,
+  "failedTransactions": 9
+}
+```
+
+### billing\_id
+
+- **Type:**`string`
+
+User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+### billing\_TransactionStatus
+
+- **Type:**`string`
+
+Current status of a billing transaction
+
+**Example:**
+
+### billing\_Transaction
+
+- **Type:**`object`
+
+* **`amount` (required)**
+
+  `integer`, format: `int64`
+
+* **`courseId` (required)**
+
+  `string`, format: `uuid`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`status` (required)**
+
+  `string`, possible values: `"pending", "completed", "failed"` — Current status of a billing transaction
+
+* **`updatedAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`userId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+```json
+{
+  "id": "4c7c8f0a-4f6e-4da1-867d-38f1120f0e5d",
+  "userId": "100",
+  "courseId": "0f4f19b1-1602-4c12-ac1a-9ad5baf1e4dc",
+  "amount": 499000,
+  "status": "completed",
+  "createdAt": "2026-03-25T08:30:00Z",
+  "updatedAt": "2026-03-25T08:30:00Z"
+}
+```
+
+### billing\_Pagination
+
+- **Type:**`object`
+
+* **`hasNext` (required)**
+
+  `boolean` — Whether there is a next page
+
+* **`hasPrev` (required)**
+
+  `boolean` — Whether there is a previous page
+
+* **`limit` (required)**
+
+  `integer` — Number of items per page
+
+* **`page` (required)**
+
+  `integer` — Current page number
+
+* **`total` (required)**
+
+  `integer` — Total number of items
+
+* **`totalPages` (required)**
+
+  `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "page": 1,
+  "limit": 20,
+  "total": 100,
+  "totalPages": 5,
+  "hasNext": true,
+  "hasPrev": false
+}
+```
+
+### blog\_id
+
+- **Type:**`string`
+
+User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+**Example:**
+
+### blog\_Post
+
+- **Type:**`object`
+
+* **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`commentCount` (required)**
+
+  `integer`
+
+* **`content` (required)**
+
+  `string`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`tags` (required)**
+
+  `array`
+
+  **Items:**
+
+  `string`
+
+* **`title` (required)**
+
+  `string`
+
+**Example:**
+
+```json
+{
+  "id": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "title": "Cach toi toi uu hanh trinh hoc tap",
+  "content": "Day la noi dung bai viet chia se kinh nghiem hoc tap tren Egolia.",
+  "tags": [
+    "learning",
+    "productivity"
+  ],
+  "createdAt": "2026-03-25T08:00:00Z",
+  "commentCount": 12
+}
+```
+
+### blog\_Pagination
+
+- **Type:**`object`
+
+* **`hasNext` (required)**
+
+  `boolean` — Whether there is a next page
+
+* **`hasPrev` (required)**
+
+  `boolean` — Whether there is a previous page
+
+* **`limit` (required)**
+
+  `integer` — Number of items per page
+
+* **`page` (required)**
+
+  `integer` — Current page number
+
+* **`total` (required)**
+
+  `integer` — Total number of items
+
+* **`totalPages` (required)**
+
+  `integer` — Total number of pages
+
+**Example:**
+
+```json
+{
+  "page": 1,
+  "limit": 20,
+  "total": 100,
+  "totalPages": 5,
+  "hasNext": true,
+  "hasPrev": false
+}
+```
+
+### blog\_Error
+
+- **Type:**`object`
+
+* **`code` (required)**
+
+  `string` — Error code
+
+* **`message` (required)**
+
+  `string` — Human-readable error message
+
+* **`more_info`**
+
+  `string` — URL with more information about the error
+
+**Example:**
+
+```json
+{
+  "code": "EXAMPLE_CODE",
+  "message": "Example error",
+  "more_info": "https://api.egolia.com/docs/errors/EXAMPLE_CODE"
+}
+```
+
+### blog\_Comment
+
+- **Type:**`object`
+
+* **`authorId` (required)**
+
+  `string`, format: `number` — User ID from Authentik (need to change subject mode to User's ID instead of hashed)
+
+* **`content` (required)**
+
+  `string`
+
+* **`createdAt` (required)**
+
+  `string`, format: `date-time`
+
+* **`id` (required)**
+
+  `string`, format: `uuid`
+
+* **`parentCommentId` (required)**
+
+  `string | null`, format: `uuid`
+
+* **`postId` (required)**
+
+  `string`, format: `uuid`
+
+**Example:**
+
+```json
+{
+  "id": "834897ce-45e7-43a5-92b2-4ec1f0dc3cd1",
+  "postId": "74af02ce-4e69-4ca1-a721-c0e19c9937b8",
+  "authorId": "100",
+  "content": "Bai viet nay rat huu ich.",
+  "parentCommentId": null,
+  "createdAt": "2026-03-25T09:00:00Z"
+}
+```
