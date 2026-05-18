@@ -42,7 +42,7 @@
     "eslint-plugin-react-hooks": "catalog:",
     "eslint-plugin-simple-import-sort": "catalog:",
     "husky": "9.1.7",
-    "jiti": "2.6.1",
+    "jiti": "2.7.0",
     "jsdom": "~28.1.0",
     "nx": "22.7.1",
     "nx-github-pages": "1.2.1",
