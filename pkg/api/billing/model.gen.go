@@ -125,7 +125,7 @@ type Transaction struct {
 	UpdatedAt *time.Time        `json:"updatedAt,omitempty"`
 
 	// UserId User ID from Authentik (need to change subject mode to User's ID instead of hashed)
-	UserId Id `json:"userId"`
+	UserId *Id `json:"userId,omitempty"`
 }
 
 // TransactionStatus Current status of a billing transaction

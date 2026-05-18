@@ -32,7 +32,7 @@ var _ Cmd[DeleteSection] = (*DeleteSectionHandler)(nil)
 
 func (h *DeleteSectionHandler) Handle(ctx context.Context, cmd *DeleteSection) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, false)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			return err
 		}

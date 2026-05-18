@@ -15,6 +15,8 @@ import {
 import type { CourseCourse, CourseCourseDetail } from '#/lib/api/course';
 import { formatDuration, formatVnd } from '#/lib/api/format';
 
+import { CourseVideoPlayer } from './course-video-player';
+
 function courseStatus(status?: CourseCourse['status']) {
   if (status === 'approved') {
     return 'Approved';
@@ -51,6 +53,13 @@ export function CourseHero({
           <CardTitle className="text-2xl">{course.title}</CardTitle>
         </CardHeader>
         <CardContent>
+          {course.introductionVideoUrl && (
+            <CourseVideoPlayer
+              src={course.introductionVideoUrl}
+              title={`${course.title} introduction`}
+              className="mb-5"
+            />
+          )}
           <p className="max-w-3xl text-sm/6 text-slate-600">
             {course.overview || 'Khóa học chưa có overview.'}
           </p>
@@ -113,8 +122,8 @@ export function CourseStructure({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <span className="
-                flex size-7 items-center justify-center rounded-lg bg-slate-100
-                text-xs
+                flex size-7 items-center justify-center rounded-xl bg-nm-bg
+                text-xs font-bold text-primary shadow-nm-inset
               ">
                 {sectionIndex + 1}
               </span>
@@ -122,26 +131,26 @@ export function CourseStructure({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-2">
+            <div className="grid gap-3">
               {section.lessons.length ? (
                 section.lessons.map((lesson, lessonIndex) => {
                   const content = (
                     <div className="
-                      flex items-center justify-between gap-3 rounded-lg border
-                      border-slate-200 px-3 py-2 text-sm
+                      flex items-center justify-between gap-3 rounded-2xl
+                      bg-nm-bg px-4 py-3 text-sm shadow-nm-inset transition-all
                     ">
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="
-                          flex size-8 shrink-0 items-center justify-center
-                          rounded-lg bg-slate-100 text-slate-600
+                          flex size-9 shrink-0 items-center justify-center
+                          rounded-xl bg-nm-bg text-primary shadow-nm-flat-sm
                         ">
                           <PlayCircle className="size-4" />
                         </div>
                         <div className="min-w-0">
-                          <div className="truncate font-medium text-slate-950">
+                          <div className="truncate font-bold text-slate-800">
                             {lesson.title}
                           </div>
-                          <div className="text-xs text-slate-500">
+                          <div className="text-xs font-medium text-slate-500">
                             Lesson {lessonIndex + 1}
                           </div>
                         </div>
@@ -164,8 +173,7 @@ export function CourseStructure({
                 })
               ) : (
                 <div className="
-                  rounded-lg border border-dashed border-slate-200 p-4 text-sm
-                  text-slate-500
+                  rounded-xl bg-nm-bg p-4 text-sm text-slate-500 shadow-nm-inset
                 ">
                   Section này chưa có lesson.
                 </div>

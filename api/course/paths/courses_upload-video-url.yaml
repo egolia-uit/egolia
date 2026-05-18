@@ -4,7 +4,7 @@ post:
         - openid
         - entitlements
     - OIDC:
-        - openid
+        - openidnx
         - entitlements
   tags:
     - Course
@@ -15,8 +15,6 @@ post:
     - authenticated:
       - instructor
       - admin
-  parameters:
-    - $ref: ../components/parameters/courseIdPath.yaml
   requestBody:
     required: true
     content:
@@ -43,7 +41,7 @@ post:
                 example: https://storage.egolia.localhost/upload/signed-url-token
               videoKey:
                 type: string
-                example: lessons/46f94d4d-41b5-4df6-bf8d-270fb9a49c97/87632fe7-27e5-445e-8ddf-b73557cb990d-introduction_to_python.mp4
+                example: video-lessons/introduction_to_python.mp4-019612ab-1234-7abc-8def-270fb9a49c97
               expiresAt:
                 type: string
                 format: date-time

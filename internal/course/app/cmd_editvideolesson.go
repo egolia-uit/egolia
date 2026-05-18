@@ -36,9 +36,7 @@ var _ Cmd[EditVideoLesson] = (*EditVideoLessonHandler)(nil)
 
 func (h *EditVideoLessonHandler) Handle(ctx context.Context, cmd *EditVideoLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID: cmd.CourseID,
-		}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			return err
 		}

@@ -33,7 +33,7 @@ var _ Cmd[UpdateSectionTitle] = (*UpdateSectionTitleHandler)(nil)
 
 func (h *UpdateSectionTitleHandler) Handle(ctx context.Context, command *UpdateSectionTitle) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: command.CourseID}, false)
+		course, err := repoRegistry.Course().GetFull(ctx, command.CourseID)
 		if err != nil {
 			return err
 		}

@@ -550,6 +550,10 @@ func (c *Course) Price() int64 {
 	return c.price
 }
 
+func (c *Course) Approve() {
+	c.status = CourseStatusApproved
+}
+
 func (c *Course) ExistsSectionWithTitle(title string) bool {
 	for _, section := range c.sections {
 		if section == nil {

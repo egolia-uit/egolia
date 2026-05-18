@@ -38,9 +38,7 @@ var _ Cmd[BookmarkCourse] = (*BookmarkCourseHandler)(nil)
 // Handle executes the command to bookmark a course.
 func (h *BookmarkCourseHandler) Handle(ctx context.Context, cmd *BookmarkCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID: cmd.CourseID,
-		}, false)
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errs.NewCourseNotFound(cmd.CourseID, err)

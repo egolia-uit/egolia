@@ -3,17 +3,13 @@
 import { Eye, EyeOff, FilePlus2, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
 import { Button } from '#/components/ui/neumorphism/button';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '#/components/ui/neumorphism/card';
+import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/neumorphism/card';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Dialog,
   DialogContent,
@@ -24,7 +20,6 @@ import {
 } from '#/components/ui/shadcn/dialog';
 import { apiClient } from '#/lib/api';
 import {
-  type CourseCourseDetail,
   type CourseCourseWritable,
   createCourse,
   createDraftVersion,
@@ -38,19 +33,10 @@ import {
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import type { Viewer } from '#/lib/auth/roles';
 
-import { CourseCurriculumEditor } from './course-curriculum-editor';
-import { CourseHero } from './course-detail';
+import { CourseHero, CourseStructure } from './course-detail';
 import { CourseForm } from './course-form';
-import {
-  ListContent,
-  type ResourceState,
-  isDraftLike,
-  normalizeTab,
-  uploadCourseVideo,
-  useCourseDetail,
-  useCourseList,
-} from './course-shared';
 import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
+import { isDraftLike, ListContent, normalizeTab, type ResourceState, uploadCourseVideo, useCourseDetail, useCourseList } from './course-shared';
 
 function InstructorCoursesContent({
   initialTab,
@@ -67,8 +53,8 @@ function InstructorCoursesContent({
     'uploads',
     'reviews',
   ]);
+  const { success: showToast } = useToast();
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const courses = useCourseList(
@@ -102,7 +88,6 @@ function InstructorCoursesContent({
   async function create(body: CourseCourseWritable) {
     setSubmitting(true);
     setActionError(null);
-    setActionMessage(null);
     try {
       const response = await createCourse({
         body,
@@ -110,10 +95,11 @@ function InstructorCoursesContent({
         throwOnError: true,
       });
       courses.reload();
+      showToast('Khóa học đã được tạo thành công!');
+      setCreateOpen(false);
       const location = response.response.headers.get('Content-Location');
       const courseId = location?.split('/').filter(Boolean).at(-1);
       if (courseId) {
-        setCreateOpen(false);
         router.push(`/instructor/courses/${courseId}`);
       }
     } catch (error) {
@@ -125,10 +111,9 @@ function InstructorCoursesContent({
 
   async function mutateCourse(action: () => Promise<unknown>, success: string) {
     setActionError(null);
-    setActionMessage(null);
     try {
       await action();
-      setActionMessage(success);
+      showToast(success);
       courses.reload();
     } catch (error) {
       setActionError(normalizeApiError(error));
@@ -161,9 +146,7 @@ function InstructorCoursesContent({
                 submitting={submitting}
                 error={actionError?.message}
                 forceIntroductionVideoKey={true}
-                onUploadIntroductionVideo={(file, onProgress) =>
-                  uploadCourseVideo('new', file, onProgress)
-                }
+                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo(crypto.randomUUID(), file, onProgress)}
                 onSubmit={create}
               />
             </div>
@@ -172,9 +155,6 @@ function InstructorCoursesContent({
       }
     >
       <div className="grid gap-4">
-        {actionMessage && (
-          <InlineNotice title="Success" description={actionMessage} />
-        )}
         {actionError && <ErrorState error={actionError} />}
         <ListContent
           state={displayedCourses}
@@ -191,17 +171,15 @@ function InstructorCoursesContent({
               : 'Tạo khóa học đầu tiên bằng nút Create course.'
           }
           actionFor={(course) => (
-            <div className="grid w-full grid-cols-2 gap-2">
-              <Button asChild className="gap-1.5" size="sm" variant="outline">
+            <div className="flex flex-wrap gap-2">
+              <Button asChild variant="outline">
                 <Link href={`/instructor/courses/${course.id}`}>
-                  <Eye className="size-4" />
+                  <Eye className="mr-2 size-4" />
                   Manage
                 </Link>
               </Button>
               <Button
                 type="button"
-                className="gap-1.5"
-                size="sm"
                 variant="outline"
                 onClick={() =>
                   mutateCourse(
@@ -222,16 +200,14 @@ function InstructorCoursesContent({
                 }
               >
                 {course.hidden ? (
-                  <Eye className="size-4" />
+                  <Eye className="mr-2 size-4" />
                 ) : (
-                  <EyeOff className="size-4" />
+                  <EyeOff className="mr-2 size-4" />
                 )}
                 {course.hidden ? 'Unhide' : 'Hide'}
               </Button>
               <Button
                 type="button"
-                className="col-span-2 justify-center gap-1.5"
-                size="sm"
                 variant="destructive"
                 onClick={() =>
                   mutateCourse(
@@ -245,7 +221,7 @@ function InstructorCoursesContent({
                   )
                 }
               >
-                <Trash2 className="size-4" />
+                <Trash2 className="mr-2 size-4" />
                 Delete
               </Button>
             </div>
@@ -278,32 +254,18 @@ function InstructorCourseDetailContent({
   courseId: string;
 }) {
   const router = useRouter();
+  const { success: showToast } = useToast();
   const { state, reload, setState } = useCourseDetail(courseId);
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const setCourse = useCallback(
-    (updater: (course: CourseCourseDetail) => CourseCourseDetail) => {
-      setState((current) =>
-        current.status === 'ready'
-          ? {
-              status: 'ready',
-              data: updater(current.data),
-            }
-          : current
-      );
-    },
-    [setState]
-  );
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
     setActionError(null);
-    setActionMessage(null);
     try {
       await action();
-      setActionMessage(success);
+      showToast(success);
       reload();
       return true;
     } catch (error) {
@@ -348,7 +310,11 @@ function InstructorCourseDetailContent({
   }
 
   return (
-    <AppShell viewer={viewer} eyebrow="Quản lý" title="Chi tiết khóa học">
+    <AppShell
+      viewer={viewer}
+      eyebrow="Quản lý"
+      title="Chi tiết khóa học"
+    >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
@@ -374,8 +340,7 @@ function InstructorCourseDetailContent({
                     <DialogHeader>
                       <DialogTitle>Edit basic info</DialogTitle>
                       <DialogDescription>
-                        Update title, price, or overview. Changing these on a
-                        published course will create a new draft.
+                        Update title, price, or overview. Changing these on a published course will create a new draft.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
@@ -388,9 +353,9 @@ function InstructorCourseDetailContent({
                         }
                         onSubmit={async (body) => {
                           if (state.status !== 'ready') return;
-
+                          
                           const previousState = state.data;
-
+                          
                           setState({
                             status: 'ready',
                             data: {
@@ -398,7 +363,7 @@ function InstructorCourseDetailContent({
                               title: body.title,
                               price: body.price,
                               overview: body.overview,
-                            },
+                            }
                           });
 
                           let editableCourseId = courseId;
@@ -420,9 +385,7 @@ function InstructorCourseDetailContent({
                           if (ok) {
                             setEditOpen(false);
                             if (editableCourseId !== courseId) {
-                              router.replace(
-                                `/instructor/courses/${editableCourseId}`
-                              );
+                              router.replace(`/instructor/courses/${editableCourseId}`);
                             }
                           } else {
                             setState({ status: 'ready', data: previousState });
@@ -493,9 +456,6 @@ function InstructorCourseDetailContent({
             }
           />
 
-          {actionMessage && (
-            <InlineNotice title="Success" description={actionMessage} />
-          )}
           {actionError && <ErrorState error={actionError} />}
 
           <div
@@ -506,23 +466,21 @@ function InstructorCourseDetailContent({
           >
             <div className="grid gap-3">
               <h2 className="text-lg font-semibold">Course structure</h2>
-              <CourseCurriculumEditor
-                course={state.data}
-                courseId={courseId}
-                reload={reload}
-                setCourse={setCourse}
+              <CourseStructure course={state.data} />
+              <InlineNotice
+                title="Sắp ra mắt"
+                description="Tính năng thêm Section và Lesson đang được hoàn thiện."
               />
             </div>
 
             <div className="grid gap-4">
-              <Card className="bg-nm-bg">
+              <Card className="bg-nm-bg shadow-nm-flat">
                 <CardHeader>
                   <CardTitle>Ghi chú</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm text-slate-600">
                   <p>
-                    Nhấn <strong>Edit course</strong> để thay đổi thông tin cơ
-                    bản.
+                    Nhấn <strong>Edit course</strong> để thay đổi thông tin cơ bản.
                   </p>
                   <InlineNotice
                     title="Storage"

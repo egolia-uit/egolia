@@ -1,0 +1,115 @@
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: Egolia - Enrollment Flow
+  labels:
+    blueprint-group: egolia
+    blueprints.goauthentik.io/description: |
+      Egolia enrollment flow for new users.
+
+entries:
+  # Stages
+  - model: authentik_stages_prompt.prompt
+    id: prompt-field-username
+    identifiers:
+      name: egolia-enrollment-field-username
+    attrs:
+      field_key: username
+      label: Username
+      type: text
+      placeholder: Username
+      order: 10
+  - model: authentik_stages_prompt.prompt
+    id: prompt-field-name
+    identifiers:
+      name: egolia-enrollment-field-name
+    attrs:
+      field_key: name
+      label: Name
+      type: text
+      placeholder: Name
+      order: 20
+  - model: authentik_stages_prompt.prompt
+    id: prompt-field-email
+    identifiers:
+      name: egolia-enrollment-field-email
+    attrs:
+      field_key: email
+      label: Email
+      type: email
+      placeholder: Email
+      order: 30
+  - model: authentik_stages_prompt.prompt
+    id: prompt-field-password
+    identifiers:
+      name: egolia-enrollment-field-password
+    attrs:
+      field_key: password
+      label: Password
+      type: password
+      placeholder: Password
+      order: 40
+  - model: authentik_stages_prompt.prompt
+    id: prompt-field-password-repeat
+    identifiers:
+      name: egolia-enrollment-field-password-repeat
+    attrs:
+      field_key: password_repeat
+      label: Repeat Password
+      type: password
+      placeholder: Repeat Password
+      order: 50
+
+  - model: authentik_stages_prompt.promptstage
+    id: enrollment-prompt
+    identifiers:
+      name: egolia-enrollment-prompt
+    attrs:
+      fields:
+        - !KeyOf prompt-field-username
+        - !KeyOf prompt-field-name
+        - !KeyOf prompt-field-email
+        - !KeyOf prompt-field-password
+        - !KeyOf prompt-field-password-repeat
+
+  - model: authentik_stages_user_write.userwritestage
+    id: enrollment-write
+    identifiers:
+      name: egolia-enrollment-write
+    attrs:
+      user_creation_mode: always_create
+      create_users_as_inactive: false
+
+  - model: authentik_stages_login.loginstage
+    id: enrollment-login
+    identifiers:
+      name: egolia-enrollment-login
+
+  # Flow
+  - model: authentik_flows.flow
+    id: enrollment-flow
+    identifiers:
+      slug: egolia-enrollment
+    attrs:
+      name: Egolia Enrollment Flow
+      title: Welcome to Egolia!
+      designation: enrollment
+      authentication: none
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment-flow
+      stage: !KeyOf enrollment-prompt
+      order: 10
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment-flow
+      stage: !KeyOf enrollment-write
+      order: 20
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf enrollment-flow
+      stage: !KeyOf enrollment-login
+      order: 30

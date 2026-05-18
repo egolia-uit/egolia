@@ -28,32 +28,32 @@ func NewApproveCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer 
 var _ Cmd[ApproveCourse] = (*ApproveCourseHandler)(nil)
 
 func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) error {
-	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-			ID: cmd.CourseID,
-		}, true)
+	var changedLessonIDs []uuid.UUID
+	var publishedCourseID uuid.UUID
+
+	err := h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
+		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
 		if err != nil {
 			return err
 		}
 
 		if course.OriginalCourseID() == nil {
-			course.SetStatus(domain.CourseStatusApproved)
+			course.Approve()
 			if err := repoRegistry.Course().Save(ctx, course); err != nil {
 				return err
 			}
 		} else {
-			originalCourseID := *course.OriginalCourseID()
-			originalCourse, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{
-				ID: originalCourseID,
-			}, true)
+			publishedCourseID = *course.OriginalCourseID()
+			originalCourse, err := repoRegistry.Course().GetFull(ctx, publishedCourseID)
 			if err != nil {
 				return err
 			}
 
-			_, err = originalCourse.Merge(course)
+			changedLessonIDs, err = originalCourse.Merge(course)
 			if err != nil {
 				return err
 			}
+			originalCourse.Approve()
 
 			course.Delete()
 
@@ -67,17 +67,36 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 
 		return nil
 	})
-}
+	if err != nil {
+		return err
+	}
 
-// listLessonsChanged, err := originalCourse.Merge(course)
-// if err != nil {
-// 	return err
-// }
-// // go routine to update enrollment if list lessons changed
-// if listLessonsChanged != nil {
-// 	go func() {
-// 		if err := repoRegistry.Enrollment().UpdateEnrollmentListLessons(ctx, course.ID()); err != nil {
-// 			// log error
-// 		}
-// 	}()
-// }
+	// Cập nhật lại isCompleted cho các bài học đã bị thay đổi trong goroutine
+	if len(changedLessonIDs) > 0 && publishedCourseID != uuid.Nil {
+		go func(courseID uuid.UUID, lessonIDs []uuid.UUID) {
+			bgCtx := context.Background() // Dùng Background context để tránh bị hủy khi request kết thúc
+			_ = h.uow.Execute(bgCtx, func(repoRegistry domain.RepoRegistry) error {
+				enrollments, err := repoRegistry.Enrollment().GetByCourseID(bgCtx, courseID)
+				if err != nil {
+					return err
+				}
+
+				for _, enrollment := range enrollments {
+					if enrollment == nil {
+						continue
+					}
+					for _, lessonID := range lessonIDs {
+						progress, err := repoRegistry.LessonProgress().GetByUserIDAndLesson(bgCtx, enrollment.LearnerID(), lessonID)
+						if err == nil && progress != nil && progress.IsCompleted() {
+							progress.ResetProgress()
+							_ = repoRegistry.LessonProgress().Save(bgCtx, progress)
+						}
+					}
+				}
+				return nil
+			})
+		}(publishedCourseID, changedLessonIDs)
+	}
+
+	return nil
+}

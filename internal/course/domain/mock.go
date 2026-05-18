@@ -1196,6 +1196,74 @@ func (_c *MockEnrollmentRepo_GetByCourseAndLearner_Call) RunAndReturn(run func(c
 	return _c
 }
 
+// GetByCourseID provides a mock function for the type MockEnrollmentRepo
+func (_mock *MockEnrollmentRepo) GetByCourseID(ctx context.Context, courseID uuid.UUID) ([]*Enrollment, error) {
+	ret := _mock.Called(ctx, courseID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByCourseID")
+	}
+
+	var r0 []*Enrollment
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) ([]*Enrollment, error)); ok {
+		return returnFunc(ctx, courseID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) []*Enrollment); ok {
+		r0 = returnFunc(ctx, courseID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*Enrollment)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uuid.UUID) error); ok {
+		r1 = returnFunc(ctx, courseID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockEnrollmentRepo_GetByCourseID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetByCourseID'
+type MockEnrollmentRepo_GetByCourseID_Call struct {
+	*mock.Call
+}
+
+// GetByCourseID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - courseID uuid.UUID
+func (_e *MockEnrollmentRepo_Expecter) GetByCourseID(ctx interface{}, courseID interface{}) *MockEnrollmentRepo_GetByCourseID_Call {
+	return &MockEnrollmentRepo_GetByCourseID_Call{Call: _e.mock.On("GetByCourseID", ctx, courseID)}
+}
+
+func (_c *MockEnrollmentRepo_GetByCourseID_Call) Run(run func(ctx context.Context, courseID uuid.UUID)) *MockEnrollmentRepo_GetByCourseID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockEnrollmentRepo_GetByCourseID_Call) Return(enrollments []*Enrollment, err error) *MockEnrollmentRepo_GetByCourseID_Call {
+	_c.Call.Return(enrollments, err)
+	return _c
+}
+
+func (_c *MockEnrollmentRepo_GetByCourseID_Call) RunAndReturn(run func(ctx context.Context, courseID uuid.UUID) ([]*Enrollment, error)) *MockEnrollmentRepo_GetByCourseID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetByID provides a mock function for the type MockEnrollmentRepo
 func (_mock *MockEnrollmentRepo) GetByID(ctx context.Context, params EnrollmentRepoGetByID, forUpdate bool) (*Enrollment, error) {
 	ret := _mock.Called(ctx, params, forUpdate)

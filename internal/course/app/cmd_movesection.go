@@ -30,7 +30,7 @@ func NewMoveSectionHandler(logger *slog.Logger, tracer Tracer, uow domain.UnitOf
 
 func (h *MoveSectionHandler) Handle(ctx context.Context, command *MoveSection) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-		course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: command.CourseID}, true)
+		course, err := repoRegistry.Course().GetFull(ctx, command.CourseID)
 		if err != nil {
 			return err
 		}

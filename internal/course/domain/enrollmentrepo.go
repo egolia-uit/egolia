@@ -10,6 +10,7 @@ type EnrollmentRepo interface {
 	GetByID(ctx context.Context, params EnrollmentRepoGetByID, forUpdate bool) (*Enrollment, error)
 	ExistsByCourseID(ctx context.Context, courseID uuid.UUID) (bool, error)
 	Save(ctx context.Context, enrollment *Enrollment) error
+	GetByCourseID(ctx context.Context, courseID uuid.UUID) ([]*Enrollment, error)
 	GetByCourseAndLearner(ctx context.Context, params EnrollmentRepoGetByCourseAndLearner, forUpdate bool) (*Enrollment, error)
 	ExistsByCourseAndLearner(ctx context.Context, courseID uuid.UUID, learnerID string) (bool, error)
 }

@@ -14,8 +14,8 @@ http:
         - web
       rule: "
         Host(`api.egolia.localhost`) && ( \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/approve`) && Method(`POST`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/decline`) && Method(`POST`)) \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/approve$`) && Method(`POST`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/decline$`) && Method(`POST`)) \
         ) \
         "
       service: course-http
@@ -32,21 +32,21 @@ http:
         (Path(`/course/my-courses`) && Method(`GET`)) || \
         (Path(`/course/courses-system`) && Method(`GET`)) || \
         (Path(`/course/courses`) && Method(`POST`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/analytics`) && Method(`GET`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/basic-info`) && Method(`PUT`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/hide`) && (Method(`POST`) || Method(`DELETE`))) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/students`) && Method(`GET`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/upload-video-url`) && Method(`POST`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections`) && Method(`POST`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}`) && (Method(`DELETE`) || Method(`PATCH`))) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/move`) && Method(`POST`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons`) && Method(`POST`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}/move`) && Method(`POST`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}/test`) && Method(`PUT`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/sections/{sectionId:[a-zA-Z0-9-]+}/lessons/{lessonId:[a-zA-Z0-9-]+}/video`) && Method(`PATCH`)) || \
-        (Path(`/course/lesson-comments/{commentId:[a-zA-Z0-9-]+}`) && Method(`DELETE`)) \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+$`) && Method(`DELETE`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/analytics$`) && Method(`GET`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/basic-info$`) && Method(`PUT`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/hide$`) && (Method(`POST`) || Method(`DELETE`))) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/students$`) && Method(`GET`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/upload-video-url$`) && Method(`POST`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections$`) && Method(`POST`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections/[a-zA-Z0-9-]+$`) && (Method(`DELETE`) || Method(`PATCH`))) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections/[a-zA-Z0-9-]+/move$`) && Method(`POST`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections/[a-zA-Z0-9-]+/lessons$`) && Method(`POST`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections/[a-zA-Z0-9-]+/lessons/[a-zA-Z0-9-]+$`) && Method(`DELETE`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections/[a-zA-Z0-9-]+/lessons/[a-zA-Z0-9-]+/move$`) && Method(`POST`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections/[a-zA-Z0-9-]+/lessons/[a-zA-Z0-9-]+/test$`) && Method(`PUT`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/sections/[a-zA-Z0-9-]+/lessons/[a-zA-Z0-9-]+/video$`) && Method(`PATCH`)) || \
+        (PathRegexp(`^/course/lesson-comments/[a-zA-Z0-9-]+$`) && Method(`DELETE`)) \
         ) \
         "
       service: course-http
@@ -61,8 +61,8 @@ http:
       rule: "
         Host(`api.egolia.localhost`) && ( \
         PathPrefix(`/course/courses-published`) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/landing`) && Method(`GET`)) || \
-        (Path(`/course/courses/{courseId:[a-zA-Z0-9-]+}/reviews`) && Method(`GET`)) \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/landing$`) && Method(`GET`)) || \
+        (PathRegexp(`^/course/courses/[a-zA-Z0-9-]+/reviews$`) && Method(`GET`)) \
         ) \
         "
       service: course-http
