@@ -33,6 +33,7 @@ import {
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import type { Viewer } from '#/lib/auth/roles';
 
+import { CourseCurriculumEditor } from './course-curriculum-editor';
 import { CourseHero, CourseStructure } from './course-detail';
 import { CourseForm } from './course-form';
 import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
@@ -467,9 +468,21 @@ function InstructorCourseDetailContent({
             <div className="grid gap-3">
               <h2 className="text-lg font-semibold">Course structure</h2>
               <CourseStructure course={state.data} />
-              <InlineNotice
-                title="Sắp ra mắt"
-                description="Tính năng thêm Section và Lesson đang được hoàn thiện."
+              <CourseCurriculumEditor
+                courseId={courseId}
+                course={state.data}
+                reload={reload}
+                setCourse={(updater) => {
+                  setState((current) => {
+                    if (current.status !== 'ready') {
+                      return current;
+                    }
+                    return {
+                      ...current,
+                      data: updater(current.data),
+                    };
+                  });
+                }}
               />
             </div>
 

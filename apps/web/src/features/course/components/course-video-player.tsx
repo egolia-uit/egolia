@@ -36,17 +36,22 @@ export function CourseVideoPlayer({
   title,
 }: CourseVideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const playerRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!videoRef.current) {
+    const video = videoRef.current;
+    if (!video) {
       return;
     }
 
-    let player: any;
+    let cancelled = false;
 
     const init = async () => {
       const Plyr = (await import('plyr')).default;
-      player = new Plyr(videoRef.current!, {
+      if (cancelled) {
+        return;
+      }
+      playerRef.current = new Plyr(video, {
         controls: [
           'play-large',
           'play',
@@ -68,14 +73,54 @@ export function CourseVideoPlayer({
       });
     };
 
-    init();
+    void init();
 
     return () => {
-      if (player) {
-        player.destroy();
+      cancelled = true;
+      const player = playerRef.current;
+      playerRef.current = null;
+      if (player && typeof player.destroy === 'function') {
+        try {
+          player.destroy();
+        } catch {
+          // Ignore teardown races in dev strict mode / route transitions.
+        }
       }
     };
-  }, [src]);
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) {
+      return;
+    }
+
+    const nextType = mediaTypeFromUrl(src);
+    const player = playerRef.current;
+
+    if (player) {
+      try {
+        player.source = {
+          type: 'video',
+          sources: [{ src, type: nextType }],
+        };
+      } catch {
+        video.src = src;
+        video.load();
+      }
+    } else {
+      video.src = src;
+      video.load();
+    }
+
+    if (poster) {
+      video.poster = poster;
+      video.setAttribute('data-poster', poster);
+    } else {
+      video.removeAttribute('poster');
+      video.removeAttribute('data-poster');
+    }
+  }, [poster, src]);
 
   return (
     <div
@@ -88,17 +133,15 @@ export function CourseVideoPlayer({
       )}
     >
       <video
-        key={src}
         ref={videoRef}
         aria-label={title}
         controls
         playsInline
         crossOrigin="anonymous"
         preload="metadata"
+        src={src}
         data-poster={poster}
-      >
-        <source src={src} type={mediaTypeFromUrl(src)} />
-      </video>
+      />
     </div>
   );
 }
