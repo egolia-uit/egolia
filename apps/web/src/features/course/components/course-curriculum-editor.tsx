@@ -13,7 +13,7 @@ import {
   Trash2,
   UploadCloud,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
@@ -837,6 +837,7 @@ export function CourseCurriculumEditor({
   const [localLessonMeta, setLocalLessonMeta] = useState<
     Record<string, LocalLessonMeta>
   >({});
+  const savedVideoPreviewUrlsRef = useRef<Set<string>>(new Set());
 
   function begin(actionKey: string) {
     setBusyAction(actionKey);
@@ -846,6 +847,16 @@ export function CourseCurriculumEditor({
 
   function end() {
     setBusyAction(null);
+  }
+
+  function createSavedVideoPreviewUrl(file: File | null) {
+    if (!file) {
+      return null;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    savedVideoPreviewUrlsRef.current.add(previewUrl);
+    return previewUrl;
   }
 
   function setSections(
@@ -935,6 +946,16 @@ export function CourseCurriculumEditor({
     setEditLessonVideoPreviewUrl(previewUrl);
     return () => URL.revokeObjectURL(previewUrl);
   }, [editLessonVideoFile]);
+
+  useEffect(
+    () => () => {
+      for (const previewUrl of savedVideoPreviewUrlsRef.current) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      savedVideoPreviewUrlsRef.current.clear();
+    },
+    []
+  );
 
   function selectSection(sectionId: string) {
     const section = course.sections.find((item) => item.id === sectionId);
@@ -1549,6 +1570,14 @@ export function CourseCurriculumEditor({
       return;
     }
 
+    const editorKey = lessonEditor.key;
+    let savedVideoKey = lessonEditor.videoKey.trim();
+    let savedVideoUrl = lessonEditor.videoUrl;
+    let savedDuration = lessonEditor.duration;
+    let uploadedReplacementDuringSave = false;
+    const replacementVideoFile =
+      lessonEditor.lessonType === 'video' ? editLessonVideoFile : null;
+
     begin(`save-lesson-${lessonEditor.key}`);
     try {
       if (lessonEditor.lessonId && !isLocalId(lessonEditor.lessonId)) {
@@ -1561,13 +1590,13 @@ export function CourseCurriculumEditor({
             return;
           }
 
-          let videoKey = lessonEditor.videoKey.trim();
-          if (!videoKey && editLessonVideoFile) {
+          if (!savedVideoKey && editLessonVideoFile) {
             const uploadedVideoKey = await handleUploadEditLessonVideo();
             if (!uploadedVideoKey) {
               return;
             }
-            videoKey = uploadedVideoKey.trim();
+            savedVideoKey = uploadedVideoKey.trim();
+            uploadedReplacementDuringSave = true;
           }
 
           const durationNumber = Number.parseInt(lessonEditor.duration, 10);
@@ -1578,12 +1607,13 @@ export function CourseCurriculumEditor({
             });
             return;
           }
+          savedDuration = String(durationNumber);
 
           await editVideoLesson({
             body: {
               title,
               duration: toApiInt64(durationNumber),
-              ...(videoKey ? { videoKey } : {}),
+              ...(savedVideoKey ? { videoKey: savedVideoKey } : {}),
             },
             client: apiClient,
             path: {
@@ -1616,10 +1646,46 @@ export function CourseCurriculumEditor({
           });
         }
 
+        updateLessonTitle(lessonEditor.sectionId, lessonEditor.key, title);
         reload();
       } else {
         updateLessonTitle(lessonEditor.sectionId, lessonEditor.key, title);
       }
+
+      const shouldUseReplacementPreview =
+        lessonEditor.lessonType === 'video' &&
+        replacementVideoFile &&
+        savedVideoKey &&
+        (uploadedReplacementDuringSave ||
+          editLessonUploadedVideo?.videoKey === savedVideoKey);
+
+      if (shouldUseReplacementPreview) {
+        savedVideoUrl =
+          createSavedVideoPreviewUrl(replacementVideoFile) ?? savedVideoUrl;
+      }
+
+      setLessonEditor((current) => {
+        if (!current || current.key !== editorKey) {
+          return current;
+        }
+
+        if (current.lessonType === 'video') {
+          return {
+            ...current,
+            title,
+            videoKey: savedVideoKey,
+            videoUrl: savedVideoUrl,
+            duration: savedDuration,
+          };
+        }
+
+        return {
+          ...current,
+          title,
+          questionType: lessonEditor.questionType,
+          questions: cloneQuestions(lessonEditor.questions),
+        };
+      });
 
       setLocalLessonMeta((current) => ({
         ...current,
@@ -1630,17 +1696,11 @@ export function CourseCurriculumEditor({
               ? lessonEditor.questionType
               : undefined,
           videoKey:
-            lessonEditor.lessonType === 'video'
-              ? lessonEditor.videoKey.trim()
-              : undefined,
+            lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
           videoUrl:
-            lessonEditor.lessonType === 'video'
-              ? lessonEditor.videoUrl
-              : undefined,
+            lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
           duration:
-            lessonEditor.lessonType === 'video'
-              ? lessonEditor.duration
-              : undefined,
+            lessonEditor.lessonType === 'video' ? savedDuration : undefined,
           questions:
             lessonEditor.lessonType === 'test'
               ? cloneQuestions(lessonEditor.questions)
@@ -1648,11 +1708,44 @@ export function CourseCurriculumEditor({
         },
       }));
 
+      if (lessonEditor.lessonType === 'video' && replacementVideoFile) {
+        resetEditLessonVideoUploadState();
+      }
       setActionMessage('Lesson đã được cập nhật.');
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
         updateLessonTitle(lessonEditor.sectionId, lessonEditor.key, title);
+        if (
+          lessonEditor.lessonType === 'video' &&
+          replacementVideoFile &&
+          savedVideoKey
+        ) {
+          savedVideoUrl =
+            createSavedVideoPreviewUrl(replacementVideoFile) ?? savedVideoUrl;
+        }
+        setLessonEditor((current) => {
+          if (!current || current.key !== editorKey) {
+            return current;
+          }
+
+          if (current.lessonType === 'video') {
+            return {
+              ...current,
+              title,
+              videoKey: savedVideoKey,
+              videoUrl: savedVideoUrl,
+              duration: savedDuration,
+            };
+          }
+
+          return {
+            ...current,
+            title,
+            questionType: lessonEditor.questionType,
+            questions: cloneQuestions(lessonEditor.questions),
+          };
+        });
         setLocalLessonMeta((current) => ({
           ...current,
           [lessonEditor.lessonId ?? lessonEditor.key]: {
@@ -1662,23 +1755,20 @@ export function CourseCurriculumEditor({
                 ? lessonEditor.questionType
                 : undefined,
             videoKey:
-              lessonEditor.lessonType === 'video'
-                ? lessonEditor.videoKey.trim()
-                : undefined,
+              lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
             videoUrl:
-              lessonEditor.lessonType === 'video'
-                ? lessonEditor.videoUrl
-                : undefined,
+              lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
             duration:
-              lessonEditor.lessonType === 'video'
-                ? lessonEditor.duration
-                : undefined,
+              lessonEditor.lessonType === 'video' ? savedDuration : undefined,
             questions:
               lessonEditor.lessonType === 'test'
                 ? cloneQuestions(lessonEditor.questions)
                 : undefined,
           },
         }));
+        if (lessonEditor.lessonType === 'video' && replacementVideoFile) {
+          resetEditLessonVideoUploadState();
+        }
         setActionMessage(
           'Update lesson chưa có ở backend, đã mock dữ liệu trên FE.'
         );
@@ -2649,6 +2739,7 @@ export function CourseCurriculumEditor({
                           <div className="space-y-2">
                             <Label>Current video</Label>
                             <video
+                              key={lessonEditor.videoUrl}
                               className="
                                 aspect-video w-full rounded-xl bg-slate-950
                                 shadow-nm-flat-sm
