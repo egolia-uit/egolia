@@ -993,6 +993,49 @@ export function CourseCurriculumEditor({
     setEditLessonUploadedVideo(null);
   }
 
+  function upsertLocalLessonMeta(
+    key: string,
+    lessonId: string | undefined,
+    meta: LocalLessonMeta
+  ) {
+    setLocalLessonMeta((current) => ({
+      ...current,
+      [key]: meta,
+      ...(lessonId ? { [lessonId]: meta } : {}),
+    }));
+  }
+
+  function getLessonMeta(
+    sectionId: string,
+    lesson: CourseLesson,
+    index: number
+  ) {
+    const key = lessonKey(sectionId, lesson, index);
+    const cachedMeta =
+      (lesson.id ? localLessonMeta[lesson.id] : undefined) ??
+      localLessonMeta[key];
+
+    if (cachedMeta) {
+      return cachedMeta;
+    }
+
+    if (selectedLessonKey === key && lessonEditor) {
+      return { lessonType: lessonEditor.lessonType } satisfies LocalLessonMeta;
+    }
+
+    return null;
+  }
+
+  function getLessonTypeLabel(meta: LocalLessonMeta | null) {
+    if (meta?.lessonType === 'test') {
+      return 'Test';
+    }
+    if (meta?.lessonType === 'video') {
+      return 'Video';
+    }
+    return 'Lesson';
+  }
+
   async function uploadVideoAsset(
     file: File,
     onProgress?: (progress: number) => void
@@ -1478,6 +1521,7 @@ export function CourseCurriculumEditor({
       const persistedMeta =
         localLessonMeta[lesson.id ?? ''] ?? localLessonMeta[key];
       if (persistedMeta) {
+        upsertLocalLessonMeta(key, lesson.id, persistedMeta);
         setLessonEditor({
           key,
           sectionId,
@@ -1505,6 +1549,13 @@ export function CourseCurriculumEditor({
         });
 
         if (data.data.lessonType === 'video') {
+          const meta: LocalLessonMeta = {
+            lessonType: 'video',
+            videoKey: '',
+            videoUrl: data.data.videoUrl ?? '',
+            duration: data.data.duration.toString(),
+          };
+          upsertLocalLessonMeta(key, lesson.id, meta);
           setLessonEditor({
             key,
             sectionId,
@@ -1519,6 +1570,16 @@ export function CourseCurriculumEditor({
           });
         } else {
           const questionType = toQuestionType(data.data.questionType);
+          const questions = parseQuestions(data.data.questions, questionType);
+          const meta: LocalLessonMeta = {
+            lessonType: 'test',
+            questionType,
+            videoKey: '',
+            videoUrl: '',
+            duration: '0',
+            questions,
+          };
+          upsertLocalLessonMeta(key, lesson.id, meta);
           setLessonEditor({
             key,
             sectionId,
@@ -1529,10 +1590,18 @@ export function CourseCurriculumEditor({
             videoKey: '',
             videoUrl: '',
             duration: '0',
-            questions: parseQuestions(data.data.questions, questionType),
+            questions: cloneQuestions(questions),
           });
         }
       } else {
+        upsertLocalLessonMeta(key, lesson.id, {
+          lessonType: 'video',
+          questionType: DEFAULT_QUESTION_TYPE,
+          videoKey: '',
+          videoUrl: '',
+          duration: '0',
+          questions: [createQuestionDraft(DEFAULT_QUESTION_TYPE)],
+        });
         setLessonEditor({
           key,
           sectionId,
@@ -1687,26 +1756,23 @@ export function CourseCurriculumEditor({
         };
       });
 
-      setLocalLessonMeta((current) => ({
-        ...current,
-        [lessonEditor.lessonId ?? lessonEditor.key]: {
-          lessonType: lessonEditor.lessonType,
-          questionType:
-            lessonEditor.lessonType === 'test'
-              ? lessonEditor.questionType
-              : undefined,
-          videoKey:
-            lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
-          videoUrl:
-            lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
-          duration:
-            lessonEditor.lessonType === 'video' ? savedDuration : undefined,
-          questions:
-            lessonEditor.lessonType === 'test'
-              ? cloneQuestions(lessonEditor.questions)
-              : undefined,
-        },
-      }));
+      upsertLocalLessonMeta(lessonEditor.key, lessonEditor.lessonId, {
+        lessonType: lessonEditor.lessonType,
+        questionType:
+          lessonEditor.lessonType === 'test'
+            ? lessonEditor.questionType
+            : undefined,
+        videoKey:
+          lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
+        videoUrl:
+          lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
+        duration:
+          lessonEditor.lessonType === 'video' ? savedDuration : undefined,
+        questions:
+          lessonEditor.lessonType === 'test'
+            ? cloneQuestions(lessonEditor.questions)
+            : undefined,
+      });
 
       if (lessonEditor.lessonType === 'video' && replacementVideoFile) {
         resetEditLessonVideoUploadState();
@@ -1746,26 +1812,23 @@ export function CourseCurriculumEditor({
             questions: cloneQuestions(lessonEditor.questions),
           };
         });
-        setLocalLessonMeta((current) => ({
-          ...current,
-          [lessonEditor.lessonId ?? lessonEditor.key]: {
-            lessonType: lessonEditor.lessonType,
-            questionType:
-              lessonEditor.lessonType === 'test'
-                ? lessonEditor.questionType
-                : undefined,
-            videoKey:
-              lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
-            videoUrl:
-              lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
-            duration:
-              lessonEditor.lessonType === 'video' ? savedDuration : undefined,
-            questions:
-              lessonEditor.lessonType === 'test'
-                ? cloneQuestions(lessonEditor.questions)
-                : undefined,
-          },
-        }));
+        upsertLocalLessonMeta(lessonEditor.key, lessonEditor.lessonId, {
+          lessonType: lessonEditor.lessonType,
+          questionType:
+            lessonEditor.lessonType === 'test'
+              ? lessonEditor.questionType
+              : undefined,
+          videoKey:
+            lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
+          videoUrl:
+            lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
+          duration:
+            lessonEditor.lessonType === 'video' ? savedDuration : undefined,
+          questions:
+            lessonEditor.lessonType === 'test'
+              ? cloneQuestions(lessonEditor.questions)
+              : undefined,
+        });
         if (lessonEditor.lessonType === 'video' && replacementVideoFile) {
           resetEditLessonVideoUploadState();
         }
@@ -2102,9 +2165,12 @@ export function CourseCurriculumEditor({
                         )}
                         {section.lessons.map((lesson, lessonIndex) => {
                           const key = lessonKey(section.id, lesson, lessonIndex);
-                          const meta =
-                            localLessonMeta[lesson.id ?? ''] ??
-                            localLessonMeta[key];
+                          const meta = getLessonMeta(
+                            section.id,
+                            lesson,
+                            lessonIndex
+                          );
+                          const lessonTypeLabel = getLessonTypeLabel(meta);
                           const isSelectedLesson = selectedLessonKey === key;
 
                           return (
@@ -2130,7 +2196,7 @@ export function CourseCurriculumEditor({
                               }
                             >
                               <span className="font-medium text-slate-500">
-                                {meta?.lessonType === 'test' ? 'Test' : 'Video'}
+                                {lessonTypeLabel}
                               </span>
                               <span className="text-slate-400">•</span>
                               <span className="min-w-0 truncate text-slate-800">
@@ -2259,8 +2325,12 @@ export function CourseCurriculumEditor({
                         lessonIndex
                       );
                       const isLessonBusy = busyAction?.includes(key) ?? false;
-                      const meta =
-                        localLessonMeta[lesson.id ?? ''] ?? localLessonMeta[key];
+                      const meta = getLessonMeta(
+                        selectedSection.id,
+                        lesson,
+                        lessonIndex
+                      );
+                      const lessonTypeLabel = getLessonTypeLabel(meta);
 
                       return (
                         <div
@@ -2301,10 +2371,10 @@ export function CourseCurriculumEditor({
                               >
                                 {meta?.lessonType === 'test' ? (
                                   <FileQuestion className="size-3" />
-                                ) : (
+                                ) : meta?.lessonType === 'video' ? (
                                   <CirclePlay className="size-3" />
-                                )}
-                                {meta?.lessonType === 'test' ? 'Test' : 'Video'}
+                                ) : null}
+                                {lessonTypeLabel}
                               </Badge>
                             </div>
                           </button>
@@ -2334,8 +2404,7 @@ export function CourseCurriculumEditor({
                                   key,
                                   lessonIndex,
                                   lessonIndex - 1
-                                )
-                              }
+                                )}
                             >
                               <ArrowUp className="size-3.5" />
                             </Button>
