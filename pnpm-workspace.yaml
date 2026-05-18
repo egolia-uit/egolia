@@ -58,7 +58,7 @@ catalog:
   typescript: 5.9.3
   typescript-eslint: 8.56.1
   vite: 8.0.10
-  vitest: 4.0.18
+  vitest: 4.1.6
   zod: 4.3.6
   '@vercel/otel': 2.1.2
 onlyBuiltDependencies:
