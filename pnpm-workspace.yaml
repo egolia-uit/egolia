@@ -59,7 +59,7 @@ catalog:
   typescript-eslint: 8.56.1
   vite: 8.0.10
   vitest: 4.0.18
-  zod: 4.3.6
+  zod: 4.4.3
   '@vercel/otel': 2.1.2
 onlyBuiltDependencies:
   - '@bufbuild/buf'
