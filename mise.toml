@@ -11,7 +11,7 @@ DISABLE_TELEMETRY = "1"
 "go:github.com/goforj/wire/cmd/wire" = "v1.2.0"
 "go:github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen" = "2.7.0"
 buf = "1.65.0"
-pnpm = "10.28.2"
+pnpm = "11.1.3"
 "npm:skills" = "latest"
 mockery = "3.7.0"
 yt-dlp = { version = "2026.03.17", rename_exe = "yt-dlp" }
