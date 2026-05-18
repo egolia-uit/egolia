@@ -6,6 +6,11 @@ import { postAuthPopupMessage } from '#/features/auth/popup';
 
 export default function AuthPopupCallbackPage() {
   useEffect(() => {
+    if (!window.opener) {
+      window.location.replace('/dashboard');
+      return;
+    }
+
     postAuthPopupMessage('success', '/dashboard');
     const timeout = window.setTimeout(() => window.close(), 250);
     return () => window.clearTimeout(timeout);

@@ -1,1 +1,1 @@
-export { SignInButton, SignOutButton } from "./components";
+export { SignInButton, SignOutButton, SignUpButton } from "./components";

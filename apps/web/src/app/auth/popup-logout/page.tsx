@@ -6,6 +6,11 @@ import { postAuthPopupMessage } from '#/features/auth/popup';
 
 export default function AuthPopupLogoutPage() {
   useEffect(() => {
+    if (!window.opener) {
+      window.location.replace('/courses');
+      return;
+    }
+
     postAuthPopupMessage('signed-out', '/login');
     const timeout = window.setTimeout(() => window.close(), 250);
     return () => window.clearTimeout(timeout);

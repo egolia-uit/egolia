@@ -92,7 +92,7 @@ export function MockPanel({
   items: string[];
 }) {
   return (
-    <Card className="border-dashed bg-nm-bg">
+    <Card className="bg-nm-bg shadow-nm-flat">
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary" className="bg-amber-100 text-amber-800">
@@ -102,10 +102,12 @@ export function MockPanel({
         </div>
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
-      <CardContent className="
-        grid gap-3
-        md:grid-cols-2
-      ">
+      <CardContent
+        className="
+          grid gap-3
+          md:grid-cols-2
+        "
+      >
         {items.map((item) => (
           <div
             key={item}
@@ -131,12 +133,14 @@ export function RoleTabs({
     label: string;
     icon: typeof BookOpen;
     value: string;
-    }>;
+  }>;
 }) {
   return (
-    <div className="
-      flex gap-2 overflow-x-auto rounded-xl bg-nm-bg p-2 shadow-nm-inset
-    ">
+    <div
+      className="
+        flex gap-2 overflow-x-auto rounded-xl bg-nm-bg p-2 shadow-nm-inset
+      "
+    >
       {tabs.map((tab) => (
         <Button
           key={tab.value}
@@ -160,15 +164,34 @@ export async function uploadCourseVideo(
   file: File,
   onProgress?: UploadProgressCallback
 ) {
-  const { data } = await getUploadVideoUrl({
-    body: { videoFilename: file.name },
-    client: apiClient,
-    path: { courseId },
-    throwOnError: true,
-  });
+  console.log('>>> START uploadCourseVideo');
+  console.log('>>> courseId:', courseId);
+  console.log('>>> File:', file.name, file.size, file.type);
 
-  await putFileToSignedUrl(data.uploadUrl, file, onProgress);
-  return data;
+  try {
+    console.log('>>> Calling getUploadVideoUrl...');
+    const { data } = await getUploadVideoUrl({
+      body: { videoFilename: file.name },
+      client: apiClient,
+      throwOnError: true,
+      responseValidator: async (data: any) => data,
+    });
+
+    console.log('>>> Backend response data:', data);
+
+    if (!data.uploadUrl) {
+      console.error('>>> No uploadUrl in response!');
+      throw new Error('Backend did not return uploadUrl');
+    }
+
+    console.log('>>> Initiating PUT to RustFS:', data.uploadUrl);
+    await putFileToSignedUrl(data.uploadUrl, file, onProgress);
+    console.log('>>> PUT Completed!');
+    return data;
+  } catch (error) {
+    console.error('>>> FATAL ERROR in uploadCourseVideo:', error);
+    throw error;
+  }
 }
 
 export function useCourseList(
@@ -408,9 +431,7 @@ export function CourseReviewsPanel({
               </div>
             </div>
             <p className="mt-2 text-sm text-slate-700">{review.comment}</p>
-            <p className="mt-2 text-xs text-slate-500">
-              User: {review.userId}
-            </p>
+            <p className="mt-2 text-xs text-slate-500">User: {review.userId}</p>
           </div>
         ))}
       </CardContent>
