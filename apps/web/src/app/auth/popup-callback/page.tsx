@@ -21,9 +21,9 @@ export default function AuthPopupCallbackPage() {
       grid min-h-dvh place-items-center bg-slate-950 px-6 text-white
     ">
       <div className="max-w-sm text-center">
-        <h1 className="text-xl font-semibold">Dang hoan tat dang nhap</h1>
+        <h1 className="text-xl font-semibold">Completing sign in...</h1>
         <p className="mt-2 text-sm text-slate-300">
-          Cua so nay se tu dong dong lai.
+          This window will close automatically.
         </p>
       </div>
     </main>

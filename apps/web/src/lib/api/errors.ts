@@ -7,18 +7,18 @@ export type ApiProblem = {
 
 const statusMessages: Record<number, ApiProblem> = {
   401: {
-    title: 'Cần đăng nhập',
-    message: 'Bạn cần sign in trước khi tiếp tục.',
+    title: 'Authentication Required',
+    message: 'You need to sign in before continuing.',
     status: 401,
   },
   403: {
-    title: 'Không đủ quyền',
-    message: 'Tài khoản hiện tại không có quyền thực hiện thao tác này.',
+    title: 'Access Denied',
+    message: 'Your account does not have permission to perform this action.',
     status: 403,
   },
   404: {
-    title: 'Không tìm thấy',
-    message: 'Dữ liệu này không còn tồn tại hoặc bạn không thể truy cập.',
+    title: 'Not Found',
+    message: 'This data no longer exists or is not accessible.',
     status: 404,
   },
   502: {
@@ -29,7 +29,7 @@ const statusMessages: Record<number, ApiProblem> = {
   },
   501: {
     title: 'Chưa triển khai',
-    message: 'Endpoint này đang có trong spec nhưng backend chưa hỗ trợ.',
+    message: 'This endpoint is in the spec but not supported by backend yet.',
     status: 501,
   },
 };
@@ -80,7 +80,7 @@ export function normalizeApiError(error: unknown): ApiProblem {
     if (message || code) {
       return {
         title: 'Request failed',
-        message: message ?? 'Backend trả về lỗi nhưng không có mô tả chi tiết.',
+        message: message ?? 'Backend returned an error without details.',
         code,
       };
     }
@@ -88,9 +88,9 @@ export function normalizeApiError(error: unknown): ApiProblem {
 
   if (error instanceof TypeError) {
     return {
-      title: 'Không kết nối được API',
+      title: 'API Connection Failed',
       message:
-        'Kiểm tra course service, Traefik, hoặc NEXT_PUBLIC_API_BASE_URL rồi thử lại.',
+        'Check course service, Traefik, or NEXT_PUBLIC_API_BASE_URL and try again.',
     };
   }
 
@@ -109,7 +109,7 @@ export function normalizeApiError(error: unknown): ApiProblem {
   }
 
   return {
-    title: 'Có lỗi xảy ra',
-    message: 'Không thể hoàn tất request. Vui lòng thử lại.',
+    title: 'An error occurred',
+    message: 'Could not complete the request. Please try again.',
   };
 }

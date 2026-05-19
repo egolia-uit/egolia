@@ -62,19 +62,19 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
 
   // Main navigation — always visible
   const mainItems: NavItem[] = [
-    { href: '/courses', icon: LibraryBig, label: 'Khám phá' },
+    { href: '/courses', icon: LibraryBig, label: 'Explore' },
     { href: '/blog', icon: Newspaper, label: 'Blog' },
   ];
-  groups.push({ label: 'Khám phá', items: mainItems });
+  groups.push({ label: 'Explore', items: mainItems });
 
   // Learner — logged in users
   if (isLoggedIn) {
     groups.push({
-      label: 'Học tập',
+      label: 'Learning',
       items: [
-        { href: '/learn', icon: BookOpen, label: 'Đang học' },
-        { href: '/learn?tab=bookmarked', icon: BookOpenCheck, label: 'Đã lưu' },
-        { href: '/billing', icon: CreditCard, label: 'Thanh toán' },
+        { href: '/learn', icon: BookOpen, label: 'In Progress' },
+        { href: '/learn?tab=bookmarked', icon: BookOpenCheck, label: 'Saved' },
+        { href: '/billing', icon: CreditCard, label: 'Billing' },
       ],
     });
   }
@@ -82,9 +82,9 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
   // Instructor
   if (isInstructor) {
     groups.push({
-      label: 'Giảng dạy',
+      label: 'Teaching',
       items: [
-        { href: '/instructor/courses', icon: GraduationCap, label: 'Khóa học của tôi' },
+        { href: '/instructor/courses', icon: GraduationCap, label: 'My Courses' },
       ],
     });
   }
@@ -92,12 +92,12 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
   // Admin
   if (isAdmin) {
     groups.push({
-      label: 'Quản trị',
+      label: 'Administration',
       items: [
-        { href: '/admin/courses', icon: ShieldCheck, label: 'Quản lý khóa học' },
-        { href: '/admin/courses?tab=pending', icon: BookOpenCheck, label: 'Chờ duyệt' },
-        { href: '/admin/billing', icon: CreditCard, label: 'Doanh thu' },
-        { href: '/admin/blog', icon: Newspaper, label: 'Quản lý blog' },
+        { href: '/admin/courses', icon: ShieldCheck, label: 'Manage Courses' },
+        { href: '/admin/courses?tab=pending', icon: BookOpenCheck, label: 'Pending Review' },
+        { href: '/admin/billing', icon: CreditCard, label: 'Revenue' },
+        { href: '/admin/blog', icon: Newspaper, label: 'Manage Blog' },
       ],
     });
   }
@@ -319,7 +319,7 @@ export function AppShell({
                     {roleLabel(viewer)}
                   </div>
                   <div className="truncate text-xs text-slate-500">
-                    {viewer?.email ?? 'Chưa đăng nhập'}
+                    {viewer?.email ?? 'Not logged in'}
                   </div>
                 </div>
               </div>

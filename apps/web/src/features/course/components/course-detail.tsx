@@ -61,7 +61,7 @@ export function CourseHero({
             />
           )}
           <p className="max-w-3xl text-sm/6 text-slate-600">
-            {course.overview || 'Khóa học chưa có overview.'}
+            {course.overview || 'Course does not have an overview yet.'}
           </p>
         </CardContent>
       </Card>
@@ -109,7 +109,7 @@ export function CourseStructure({
     return (
       <Card className="bg-nm-bg">
         <CardContent className="py-8 text-sm text-slate-600">
-          Chưa có section/lesson nào cho khóa học này.
+          There are no sections/lessons for this course.
         </CardContent>
       </Card>
     );
@@ -175,7 +175,7 @@ export function CourseStructure({
                 <div className="
                   rounded-xl bg-nm-bg p-4 text-sm text-slate-500 shadow-nm-inset
                 ">
-                  Section này chưa có lesson.
+                  This section has no lessons.
                 </div>
               )}
             </div>

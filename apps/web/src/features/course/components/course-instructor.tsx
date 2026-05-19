@@ -102,7 +102,7 @@ function InstructorCoursesContent({
         throwOnError: true,
       });
       courses.reload();
-      showToast('Khóa học đã được tạo thành công!');
+      showToast('Course created successfully!');
       setCreateOpen(false);
       const location = response.response.headers.get('Content-Location');
       const courseId = location?.split('/').filter(Boolean).at(-1);
@@ -130,8 +130,8 @@ function InstructorCoursesContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Giảng dạy"
-      title="Quản lý khóa học"
+      eyebrow="Teaching"
+      title="Manage Courses"
       actions={
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
@@ -169,13 +169,13 @@ function InstructorCoursesContent({
           destination="instructor"
           emptyTitle={
             activeTab === 'drafts'
-              ? 'Chưa có bản nháp'
-              : 'Chưa có khóa học của bạn'
+              ? 'No drafts available'
+              : 'You do not have any courses'
           }
           emptyDescription={
             activeTab === 'drafts'
-              ? 'Nhấn edit trong chi tiết khóa học đã duyệt để tạo bản nháp.'
-              : 'Tạo khóa học đầu tiên bằng nút Create course.'
+              ? 'Click edit in the approved course details to create a draft.'
+              : 'Create your first course using the Create course button.'
           }
           actionFor={(course) => (
             <div className="flex flex-wrap gap-2">
@@ -202,7 +202,7 @@ function InstructorCoursesContent({
                           path: { courseId: course.id ?? '' },
                           throwOnError: true,
                         }),
-                    course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
+                    course.hidden ? 'Course is now visible.' : 'Course is now hidden.'
                   )
                 }
               >
@@ -224,7 +224,7 @@ function InstructorCoursesContent({
                         path: { courseId: course.id ?? '' },
                         throwOnError: true,
                       }),
-                    'Khóa học đã được xóa.'
+                    'Course has been deleted.'
                   )
                 }
               >
@@ -318,8 +318,8 @@ function InstructorCourseDetailContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Quản lý"
-      title="Chi tiết khóa học"
+      eyebrow="Management"
+      title="Course Detail"
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
@@ -393,8 +393,8 @@ function InstructorCourseDetailContent({
                             throwOnError: true,
                           }),
                       state.data.hidden
-                        ? 'Khóa học đã hiện.'
-                        : 'Khóa học đã ẩn.'
+                        ? 'Course is now visible.'
+                        : 'Course is now hidden.'
                     )
                   }
                 >
@@ -422,7 +422,7 @@ function InstructorCourseDetailContent({
                           path: { courseId },
                           throwOnError: true,
                         }),
-                      'Khóa học đã được xóa.'
+                      'Course has been deleted.'
                     ).then((ok) => {
                       if (ok) {
                         router.push('/instructor/courses');
@@ -485,8 +485,8 @@ export function InstructorCourseBuilderContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Quản lý"
-      title="Course Builder"
+      eyebrow="Management"
+      title="Manage Course"
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
@@ -558,7 +558,7 @@ export function InstructorCourseBuilderContent({
                                 throwOnError: true,
                               });
                             },
-                            'Khóa học đã được cập nhật.'
+                            'Course has been updated.'
                           );
 
                           if (ok) {
@@ -619,7 +619,7 @@ export function InstructorCourseBuilderContent({
                                 reload();
                                 router.push('/instructor/courses');
                               },
-                              'Khóa học đã được gửi để duyệt.'
+                              'Course has been submitted for review.'
                             );
                           }}
                         >

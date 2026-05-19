@@ -103,8 +103,8 @@ function AdminCoursesContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Quản trị"
-      title="Quản lý khóa học hệ thống"
+      eyebrow="Administration"
+      title="Manage System Courses"
       actions={
         <Button type="button" variant="outline" onClick={courses.reload}>
           <RefreshCw className="mr-2 size-4" />
@@ -174,15 +174,15 @@ function AdminCoursesContent({
           <Card className="mb-6 bg-nm-bg shadow-nm-flat">
             <CardContent
               className="
-            flex flex-col gap-3 py-4
-            md:flex-row
-          "
+                flex flex-col gap-3 py-4
+                md:flex-row
+              "
             >
               <div className="relative flex-1">
                 <Search className="
-              pointer-events-none absolute top-1/2 left-4 size-4
-              -translate-y-1/2 text-muted-foreground
-            " />
+                  pointer-events-none absolute top-1/2 left-4 size-4
+                  -translate-y-1/2 text-muted-foreground
+                " />
                 <Input
                   className="pl-10"
                   placeholder="Search system courses"
@@ -209,8 +209,8 @@ function AdminCoursesContent({
           {actionError && <ErrorState error={actionError} />}
           {courses.state.status === 'ready' && !rows.length && (
             <EmptyState
-              title="Chưa có khóa học nào"
-              description="Chưa có dữ liệu khóa học trong hệ thống."
+              title="No courses available"
+              description="No course data in the system."
             />
           )}
           {courses.state.status === 'ready' && rows.length > 0 && (
@@ -260,7 +260,11 @@ function AdminCoursesContent({
                               <>
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button type="button" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat">
+                                    <Button type="button" size="sm" className="
+                                      bg-primary text-primary-foreground
+                                      shadow-nm-flat
+                                      hover:bg-primary/90
+                                    ">
                                       <CheckCircle2 className="mr-1.5 size-4" />
                                       Approve
                                     </Button>
@@ -281,7 +285,11 @@ function AdminCoursesContent({
                                       <DialogTrigger asChild>
                                         <Button
                                           type="button"
-                                          className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat"
+                                          className="
+                                            bg-primary text-primary-foreground
+                                            shadow-nm-flat
+                                            hover:bg-primary/90
+                                          "
                                           onClick={() =>
                                             mutateAdminCourse(
                                               () =>
@@ -290,7 +298,7 @@ function AdminCoursesContent({
                                                   path: { courseId: course.id ?? '' },
                                                   throwOnError: true,
                                                 }),
-                                              'Khóa học đã được duyệt.'
+                                              'Course has been approved.'
                                             )
                                           }
                                         >
@@ -333,7 +341,7 @@ function AdminCoursesContent({
                                                   path: { courseId: course.id ?? '' },
                                                   throwOnError: true,
                                                 }),
-                                              'Đã từ chối khóa học.'
+                                              'Course has been rejected.'
                                             )
                                           }
                                         >
@@ -363,7 +371,7 @@ function AdminCoursesContent({
                                         path: { courseId: course.id ?? '' },
                                         throwOnError: true,
                                       }),
-                                  course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
+                                  course.hidden ? 'Course is now visible.' : 'Course is now hidden.'
                                 )
                               }
                             >
@@ -386,7 +394,7 @@ function AdminCoursesContent({
                                       path: { courseId: course.id ?? '' },
                                       throwOnError: true,
                                     }),
-                                  'Khóa học đã được xóa.'
+                                  'Course has been deleted.'
                                 )
                               }
                             >

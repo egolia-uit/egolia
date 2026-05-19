@@ -44,8 +44,8 @@ export function MarketplacePage({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Khám phá"
-      title="Khám phá khóa học"
+      eyebrow="Explore"
+      title="Explore Courses"
       actions={
         <Button type="button" variant="outline" onClick={reload}>
           <RefreshCw className="mr-2 size-4" />
@@ -69,7 +69,7 @@ export function MarketplacePage({
             />
             <Input
               className="pl-10"
-              placeholder="Tìm khóa học theo tên hoặc mô tả"
+              placeholder="Search courses by name or description"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={(event) => {
@@ -90,8 +90,8 @@ export function MarketplacePage({
         state={state}
         reload={reload}
         destination="public"
-        emptyTitle="Chưa có khóa học"
-        emptyDescription="Chưa có khóa học nào được xuất bản."
+        emptyTitle="No courses available"
+        emptyDescription="There are no published courses yet."
       />
     </AppShell>
   );
@@ -100,7 +100,7 @@ export function MarketplacePage({
 export function PublicCoursePage({ courseId }: { courseId: string }) {
   const { viewer } = useViewer();
   const primaryHref = viewer?.id ? routeForViewer(viewer) : '/login';
-  const primaryLabel = viewer?.id ? 'Mở dashboard' : 'Sign in để học';
+  const primaryLabel = viewer?.id ? 'Open Dashboard' : 'Sign in to learn';
   const reviews = useCourseReviews(courseId);
   const [state, setState] = useState<ResourceState<CourseCourse>>({
     status: 'loading',
@@ -133,8 +133,8 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Chi tiết khóa học"
-      title="Tổng quan khóa học"
+      eyebrow="Course Detail"
+      title="Course Overview"
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && <ErrorState error={state.error} />}

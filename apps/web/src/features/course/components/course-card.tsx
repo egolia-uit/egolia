@@ -137,13 +137,13 @@ export function CourseCard({
       <CardContent className="flex flex-1 flex-col gap-4 px-5 pb-5">
         <p className="line-clamp-3 min-h-[4.5rem] text-sm/6 text-slate-600">
           {course.overview ||
-            'Khóa học chưa có mô tả. Nội dung sẽ được cập nhật sau.'}
+            'Course has no description yet. Content will be updated later.'}
         </p>
 
         {showProgress && (
           <div className="grid gap-2">
             <div className="flex items-center justify-between px-1 text-xs">
-              <span className="font-medium text-slate-500">Tiến độ học tập</span>
+              <span className="font-medium text-slate-500">Learning Progress</span>
               <span className="font-bold text-primary">{progress}%</span>
             </div>
             <div
@@ -180,7 +180,7 @@ export function CourseCard({
               flex items-center gap-1.5 text-xs font-medium text-slate-500
             ">
               <BookOpen className="size-3.5" />
-              Giá khóa học
+              Course Price
             </div>
             <div className="font-bold text-primary">
               {formatVnd(course.price)}
@@ -191,7 +191,7 @@ export function CourseCard({
               flex items-center gap-1.5 text-xs font-medium text-slate-500
             ">
               <ShieldCheck className="size-3.5" />
-              Giảng viên
+              Instructor
             </div>
             <div className="truncate font-semibold text-slate-700">
               {course.instructorId ?? 'N/A'}
@@ -205,7 +205,7 @@ export function CourseCard({
           <Button asChild variant="outline" className="w-full">
             <Link href={href}>
               <GraduationCap className="mr-2 size-4" />
-              Xem chi tiết
+              View Details
               <ChevronRight className="ml-auto size-4" />
             </Link>
           </Button>
