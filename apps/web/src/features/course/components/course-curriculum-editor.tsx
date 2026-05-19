@@ -73,6 +73,7 @@ type LessonQuestionDraft = {
 };
 
 type CourseCurriculumEditorProps = {
+  readOnly?: boolean;
   courseId: string;
   course: CourseCourseDetail;
   reload: () => void;
@@ -111,6 +112,7 @@ type UploadedVideo = {
 
 type TestQuestionBuilderProps = {
   disabled?: boolean;
+  readOnly?: boolean;
   questionType: QuestionType;
   questions: LessonQuestionDraft[];
   onQuestionTypeChange: (value: QuestionType) => void;
@@ -527,6 +529,7 @@ async function editTestLessonRequest({
 
 function TestQuestionBuilder({
   disabled = false,
+  readOnly = false,
   questionType,
   questions,
   onQuestionTypeChange,
@@ -554,7 +557,7 @@ function TestQuestionBuilder({
           </p>
         </div>
         <Select
-          disabled={disabled}
+          disabled={disabled || readOnly}
           value={questionType}
           onValueChange={(value) => onQuestionTypeChange(value as QuestionType)}
         >
@@ -608,6 +611,7 @@ function TestQuestionBuilder({
                   <CardTitle className="text-sm">
                     Question {questionIndex + 1}
                   </CardTitle>
+                  {!readOnly && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -618,6 +622,7 @@ function TestQuestionBuilder({
                     <Trash2 className="size-4" />
                     Remove
                   </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 px-3">
@@ -627,7 +632,7 @@ function TestQuestionBuilder({
                   </Label>
                   <Input
                     id={`question-${question.id}`}
-                    disabled={disabled}
+                    disabled={disabled || readOnly}
                     placeholder="Ví dụ: OOP principle nào dùng để ẩn chi tiết triển khai?"
                     value={question.question}
                     onChange={(event) =>
@@ -641,7 +646,7 @@ function TestQuestionBuilder({
                   {questionType === 'singleChoice' ? (
                     <RadioGroup
                       className="space-y-2"
-                      disabled={disabled}
+                      disabled={disabled || readOnly}
                       value={selectedAnswerId}
                       onValueChange={(value) =>
                         onAnswerCorrectChange(question.id, value, true)
@@ -660,6 +665,7 @@ function TestQuestionBuilder({
                           />
                           <Input
                             placeholder={`Answer ${answerIndex + 1}`}
+                            disabled={disabled || readOnly}
                             value={answer.content}
                             onChange={(event) =>
                               onAnswerChange(
@@ -669,6 +675,7 @@ function TestQuestionBuilder({
                               )
                             }
                           />
+                          {!readOnly && (
                           <Button
                             type="button"
                             variant="ghost"
@@ -680,6 +687,7 @@ function TestQuestionBuilder({
                           >
                             <Trash2 className="size-4" />
                           </Button>
+                          )}
                         </div>
                       ))}
                     </RadioGroup>
@@ -694,7 +702,7 @@ function TestQuestionBuilder({
                         >
                           <Checkbox
                             checked={answer.isCorrect}
-                            disabled={disabled}
+                            disabled={disabled || readOnly}
                             onCheckedChange={(checked) =>
                               onAnswerCorrectChange(
                                 question.id,
@@ -705,6 +713,7 @@ function TestQuestionBuilder({
                           />
                           <Input
                             placeholder={`Answer ${answerIndex + 1}`}
+                            disabled={disabled || readOnly}
                             value={answer.content}
                             onChange={(event) =>
                               onAnswerChange(
@@ -714,6 +723,7 @@ function TestQuestionBuilder({
                               )
                             }
                           />
+                          {!readOnly && (
                           <Button
                             type="button"
                             variant="ghost"
@@ -725,12 +735,14 @@ function TestQuestionBuilder({
                           >
                             <Trash2 className="size-4" />
                           </Button>
+                          )}
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
+                {!readOnly && (
                 <Button
                   type="button"
                   variant="outline"
@@ -742,12 +754,14 @@ function TestQuestionBuilder({
                   <Plus className="size-4" />
                   Add answer
                 </Button>
+                )}
               </CardContent>
             </Card>
           );
         })}
       </div>
 
+      {!readOnly && (
       <Button
         type="button"
         variant="secondary"
@@ -759,6 +773,7 @@ function TestQuestionBuilder({
         <Plus className="size-4" />
         Add question
       </Button>
+      )}
     </div>
   );
 }
@@ -768,6 +783,7 @@ export function CourseCurriculumEditor({
   course,
   reload,
   setCourse,
+  readOnly,
 }: CourseCurriculumEditorProps) {
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
@@ -1999,10 +2015,11 @@ export function CourseCurriculumEditor({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 px-3 pb-3">
-            <div className="
-              grid gap-2
-              sm:grid-cols-[1fr_auto]
-            ">
+            {!readOnly && (
+<div className="
+  grid gap-2
+  sm:grid-cols-[1fr_auto]
+">
               <Input
                 className="h-9"
                 placeholder="New section title..."
@@ -2027,6 +2044,7 @@ export function CourseCurriculumEditor({
                 Add section
               </Button>
             </div>
+)}
 
             {!course.sections.length && (
               <p className="px-2 py-1 text-sm text-slate-500">
@@ -2096,6 +2114,7 @@ export function CourseCurriculumEditor({
                         </span>
                       </button>
 
+                      {!readOnly && (
                       <div
                         className="
                           inline-flex items-center gap-0.5 opacity-100
@@ -2152,6 +2171,7 @@ export function CourseCurriculumEditor({
                           <Trash2 className="size-3.5" />
                         </Button>
                       </div>
+                      )}
                     </div>
 
                     {isExpanded && (
@@ -2220,7 +2240,7 @@ export function CourseCurriculumEditor({
               border border-slate-200/70 bg-nm-bg/95 shadow-nm-flat-sm
             ">
               <CardContent className="py-8 text-sm text-slate-500">
-                Chọn section hoặc lesson để chỉnh sửa.
+                {readOnly ? 'Chọn section hoặc lesson để xem chi tiết.' : 'Chọn section hoặc lesson để chỉnh sửa.'}
               </CardContent>
             </Card>
           )}
@@ -2229,7 +2249,7 @@ export function CourseCurriculumEditor({
             <Card className="border-none bg-nm-bg/95 shadow-nm-flat-sm">
               <CardHeader className="px-5 pt-5 pb-3">
                 <CardTitle className="text-lg text-slate-900">
-                  Editing section
+                  {readOnly ? 'Section details' : 'Editing section'}
                 </CardTitle>
                 <CardDescription>
                   Section {selectedSectionIndex + 1} ·{' '}
@@ -2237,6 +2257,7 @@ export function CourseCurriculumEditor({
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 px-5 pt-0 pb-5">
+                {!readOnly && (
                 <div className="
                   grid gap-3
                   md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end
@@ -2276,6 +2297,7 @@ export function CourseCurriculumEditor({
                     Delete section
                   </Button>
                 </div>
+                )}
 
                 <div className="
                   space-y-2 rounded-2xl bg-white/35 p-2 ring-1 ring-slate-200/70
@@ -2286,6 +2308,7 @@ export function CourseCurriculumEditor({
                     <p className="text-sm font-medium text-slate-800">
                       Lessons in this section
                     </p>
+                    {!readOnly && (
                     <Button
                       type="button"
                       variant={
@@ -2313,6 +2336,7 @@ export function CourseCurriculumEditor({
                       <Plus className="size-4" />
                       Add lesson
                     </Button>
+                    )}
                   </div>
 
                   <div className="
@@ -2379,6 +2403,7 @@ export function CourseCurriculumEditor({
                             </div>
                           </button>
 
+                          {!readOnly && (
                           <div
                             className="
                               inline-flex items-center gap-0.5 opacity-100
@@ -2448,6 +2473,7 @@ export function CourseCurriculumEditor({
                               <Trash2 className="size-3.5" />
                             </Button>
                           </div>
+                          )}
                         </div>
                       );
                     })}
@@ -2766,7 +2792,7 @@ export function CourseCurriculumEditor({
             ">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg text-slate-900">
-                  Editing lesson
+                  {readOnly ? 'Lesson details' : 'Editing lesson'}
                 </CardTitle>
                 <CardDescription>
                   {selectedLesson?.lesson.title ?? 'Loading lesson...'}
@@ -2783,6 +2809,7 @@ export function CourseCurriculumEditor({
                         <Label htmlFor="edit-lesson-title">Lesson title</Label>
                         <Input
                           id="edit-lesson-title"
+                          disabled={readOnly || Boolean(busyAction)}
                           value={lessonEditor.title}
                           onChange={(event) =>
                             setLessonEditor((current) =>
@@ -2795,7 +2822,7 @@ export function CourseCurriculumEditor({
                       </div>
                       <div className="space-y-1">
                         <Label>Lesson type</Label>
-                        <Input disabled value={lessonEditor.lessonType} />
+                        <Input disabled={readOnly || Boolean(busyAction)} value={lessonEditor.lessonType} />
                       </div>
                     </div>
 
@@ -2842,6 +2869,7 @@ export function CourseCurriculumEditor({
                           </div>
                         )}
 
+                        {!readOnly && (
                         <div className="
                           grid gap-3
                           md:grid-cols-[1fr_180px]
@@ -2883,7 +2911,9 @@ export function CourseCurriculumEditor({
                             />
                           </div>
                         </div>
+                        )}
 
+                        {!readOnly && (
                         <div className="
                           space-y-2 rounded-xl border border-slate-200/70
                           bg-nm-bg p-3 shadow-nm-inset
@@ -3006,9 +3036,11 @@ export function CourseCurriculumEditor({
                             </p>
                           )}
                         </div>
+                        )}
                       </div>
                     ) : (
                       <TestQuestionBuilder
+                        readOnly={readOnly}
                         disabled={Boolean(busyAction)}
                         questionType={lessonEditor.questionType}
                         questions={lessonEditor.questions}
@@ -3087,6 +3119,7 @@ export function CourseCurriculumEditor({
                       />
                     )}
 
+                    {!readOnly && (
                     <div className="flex flex-wrap justify-end gap-2">
                       <Button
                         type="button"
@@ -3132,6 +3165,7 @@ export function CourseCurriculumEditor({
                         Save lesson
                       </Button>
                     </div>
+                    )}
                   </>
                 ) : (
                   <div className="
@@ -3145,6 +3179,7 @@ export function CourseCurriculumEditor({
             </Card>
           )}
 
+          {!readOnly && (
           <details className="
             rounded-2xl bg-nm-bg/90 px-4 py-3 text-xs text-slate-600
             shadow-nm-flat-sm
@@ -3165,6 +3200,7 @@ export function CourseCurriculumEditor({
               </p>
             </div>
           </details>
+          )}
         </div>
       </div>
     </div>

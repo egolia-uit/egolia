@@ -180,7 +180,7 @@ function InstructorCoursesContent({
           actionFor={(course) => (
             <div className="flex flex-wrap gap-2">
               <Button asChild variant="outline">
-                <Link href={`/instructor/courses/${course.id}`}>
+                <Link href={`/instructor/courses/${course.id}${course.status === 'draft' ? '/builder' : ''}`}>
                   <Eye className="mr-2 size-4" />
                   Manage
                 </Link>
@@ -262,10 +262,9 @@ function InstructorCourseDetailContent({
 }) {
   const router = useRouter();
   const { success: showToast } = useToast();
-  const { state, reload, setState } = useCourseDetail(courseId);
+  const { state, reload } = useCourseDetail(courseId);
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
@@ -335,7 +334,7 @@ function InstructorCourseDetailContent({
             ">
               <div className="min-w-0">
                 <p className="text-xs font-medium text-slate-500 uppercase">
-                  Curriculum editor
+                  View
                 </p>
                 <h2 className="truncate text-xl font-semibold text-slate-950">
                   {state.data.title}
@@ -351,123 +350,24 @@ function InstructorCourseDetailContent({
                 flex flex-wrap gap-2
                 lg:justify-end
               ">
-                <Dialog open={editOpen} onOpenChange={setEditOpen}>
-                  <DialogTrigger asChild>
-                    <Button type="button" size="sm" disabled={submitting}>
-                      <Pencil className="mr-2 size-4" />
-                      Edit course
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-xl">
-                    <DialogHeader>
-                      <DialogTitle>Edit basic info</DialogTitle>
-                      <DialogDescription>
-                        Update title, price, or overview. Changing these on a published course will create a new draft.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
-                      <CourseForm
-                        course={state.data}
-                        submitLabel="Save changes"
-                        submitting={submitting}
-                        onUploadIntroductionVideo={(file, onProgress) =>
-                          uploadCourseVideo(courseId, file, onProgress)
-                        }
-                        onSubmit={async (body) => {
-                          if (state.status !== 'ready') return;
-
-                          const previousState = state.data;
-
-                          setState({
-                            status: 'ready',
-                            data: {
-                              ...previousState,
-                              title: body.title,
-                              price: body.price,
-                              overview: body.overview,
-                            }
-                          });
-
-                          let editableCourseId = courseId;
-                          const ok = await runAction(
-                            async () => {
-                              editableCourseId = await ensureEditableCourseId();
-                              await updateCourse({
-                                body,
-                                client: apiClient,
-                                path: { courseId: editableCourseId },
-                                throwOnError: true,
-                              });
-                            },
-                            isDraftLike(previousState)
-                              ? 'Khóa học đã được cập nhật.'
-                              : 'Bản nháp mới đã được tạo và cập nhật.'
-                          );
-
-                          if (ok) {
-                            setEditOpen(false);
-                            if (editableCourseId !== courseId) {
-                              router.replace(`/instructor/courses/${editableCourseId}`);
-                            }
-                          } else {
-                            setState({ status: 'ready', data: previousState });
-                          }
-                        }}
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-                {state.data.status === 'draft' && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        type="button"
-                        size="sm"
-                        disabled={submitting}
-                        className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat"
-                      >
-                        <Send className="mr-2 size-4" />
-                        Submit for Review
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Submit Course for Review?</DialogTitle>
-                        <DialogDescription>
-                          Once submitted, your course will be reviewed by an administrator. You may not be able to edit it while it is pending review. Do you want to proceed?
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="flex justify-end gap-2 pt-4">
-                        <DialogTrigger asChild>
-                          <Button variant="outline" type="button" disabled={submitting}>
-                            Cancel
-                          </Button>
-                        </DialogTrigger>
-                        <Button
-                          type="button"
-                          className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat"
-                          disabled={submitting}
-                          onClick={() => {
-                            runAction(
-                              async () => {
-                                await submitCourse({
-                                  client: apiClient,
-                                  path: { courseId },
-                                  throwOnError: true,
-                                });
-                                reload();
-                              },
-                              'Khóa học đã được gửi để duyệt.'
-                            );
-                          }}
-                        >
-                          Confirm & Submit
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                )}
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={submitting}
+                  className="
+                    bg-primary text-primary-foreground shadow-nm-flat
+                    hover:bg-primary/90
+                  "
+                  onClick={() => {
+                    runAction(async () => {
+                      const editableId = await ensureEditableCourseId();
+                      router.push(`/instructor/courses/${editableId}/builder`);
+                    }, 'Opening Editor...');
+                  }}
+                >
+                  <Pencil className="mr-2 size-4" />
+                  Edit Course
+                </Button>
 
                 <Button
                   type="button"
@@ -538,6 +438,202 @@ function InstructorCourseDetailContent({
           </div>
 
           {actionError && <ErrorState error={actionError} />}
+          
+          <CourseCurriculumEditor
+            courseId={courseId}
+            course={state.data}
+            reload={reload}
+            readOnly={true}
+            setCourse={() => undefined}
+          />
+        </div>
+      )}
+    </AppShell>
+  );
+}
+
+export function InstructorCourseBuilderContent({
+  viewer,
+  courseId,
+}: {
+  viewer: Viewer;
+  courseId: string;
+}) {
+  const router = useRouter();
+  const { success: showToast } = useToast();
+  const { state, reload, setState } = useCourseDetail(courseId);
+  const [actionError, setActionError] = useState<ApiProblem | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
+  async function runAction(action: () => Promise<unknown>, success: string) {
+    setSubmitting(true);
+    setActionError(null);
+    try {
+      await action();
+      showToast(success);
+      reload();
+      return true;
+    } catch (error) {
+      setActionError(normalizeApiError(error));
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <AppShell
+      viewer={viewer}
+      eyebrow="Quản lý"
+      title="Course Builder"
+    >
+      {state.status === 'loading' && <CourseGridSkeleton />}
+      {state.status === 'error' && (
+        <ErrorState error={state.error} onRetry={reload} />
+      )}
+      {state.status === 'ready' && (
+        <div className="grid gap-4">
+          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
+            <div className="
+              flex flex-col gap-3
+              lg:flex-row lg:items-center lg:justify-between
+            ">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-slate-500 uppercase">
+                  Curriculum Editor
+                </p>
+                <h2 className="truncate text-xl font-semibold text-slate-950">
+                  {state.data.title}
+                </h2>
+              </div>
+
+              <div className="
+                flex flex-wrap gap-2
+                lg:justify-end
+              ">
+                <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                  <DialogTrigger asChild>
+                    <Button type="button" size="sm" variant="outline" disabled={submitting}>
+                      <Pencil className="mr-2 size-4" />
+                      Edit basic info
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-xl">
+                    <DialogHeader>
+                      <DialogTitle>Edit basic info</DialogTitle>
+                      <DialogDescription>
+                        Update title, price, or overview. Changing these on a published course will create a new draft.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
+                      <CourseForm
+                        course={state.data}
+                        submitLabel="Save changes"
+                        submitting={submitting}
+                        onUploadIntroductionVideo={(file, onProgress) =>
+                          uploadCourseVideo(courseId, file, onProgress)
+                        }
+                        onSubmit={async (body) => {
+                          if (state.status !== 'ready') return;
+
+                          const previousState = state.data;
+
+                          setState({
+                            status: 'ready',
+                            data: {
+                              ...previousState,
+                              title: body.title,
+                              price: body.price,
+                              overview: body.overview,
+                            }
+                          });
+
+                          const ok = await runAction(
+                            async () => {
+                              await updateCourse({
+                                body,
+                                client: apiClient,
+                                path: { courseId: courseId },
+                                throwOnError: true,
+                              });
+                            },
+                            'Khóa học đã được cập nhật.'
+                          );
+
+                          if (ok) {
+                            setEditOpen(false);
+                          } else {
+                            setState({ status: 'ready', data: previousState });
+                          }
+                        }}
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                {state.data.status === 'draft' && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled={submitting}
+                        className="
+                          bg-primary text-primary-foreground shadow-nm-flat
+                          hover:bg-primary/90
+                        "
+                      >
+                        <Send className="mr-2 size-4" />
+                        Submit for Review
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Submit Course for Review?</DialogTitle>
+                        <DialogDescription>
+                          Once submitted, your course will be reviewed by an administrator. You may not be able to edit it while it is pending review. Do you want to proceed?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex justify-end gap-2 pt-4">
+                        <DialogTrigger asChild>
+                          <Button variant="outline" type="button" disabled={submitting}>
+                            Cancel
+                          </Button>
+                        </DialogTrigger>
+                        <Button
+                          type="button"
+                          className="
+                            bg-primary text-primary-foreground shadow-nm-flat
+                            hover:bg-primary/90
+                          "
+                          disabled={submitting}
+                          onClick={() => {
+                            runAction(
+                              async () => {
+                                await submitCourse({
+                                  client: apiClient,
+                                  path: { courseId },
+                                  throwOnError: true,
+                                });
+                                reload();
+                                router.push('/instructor/courses');
+                              },
+                              'Khóa học đã được gửi để duyệt.'
+                            );
+                          }}
+                        >
+                          Confirm & Submit
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {actionError && <ErrorState error={actionError} />}
 
           <CourseCurriculumEditor
             courseId={courseId}
@@ -566,6 +662,16 @@ export function InstructorCourseDetailPage({ courseId }: { courseId: string }) {
     <AuthGate allowedRoles={['instructor', 'admin']}>
       {(viewer) => (
         <InstructorCourseDetailContent viewer={viewer} courseId={courseId} />
+      )}
+    </AuthGate>
+  );
+}
+
+export function InstructorCourseBuilderPage({ courseId }: { courseId: string }) {
+  return (
+    <AuthGate allowedRoles={['instructor', 'admin']}>
+      {(viewer) => (
+        <InstructorCourseBuilderContent viewer={viewer} courseId={courseId} />
       )}
     </AuthGate>
   );
