@@ -1,6 +1,12 @@
 'use client';
 
-import { Eye, EyeOff, FilePlus2, Pencil, Trash2 } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  FilePlus2,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -8,7 +14,6 @@ import { useMemo, useState } from 'react';
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
 import { Button } from '#/components/ui/neumorphism/button';
-import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/neumorphism/card';
 import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Dialog,
@@ -33,9 +38,9 @@ import {
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import type { Viewer } from '#/lib/auth/roles';
 
-import { CourseHero, CourseStructure } from './course-detail';
+import { CourseCurriculumEditor } from './course-curriculum-editor';
 import { CourseForm } from './course-form';
-import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
+import { CourseGridSkeleton, ErrorState } from './course-states';
 import { isDraftLike, ListContent, normalizeTab, type ResourceState, uploadCourseVideo, useCourseDetail, useCourseList } from './course-shared';
 
 function InstructorCoursesContent({
@@ -320,18 +325,33 @@ function InstructorCourseDetailContent({
         <ErrorState error={state.error} onRetry={reload} />
       )}
       {state.status === 'ready' && (
-        <div className="grid gap-6">
-          <CourseHero
-            course={state.data}
-            actions={
-              <div className="grid gap-2">
+        <div className="grid gap-4">
+          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
+            <div className="
+              flex flex-col gap-3
+              lg:flex-row lg:items-center lg:justify-between
+            ">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-slate-500 uppercase">
+                  Curriculum editor
+                </p>
+                <h2 className="truncate text-xl font-semibold text-slate-950">
+                  {state.data.title}
+                </h2>
+                {state.data.overview && (
+                  <p className="mt-1 line-clamp-1 text-sm text-slate-600">
+                    {state.data.overview}
+                  </p>
+                )}
+              </div>
+
+              <div className="
+                flex flex-wrap gap-2
+                lg:justify-end
+              ">
                 <Dialog open={editOpen} onOpenChange={setEditOpen}>
                   <DialogTrigger asChild>
-                    <Button
-                      type="button"
-                      disabled={submitting}
-                      className="w-full"
-                    >
+                    <Button type="button" size="sm" disabled={submitting}>
                       <Pencil className="mr-2 size-4" />
                       Edit course
                     </Button>
@@ -353,9 +373,9 @@ function InstructorCourseDetailContent({
                         }
                         onSubmit={async (body) => {
                           if (state.status !== 'ready') return;
-                          
+
                           const previousState = state.data;
-                          
+
                           setState({
                             status: 'ready',
                             data: {
@@ -398,9 +418,13 @@ function InstructorCourseDetailContent({
 
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="ghost"
+                  size="sm"
                   disabled={submitting}
-                  className="w-full"
+                  className="
+                    text-slate-600
+                    hover:bg-white/60 hover:text-slate-900
+                  "
                   onClick={() =>
                     runAction(
                       () =>
@@ -430,9 +454,13 @@ function InstructorCourseDetailContent({
                 </Button>
                 <Button
                   type="button"
-                  variant="destructive"
+                  variant="ghost"
+                  size="sm"
                   disabled={submitting}
-                  className="w-full"
+                  className="
+                    text-slate-500
+                    hover:bg-red-50 hover:text-destructive
+                  "
                   onClick={() =>
                     runAction(
                       () =>
@@ -453,43 +481,27 @@ function InstructorCourseDetailContent({
                   Delete course
                 </Button>
               </div>
-            }
-          />
+            </div>
+          </div>
 
           {actionError && <ErrorState error={actionError} />}
 
-          <div
-            className="
-              grid gap-6
-              xl:grid-cols-[1fr_340px]
-            "
-          >
-            <div className="grid gap-3">
-              <h2 className="text-lg font-semibold">Course structure</h2>
-              <CourseStructure course={state.data} />
-              <InlineNotice
-                title="Sắp ra mắt"
-                description="Tính năng thêm Section và Lesson đang được hoàn thiện."
-              />
-            </div>
-
-            <div className="grid gap-4">
-              <Card className="bg-nm-bg shadow-nm-flat">
-                <CardHeader>
-                  <CardTitle>Ghi chú</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm text-slate-600">
-                  <p>
-                    Nhấn <strong>Edit course</strong> để thay đổi thông tin cơ bản.
-                  </p>
-                  <InlineNotice
-                    title="Storage"
-                    description="Video được upload trực tiếp lên hệ thống lưu trữ RustFS qua link bảo mật."
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <CourseCurriculumEditor
+            courseId={courseId}
+            course={state.data}
+            reload={reload}
+            setCourse={(updater) => {
+              setState((current) => {
+                if (current.status !== 'ready') {
+                  return current;
+                }
+                return {
+                  ...current,
+                  data: updater(current.data),
+                };
+              });
+            }}
+          />
         </div>
       )}
     </AppShell>
