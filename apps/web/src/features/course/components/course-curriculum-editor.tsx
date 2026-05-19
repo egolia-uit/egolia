@@ -73,6 +73,7 @@ type LessonQuestionDraft = {
 };
 
 type CourseCurriculumEditorProps = {
+  readOnly?: boolean;
   courseId: string;
   course: CourseCourseDetail;
   reload: () => void;
@@ -111,6 +112,7 @@ type UploadedVideo = {
 
 type TestQuestionBuilderProps = {
   disabled?: boolean;
+  readOnly?: boolean;
   questionType: QuestionType;
   questions: LessonQuestionDraft[];
   onQuestionTypeChange: (value: QuestionType) => void;
@@ -280,7 +282,7 @@ function validateTestQuestions(
   questions: LessonQuestionDraft[]
 ): string | null {
   if (!questions.length) {
-    return 'Test lesson cần ít nhất 1 câu hỏi.';
+    return 'Test lesson requires at least 1 question.';
   }
 
   for (
@@ -290,10 +292,10 @@ function validateTestQuestions(
   ) {
     const question = questions[questionIndex];
     if (!question.question.trim()) {
-      return `Câu hỏi ${questionIndex + 1} chưa có nội dung.`;
+      return `Question ${questionIndex + 1} has no content.`;
     }
     if (question.answers.length < 2) {
-      return `Câu hỏi ${questionIndex + 1} cần ít nhất 2 đáp án.`;
+      return `Question ${questionIndex + 1} requires at least 2 answers.`;
     }
 
     for (
@@ -302,7 +304,7 @@ function validateTestQuestions(
       answerIndex += 1
     ) {
       if (!question.answers[answerIndex].content.trim()) {
-        return `Đáp án ${answerIndex + 1} của câu hỏi ${questionIndex + 1} đang trống.`;
+        return `Answer ${answerIndex + 1} of question ${questionIndex + 1} is empty.`;
       }
     }
 
@@ -310,10 +312,10 @@ function validateTestQuestions(
       (answer) => answer.isCorrect
     ).length;
     if (questionType === 'singleChoice' && correctCount !== 1) {
-      return `Câu hỏi ${questionIndex + 1} phải có đúng 1 đáp án đúng.`;
+      return `Question ${questionIndex + 1} must have exactly 1 correct answer.`;
     }
     if (questionType === 'multipleChoice' && correctCount < 1) {
-      return `Câu hỏi ${questionIndex + 1} cần ít nhất 1 đáp án đúng.`;
+      return `Question ${questionIndex + 1} requires at least 1 correct answer.`;
     }
   }
 
@@ -527,6 +529,7 @@ async function editTestLessonRequest({
 
 function TestQuestionBuilder({
   disabled = false,
+  readOnly = false,
   questionType,
   questions,
   onQuestionTypeChange,
@@ -550,11 +553,11 @@ function TestQuestionBuilder({
         <div className="space-y-1">
           <Label>Question type</Label>
           <p className="text-xs text-slate-500">
-            `Single choice` dùng radio, `Multiple choice` dùng checkbox.
+            `Single choice` uses radio, `Multiple choice` uses checkbox.
           </p>
         </div>
         <Select
-          disabled={disabled}
+          disabled={disabled || readOnly}
           value={questionType}
           onValueChange={(value) => onQuestionTypeChange(value as QuestionType)}
         >
@@ -564,7 +567,7 @@ function TestQuestionBuilder({
               focus-visible:ring-2 focus-visible:ring-ring
             "
           >
-            <SelectValue placeholder="Chọn kiểu câu hỏi" />
+            <SelectValue placeholder="Select question type" />
           </SelectTrigger>
           <SelectContent className="border-none bg-nm-bg shadow-nm-flat">
             <SelectItem
@@ -608,6 +611,7 @@ function TestQuestionBuilder({
                   <CardTitle className="text-sm">
                     Question {questionIndex + 1}
                   </CardTitle>
+                  {!readOnly && (
                   <Button
                     type="button"
                     variant="ghost"
@@ -618,6 +622,7 @@ function TestQuestionBuilder({
                     <Trash2 className="size-4" />
                     Remove
                   </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 px-3">
@@ -627,8 +632,8 @@ function TestQuestionBuilder({
                   </Label>
                   <Input
                     id={`question-${question.id}`}
-                    disabled={disabled}
-                    placeholder="Ví dụ: OOP principle nào dùng để ẩn chi tiết triển khai?"
+                    disabled={disabled || readOnly}
+                    placeholder="Example: Which OOP principle is used to hide implementation details?"
                     value={question.question}
                     onChange={(event) =>
                       onQuestionChange(question.id, event.target.value)
@@ -641,7 +646,7 @@ function TestQuestionBuilder({
                   {questionType === 'singleChoice' ? (
                     <RadioGroup
                       className="space-y-2"
-                      disabled={disabled}
+                      disabled={disabled || readOnly}
                       value={selectedAnswerId}
                       onValueChange={(value) =>
                         onAnswerCorrectChange(question.id, value, true)
@@ -660,6 +665,7 @@ function TestQuestionBuilder({
                           />
                           <Input
                             placeholder={`Answer ${answerIndex + 1}`}
+                            disabled={disabled || readOnly}
                             value={answer.content}
                             onChange={(event) =>
                               onAnswerChange(
@@ -669,6 +675,7 @@ function TestQuestionBuilder({
                               )
                             }
                           />
+                          {!readOnly && (
                           <Button
                             type="button"
                             variant="ghost"
@@ -680,6 +687,7 @@ function TestQuestionBuilder({
                           >
                             <Trash2 className="size-4" />
                           </Button>
+                          )}
                         </div>
                       ))}
                     </RadioGroup>
@@ -694,7 +702,7 @@ function TestQuestionBuilder({
                         >
                           <Checkbox
                             checked={answer.isCorrect}
-                            disabled={disabled}
+                            disabled={disabled || readOnly}
                             onCheckedChange={(checked) =>
                               onAnswerCorrectChange(
                                 question.id,
@@ -705,6 +713,7 @@ function TestQuestionBuilder({
                           />
                           <Input
                             placeholder={`Answer ${answerIndex + 1}`}
+                            disabled={disabled || readOnly}
                             value={answer.content}
                             onChange={(event) =>
                               onAnswerChange(
@@ -714,6 +723,7 @@ function TestQuestionBuilder({
                               )
                             }
                           />
+                          {!readOnly && (
                           <Button
                             type="button"
                             variant="ghost"
@@ -725,12 +735,14 @@ function TestQuestionBuilder({
                           >
                             <Trash2 className="size-4" />
                           </Button>
+                          )}
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
+                {!readOnly && (
                 <Button
                   type="button"
                   variant="outline"
@@ -742,12 +754,14 @@ function TestQuestionBuilder({
                   <Plus className="size-4" />
                   Add answer
                 </Button>
+                )}
               </CardContent>
             </Card>
           );
         })}
       </div>
 
+      {!readOnly && (
       <Button
         type="button"
         variant="secondary"
@@ -759,6 +773,7 @@ function TestQuestionBuilder({
         <Plus className="size-4" />
         Add question
       </Button>
+      )}
     </div>
   );
 }
@@ -768,6 +783,7 @@ export function CourseCurriculumEditor({
   course,
   reload,
   setCourse,
+  readOnly,
 }: CourseCurriculumEditorProps) {
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
@@ -1046,7 +1062,7 @@ export function CourseCurriculumEditor({
       onProgress
     )) as UploadedVideo;
     if (!result.videoKey?.trim()) {
-      throw new Error('Upload thành công nhưng chưa nhận được video key.');
+      throw new Error('Upload successful but did not receive video key.');
     }
     return result;
   }
@@ -1188,7 +1204,7 @@ export function CourseCurriculumEditor({
     if (!title) {
       setActionError({
         title: 'Thiếu dữ liệu',
-        message: 'Tên section không được để trống.',
+        message: 'Section name cannot be empty.',
       });
       return;
     }
@@ -1196,7 +1212,7 @@ export function CourseCurriculumEditor({
     begin('create-section');
     try {
       await createSectionRequest(courseId, title);
-      setActionMessage('Section đã được tạo.');
+      setActionMessage('Section created.');
       setCreateSectionTitle('');
       reload();
     } catch (error) {
@@ -1216,7 +1232,7 @@ export function CourseCurriculumEditor({
         setRenamingSectionId(sectionId);
         setRenamingSectionTitle(title);
         setActionMessage(
-          'Create section chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Create section not implemented in backend yet, mocked data on FE.'
         );
         setCreateSectionTitle('');
       } else {
@@ -1232,7 +1248,7 @@ export function CourseCurriculumEditor({
     if (!title) {
       setActionError({
         title: 'Thiếu dữ liệu',
-        message: 'Tên section không được để trống.',
+        message: 'Section name cannot be empty.',
       });
       return;
     }
@@ -1254,7 +1270,7 @@ export function CourseCurriculumEditor({
         });
         reload();
       }
-      setActionMessage('Section đã được cập nhật.');
+      setActionMessage('Section updated.');
       setRenamingSectionId(null);
       setRenamingSectionTitle('');
     } catch (error) {
@@ -1266,7 +1282,7 @@ export function CourseCurriculumEditor({
           )
         );
         setActionMessage(
-          'Update section chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Update section not implemented in backend yet, mocked data on FE.'
         );
         setRenamingSectionId(null);
         setRenamingSectionTitle('');
@@ -1306,7 +1322,7 @@ export function CourseCurriculumEditor({
         delete next[sectionId];
         return next;
       });
-      setActionMessage('Section đã được xóa.');
+      setActionMessage('Section deleted.');
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
@@ -1327,7 +1343,7 @@ export function CourseCurriculumEditor({
           return next;
         });
         setActionMessage(
-          'Delete section chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Delete section not implemented in backend yet, mocked data on FE.'
         );
       } else {
         setActionError(problem);
@@ -1364,7 +1380,7 @@ export function CourseCurriculumEditor({
         });
         reload();
       }
-      setActionMessage('Section order đã được cập nhật.');
+      setActionMessage('Section order updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
@@ -1372,7 +1388,7 @@ export function CourseCurriculumEditor({
           moveItem(sections, currentIndex, targetIndex)
         );
         setActionMessage(
-          'Move section chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Move section not implemented in backend yet, mocked data on FE.'
         );
       } else {
         setActionError(problem);
@@ -1387,7 +1403,7 @@ export function CourseCurriculumEditor({
     if (!title) {
       setActionError({
         title: 'Thiếu dữ liệu',
-        message: 'Tên lesson không được để trống.',
+        message: 'Lesson name cannot be empty.',
       });
       return;
     }
@@ -1399,8 +1415,8 @@ export function CourseCurriculumEditor({
 
         if (newLessonUploading) {
           setActionError({
-            title: 'Đang upload',
-            message: 'Hãy đợi upload video hoàn tất trước khi lưu lesson.',
+            title: 'Uploading',
+            message: 'Please wait for the video upload to complete before saving the lesson.',
           });
           return;
         }
@@ -1424,7 +1440,7 @@ export function CourseCurriculumEditor({
         if (!Number.isInteger(durationNumber) || durationNumber < 0) {
           setActionError({
             title: 'Sai dữ liệu',
-            message: 'Duration phải là số nguyên không âm.',
+            message: 'Duration must be a non-negative integer.',
           });
           return;
         }
@@ -1461,7 +1477,7 @@ export function CourseCurriculumEditor({
         });
       }
 
-      setActionMessage('Lesson đã được tạo.');
+      setActionMessage('Lesson created.');
       setAddingLessonSectionId(null);
       resetLessonForm();
       reload();
@@ -1493,7 +1509,7 @@ export function CourseCurriculumEditor({
           },
         }));
         setActionMessage(
-          'Create lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Create lesson not implemented in backend yet, mocked data on FE.'
         );
         setAddingLessonSectionId(null);
         resetLessonForm();
@@ -1634,7 +1650,7 @@ export function CourseCurriculumEditor({
     if (!title) {
       setActionError({
         title: 'Thiếu dữ liệu',
-        message: 'Tên lesson không được để trống.',
+        message: 'Lesson name cannot be empty.',
       });
       return;
     }
@@ -1653,8 +1669,8 @@ export function CourseCurriculumEditor({
         if (lessonEditor.lessonType === 'video') {
           if (editLessonUploading) {
             setActionError({
-              title: 'Đang upload',
-              message: 'Hãy đợi upload video hoàn tất trước khi lưu lesson.',
+              title: 'Uploading',
+              message: 'Please wait for the video upload to complete before saving the lesson.',
             });
             return;
           }
@@ -1672,7 +1688,7 @@ export function CourseCurriculumEditor({
           if (!Number.isInteger(durationNumber) || durationNumber < 0) {
             setActionError({
               title: 'Sai dữ liệu',
-              message: 'Duration phải là số nguyên không âm.',
+              message: 'Duration must be a non-negative integer.',
             });
             return;
           }
@@ -1777,7 +1793,7 @@ export function CourseCurriculumEditor({
       if (lessonEditor.lessonType === 'video' && replacementVideoFile) {
         resetEditLessonVideoUploadState();
       }
-      setActionMessage('Lesson đã được cập nhật.');
+      setActionMessage('Lesson updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
@@ -1833,7 +1849,7 @@ export function CourseCurriculumEditor({
           resetEditLessonVideoUploadState();
         }
         setActionMessage(
-          'Update lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Update lesson not implemented in backend yet, mocked data on FE.'
         );
       } else {
         setActionError(problem);
@@ -1871,13 +1887,13 @@ export function CourseCurriculumEditor({
         });
         reload();
       }
-      setActionMessage('Lesson order đã được cập nhật.');
+      setActionMessage('Lesson order updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
         moveLessonLocally(sectionId, fromIndex, targetIndex);
         setActionMessage(
-          'Move lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Move lesson not implemented in backend yet, mocked data on FE.'
         );
       } else {
         setActionError(problem);
@@ -1918,7 +1934,7 @@ export function CourseCurriculumEditor({
         setLessonEditor(null);
         resetEditLessonVideoUploadState();
       }
-      setActionMessage('Lesson đã được xóa.');
+      setActionMessage('Lesson deleted.');
     } catch (error) {
       const problem = normalizeApiError(error);
       if (isUnimplemented(problem)) {
@@ -1937,7 +1953,7 @@ export function CourseCurriculumEditor({
           resetEditLessonVideoUploadState();
         }
         setActionMessage(
-          'Delete lesson chưa có ở backend, đã mock dữ liệu trên FE.'
+          'Delete lesson not implemented in backend yet, mocked data on FE.'
         );
       } else {
         setActionError(problem);
@@ -1999,10 +2015,11 @@ export function CourseCurriculumEditor({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 px-3 pb-3">
-            <div className="
-              grid gap-2
-              sm:grid-cols-[1fr_auto]
-            ">
+            {!readOnly && (
+<div className="
+  grid gap-2
+  sm:grid-cols-[1fr_auto]
+">
               <Input
                 className="h-9"
                 placeholder="New section title..."
@@ -2027,10 +2044,11 @@ export function CourseCurriculumEditor({
                 Add section
               </Button>
             </div>
+)}
 
             {!course.sections.length && (
               <p className="px-2 py-1 text-sm text-slate-500">
-                Chưa có section nào.
+                No sections yet.
               </p>
             )}
 
@@ -2096,6 +2114,7 @@ export function CourseCurriculumEditor({
                         </span>
                       </button>
 
+                      {!readOnly && (
                       <div
                         className="
                           inline-flex items-center gap-0.5 opacity-100
@@ -2152,6 +2171,7 @@ export function CourseCurriculumEditor({
                           <Trash2 className="size-3.5" />
                         </Button>
                       </div>
+                      )}
                     </div>
 
                     {isExpanded && (
@@ -2220,7 +2240,7 @@ export function CourseCurriculumEditor({
               border border-slate-200/70 bg-nm-bg/95 shadow-nm-flat-sm
             ">
               <CardContent className="py-8 text-sm text-slate-500">
-                Chọn section hoặc lesson để chỉnh sửa.
+                {readOnly ? 'Select a section or lesson to view details.' : 'Select a section or lesson to edit.'}
               </CardContent>
             </Card>
           )}
@@ -2229,7 +2249,7 @@ export function CourseCurriculumEditor({
             <Card className="border-none bg-nm-bg/95 shadow-nm-flat-sm">
               <CardHeader className="px-5 pt-5 pb-3">
                 <CardTitle className="text-lg text-slate-900">
-                  Editing section
+                  {readOnly ? 'Section details' : 'Editing section'}
                 </CardTitle>
                 <CardDescription>
                   Section {selectedSectionIndex + 1} ·{' '}
@@ -2237,6 +2257,7 @@ export function CourseCurriculumEditor({
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 px-5 pt-0 pb-5">
+                {!readOnly && (
                 <div className="
                   grid gap-3
                   md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end
@@ -2276,6 +2297,7 @@ export function CourseCurriculumEditor({
                     Delete section
                   </Button>
                 </div>
+                )}
 
                 <div className="
                   space-y-2 rounded-2xl bg-white/35 p-2 ring-1 ring-slate-200/70
@@ -2286,6 +2308,7 @@ export function CourseCurriculumEditor({
                     <p className="text-sm font-medium text-slate-800">
                       Lessons in this section
                     </p>
+                    {!readOnly && (
                     <Button
                       type="button"
                       variant={
@@ -2313,6 +2336,7 @@ export function CourseCurriculumEditor({
                       <Plus className="size-4" />
                       Add lesson
                     </Button>
+                    )}
                   </div>
 
                   <div className="
@@ -2379,6 +2403,7 @@ export function CourseCurriculumEditor({
                             </div>
                           </button>
 
+                          {!readOnly && (
                           <div
                             className="
                               inline-flex items-center gap-0.5 opacity-100
@@ -2448,12 +2473,13 @@ export function CourseCurriculumEditor({
                               <Trash2 className="size-3.5" />
                             </Button>
                           </div>
+                          )}
                         </div>
                       );
                     })}
                     {!selectedSection.lessons.length && (
                       <p className="px-3 py-2 text-xs text-slate-500">
-                        Chưa có lesson trong section này.
+                        No lessons in this section.
                       </p>
                     )}
                   </div>
@@ -2585,7 +2611,7 @@ export function CourseCurriculumEditor({
                                 </p>
                                 <p>{formatFileSize(newLessonVideoFile.size)}</p>
                                 <p>
-                                  Metadata sẽ tự điền duration, upload sẽ điền{' '}
+                                  Metadata will auto-fill duration, upload will auto-fill{' '}
                                   <strong>video key</strong>.
                                 </p>
                               </div>
@@ -2766,7 +2792,7 @@ export function CourseCurriculumEditor({
             ">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg text-slate-900">
-                  Editing lesson
+                  {readOnly ? 'Lesson details' : 'Editing lesson'}
                 </CardTitle>
                 <CardDescription>
                   {selectedLesson?.lesson.title ?? 'Loading lesson...'}
@@ -2783,6 +2809,7 @@ export function CourseCurriculumEditor({
                         <Label htmlFor="edit-lesson-title">Lesson title</Label>
                         <Input
                           id="edit-lesson-title"
+                          disabled={readOnly || Boolean(busyAction)}
                           value={lessonEditor.title}
                           onChange={(event) =>
                             setLessonEditor((current) =>
@@ -2795,7 +2822,7 @@ export function CourseCurriculumEditor({
                       </div>
                       <div className="space-y-1">
                         <Label>Lesson type</Label>
-                        <Input disabled value={lessonEditor.lessonType} />
+                        <Input disabled={readOnly || Boolean(busyAction)} value={lessonEditor.lessonType} />
                       </div>
                     </div>
 
@@ -2837,11 +2864,12 @@ export function CourseCurriculumEditor({
                               text-slate-500 ring-1 ring-slate-200/70
                             "
                           >
-                            Chưa lấy được video preview hiện tại từ API. Chọn
-                            file mới bên dưới để xem trước trước khi upload.
+                            Failed to get current video preview from API. Select
+                            new file below to preview before uploading.
                           </div>
                         )}
 
+                        {!readOnly && (
                         <div className="
                           grid gap-3
                           md:grid-cols-[1fr_180px]
@@ -2883,7 +2911,9 @@ export function CourseCurriculumEditor({
                             />
                           </div>
                         </div>
+                        )}
 
+                        {!readOnly && (
                         <div className="
                           space-y-2 rounded-xl border border-slate-200/70
                           bg-nm-bg p-3 shadow-nm-inset
@@ -2970,7 +3000,7 @@ export function CourseCurriculumEditor({
                                 </p>
                                 <p>{formatFileSize(editLessonVideoFile.size)}</p>
                                 <p>
-                                  Metadata sẽ tự cập nhật duration, upload sẽ đổi{' '}
+                                  Metadata will auto-update duration, upload will change{' '}
                                   <strong>video key</strong>.
                                 </p>
                               </div>
@@ -3006,9 +3036,11 @@ export function CourseCurriculumEditor({
                             </p>
                           )}
                         </div>
+                        )}
                       </div>
                     ) : (
                       <TestQuestionBuilder
+                        readOnly={readOnly}
                         disabled={Boolean(busyAction)}
                         questionType={lessonEditor.questionType}
                         questions={lessonEditor.questions}
@@ -3087,6 +3119,7 @@ export function CourseCurriculumEditor({
                       />
                     )}
 
+                    {!readOnly && (
                     <div className="flex flex-wrap justify-end gap-2">
                       <Button
                         type="button"
@@ -3132,6 +3165,7 @@ export function CourseCurriculumEditor({
                         Save lesson
                       </Button>
                     </div>
+                    )}
                   </>
                 ) : (
                   <div className="
@@ -3145,6 +3179,7 @@ export function CourseCurriculumEditor({
             </Card>
           )}
 
+          {!readOnly && (
           <details className="
             rounded-2xl bg-nm-bg/90 px-4 py-3 text-xs text-slate-600
             shadow-nm-flat-sm
@@ -3156,15 +3191,16 @@ export function CourseCurriculumEditor({
             </summary>
             <div className="mt-2 space-y-1.5">
               <p>
-                Upload video để lấy <strong>video key</strong>, duration sẽ tự
-                lấy từ metadata khi browser đọc được file.
+                Upload video to get <strong>video key</strong>, duration will be
+                auto-extracted from metadata when browser reads the file.
               </p>
               <p>
-                Editor bên phải chỉ focus vào item đang chọn để tránh scroll dài
-                khi course có nhiều lesson.
+                The right editor only focuses on the selected item to avoid long scrolling
+                when the course has many lessons.
               </p>
             </div>
           </details>
+          )}
         </div>
       </div>
     </div>

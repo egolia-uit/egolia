@@ -309,7 +309,7 @@ export function useCourseReviews(courseId: string) {
 export function ResultMeta({ result }: { result: CourseListResponse }) {
   return (
     <div className="text-sm text-slate-500">
-      {result.pagination.total} khóa học · trang {result.pagination.page}/
+      {result.pagination.total} courses · page {result.pagination.page}/
       {Math.max(result.pagination.totalPages, 1)}
     </div>
   );
@@ -403,8 +403,8 @@ export function CourseReviewsPanel({
   if (!reviews.length) {
     return (
       <EmptyState
-        title="Chưa có đánh giá"
-        description="Khóa học này chưa có đánh giá nào."
+        title="No reviews yet"
+        description="This course has no reviews yet."
       />
     );
   }

@@ -101,7 +101,7 @@ export function SignInButton() {
         <polyline points="10 17 15 12 10 7" />
         <line x1="15" y1="12" x2="3" y2="12" />
       </svg>
-      Đăng nhập với Authentik
+      Sign in with Authentik
     </Button>
   );
 }
@@ -152,7 +152,7 @@ export function SignUpButton() {
       className="w-full cursor-pointer gap-2"
     >
       <UserPlus className="size-5" />
-      Tạo tài khoản
+      Create Account
     </Button>
   );
 }
@@ -210,15 +210,15 @@ export function SignOutButton() {
           "
         >
           <LogOut className="size-4" />
-          Đăng xuất
+          Sign out
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuItem onSelect={() => handleSignOut(false)}>
-          Chỉ đăng xuất Egolia
+          Sign out from Egolia only
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => handleSignOut(true)}>
-          Đăng xuất cả Authentik
+          Sign out from Authentik completely
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

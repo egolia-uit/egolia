@@ -90,13 +90,13 @@ function LearnerHomeContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Học tập"
-      title="Không gian học tập"
+      eyebrow="Learning"
+      title="Learning Workspace"
       actions={
         <Button asChild>
           <Link href="/courses">
             <Search className="mr-2 size-4" />
-            Khám phá khóa học
+            Explore Courses
           </Link>
         </Button>
       }
@@ -104,24 +104,24 @@ function LearnerHomeContent({
       {(activeTab === 'home' || activeTab === 'enrolled') && (
         <section className="grid gap-6">
           <div className="flex flex-col gap-3">
-            <h2 className="text-lg font-semibold">Đang học</h2>
+            <h2 className="text-lg font-semibold">In Progress</h2>
             <ListContent
               state={enrolled.state}
               reload={enrolled.reload}
               destination="learner"
-              emptyTitle="Bạn chưa đăng ký khóa học nào"
-              emptyDescription="Vào khám phá để xem các khóa học đang mở."
+              emptyTitle="You have not enrolled in any courses"
+              emptyDescription="Go to explore to see available courses."
             />
           </div>
           {activeTab === 'home' && (
             <div className="flex flex-col gap-3">
-              <h2 className="text-lg font-semibold">Đã lưu</h2>
+              <h2 className="text-lg font-semibold">Saved</h2>
               <ListContent
                 state={bookmarked.state}
                 reload={bookmarked.reload}
                 destination="learner"
-                emptyTitle="Chưa có bookmark"
-                emptyDescription="Bookmark giúp bạn quay lại khóa học nhanh hơn."
+                emptyTitle="No bookmarks yet"
+                emptyDescription="Bookmarks help you return to your courses faster."
               />
             </div>
           )}
@@ -130,13 +130,13 @@ function LearnerHomeContent({
 
       {activeTab === 'bookmarked' && (
         <section className="grid gap-3">
-          <h2 className="text-lg font-semibold">Đã lưu</h2>
+          <h2 className="text-lg font-semibold">Saved</h2>
           <ListContent
             state={bookmarked.state}
             reload={bookmarked.reload}
             destination="learner"
-            emptyTitle="Chưa có bookmark"
-            emptyDescription="Bookmark giúp bạn quay lại khóa học nhanh hơn."
+            emptyTitle="No bookmarks yet"
+            emptyDescription="Bookmarks help you return to your courses faster."
           />
         </section>
       )}
@@ -220,7 +220,7 @@ function LearnerCourseContent({
     <AppShell
       viewer={viewer}
       eyebrow="Chi tiết"
-      title="Nội dung khóa học"
+      title="Course Content"
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
@@ -262,7 +262,7 @@ function LearnerCourseContent({
                               path: { courseId },
                               throwOnError: true,
                             }),
-                          'Cảm ơn bạn đã đánh giá khóa học!'
+                          'Thank you for reviewing this course!'
                         );
                         if (ok) {
                           setReviewOpen(false);
@@ -291,7 +291,7 @@ function LearnerCourseContent({
                             focus-visible:ring-2 focus-visible:ring-ring
                             focus-visible:ring-offset-2
                           "
-                          placeholder="Bạn học được gì từ khóa học này?"
+                          placeholder="What did you learn from this course?"
                           value={comment}
                           onChange={(event) => setComment(event.target.value)}
                         />
@@ -327,7 +327,7 @@ function LearnerCourseContent({
                               path: { courseId },
                               throwOnError: true,
                             }),
-                      bookmarked ? 'Đã bỏ lưu khóa học.' : 'Đã lưu khóa học.'
+                      bookmarked ? 'Course removed from bookmarks.' : 'Course saved to bookmarks.'
                     )
                   }
                 >
@@ -348,7 +348,7 @@ function LearnerCourseContent({
                           path: { courseId },
                           throwOnError: true,
                         }),
-                      'Chúc mừng! Bạn đã hoàn thành khóa học.'
+                      'Congratulations! You have completed the course.'
                     )
                   }
                 >
@@ -366,7 +366,7 @@ function LearnerCourseContent({
 
           <section className="grid gap-6">
             <div className="grid gap-3">
-              <h2 className="text-lg font-semibold">Nội dung khóa học</h2>
+              <h2 className="text-lg font-semibold">Course Content</h2>
               <CourseStructure
                 course={state.data}
                 baseHref={`/learn/courses/${courseId}`}
@@ -427,7 +427,7 @@ function LearnerLessonContent({
   }, [courseId, lessonId, sectionId]);
 
   return (
-    <AppShell viewer={viewer} eyebrow="Bài học" title="Nội dung bài học">
+    <AppShell viewer={viewer} eyebrow="Lesson" title="Lesson Content">
       <div className="grid gap-4">
         <div>
           <Button asChild variant="outline" size="sm">
@@ -465,7 +465,7 @@ function LearnerLessonContent({
                     shadow-nm-inset
                   "
                 >
-                  Lesson này chưa có video để phát.
+                  This lesson does not have a video to play.
                 </div>
               )}
             </CardContent>
