@@ -11,6 +11,14 @@ import { Button } from '#/components/ui/neumorphism/button';
 import { Card, CardContent } from '#/components/ui/neumorphism/card';
 import { Input } from '#/components/ui/neumorphism/input';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '#/components/ui/shadcn/dialog';
+import {
   Table,
   TableBody,
   TableCell,
@@ -162,111 +170,209 @@ function AdminCoursesContent({
       )}
 
       {(activeTab === 'system' || activeTab === 'pending') && (
-      <>
-      <Card className="mb-6 bg-nm-bg shadow-nm-flat">
-        <CardContent
-          className="
+        <>
+          <Card className="mb-6 bg-nm-bg shadow-nm-flat">
+            <CardContent
+              className="
             flex flex-col gap-3 py-4
             md:flex-row
           "
-        >
-          <div className="relative flex-1">
-            <Search className="
+            >
+              <div className="relative flex-1">
+                <Search className="
               pointer-events-none absolute top-1/2 left-4 size-4
               -translate-y-1/2 text-muted-foreground
             " />
-            <Input
-              className="pl-10"
-              placeholder="Search system courses"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  setSubmittedQuery(query.trim());
-                }
-              }}
-            />
-          </div>
-          <Button type="button" onClick={() => setSubmittedQuery(query.trim())}>
-            <Search className="mr-2 size-4" />
-            Search
-          </Button>
-        </CardContent>
-      </Card>
+                <Input
+                  className="pl-10"
+                  placeholder="Search system courses"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      setSubmittedQuery(query.trim());
+                    }
+                  }}
+                />
+              </div>
+              <Button type="button" onClick={() => setSubmittedQuery(query.trim())}>
+                <Search className="mr-2 size-4" />
+                Search
+              </Button>
+            </CardContent>
+          </Card>
 
-      {courses.state.status === 'loading' && <CourseGridSkeleton />}
-      {courses.state.status === 'error' && (
-        <ErrorState error={courses.state.error} onRetry={courses.reload} />
-      )}
-      {actionError && <ErrorState error={actionError} />}
-      {courses.state.status === 'ready' && !rows.length && (
-        <EmptyState
-          title="Chưa có khóa học nào"
-          description="Chưa có dữ liệu khóa học trong hệ thống."
-        />
-      )}
-      {courses.state.status === 'ready' && rows.length > 0 && (
-        <Card className="bg-nm-bg shadow-nm-flat">
-          <CardContent className="py-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Course</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Hidden</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Instructor</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rows.map((course) => (
-                  <TableRow key={course.id ?? course.title}>
-                    <TableCell className="max-w-80 whitespace-normal">
-                      <div className="font-medium">{course.title}</div>
-                      <div className="line-clamp-1 text-xs text-slate-500">
-                        {course.overview || 'No overview'}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          course.status === 'approved' ? 'default' : 'secondary'
-                        }
-                      >
-                        {course.status ?? 'draft'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{course.hidden ? 'Yes' : 'No'}</TableCell>
-                    <TableCell>{formatVnd(course.price)}</TableCell>
-                    <TableCell>{course.instructorId ?? 'N/A'}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap justify-end gap-2">
-                        <Button asChild variant="outline" size="sm">
-                          <Link href={`/instructor/courses/${course.id}`}>
-                            <Eye className="mr-1.5 size-4" />
-                            Detail
-                          </Link>
-                        </Button>
-                        {isPendingLike(course) && (
-                          <>
+          {courses.state.status === 'loading' && <CourseGridSkeleton />}
+          {courses.state.status === 'error' && (
+            <ErrorState error={courses.state.error} onRetry={courses.reload} />
+          )}
+          {actionError && <ErrorState error={actionError} />}
+          {courses.state.status === 'ready' && !rows.length && (
+            <EmptyState
+              title="Chưa có khóa học nào"
+              description="Chưa có dữ liệu khóa học trong hệ thống."
+            />
+          )}
+          {courses.state.status === 'ready' && rows.length > 0 && (
+            <Card className="bg-nm-bg shadow-nm-flat">
+              <CardContent className="py-4">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Course</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Hidden</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Instructor</TableHead>
+                      <TableHead className="text-right">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {rows.map((course) => (
+                      <TableRow key={course.id ?? course.title}>
+                        <TableCell className="max-w-80 whitespace-normal">
+                          <div className="font-medium">{course.title}</div>
+                          <div className="line-clamp-1 text-xs text-slate-500">
+                            {course.overview || 'No overview'}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              course.status === 'approved' ? 'default' : 'secondary'
+                            }
+                          >
+                            {course.status ?? 'draft'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{course.hidden ? 'Yes' : 'No'}</TableCell>
+                        <TableCell>{formatVnd(course.price)}</TableCell>
+                        <TableCell>{course.instructorId ?? 'N/A'}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap justify-end gap-2">
+                            <Button asChild variant="outline" size="sm">
+                              <Link href={`/instructor/courses/${course.id}`}>
+                                <Eye className="mr-1.5 size-4" />
+                                Detail
+                              </Link>
+                            </Button>
+                            {isPendingLike(course) && (
+                              <>
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button type="button" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat">
+                                      <CheckCircle2 className="mr-1.5 size-4" />
+                                      Approve
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>Approve Course?</DialogTitle>
+                                      <DialogDescription>
+                                        Are you sure you want to approve this course? Once approved, it will be available to students according to its visibility settings.
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="flex justify-end gap-2 pt-4">
+                                      <DialogTrigger asChild>
+                                        <Button variant="outline" type="button">
+                                          Cancel
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogTrigger asChild>
+                                        <Button
+                                          type="button"
+                                          className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat"
+                                          onClick={() =>
+                                            mutateAdminCourse(
+                                              () =>
+                                                approveCourse({
+                                                  client: apiClient,
+                                                  path: { courseId: course.id ?? '' },
+                                                  throwOnError: true,
+                                                }),
+                                              'Khóa học đã được duyệt.'
+                                            )
+                                          }
+                                        >
+                                          Confirm Approve
+                                        </Button>
+                                      </DialogTrigger>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button type="button" size="sm" variant="destructive">
+                                      <XCircle className="mr-1.5 size-4" />
+                                      Decline
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>Decline Course?</DialogTitle>
+                                      <DialogDescription>
+                                        Are you sure you want to decline this course? The instructor will be notified to make changes.
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="flex justify-end gap-2 pt-4">
+                                      <DialogTrigger asChild>
+                                        <Button variant="outline" type="button">
+                                          Cancel
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogTrigger asChild>
+                                        <Button
+                                          type="button"
+                                          variant="destructive"
+                                          onClick={() =>
+                                            mutateAdminCourse(
+                                              () =>
+                                                declineCourse({
+                                                  client: apiClient,
+                                                  path: { courseId: course.id ?? '' },
+                                                  throwOnError: true,
+                                                }),
+                                              'Đã từ chối khóa học.'
+                                            )
+                                          }
+                                        >
+                                          Confirm Decline
+                                        </Button>
+                                      </DialogTrigger>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+                              </>
+                            )}
                             <Button
                               type="button"
                               size="sm"
+                              variant="outline"
                               onClick={() =>
                                 mutateAdminCourse(
                                   () =>
-                                    approveCourse({
-                                      client: apiClient,
-                                      path: { courseId: course.id ?? '' },
-                                      throwOnError: true,
-                                    }),
-                                  'Khóa học đã được duyệt.'
+                                    course.hidden
+                                      ? unhideCourse({
+                                        client: apiClient,
+                                        path: { courseId: course.id ?? '' },
+                                        throwOnError: true,
+                                      })
+                                      : hideCourse({
+                                        client: apiClient,
+                                        path: { courseId: course.id ?? '' },
+                                        throwOnError: true,
+                                      }),
+                                  course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
                                 )
                               }
                             >
-                              <CheckCircle2 className="mr-1.5 size-4" />
-                              Approve
+                              {course.hidden ? (
+                                <Eye className="mr-1.5 size-4" />
+                              ) : (
+                                <EyeOff className="mr-1.5 size-4" />
+                              )}
+                              {course.hidden ? 'Unhide' : 'Hide'}
                             </Button>
                             <Button
                               type="button"
@@ -275,78 +381,28 @@ function AdminCoursesContent({
                               onClick={() =>
                                 mutateAdminCourse(
                                   () =>
-                                    declineCourse({
+                                    deleteCourse({
                                       client: apiClient,
                                       path: { courseId: course.id ?? '' },
                                       throwOnError: true,
                                     }),
-                                  'Đã từ chối khóa học.'
+                                  'Khóa học đã được xóa.'
                                 )
                               }
                             >
-                              <XCircle className="mr-1.5 size-4" />
-                              Decline
+                              <Trash2 className="mr-1.5 size-4" />
+                              Delete
                             </Button>
-                          </>
-                        )}
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          onClick={() =>
-                            mutateAdminCourse(
-                              () =>
-                                course.hidden
-                                  ? unhideCourse({
-                                      client: apiClient,
-                                      path: { courseId: course.id ?? '' },
-                                      throwOnError: true,
-                                    })
-                                  : hideCourse({
-                                      client: apiClient,
-                                      path: { courseId: course.id ?? '' },
-                                      throwOnError: true,
-                                    }),
-                              course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
-                            )
-                          }
-                        >
-                          {course.hidden ? (
-                            <Eye className="mr-1.5 size-4" />
-                          ) : (
-                            <EyeOff className="mr-1.5 size-4" />
-                          )}
-                          {course.hidden ? 'Unhide' : 'Hide'}
-                        </Button>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="destructive"
-                          onClick={() =>
-                            mutateAdminCourse(
-                              () =>
-                                deleteCourse({
-                                  client: apiClient,
-                                  path: { courseId: course.id ?? '' },
-                                  throwOnError: true,
-                                }),
-                              'Khóa học đã được xóa.'
-                            )
-                          }
-                        >
-                          <Trash2 className="mr-1.5 size-4" />
-                          Delete
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      )}
-      </>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+        </>
       )}
     </AppShell>
   );

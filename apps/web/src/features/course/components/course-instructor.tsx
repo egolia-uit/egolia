@@ -6,6 +6,7 @@ import {
   FilePlus2,
   Pencil,
   Trash2,
+  Send,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -32,6 +33,7 @@ import {
   getCourseForUpdate,
   getMyCourses,
   hideCourse,
+  submitCourse,
   unhideCourse,
   updateCourse,
 } from '#/lib/api/course';
@@ -191,15 +193,15 @@ function InstructorCoursesContent({
                     () =>
                       course.hidden
                         ? unhideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          })
+                          client: apiClient,
+                          path: { courseId: course.id ?? '' },
+                          throwOnError: true,
+                        })
                         : hideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          }),
+                          client: apiClient,
+                          path: { courseId: course.id ?? '' },
+                          throwOnError: true,
+                        }),
                     course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
                   )
                 }
@@ -416,6 +418,57 @@ function InstructorCourseDetailContent({
                   </DialogContent>
                 </Dialog>
 
+                {state.data.status === 'draft' && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled={submitting}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat"
+                      >
+                        <Send className="mr-2 size-4" />
+                        Submit for Review
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Submit Course for Review?</DialogTitle>
+                        <DialogDescription>
+                          Once submitted, your course will be reviewed by an administrator. You may not be able to edit it while it is pending review. Do you want to proceed?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex justify-end gap-2 pt-4">
+                        <DialogTrigger asChild>
+                          <Button variant="outline" type="button" disabled={submitting}>
+                            Cancel
+                          </Button>
+                        </DialogTrigger>
+                        <Button
+                          type="button"
+                          className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-nm-flat"
+                          disabled={submitting}
+                          onClick={() => {
+                            runAction(
+                              async () => {
+                                await submitCourse({
+                                  client: apiClient,
+                                  path: { courseId },
+                                  throwOnError: true,
+                                });
+                                reload();
+                              },
+                              'Khóa học đã được gửi để duyệt.'
+                            );
+                          }}
+                        >
+                          Confirm & Submit
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
+
                 <Button
                   type="button"
                   variant="ghost"
@@ -430,15 +483,15 @@ function InstructorCourseDetailContent({
                       () =>
                         state.data.hidden
                           ? unhideCourse({
-                              client: apiClient,
-                              path: { courseId },
-                              throwOnError: true,
-                            })
+                            client: apiClient,
+                            path: { courseId },
+                            throwOnError: true,
+                          })
                           : hideCourse({
-                              client: apiClient,
-                              path: { courseId },
-                              throwOnError: true,
-                            }),
+                            client: apiClient,
+                            path: { courseId },
+                            throwOnError: true,
+                          }),
                       state.data.hidden
                         ? 'Khóa học đã hiện.'
                         : 'Khóa học đã ẩn.'
