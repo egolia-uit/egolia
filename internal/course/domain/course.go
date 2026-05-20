@@ -672,7 +672,7 @@ func areQuestionsChanged(q1, q2 []*TestQuestion) bool {
 	return false
 }
 
-func (c *Course) Merge(draft *Course) ([]uuid.UUID, error) {
+func (c *Course) Merge(draft *Course) ([]DomainEvent, error) {
 	if draft == nil {
 		return nil, errs.NewInvalid("draft course is required")
 	}
@@ -686,7 +686,7 @@ func (c *Course) Merge(draft *Course) ([]uuid.UUID, error) {
 	c.introductionVideoKey = draft.introductionVideoKey
 	c.deletedAt = draft.deletedAt
 
-	var changedLessonIDs []uuid.UUID
+	var events []DomainEvent
 
 	newSections := make([]*Section, 0, len(draft.sections))
 
@@ -764,13 +764,13 @@ func (c *Course) Merge(draft *Course) ([]uuid.UUID, error) {
 					newLesson := *l
 					newLesson.id = uuid.New()
 					newLesson.originalLessonID = nil
-					changedLessonIDs = append(changedLessonIDs, newLesson.id)
+					events = append(events, LessonContentUpdatedEvent{CourseID: c.id.String(), LessonID: newLesson.id.String()})
 					newLessons = append(newLessons, &newLesson)
 				case *TestLesson:
 					newLesson := *l
 					newLesson.id = uuid.New()
 					newLesson.originalLessonID = nil
-					changedLessonIDs = append(changedLessonIDs, newLesson.id)
+					events = append(events, LessonContentUpdatedEvent{CourseID: c.id.String(), LessonID: newLesson.id.String()})
 					newLessons = append(newLessons, &newLesson)
 				default:
 					newLessons = append(newLessons, draftLesson)
@@ -783,7 +783,7 @@ func (c *Course) Merge(draft *Course) ([]uuid.UUID, error) {
 						return nil, errs.NewInvalid("lesson type mismatch")
 					}
 					if currentVideoLesson.GetVideoKey() != l.GetVideoKey() {
-						changedLessonIDs = append(changedLessonIDs, currentVideoLesson.ID())
+						events = append(events, LessonContentUpdatedEvent{CourseID: c.id.String(), LessonID: currentVideoLesson.ID().String()})
 					}
 					currentVideoLesson.SetTitle(l.Title())
 					currentVideoLesson.SetVideoKey(l.GetVideoKey())
@@ -796,7 +796,7 @@ func (c *Course) Merge(draft *Course) ([]uuid.UUID, error) {
 						return nil, errs.NewInvalid("lesson type mismatch")
 					}
 					if currentTestLesson.QuestionType() != l.QuestionType() || areQuestionsChanged(currentTestLesson.GetQuestions(), l.GetQuestions()) {
-						changedLessonIDs = append(changedLessonIDs, currentTestLesson.ID())
+						events = append(events, LessonContentUpdatedEvent{CourseID: c.id.String(), LessonID: currentTestLesson.ID().String()})
 					}
 					currentTestLesson.SetTitle(l.Title())
 					currentTestLesson.questionType = l.QuestionType()
@@ -814,7 +814,7 @@ func (c *Course) Merge(draft *Course) ([]uuid.UUID, error) {
 
 	c.sections = newSections
 
-	return changedLessonIDs, nil
+	return events, nil
 }
 
 func (c *Course) CreateDraftVersion() *Course {

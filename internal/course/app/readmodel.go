@@ -49,3 +49,7 @@ type GetMyCertificatesReadModel interface {
 type GetLessonCommentsReadModel interface {
 	GetLessonComments(ctx context.Context, params *GetLessonComments) ([]*LessonComment, error)
 }
+
+type GetCourseProgressReadModel interface {
+	GetCourseProgress(ctx context.Context, params *GetCourseProgress) (*CourseProgress, error)
+}

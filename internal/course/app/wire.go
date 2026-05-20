@@ -33,6 +33,8 @@ var ProviderSetCmds = wire.NewSet(
 	NewDeclineCourseHandler,
 	NewSaveVideoLessonProgressHandler,
 	NewMarkLessonAsCompletedHandler,
+	NewResetLessonProgressHandler,
+	NewLessonContentUpdatedHandler,
 	wire.Struct(new(Cmds), "*"),
 )
 

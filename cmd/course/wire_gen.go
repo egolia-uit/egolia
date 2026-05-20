@@ -101,6 +101,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	declineCourseCmd := app.NewDeclineCourseHandler(unitOfWork, logger, tracer)
 	markLessonAsCompletedCmd := app.NewMarkLessonAsCompletedHandler(unitOfWork, logger, tracer)
 	saveVideoLessonProgressCmd := app.NewSaveVideoLessonProgressHandler(unitOfWork, markLessonAsCompletedCmd, logger, tracer)
+	resetLessonProgressCmd := app.NewResetLessonProgressHandler(unitOfWork, logger, tracer)
 	cmds := &app.Cmds{
 		CreateCourse:            createCourseCmd,
 		DeleteCourse:            deleteCourseCmd,
@@ -129,6 +130,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		DeclineCourse:           declineCourseCmd,
 		SaveVideoLessonProgress: saveVideoLessonProgressCmd,
 		MarkLessonAsCompleted:   markLessonAsCompletedCmd,
+		ResetLessonProgress:     resetLessonProgressCmd,
 	}
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)

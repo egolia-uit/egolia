@@ -28,6 +28,7 @@ type Cmds struct {
 	DeclineCourse           DeclineCourseCmd
 	SaveVideoLessonProgress SaveVideoLessonProgressCmd
 	MarkLessonAsCompleted   MarkLessonAsCompletedCmd
+	ResetLessonProgress     ResetLessonProgressCmd
 }
 
 type Queries struct {

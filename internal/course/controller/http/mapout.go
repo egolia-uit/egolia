@@ -2,7 +2,6 @@ package http
 
 import (
 	"github.com/egolia-uit/egolia/internal/course/app"
-	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/api/course"
 	"github.com/google/uuid"
@@ -179,34 +178,33 @@ func lessonCommentToDTO(c *app.LessonComment) *course.LessonComment {
 	}
 }
 
-func lessonProgressToDTO(lp domain.LessonProgress) *course.LessonProgressDetail {
+func lessonProgressToDTO(lp app.LessonProgress) *course.LessonProgressDetail {
 	if lp == nil {
 		return nil
 	}
 
 	detail := course.LessonProgressDetail{}
-	lessonID := (types.UUID)(lp.LessonID())
 	switch v := lp.(type) {
-	case *domain.LessonProgressVideo:
-		id := (types.UUID)(v.ID())
-		userId := course.PropertiesId(v.UserID())
+	case *app.VideoLessonProgress:
+		id := (types.UUID)(v.ID)
+		userId := course.PropertiesId(v.UserID)
 		// Sử dụng From... để gán struct cụ thể vào Union Type
 		_ = detail.FromVideoLessonProgress(course.VideoLessonProgress{
 			Id:             &id,
-			LessonId:       lessonID,
-			WatchedSeconds: float32(*v.WatchedSeconds()),
-			LastViewedAt:   v.LastViewedAt(),
+			LessonId:       (types.UUID)(v.LessonID),
+			WatchedSeconds: float32(*v.WatchedSeconds),
+			LastViewedAt:   v.LastViewedAt,
 			UserId:         &userId,
-			IsCompleted:    v.IsCompleted(),
+			IsCompleted:    v.IsCompleted,
 		})
-	case *domain.LessonProgressTest: // Hoặc gộp thành default nếu các loại khác tương tự
-		userId := course.PropertiesId(v.UserID())
-		id := (types.UUID)(v.ID())
+	case *app.LessonProgressTest: // Hoặc gộp thành default nếu các loại khác tương tự
+		userId := course.PropertiesId(v.UserID)
+		id := (types.UUID)(v.ID)
 		_ = detail.FromLessonProgress(course.LessonProgress{
 			Id:          &id,
-			LessonId:    lessonID,
+			LessonId:    (types.UUID)(v.LessonID),
 			UserId:      &userId,
-			IsCompleted: v.IsCompleted(),
+			IsCompleted: v.IsCompleted,
 			// Các trường khác nếu có thể gán chung cho tất cả loại LessonProgress
 		})
 	}

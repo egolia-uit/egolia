@@ -183,3 +183,34 @@ type LessonComment struct {
 	ParentCommentID *uuid.UUID
 	CreatedAt       time.Time
 }
+
+type LessonProgress interface {
+	isLessonProgress()
+}
+
+type LessonProgressBase struct {
+	ID          uuid.UUID
+	UserID      string
+	LessonID    uuid.UUID
+	IsCompleted bool
+}
+
+func (l *LessonProgressBase) isLessonProgress() {}
+
+type VideoLessonProgress struct {
+	LessonProgressBase
+	WatchedSeconds *float64
+	LastViewedAt   time.Time
+}
+
+type LessonProgressTest struct {
+	LessonProgressBase
+}
+
+type CourseProgress struct {
+	CourseID         uuid.UUID
+	ProgressPercent  float32
+	CompletedLessons int32
+	TotalLessons     int32
+	IsCompleted      bool
+}

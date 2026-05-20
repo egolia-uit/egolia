@@ -4,7 +4,6 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/google/uuid"
 )
 
@@ -13,29 +12,21 @@ type GetCourseProgress struct {
 	UserID   string
 }
 
-type GetCourseProgressCmd Cmd[GetCourseProgress]
+type GetCourseProgressQuery Query[GetCourseProgress, *CourseProgress]
 
 type GetCourseProgressHandler struct {
-	uow domain.UnitOfWork
+	readModel GetCourseProgressReadModel
 }
 
-func NewGetCourseProgressHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) GetCourseProgressCmd {
+func NewGetCourseProgressHandler(readModel GetCourseProgressReadModel, logger *slog.Logger, tracer Tracer) GetCourseProgressQuery {
 	handler := &GetCourseProgressHandler{
-		uow: uow,
+		readModel: readModel,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
+	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Cmd[GetCourseProgress] = (*GetCourseProgressHandler)(nil)
+var _ Query[GetCourseProgress, *CourseProgress] = (*GetCourseProgressHandler)(nil)
 
-func (h *GetCourseProgressHandler) Handle(ctx context.Context, cmd *GetCourseProgress) error {
-	// return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
-	// 	course, err := repoRegistry.Course().Get(ctx, domain.CourseRepoGet{ID: cmd.CourseID}, false)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-
-	// 	progress,err := repoRegistry.CourseProgress().Get(ctx,)
-	// })
-	return nil
+func (h *GetCourseProgressHandler) Handle(ctx context.Context, query *GetCourseProgress) (*CourseProgress, error) {
+	return h.readModel.GetCourseProgress(ctx, query)
 }
