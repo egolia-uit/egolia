@@ -12,6 +12,7 @@ vite.config.*.timestamp*
 next-env.d.ts
 out
 
+coverage/
 coverage.out
 
 # go bin, usually run with nx won't generate this, but if you accidentally run go build

@@ -24,16 +24,16 @@ cd "${WORKSPACE_ROOT}"
 
 gotestsum \
   --jsonfile \
-  ./coverage/course/gotestsum.json \
+  ./coverage/billing/gotestsum.json \
   -- \
-  -coverprofile=./coverage/course/coverage.out \
+  -coverprofile=./coverage/billing/coverage.out \
   -covermode=atomic \
-  ./cmd/course/... \
-  ./internal/course/...
+  ./cmd/billing/... \
+  ./internal/billing/...
 
 if [ "$production" = true ]; then
   go-ctrf-json-reporter \
-    -appName 'course' \
-    -output './coverage/course/ctrf.json' \
-    <./coverage/course/gotestsum.json || true
+    -appName 'billing' \
+    -output './coverage/billing/ctrf.json' \
+    <./coverage/billing/gotestsum.json || true
 fi
