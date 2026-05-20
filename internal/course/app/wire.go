@@ -53,6 +53,7 @@ var ProviderSetQueries = wire.NewSet(
 	NewGetLessonCommentsHandler,
 	NewGetLessonProgressHandler,
 	NewGetUploadVideoLessonURLHandler,
+	NewGetCourseProgressHandler,
 	NewQueries,
 )
 

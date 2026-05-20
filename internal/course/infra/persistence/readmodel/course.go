@@ -370,15 +370,49 @@ func (r *CourseReadRepo) toAppLesson(ctx context.Context, l *model.ReadCourseLes
 }
 
 func (r *CourseReadRepo) GetMyCourses(ctx context.Context, params *app.GetMyCourses) (*app.Paginated[app.Course], error) {
-	instructorID := params.UserID
-	status := app.CourseStatusApproved
-	return r.GetCourses(ctx, &app.GetCourses{
-		InstructorID:       &instructorID,
-		Status:             &status,
-		Hidden:             params.Hidden,
-		Paginate:           params.Paginate,
-		Order:              params.Order,
-		Query:              nil,
-		HaveOriginalCourse: nil,
-	})
+	q := r.db.WithContext(ctx).Model(&model.ReadCourse{}) //nolint:exhaustruct
+
+	q = q.Where("full_course_content->>'instructor_id' = ?", params.UserID)
+
+	// Sử dụng logic OR ngay trong DB: Lấy course đang Approved HOẶC course đang Draft và chưa có bản gốc (khóa học mới tạo chưa publish)
+	q = q.Where(
+		"(full_course_content->>'status' = ?) OR (full_course_content->>'status' = ? AND original_course_id IS NULL)",
+		string(app.CourseStatusApproved),
+		string(app.CourseStatusDraft),
+	)
+
+	if params.Hidden != nil {
+		q = q.Where("hidden = ?", *params.Hidden)
+	}
+
+	if params.Order != nil && *params.Order == app.SearchCoursesOrderDesc {
+		q = q.Order("published_at DESC")
+	} else {
+		q = q.Order("published_at ASC")
+	}
+
+	var total int64
+	if err := q.Session(&gorm.Session{}).Count(&total).Error; err != nil {
+		return nil, err
+	}
+
+	offset := (params.Paginate.Page - 1) * params.Paginate.Limit
+	var ms []model.ReadCourse
+	if err := q.Session(&gorm.Session{}).Offset(offset).Limit(params.Paginate.Limit).Find(&ms).Error; err != nil {
+		return nil, err
+	}
+
+	courses := make([]app.Course, 0, len(ms))
+	for i := range ms {
+		c, err := r.toAppCourse(ctx, &ms[i])
+		if err != nil {
+			return nil, err
+		}
+		courses = append(courses, *c)
+	}
+
+	return &app.Paginated[app.Course]{
+		Data:       courses,
+		Pagination: buildPagination(params.Paginate.Page, params.Paginate.Limit, int(total)),
+	}, nil
 }

@@ -90,60 +90,9 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	enrollInCourseHandler := app.NewEnrollInCourseHandler(enrollInCourseSvc, unitOfWork)
 	finishCourseSvc := domain.NewFinishCourseSvc()
 	finishCourseHandler := app.NewFinishCourseHandler(finishCourseSvc, unitOfWork)
-	getCourseProgressHandler := app.NewGetCourseProgressHandler(unitOfWork)
+	courseProgressReadRepo := readmodel.NewCourseProgressReadRepo(db)
+	getCourseProgressHandler := app.NewGetCourseProgressHandler(courseProgressReadRepo)
 	authorizationSvc := domain.NewAuthorizationSvc(courseRepo, enrollmentRepo)
-<<<<<<< HEAD
-	hideCourseCmd := app.NewHideCourseHandler(authorizationSvc, unitOfWork, logger, tracer)
-	createSectionCmd := app.NewCreateSectionHandler(unitOfWork, logger, tracer)
-	updateSectionTitleCmd := app.NewUpdateSectionTitleHandler(unitOfWork, logger, tracer)
-	deleteSectionCmd := app.NewDeleteSectionHandler(unitOfWork, logger, tracer)
-	moveSectionCmd := app.NewMoveSectionHandler(logger, tracer, unitOfWork)
-	updateReviewCmd := app.NewUpdateReviewHandler(reviewPolicySvc, unitOfWork, logger, tracer)
-	deleteReviewCmd := app.NewDeleteReviewHandler(reviewPolicySvc, unitOfWork, logger, tracer)
-	submitCourseCmd := app.NewSubmitCourseHandler(unitOfWork, logger, tracer)
-	createDraftVersionCmd := app.NewCreateDraftVersionHandler(unitOfWork, logger, tracer)
-	createLessonCmd := app.NewCreateLessonCmd(unitOfWork, logger, tracer)
-	editVideoLessonCmd := app.NewEditVideoLessonHandler(unitOfWork, logger, tracer)
-	approveCourseCmd := app.NewApproveCourseHandler(unitOfWork, logger, tracer)
-	replyOnLessonCommentCmd := app.NewReplyOnLessonCommentHandler(unitOfWork, logger, tracer)
-	commentOnLessonCmd := app.NewCommentOnLessonHandler(unitOfWork, logger, tracer)
-	editTestLessonCmd := app.NewEditTestLessonHandler(unitOfWork, logger, tracer)
-	deleteLessonCommentCmd := app.NewDeleteLessonCommentHandler(unitOfWork, logger, tracer)
-	declineCourseCmd := app.NewDeclineCourseHandler(unitOfWork, logger, tracer)
-	markLessonAsCompletedCmd := app.NewMarkLessonAsCompletedHandler(unitOfWork, logger, tracer)
-	saveVideoLessonProgressCmd := app.NewSaveVideoLessonProgressHandler(unitOfWork, markLessonAsCompletedCmd, logger, tracer)
-	resetLessonProgressCmd := app.NewResetLessonProgressHandler(unitOfWork, logger, tracer)
-	cmds := &app.Cmds{
-		CreateCourse:            createCourseCmd,
-		DeleteCourse:            deleteCourseCmd,
-		EnrollInCourse:          enrollInCourseCmd,
-		FinishCourse:            finishCourseCmd,
-		MoveLesson:              moveLessonCmd,
-		ReviewCourse:            reviewCourseCmd,
-		UpdateCourse:            updateCourseCmd,
-		BookmarkCourse:          bookmarkCourseCmd,
-		HideCourse:              hideCourseCmd,
-		CreateSection:           createSectionCmd,
-		UpdateSectionTitle:      updateSectionTitleCmd,
-		DeleteSection:           deleteSectionCmd,
-		MoveSection:             moveSectionCmd,
-		UpdateReview:            updateReviewCmd,
-		DeleteReview:            deleteReviewCmd,
-		SubmitCourse:            submitCourseCmd,
-		CreateDraftVersion:      createDraftVersionCmd,
-		CreateLesson:            createLessonCmd,
-		EditVideoLesson:         editVideoLessonCmd,
-		ApproveCourse:           approveCourseCmd,
-		ReplyOnLessonComment:    replyOnLessonCommentCmd,
-		CommentOnLesson:         commentOnLessonCmd,
-		EditTestLesson:          editTestLessonCmd,
-		DeleteLessonComment:     deleteLessonCommentCmd,
-		DeclineCourse:           declineCourseCmd,
-		SaveVideoLessonProgress: saveVideoLessonProgressCmd,
-		MarkLessonAsCompleted:   markLessonAsCompletedCmd,
-		ResetLessonProgress:     resetLessonProgressCmd,
-	}
-=======
 	hideCourseHandler := app.NewHideCourseHandler(authorizationSvc, unitOfWork)
 	markLessonAsCompletedHandler := app.NewMarkLessonAsCompletedHandler(unitOfWork)
 	moveLessonHandler := app.NewMoveLessonHandler(unitOfWork)
@@ -155,7 +104,6 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	updateReviewHandler := app.NewUpdateReviewHandler(reviewPolicySvc, unitOfWork)
 	updateSectionTitleHandler := app.NewUpdateSectionTitleHandler(unitOfWork)
 	cmds := app.NewCmds(handlerProvider, unitOfWork, approveCourseHandler, bookmarkCourseHandler, commentOnLessonHandler, createCourseHandler, createDraftVersionHandler, createLessonCmd, createSectionHandler, declineCourseHandler, deleteCourseHandler, deleteLessonHandler, deleteLessonCommentHandler, deleteReviewHandler, deleteSectionHandler, editTestLessonHandler, editVideoLessonHandler, enrollInCourseHandler, finishCourseHandler, getCourseProgressHandler, hideCourseHandler, markLessonAsCompletedHandler, moveLessonHandler, moveSectionHandler, replyOnLessonCommentHandler, reviewCourseHandler, submitCourseHandler, updateCourseHandler, updateReviewHandler, updateSectionTitleHandler)
->>>>>>> origin
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
 	if err != nil {
@@ -172,32 +120,11 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	reviewReadRepo := readmodel.NewReviewReadRepo(db)
 	getCourseReviewsHandler := app.NewGetCourseReviewsHandler(reviewReadRepo)
 	lessonCommentReadRepo := readmodel.NewLessonCommentReadRepo(db)
-<<<<<<< HEAD
-	getLessonCommentsQuery := app.NewGetLessonCommentsHandler(lessonCommentReadRepo, logger, tracer)
-	lessonProgressReadRepo := readmodel.NewLessonProgressReadRepo(db)
-	getLessonProgressQuery := app.NewGetLessonProgressHandler(lessonProgressReadRepo, logger, tracer)
-	queries := &app.Queries{
-		GetCourse:               getCourseQuery,
-		GetCourseDetail:         getCourseDetailQuery,
-		GetMyCourses:            getMyCoursesQuery,
-		GetPublishedCourses:     getPublishedCoursesQuery,
-		GetLessonDetail:         getLessonDetailQuery,
-		GetUploadVideoLessonURL: getUploadVideoLessonURLQuery,
-		GetSystemCourses:        getSystemCoursesQuery,
-		GetMyBookmarkedCourses:  getMyBookmarkedCoursesQuery,
-		GetMyEnrolledCourses:    getMyEnrolledCoursesQuery,
-		GetCourseLandingPage:    getCourseLandingPageQuery,
-		GetCourseForUpdate:      getCourseForUpdateQuery,
-		GetCourseReviews:        getCourseReviewsQuery,
-		GetMyCertificates:       getMyCertificatesQuery,
-		GetLessonComments:       getLessonCommentsQuery,
-		GetLessonProgress:       getLessonProgressQuery,
-	}
-=======
 	getLessonCommentsHandler := app.NewGetLessonCommentsHandler(lessonCommentReadRepo)
 	lessonReadRepo := readmodel.NewLessonReadRepo(db, objectstorageS3)
 	getLessonDetailHandler := app.NewGetLessonDetailHandler(lessonReadRepo)
-	getLessonProgressHandler := app.NewGetLessonProgressHandler(unitOfWork)
+	lessonProgressReadRepo := readmodel.NewLessonProgressReadRepo(db)
+	getLessonProgressHandler := app.NewGetLessonProgressHandler(lessonProgressReadRepo)
 	getMyBookmarkedCoursesHandler := app.NewGetMyBookmarkedCoursesHandler(courseReadRepo)
 	certificateReadRepo := readmodel.NewCertificateReadRepo(db)
 	getMyCertificatesHandler := app.NewGetMyCertificatesHandler(certificateReadRepo)
@@ -207,7 +134,6 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getSystemCoursesHandler := app.NewGetSystemCoursesHandler(courseReadRepo)
 	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
 	queries := app.NewQueries(handlerProvider, getCourseHandler, getCourseDetailHandler, getCourseForUpdateHandler, getCourseLandingPageHandler, getCourseReviewsHandler, getLessonCommentsHandler, getLessonDetailHandler, getLessonProgressHandler, getMyBookmarkedCoursesHandler, getMyCertificatesHandler, getMyCoursesHandler, getMyEnrolledCoursesHandler, getPublishedCoursesHandler, getSystemCoursesHandler, getUploadVideoLessonURLHandler)
->>>>>>> origin
 	appApp := &app.App{
 		Cmds:    cmds,
 		Queries: queries,

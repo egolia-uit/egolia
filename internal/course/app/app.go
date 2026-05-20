@@ -42,7 +42,6 @@ type (
 	EditVideoLessonCmd         commonhandler.Cmd[EditVideoLesson]
 	EnrollInCourseCmd          commonhandler.Cmd[EnrollInCourse]
 	FinishCourseCmd            commonhandler.Cmd[FinishCourse]
-	GetCourseProgressCmd       commonhandler.Cmd[GetCourseProgress]
 	HideCourseCmd              commonhandler.Cmd[HideCourse]
 	MarkLessonAsCompletedCmd   commonhandler.Cmd[MarkLessonAsCompleted]
 	MoveLessonCmd              commonhandler.Cmd[MoveLesson]
@@ -92,7 +91,6 @@ type Cmds struct {
 	EditVideoLesson         EditVideoLessonCmd
 	EnrollInCourse          EnrollInCourseCmd
 	FinishCourse            FinishCourseCmd
-	GetCourseProgress       GetCourseProgressCmd
 	HideCourse              HideCourseCmd
 	MarkLessonAsCompleted   MarkLessonAsCompletedCmd
 	MoveLesson              MoveLessonCmd
