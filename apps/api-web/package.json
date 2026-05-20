@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@egolia-uit/api": "workspace:",
-    "@scalar/api-reference-react": "0.9.34"
+    "@scalar/api-reference-react": "0.9.38"
   },
   "devDependencies": {
     "@scalar/openapi-to-markdown": "catalog:"
