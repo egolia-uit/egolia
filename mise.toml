@@ -5,7 +5,7 @@ REDOCLY_TELEMETRY = "off"
 REDOCLY_SUPPRESS_UPDATE_NOTICE = "true"
 NEXT_TELEMETRY_DISABLED = "1"
 DISABLE_TELEMETRY = "1"
-'_'.path.paths = ["./scripts/"]
+'_'.path.paths = ["./bin/", "./scripts/", "./node_modules/.bin/"]
 
 [tools]
 "go:github.com/goforj/wire/cmd/wire" = "v1.2.0"
