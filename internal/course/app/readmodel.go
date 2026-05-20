@@ -53,3 +53,7 @@ type GetLessonCommentsReadModel interface {
 type GetCourseProgressReadModel interface {
 	GetCourseProgress(ctx context.Context, params *GetCourseProgress) (*CourseProgress, error)
 }
+
+type GetLessonProgressReadModel interface {
+	GetLessonProgress(ctx context.Context, params *GetLessonProgress) (LessonProgress, error)
+}

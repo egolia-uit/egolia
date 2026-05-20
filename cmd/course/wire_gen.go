@@ -159,7 +159,8 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getMyCertificatesQuery := app.NewGetMyCertificatesHandler(certificateReadRepo, logger, tracer)
 	lessonCommentReadRepo := readmodel.NewLessonCommentReadRepo(db)
 	getLessonCommentsQuery := app.NewGetLessonCommentsHandler(lessonCommentReadRepo, logger, tracer)
-	getLessonProgressQuery := app.NewGetLessonProgressHandler(unitOfWork, logger, tracer)
+	lessonProgressReadRepo := readmodel.NewLessonProgressReadRepo(db)
+	getLessonProgressQuery := app.NewGetLessonProgressHandler(lessonProgressReadRepo, logger, tracer)
 	queries := &app.Queries{
 		GetCourse:               getCourseQuery,
 		GetCourseDetail:         getCourseDetailQuery,
