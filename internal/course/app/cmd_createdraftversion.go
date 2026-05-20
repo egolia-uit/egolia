@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -14,20 +14,17 @@ type CreateDraftVersion struct {
 	UserID   string
 }
 
-type CreateDraftVersionCmd Cmd[CreateDraftVersion]
-
 type CreateDraftVersionHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewCreateDraftVersionHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) CreateDraftVersionCmd {
-	handler := &CreateDraftVersionHandler{
+func NewCreateDraftVersionHandler(uow domain.UnitOfWork) *CreateDraftVersionHandler {
+	return &CreateDraftVersionHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[CreateDraftVersion] = (*CreateDraftVersionHandler)(nil)
+var _ commonhandler.Cmd[CreateDraftVersion] = (*CreateDraftVersionHandler)(nil)
 
 func (h *CreateDraftVersionHandler) Handle(ctx context.Context, cmd *CreateDraftVersion) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

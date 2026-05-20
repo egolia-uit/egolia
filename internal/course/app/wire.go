@@ -8,7 +8,6 @@ var ProviderSetCmds = wire.NewSet(
 	NewCreateCourseHandler,
 	NewDeleteCourseHandler,
 	NewUpdateCourseHandler,
-	NewGetUploadVideoLessonURLHandler,
 	NewMoveLessonHandler,
 	NewMoveSectionHandler,
 	NewSubmitCourseHandler,
@@ -23,6 +22,7 @@ var ProviderSetCmds = wire.NewSet(
 	NewUpdateSectionTitleHandler,
 	NewDeleteSectionHandler,
 	NewCreateDraftVersionHandler,
+	NewDeleteLessonHandler,
 	NewCreateLessonCmd,
 	NewEditVideoLessonHandler,
 	NewApproveCourseHandler,
@@ -31,9 +31,9 @@ var ProviderSetCmds = wire.NewSet(
 	NewEditTestLessonHandler,
 	NewDeleteLessonCommentHandler,
 	NewDeclineCourseHandler,
-	NewSaveVideoLessonProgressHandler,
 	NewMarkLessonAsCompletedHandler,
-	wire.Struct(new(Cmds), "*"),
+	NewGetCourseProgressHandler,
+	NewCmds,
 )
 
 var ProviderSetQueries = wire.NewSet(
@@ -47,16 +47,16 @@ var ProviderSetQueries = wire.NewSet(
 	NewGetMyEnrolledCoursesHandler,
 	NewGetCourseLandingPageHandler,
 	NewGetCourseForUpdateHandler,
-	NewGetCourseProgressHandler,
 	NewGetCourseReviewsHandler,
 	NewGetMyCertificatesHandler,
 	NewGetLessonCommentsHandler,
 	NewGetLessonProgressHandler,
-	wire.Struct(new(Queries), "*"),
+	NewGetUploadVideoLessonURLHandler,
+	NewQueries,
 )
 
 var ProviderSet = wire.NewSet(
-	ProvideTracer,
+	ProvideHandlerProvider,
 	ProviderSetCmds,
 	ProviderSetQueries,
 	wire.Struct(new(App), "*"),

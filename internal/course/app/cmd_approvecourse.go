@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -12,20 +12,17 @@ type ApproveCourse struct {
 	CourseID uuid.UUID
 }
 
-type ApproveCourseCmd Cmd[ApproveCourse]
-
 type ApproveCourseHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewApproveCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) ApproveCourseCmd {
-	handler := &ApproveCourseHandler{
+func NewApproveCourseHandler(uow domain.UnitOfWork) *ApproveCourseHandler {
+	return &ApproveCourseHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[ApproveCourse] = (*ApproveCourseHandler)(nil)
+var _ commonhandler.Cmd[ApproveCourse] = (*ApproveCourseHandler)(nil)
 
 func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) error {
 	var changedLessonIDs []uuid.UUID

@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -18,27 +18,22 @@ type SaveVideoLessonProgress struct {
 	IsCompleted    bool
 }
 
-type SaveVideoLessonProgressCmd Cmd[SaveVideoLessonProgress]
-
 type SaveVideoLessonProgressHandler struct {
 	uow                      domain.UnitOfWork
-	markLessonAsCompletedCmd MarkLessonAsCompletedCmd
+	markLessonAsCompletedCmd commonhandler.Cmd[MarkLessonAsCompleted]
 }
 
 func NewSaveVideoLessonProgressHandler(
 	uow domain.UnitOfWork,
-	markLessonAsCompletedCmd MarkLessonAsCompletedCmd,
-	logger *slog.Logger,
-	tracer Tracer,
-) SaveVideoLessonProgressCmd {
-	handler := &SaveVideoLessonProgressHandler{
+	markLessonAsCompletedCmd commonhandler.Cmd[MarkLessonAsCompleted],
+) *SaveVideoLessonProgressHandler {
+	return &SaveVideoLessonProgressHandler{
 		uow:                      uow,
 		markLessonAsCompletedCmd: markLessonAsCompletedCmd,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[SaveVideoLessonProgress] = (*SaveVideoLessonProgressHandler)(nil)
+var _ commonhandler.Cmd[SaveVideoLessonProgress] = (*SaveVideoLessonProgressHandler)(nil)
 
 func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVideoLessonProgress) error {
 	err := h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

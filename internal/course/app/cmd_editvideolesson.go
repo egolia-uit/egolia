@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -19,20 +19,17 @@ type EditVideoLesson struct {
 	Duration  *time.Duration
 }
 
-type EditVideoLessonCmd Cmd[EditVideoLesson]
-
 type EditVideoLessonHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewEditVideoLessonHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) EditVideoLessonCmd {
-	handler := &EditVideoLessonHandler{
+func NewEditVideoLessonHandler(uow domain.UnitOfWork) *EditVideoLessonHandler {
+	return &EditVideoLessonHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[EditVideoLesson] = (*EditVideoLessonHandler)(nil)
+var _ commonhandler.Cmd[EditVideoLesson] = (*EditVideoLessonHandler)(nil)
 
 func (h *EditVideoLessonHandler) Handle(ctx context.Context, cmd *EditVideoLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

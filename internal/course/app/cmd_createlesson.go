@@ -3,11 +3,11 @@ package app
 import (
 	"context"
 	"errors"
-	"log/slog"
 	"time"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -40,24 +40,14 @@ type CreateLessonCmd interface {
 }
 
 type createLessonCmd struct {
-	video Cmd[CreateVideoLesson]
-	test  Cmd[CreateTestLesson]
+	video commonhandler.Cmd[CreateVideoLesson]
+	test  commonhandler.Cmd[CreateTestLesson]
 }
 
-func NewCreateLessonCmd(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) CreateLessonCmd {
-	videoHandler := &CreateVideoLessonHandler{
-		uow: uow,
-	}
-	testHandler := &CreateTestLessonHandler{
-		uow: uow,
-	}
-
-	videoCmd := NewCmdSpan(NewCmdLog(videoHandler, logger), tracer)
-	testCmd := NewCmdSpan(NewCmdLog(testHandler, logger), tracer)
-
+func NewCreateLessonCmd(uow domain.UnitOfWork) CreateLessonCmd {
 	return &createLessonCmd{
-		video: videoCmd,
-		test:  testCmd,
+		video: &CreateVideoLessonHandler{uow: uow},
+		test:  &CreateTestLessonHandler{uow: uow},
 	}
 }
 

@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"errors"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -16,24 +16,19 @@ type BookmarkCourse struct {
 	UserID   string
 }
 
-type BookmarkCourseCmd Cmd[BookmarkCourse]
-
 type BookmarkCourseHandler struct {
 	uow domain.UnitOfWork
 }
 
 func NewBookmarkCourseHandler(
 	uow domain.UnitOfWork,
-	logger *slog.Logger,
-	tracer Tracer,
-) BookmarkCourseCmd {
-	handler := &BookmarkCourseHandler{
+) *BookmarkCourseHandler {
+	return &BookmarkCourseHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[BookmarkCourse] = (*BookmarkCourseHandler)(nil)
+var _ commonhandler.Cmd[BookmarkCourse] = (*BookmarkCourseHandler)(nil)
 
 // Handle executes the command to bookmark a course.
 func (h *BookmarkCourseHandler) Handle(ctx context.Context, cmd *BookmarkCourse) error {

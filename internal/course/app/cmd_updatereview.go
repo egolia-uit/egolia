@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -15,22 +15,19 @@ type UpdateReview struct {
 	Rating   int32
 }
 
-type UpdateReviewCmd Cmd[UpdateReview]
-
 type UpdateReviewHandler struct {
 	reviewPolicySvc *domain.ReviewPolicySvc
 	uow             domain.UnitOfWork
 }
 
-func NewUpdateReviewHandler(reviewPolicySvc *domain.ReviewPolicySvc, uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) UpdateReviewCmd {
-	handler := &UpdateReviewHandler{
+func NewUpdateReviewHandler(reviewPolicySvc *domain.ReviewPolicySvc, uow domain.UnitOfWork) *UpdateReviewHandler {
+	return &UpdateReviewHandler{
 		reviewPolicySvc: reviewPolicySvc,
 		uow:             uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[UpdateReview] = (*UpdateReviewHandler)(nil)
+var _ commonhandler.Cmd[UpdateReview] = (*UpdateReviewHandler)(nil)
 
 func (h *UpdateReviewHandler) Handle(ctx context.Context, cmd *UpdateReview) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -15,20 +15,17 @@ type DeleteSection struct {
 	UserID    string
 }
 
-type DeleteSectionCmd Cmd[DeleteSection]
-
 type DeleteSectionHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewDeleteSectionHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) DeleteSectionCmd {
-	handler := &DeleteSectionHandler{
+func NewDeleteSectionHandler(uow domain.UnitOfWork) *DeleteSectionHandler {
+	return &DeleteSectionHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[DeleteSection] = (*DeleteSectionHandler)(nil)
+var _ commonhandler.Cmd[DeleteSection] = (*DeleteSectionHandler)(nil)
 
 func (h *DeleteSectionHandler) Handle(ctx context.Context, cmd *DeleteSection) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

@@ -2,10 +2,11 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/google/uuid"
+
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 )
 
 type GetLessonProgress struct {
@@ -13,20 +14,17 @@ type GetLessonProgress struct {
 	LessonID uuid.UUID
 }
 
-type GetLessonProgressQuery Query[GetLessonProgress, domain.LessonProgress]
-
 type GetLessonProgressHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewGetLessonProgressHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) GetLessonProgressQuery {
-	handler := &GetLessonProgressHandler{
+func NewGetLessonProgressHandler(uow domain.UnitOfWork) *GetLessonProgressHandler {
+	return &GetLessonProgressHandler{
 		uow: uow,
 	}
-	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Query[GetLessonProgress, domain.LessonProgress] = (*GetLessonProgressHandler)(nil)
+var _ commonhandler.Query[GetLessonProgress, domain.LessonProgress] = (*GetLessonProgressHandler)(nil)
 
 func (h *GetLessonProgressHandler) Handle(ctx context.Context, query *GetLessonProgress) (domain.LessonProgress, error) {
 	var result domain.LessonProgress

@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"errors"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -16,22 +16,19 @@ type FinishCourse struct {
 	ActorID  string
 }
 
-type FinishCourseCmd Cmd[FinishCourse]
-
 type FinishCourseHandler struct {
 	finishCourseSvc *domain.FinishCourseSvc
 	uow             domain.UnitOfWork
 }
 
-func NewFinishCourseHandler(finishCourseSvc *domain.FinishCourseSvc, uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) FinishCourseCmd {
-	handler := &FinishCourseHandler{
+func NewFinishCourseHandler(finishCourseSvc *domain.FinishCourseSvc, uow domain.UnitOfWork) *FinishCourseHandler {
+	return &FinishCourseHandler{
 		finishCourseSvc: finishCourseSvc,
 		uow:             uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[FinishCourse] = (*FinishCourseHandler)(nil)
+var _ commonhandler.Cmd[FinishCourse] = (*FinishCourseHandler)(nil)
 
 func (h *FinishCourseHandler) Handle(ctx context.Context, cmd *FinishCourse) error {
 	if h.uow == nil {

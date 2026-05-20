@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -14,20 +14,17 @@ type MarkLessonAsCompleted struct {
 	LessonID uuid.UUID
 }
 
-type MarkLessonAsCompletedCmd Cmd[MarkLessonAsCompleted]
-
 type MarkLessonAsCompletedHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewMarkLessonAsCompletedHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) MarkLessonAsCompletedCmd {
-	handler := &MarkLessonAsCompletedHandler{
+func NewMarkLessonAsCompletedHandler(uow domain.UnitOfWork) *MarkLessonAsCompletedHandler {
+	return &MarkLessonAsCompletedHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[MarkLessonAsCompleted] = (*MarkLessonAsCompletedHandler)(nil)
+var _ commonhandler.Cmd[MarkLessonAsCompleted] = (*MarkLessonAsCompletedHandler)(nil)
 
 func (h *MarkLessonAsCompletedHandler) Handle(ctx context.Context, cmd *MarkLessonAsCompleted) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

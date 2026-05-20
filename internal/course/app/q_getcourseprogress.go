@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -13,20 +13,17 @@ type GetCourseProgress struct {
 	UserID   string
 }
 
-type GetCourseProgressCmd Cmd[GetCourseProgress]
-
 type GetCourseProgressHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewGetCourseProgressHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) GetCourseProgressCmd {
-	handler := &GetCourseProgressHandler{
+func NewGetCourseProgressHandler(uow domain.UnitOfWork) *GetCourseProgressHandler {
+	return &GetCourseProgressHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[GetCourseProgress] = (*GetCourseProgressHandler)(nil)
+var _ commonhandler.Cmd[GetCourseProgress] = (*GetCourseProgressHandler)(nil)
 
 func (h *GetCourseProgressHandler) Handle(ctx context.Context, cmd *GetCourseProgress) error {
 	// return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

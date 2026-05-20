@@ -2,7 +2,8 @@ package app
 
 import (
 	"context"
-	"log/slog"
+
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 )
 
 type GetMyCertificates struct {
@@ -11,20 +12,17 @@ type GetMyCertificates struct {
 	Order    *SearchCoursesOrder
 }
 
-type GetMyCertificatesQuery Query[GetMyCertificates, *Paginated[Certificate]]
-
 type GetMyCertificatesHandler struct {
 	readModel GetMyCertificatesReadModel
 }
 
-func NewGetMyCertificatesHandler(readModel GetMyCertificatesReadModel, logger *slog.Logger, tracer Tracer) GetMyCertificatesQuery {
-	handler := &GetMyCertificatesHandler{
+func NewGetMyCertificatesHandler(readModel GetMyCertificatesReadModel) *GetMyCertificatesHandler {
+	return &GetMyCertificatesHandler{
 		readModel: readModel,
 	}
-	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Query[GetMyCertificates, *Paginated[Certificate]] = (*GetMyCertificatesHandler)(nil)
+var _ commonhandler.Query[GetMyCertificates, *Paginated[Certificate]] = (*GetMyCertificatesHandler)(nil)
 
 func (h *GetMyCertificatesHandler) Handle(ctx context.Context, params *GetMyCertificates) (*Paginated[Certificate], error) {
 	certs, err := h.readModel.GetMyCertificates(ctx, params.UserID, params.Paginate, params.Order)

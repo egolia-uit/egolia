@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"errors"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -17,8 +17,6 @@ type HideCourse struct {
 	Roles    []UserRole
 }
 
-type HideCourseCmd Cmd[HideCourse]
-
 type HideCourseHandler struct {
 	authorizationSvc *domain.AuthorizationSvc
 	uow              domain.UnitOfWork
@@ -27,17 +25,14 @@ type HideCourseHandler struct {
 func NewHideCourseHandler(
 	authorizationSvc *domain.AuthorizationSvc,
 	uow domain.UnitOfWork,
-	logger *slog.Logger,
-	tracer Tracer,
-) HideCourseCmd {
-	handler := &HideCourseHandler{
+) *HideCourseHandler {
+	return &HideCourseHandler{
 		authorizationSvc: authorizationSvc,
 		uow:              uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[HideCourse] = (*HideCourseHandler)(nil)
+var _ commonhandler.Cmd[HideCourse] = (*HideCourseHandler)(nil)
 
 func (h *HideCourseHandler) Handle(ctx context.Context, command *HideCourse) error {
 	roles := make([]string, len(command.Roles))

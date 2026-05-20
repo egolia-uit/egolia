@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"errors"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -18,17 +18,14 @@ type MoveLesson struct {
 	Order           int
 }
 
-type MoveLessonCmd Cmd[MoveLesson]
-
 type MoveLessonHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewMoveLessonHandler(logger *slog.Logger, tracer Tracer, uow domain.UnitOfWork) MoveLessonCmd {
-	handler := &MoveLessonHandler{
+func NewMoveLessonHandler(uow domain.UnitOfWork) *MoveLessonHandler {
+	return &MoveLessonHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
 func (h *MoveLessonHandler) Handle(ctx context.Context, command *MoveLesson) error {
@@ -48,4 +45,4 @@ func (h *MoveLessonHandler) Handle(ctx context.Context, command *MoveLesson) err
 	})
 }
 
-var _ Cmd[MoveLesson] = (*MoveLessonHandler)(nil)
+var _ commonhandler.Cmd[MoveLesson] = (*MoveLessonHandler)(nil)

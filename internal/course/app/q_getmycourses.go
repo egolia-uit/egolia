@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/errs"
+
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 )
 
 type GetMyCourses struct {
@@ -16,20 +17,17 @@ type GetMyCourses struct {
 	Order              *SearchCoursesOrder
 }
 
-type GetMyCoursesQuery Query[GetMyCourses, *Paginated[Course]]
-
 type GetMyCoursesHandler struct {
 	readModel GetCoursesReadModel
 }
 
-func NewGetMyCoursesHandler(readModel GetCoursesReadModel, logger *slog.Logger, tracer Tracer) GetMyCoursesQuery {
-	handler := &GetMyCoursesHandler{
+func NewGetMyCoursesHandler(readModel GetCoursesReadModel) *GetMyCoursesHandler {
+	return &GetMyCoursesHandler{
 		readModel: readModel,
 	}
-	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Query[GetMyCourses, *Paginated[Course]] = (*GetMyCoursesHandler)(nil)
+var _ commonhandler.Query[GetMyCourses, *Paginated[Course]] = (*GetMyCoursesHandler)(nil)
 
 func (h *GetMyCoursesHandler) Handle(ctx context.Context, params *GetMyCourses) (*Paginated[Course], error) {
 	CourseStatusApproved := CourseStatusApproved

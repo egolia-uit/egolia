@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -15,24 +15,19 @@ type ReplyOnLessonComment struct {
 	Content         string
 }
 
-type ReplyOnLessonCommentCmd Cmd[ReplyOnLessonComment]
-
-func NewReplyOnLessonCommentHandler(
-	uow domain.UnitOfWork,
-	logger *slog.Logger,
-	tracer Tracer,
-) ReplyOnLessonCommentCmd {
-	handler := &ReplyOnLessonCommentHandler{
-		uow: uow,
-	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
-}
-
 type ReplyOnLessonCommentHandler struct {
 	uow domain.UnitOfWork
 }
 
-var _ Cmd[ReplyOnLessonComment] = (*ReplyOnLessonCommentHandler)(nil)
+func NewReplyOnLessonCommentHandler(
+	uow domain.UnitOfWork,
+) *ReplyOnLessonCommentHandler {
+	return &ReplyOnLessonCommentHandler{
+		uow: uow,
+	}
+}
+
+var _ commonhandler.Cmd[ReplyOnLessonComment] = (*ReplyOnLessonCommentHandler)(nil)
 
 func (h *ReplyOnLessonCommentHandler) Handle(ctx context.Context, cmd *ReplyOnLessonComment) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

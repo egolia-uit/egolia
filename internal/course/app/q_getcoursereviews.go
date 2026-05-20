@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/google/uuid"
+
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 )
 
 type GetCourseReviews struct {
@@ -13,20 +14,17 @@ type GetCourseReviews struct {
 	Rating   *int
 }
 
-type GetCourseReviewsQuery Query[GetCourseReviews, *Paginated[Review]]
-
 type GetCourseReviewsHandler struct {
 	readModel GetCourseReviewsReadModel
 }
 
-func NewGetCourseReviewsHandler(readModel GetCourseReviewsReadModel, logger *slog.Logger, tracer Tracer) GetCourseReviewsQuery {
-	handler := &GetCourseReviewsHandler{
+func NewGetCourseReviewsHandler(readModel GetCourseReviewsReadModel) *GetCourseReviewsHandler {
+	return &GetCourseReviewsHandler{
 		readModel: readModel,
 	}
-	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Query[GetCourseReviews, *Paginated[Review]] = (*GetCourseReviewsHandler)(nil)
+var _ commonhandler.Query[GetCourseReviews, *Paginated[Review]] = (*GetCourseReviewsHandler)(nil)
 
 func (h *GetCourseReviewsHandler) Handle(ctx context.Context, query *GetCourseReviews) (*Paginated[Review], error) {
 	return h.readModel.GetCourseReviews(ctx, query)
