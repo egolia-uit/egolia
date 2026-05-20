@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -29,24 +29,19 @@ type EditTestAnswer struct {
 	IsCorrect bool
 }
 
-type EditTestLessonCmd Cmd[EditTestLesson]
-
 type EditTestLessonHandler struct {
 	uow domain.UnitOfWork
 }
 
 func NewEditTestLessonHandler(
 	uow domain.UnitOfWork,
-	logger *slog.Logger,
-	tracer Tracer,
-) EditTestLessonCmd {
-	handler := &EditTestLessonHandler{
+) *EditTestLessonHandler {
+	return &EditTestLessonHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[EditTestLesson] = (*EditTestLessonHandler)(nil)
+var _ commonhandler.Cmd[EditTestLesson] = (*EditTestLessonHandler)(nil)
 
 func (h *EditTestLessonHandler) Handle(ctx context.Context, cmd *EditTestLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

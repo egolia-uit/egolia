@@ -1,4 +1,4 @@
-import { SignInButton } from "#/features/auth";
+import { SignInButton, SignUpButton } from "#/features/auth";
 import { GraduationCap } from "lucide-react";
 
 import {
@@ -43,8 +43,9 @@ export default function LoginPage() {
               Sign in to continue to your dashboard
             </CardDescription>
           </CardHeader>
-          <CardContent className="pb-6">
+          <CardContent className="grid gap-3 pb-6">
             <SignInButton />
+            <SignUpButton />
             <p className="mt-4 text-center text-xs text-muted-foreground">
               By signing in, you agree to our Terms of Service
             </p>

@@ -34,7 +34,7 @@ export function DashboardRedirectPage() {
     <AppShell
       viewer={viewer}
       eyebrow=""
-      title="Đang chuyển hướng..."
+      title="Redirecting..."
     >
       <CourseGridSkeleton />
     </AppShell>

@@ -1,9 +1,12 @@
+import 'plyr/dist/plyr.css';
 import './global.css';
 
 export const metadata = {
   title: 'Egolia',
   description: 'Elearning on the Go',
 };
+
+import { ToastProvider } from '#/components/ui/neumorphism/toast';
 
 export default function RootLayout({
   children,
@@ -12,7 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </body>
     </html>
   );
 }

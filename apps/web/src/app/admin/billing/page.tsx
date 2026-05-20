@@ -2,7 +2,7 @@ import { AdminBillingPage } from '#/features/billing';
 
 export const metadata = {
   title: 'Doanh thu - Egolia Admin',
-  description: 'Quản lý doanh thu hệ thống',
+  description: 'Manage system revenue',
 };
 
 export default function AdminBillingRoute() {

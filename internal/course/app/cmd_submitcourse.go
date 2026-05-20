@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -14,20 +14,17 @@ type SubmitCourse struct {
 	ActorID  string
 }
 
-type SubmitCourseCmd Cmd[SubmitCourse]
-
 type SubmitCourseHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewSubmitCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) SubmitCourseCmd {
-	handler := &SubmitCourseHandler{
+func NewSubmitCourseHandler(uow domain.UnitOfWork) *SubmitCourseHandler {
+	return &SubmitCourseHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[SubmitCourse] = (*SubmitCourseHandler)(nil)
+var _ commonhandler.Cmd[SubmitCourse] = (*SubmitCourseHandler)(nil)
 
 func (h *SubmitCourseHandler) Handle(ctx context.Context, cmd *SubmitCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

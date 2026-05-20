@@ -20,39 +20,39 @@ import { useViewer } from '#/lib/auth/use-viewer';
 const MOCK_POSTS = [
   {
     slug: 'huong-dan-bat-dau-voi-egolia',
-    title: 'Hướng dẫn bắt đầu với Egolia',
-    excerpt: 'Tìm hiểu cách đăng ký, chọn khóa học phù hợp và bắt đầu hành trình học tập của bạn trên nền tảng Egolia.',
+    title: 'Getting Started with Egolia',
+    excerpt: 'Learn how to register, choose the right course, and start your learning journey on Egolia.',
     author: 'Admin',
     date: '2026-05-10',
-    category: 'Hướng dẫn',
-    readTime: '5 phút',
+    category: 'Guide',
+    readTime: '5 mins',
   },
   {
     slug: 'top-5-khoa-hoc-duoc-yeu-thich-nhat',
-    title: 'Top 5 khóa học được yêu thích nhất tháng 5/2026',
-    excerpt: 'Khám phá những khóa học hot nhất trên Egolia với hàng ngàn lượt đăng ký và đánh giá tích cực từ học viên.',
+    title: 'Top 5 Most Popular Courses in May 2026',
+    excerpt: 'Discover the hottest courses on Egolia with thousands of enrollments and positive reviews.',
     author: 'Editor',
     date: '2026-05-08',
-    category: 'Tin tức',
-    readTime: '3 phút',
+    category: 'News',
+    readTime: '3 mins',
   },
   {
     slug: 'lam-the-nao-de-hoc-online-hieu-qua',
-    title: 'Làm thế nào để học online hiệu quả?',
-    excerpt: 'Chia sẻ những mẹo và phương pháp giúp bạn tối ưu hóa thời gian học tập trực tuyến và đạt kết quả tốt nhất.',
+    title: 'How to Learn Online Effectively?',
+    excerpt: 'Share tips and methods to help you optimize your online learning time and achieve the best results.',
     author: 'Admin',
     date: '2026-05-05',
-    category: 'Kinh nghiệm',
-    readTime: '7 phút',
+    category: 'Experience',
+    readTime: '7 mins',
   },
   {
     slug: 'cap-nhat-tinh-nang-moi-thang-5',
-    title: 'Cập nhật tính năng mới tháng 5/2026',
-    excerpt: 'Egolia vừa ra mắt nhiều tính năng mới: hệ thống bookmark, đánh giá khóa học, và giao diện được cải thiện.',
+    title: 'New Feature Updates in May 2026',
+    excerpt: 'Egolia has launched many new features: bookmark system, course reviews, and improved UI.',
     author: 'Dev Team',
     date: '2026-05-01',
-    category: 'Cập nhật',
-    readTime: '4 phút',
+    category: 'Update',
+    readTime: '4 mins',
   },
 ];
 
@@ -79,7 +79,7 @@ function BlogCard({ post }: { post: typeof MOCK_POSTS[0] }) {
       <CardFooter>
         <Button asChild variant="outline" size="sm">
           <Link href={`/blog/${post.slug}`}>
-            Đọc thêm
+            Read more
             <ChevronRight className="size-4" />
           </Link>
         </Button>
@@ -95,7 +95,7 @@ export function BlogListPage() {
     <AppShell
       viewer={viewer}
       eyebrow="Blog"
-      title="Tin tức & Hướng dẫn"
+      title="News & Guide"
     >
       <div className="
         grid gap-4
@@ -135,12 +135,12 @@ export function BlogDetailPage({ slug }: { slug: string }) {
           <div className="mt-6 space-y-4 text-sm/7 text-slate-600">
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
             <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>Nội dung chi tiết của bài viết sẽ được cập nhật khi blog service hoàn thiện.</p>
+            <p>The detailed content of the article will be updated when the blog service is completed.</p>
           </div>
         </CardContent>
       </Card>
       <Button asChild variant="outline">
-        <Link href="/blog">← Quay lại danh sách</Link>
+        <Link href="/blog">← Back to list</Link>
       </Button>
     </AppShell>
   );
@@ -150,12 +150,12 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Quản trị"
-      title="Quản lý bài viết"
+      eyebrow="Administration"
+      title="Manage Articles"
       actions={
-        <Button onClick={() => alert('Tính năng tạo bài viết đang phát triển.')}>
+        <Button onClick={() => alert('Article creation feature is under development.')}>
           <Plus className="size-4" />
-          Tạo bài viết
+          Create Article
         </Button>
       }
     >
@@ -184,16 +184,16 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
                   <Button variant="outline" size="sm" asChild>
                     <Link href={`/blog/${post.slug}`}>
                       <Eye className="size-4" />
-                      Xem
+                      View
                     </Link>
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => alert('Thao tác thành công!')}>
+                  <Button variant="outline" size="sm" onClick={() => alert('Action successful!')}>
                     <Edit className="size-4" />
-                    Sửa
+                    Edit
                   </Button>
-                  <Button variant="destructive" size="sm" onClick={() => alert('Thao tác thành công!')}>
+                  <Button variant="destructive" size="sm" onClick={() => alert('Action successful!')}>
                     <Trash2 className="size-4" />
-                    Xóa
+                    Delete
                   </Button>
                 </div>
               </div>

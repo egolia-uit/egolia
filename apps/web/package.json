@@ -8,9 +8,11 @@
     "clsx": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
+    "plyr": "catalog:",
     "radix-ui": "^1.4.3",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "sonner": "catalog:"
   },
   "devDependencies": {
     "autoprefixer": "catalog:",

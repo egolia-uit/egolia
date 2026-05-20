@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -17,24 +17,19 @@ type CreateCourse struct {
 	IntroductionVideoKey string
 }
 
-type CreateCourseCmd Cmd[CreateCourse]
-
 type CreateCourseHandler struct {
 	uow domain.UnitOfWork
 }
 
 func NewCreateCourseHandler(
 	uow domain.UnitOfWork,
-	logger *slog.Logger,
-	tracer Tracer,
-) CreateCourseCmd {
-	handler := &CreateCourseHandler{
+) *CreateCourseHandler {
+	return &CreateCourseHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[CreateCourse] = (*CreateCourseHandler)(nil)
+var _ commonhandler.Cmd[CreateCourse] = (*CreateCourseHandler)(nil)
 
 func (h *CreateCourseHandler) Handle(ctx context.Context, cmd *CreateCourse) error {
 	course, err := domain.NewCourse(

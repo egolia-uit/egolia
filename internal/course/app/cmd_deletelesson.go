@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -16,20 +16,17 @@ type DeleteLesson struct {
 	UserID    string
 }
 
-type DeleteLessonCmd Cmd[DeleteLesson]
-
 type DeleteLessonHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewDeleteLessonHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) DeleteLessonCmd {
-	handler := &DeleteLessonHandler{
+func NewDeleteLessonHandler(uow domain.UnitOfWork) *DeleteLessonHandler {
+	return &DeleteLessonHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[DeleteLesson] = (*DeleteLessonHandler)(nil)
+var _ commonhandler.Cmd[DeleteLesson] = (*DeleteLessonHandler)(nil)
 
 func (h *DeleteLessonHandler) Handle(ctx context.Context, cmd *DeleteLesson) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

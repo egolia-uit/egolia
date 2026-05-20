@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"errors"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -16,20 +16,17 @@ type CreateSection struct {
 	Title    string
 }
 
-type CreateSectionCmd Cmd[CreateSection]
-
 type CreateSectionHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewCreateSectionHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) CreateSectionCmd {
-	handler := &CreateSectionHandler{
+func NewCreateSectionHandler(uow domain.UnitOfWork) *CreateSectionHandler {
+	return &CreateSectionHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[CreateSection] = (*CreateSectionHandler)(nil)
+var _ commonhandler.Cmd[CreateSection] = (*CreateSectionHandler)(nil)
 
 func (h *CreateSectionHandler) Handle(ctx context.Context, cmd *CreateSection) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

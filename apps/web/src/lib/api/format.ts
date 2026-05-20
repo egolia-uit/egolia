@@ -1,6 +1,6 @@
 export function formatVnd(value: bigint | number | string | undefined | null) {
   if (value === undefined || value === null || value === '') {
-    return 'Miễn phí';
+    return 'Free';
   }
 
   const numericValue =
@@ -9,7 +9,7 @@ export function formatVnd(value: bigint | number | string | undefined | null) {
       : Number.parseInt(String(value), 10);
 
   if (!Number.isFinite(numericValue) || numericValue <= 0) {
-    return 'Miễn phí';
+    return 'Free';
   }
 
   return new Intl.NumberFormat('vi-VN', {

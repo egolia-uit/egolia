@@ -1,8 +1,8 @@
 import { LearnerBillingPage } from '#/features/billing';
 
 export const metadata = {
-  title: 'Thanh toán - Egolia',
-  description: 'Lịch sử giao dịch thanh toán',
+  title: 'Billing - Egolia',
+  description: 'Billing transaction history',
 };
 
 export default function BillingRoute() {

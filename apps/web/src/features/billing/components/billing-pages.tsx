@@ -22,7 +22,7 @@ import type { Viewer } from '#/lib/auth/roles';
 import { formatDateTime, formatVnd } from '#/lib/api/format';
 
 const MOCK_TRANSACTIONS = [
-  { id: 'TXN-001', course: 'FlowChart - Chuyên đề lưu đồ thuật toán', amount: 299000, status: 'completed', date: '2026-04-15T10:30:00Z' },
+  { id: 'TXN-001', course: 'FlowChart - Algorithm Flowchart Special Topic', amount: 299000, status: 'completed', date: '2026-04-15T10:30:00Z' },
   { id: 'TXN-002', course: 'React & Next.js Masterclass', amount: 499000, status: 'completed', date: '2026-04-20T14:15:00Z' },
   { id: 'TXN-003', course: 'Golang Backend Development', amount: 599000, status: 'pending', date: '2026-05-01T09:00:00Z' },
   { id: 'TXN-004', course: 'Docker & Kubernetes in Production', amount: 399000, status: 'completed', date: '2026-05-10T16:45:00Z' },
@@ -38,10 +38,10 @@ const MOCK_ADMIN_STATS = {
 
 function StatusBadge({ status }: { status: string }) {
   if (status === 'completed') {
-    return <Badge className="bg-emerald-100 text-emerald-700">Hoàn thành</Badge>;
+    return <Badge className="bg-emerald-100 text-emerald-700">Completed</Badge>;
   }
   if (status === 'pending') {
-    return <Badge className="bg-amber-100 text-amber-700">Đang xử lý</Badge>;
+    return <Badge className="bg-amber-100 text-amber-700">Processing</Badge>;
   }
   return <Badge variant="secondary">{status}</Badge>;
 }
@@ -53,11 +53,11 @@ function TransactionTable({ transactions }: { transactions: typeof MOCK_TRANSACT
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Mã giao dịch</TableHead>
-              <TableHead>Khóa học</TableHead>
-              <TableHead>Số tiền</TableHead>
-              <TableHead>Trạng thái</TableHead>
-              <TableHead>Ngày</TableHead>
+              <TableHead>Transaction ID</TableHead>
+              <TableHead>Course</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -81,8 +81,8 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Thanh toán"
-      title="Lịch sử giao dịch"
+      eyebrow="Billing"
+      title="Transaction History"
     >
       <div className="
         grid gap-4
@@ -97,7 +97,7 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
               <Receipt className="size-5" />
             </div>
             <div>
-              <div className="text-sm text-slate-500">Tổng chi tiêu</div>
+              <div className="text-sm text-slate-500">Total Spent</div>
               <div className="text-xl font-semibold">{formatVnd(1796000)}</div>
             </div>
           </CardContent>
@@ -111,7 +111,7 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
               <CreditCard className="size-5" />
             </div>
             <div>
-              <div className="text-sm text-slate-500">Giao dịch thành công</div>
+              <div className="text-sm text-slate-500">Successful Transactions</div>
               <div className="text-xl font-semibold">4</div>
             </div>
           </CardContent>
@@ -125,7 +125,7 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
               <Download className="size-5" />
             </div>
             <div>
-              <div className="text-sm text-slate-500">Đang xử lý</div>
+              <div className="text-sm text-slate-500">Processing</div>
               <div className="text-xl font-semibold">1</div>
             </div>
           </CardContent>
@@ -149,8 +149,8 @@ function AdminBillingContent({ viewer }: { viewer: Viewer }) {
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Quản trị"
-      title="Quản lý doanh thu"
+      eyebrow="Administration"
+      title="Revenue Management"
     >
       <div className="
         grid gap-4
@@ -158,25 +158,25 @@ function AdminBillingContent({ viewer }: { viewer: Viewer }) {
       ">
         <Card className="bg-nm-bg">
           <CardContent className="py-4">
-            <div className="text-sm text-slate-500">Tổng doanh thu</div>
+            <div className="text-sm text-slate-500">Total Revenue</div>
             <div className="mt-1 text-2xl font-bold">{formatVnd(MOCK_ADMIN_STATS.totalRevenue)}</div>
           </CardContent>
         </Card>
         <Card className="bg-nm-bg">
           <CardContent className="py-4">
-            <div className="text-sm text-slate-500">Tổng giao dịch</div>
+            <div className="text-sm text-slate-500">Total Transactions</div>
             <div className="mt-1 text-2xl font-semibold">{MOCK_ADMIN_STATS.totalTransactions}</div>
           </CardContent>
         </Card>
         <Card className="bg-nm-bg">
           <CardContent className="py-4">
-            <div className="text-sm text-slate-500">Hoàn thành</div>
+            <div className="text-sm text-slate-500">Completed</div>
             <div className="mt-1 text-2xl font-semibold text-emerald-600">{MOCK_ADMIN_STATS.completedPayments}</div>
           </CardContent>
         </Card>
         <Card className="bg-nm-bg">
           <CardContent className="py-4">
-            <div className="text-sm text-slate-500">Đang xử lý</div>
+            <div className="text-sm text-slate-500">Processing</div>
             <div className="mt-1 text-2xl font-semibold text-amber-600">{MOCK_ADMIN_STATS.pendingPayments}</div>
           </CardContent>
         </Card>

@@ -72,7 +72,7 @@ if [[ $ALIAS != "egolia-local" ]]; then
   rc alias set \
     --insecure \
     "$ALIAS" \
-    http://rustfs.egolia.localhost \
+    http://rustfs-api.egolia.localhost \
     "${RUSTFS_ACCESS_KEY:-egoliauit}" \
     "${RUSTFS_SECRET_KEY:-egoliauit}"
 fi

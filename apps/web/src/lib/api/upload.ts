@@ -8,6 +8,7 @@ export function putFileToSignedUrl(
   return new Promise<void>((resolve, reject) => {
     const request = new XMLHttpRequest();
 
+    console.log('>>> [PUT] Sending file to:', uploadUrl);
     request.open('PUT', uploadUrl);
     request.setRequestHeader(
       'Content-Type',
@@ -18,10 +19,13 @@ export function putFileToSignedUrl(
       if (!event.lengthComputable) {
         return;
       }
-      onProgress?.(Math.round((event.loaded / event.total) * 100));
+      const progress = Math.round((event.loaded / event.total) * 100);
+      console.log(`>>> [PUT] Progress: ${progress}%`);
+      onProgress?.(progress);
     };
 
     request.onerror = () => {
+      console.error('>>> [PUT] Network Error occurred');
       reject(
         new Error(
           'RustFS upload failed. Kiem tra CORS/presigned host cua RustFS.'
@@ -30,6 +34,7 @@ export function putFileToSignedUrl(
     };
 
     request.onload = () => {
+      console.log('>>> [PUT] Load finished. Status:', request.status);
       if (request.status >= 200 && request.status < 300) {
         onProgress?.(100);
         resolve();

@@ -24,10 +24,12 @@ services:
       traefik.http.routers.rustfs-api.rule: Host(`rustfs-api.egolia.localhost`)
       traefik.http.routers.rustfs-api.entrypoints: web
       traefik.http.routers.rustfs-api.service: rustfs-api
+      traefik.http.routers.rustfs-api.middlewares: cors@file
       traefik.http.services.rustfs-api.loadbalancer.server.port: '9000'
       traefik.http.routers.rustfs-console.rule: Host(`rustfs.egolia.localhost`)
       traefik.http.routers.rustfs-console.entrypoints: web
       traefik.http.routers.rustfs-console.service: rustfs-console
+      traefik.http.routers.rustfs-console.middlewares: cors@file
       traefik.http.services.rustfs-console.loadbalancer.server.port: '9001'
     security_opt:
       - no-new-privileges:true
@@ -66,8 +68,12 @@ services:
         until (rc alias set rustfs http://rustfs:9000 ${RUSTFS_ACCESS_KEY:-egoliauit} ${RUSTFS_SECRET_KEY:-egoliauit}) do
           sleep 1;
         done
-        rc mb rustfs/course;
-        rc anonymous set public rustfs/course;
+        until rc bucket create --ignore-existing rustfs/course; do
+          sleep 1;
+        done
+        until rc bucket anonymous set public rustfs/course; do
+          sleep 1;
+        done
       '
     restart: 'no'
     depends_on:

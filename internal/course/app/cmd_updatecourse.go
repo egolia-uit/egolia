@@ -3,10 +3,10 @@ package app
 import (
 	"context"
 	"errors"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -19,20 +19,17 @@ type UpdateCourse struct {
 	IntroductionVideoKey *string // emptyable
 }
 
-type UpdateCourseCmd Cmd[UpdateCourse]
-
 type UpdateCourseHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewUpdateCourseHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) UpdateCourseCmd {
-	handler := &UpdateCourseHandler{
+func NewUpdateCourseHandler(uow domain.UnitOfWork) *UpdateCourseHandler {
+	return &UpdateCourseHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[UpdateCourse] = (*UpdateCourseHandler)(nil)
+var _ commonhandler.Cmd[UpdateCourse] = (*UpdateCourseHandler)(nil)
 
 func (h *UpdateCourseHandler) Handle(ctx context.Context, cmd *UpdateCourse) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

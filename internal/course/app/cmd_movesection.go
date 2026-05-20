@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -15,17 +15,14 @@ type MoveSection struct {
 	Order     int
 }
 
-type MoveSectionCmd Cmd[MoveSection]
-
 type MoveSectionHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewMoveSectionHandler(logger *slog.Logger, tracer Tracer, uow domain.UnitOfWork) MoveSectionCmd {
-	handler := &MoveSectionHandler{
+func NewMoveSectionHandler(uow domain.UnitOfWork) *MoveSectionHandler {
+	return &MoveSectionHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
 func (h *MoveSectionHandler) Handle(ctx context.Context, command *MoveSection) error {
@@ -42,4 +39,4 @@ func (h *MoveSectionHandler) Handle(ctx context.Context, command *MoveSection) e
 	})
 }
 
-var _ Cmd[MoveSection] = (*MoveSectionHandler)(nil)
+var _ commonhandler.Cmd[MoveSection] = (*MoveSectionHandler)(nil)

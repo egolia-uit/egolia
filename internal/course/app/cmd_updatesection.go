@@ -2,10 +2,10 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 	"github.com/google/uuid"
 )
 
@@ -16,20 +16,17 @@ type UpdateSectionTitle struct {
 	Title     string
 }
 
-type UpdateSectionTitleCmd Cmd[UpdateSectionTitle]
-
 type UpdateSectionTitleHandler struct {
 	uow domain.UnitOfWork
 }
 
-func NewUpdateSectionTitleHandler(uow domain.UnitOfWork, logger *slog.Logger, tracer Tracer) UpdateSectionTitleCmd {
-	handler := &UpdateSectionTitleHandler{
+func NewUpdateSectionTitleHandler(uow domain.UnitOfWork) *UpdateSectionTitleHandler {
+	return &UpdateSectionTitleHandler{
 		uow: uow,
 	}
-	return NewCmdSpan(NewCmdLog(handler, logger), tracer)
 }
 
-var _ Cmd[UpdateSectionTitle] = (*UpdateSectionTitleHandler)(nil)
+var _ commonhandler.Cmd[UpdateSectionTitle] = (*UpdateSectionTitleHandler)(nil)
 
 func (h *UpdateSectionTitleHandler) Handle(ctx context.Context, command *UpdateSectionTitle) error {
 	return h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {

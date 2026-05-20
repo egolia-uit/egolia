@@ -2,7 +2,8 @@ package app
 
 import (
 	"context"
-	"log/slog"
+
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 )
 
 type GetMyBookmarkedCourses struct {
@@ -13,20 +14,17 @@ type GetMyBookmarkedCourses struct {
 	Status   *CourseStatus
 }
 
-type GetMyBookmarkedCoursesQuery Query[GetMyBookmarkedCourses, *Paginated[Course]]
-
 type GetMyBookmarkedCoursesHandler struct {
 	readModel GetCoursesReadModel
 }
 
-func NewGetMyBookmarkedCoursesHandler(readModel GetCoursesReadModel, logger *slog.Logger, tracer Tracer) GetMyBookmarkedCoursesQuery {
-	handler := &GetMyBookmarkedCoursesHandler{
+func NewGetMyBookmarkedCoursesHandler(readModel GetCoursesReadModel) *GetMyBookmarkedCoursesHandler {
+	return &GetMyBookmarkedCoursesHandler{
 		readModel: readModel,
 	}
-	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Query[GetMyBookmarkedCourses, *Paginated[Course]] = (*GetMyBookmarkedCoursesHandler)(nil)
+var _ commonhandler.Query[GetMyBookmarkedCourses, *Paginated[Course]] = (*GetMyBookmarkedCoursesHandler)(nil)
 
 func (h *GetMyBookmarkedCoursesHandler) Handle(ctx context.Context, params *GetMyBookmarkedCourses) (*Paginated[Course], error) {
 	status := CourseStatusApproved

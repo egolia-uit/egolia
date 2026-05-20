@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
+
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 )
 
 type GetCourseDetail struct {
@@ -15,22 +16,19 @@ type GetCourseDetail struct {
 	UserRoles []UserRole
 }
 
-type GetCourseDetailQuery Query[GetCourseDetail, *CourseDetail]
-
 type GetCourseDetailHandler struct {
 	getCourseDetailReadModel GetCourseDetailReadModel
 	authorizationSvc         *domain.AuthorizationSvc
 }
 
-func NewGetCourseDetailHandler(getCourseDetailReadModel GetCourseDetailReadModel, authorizationSvc *domain.AuthorizationSvc, logger *slog.Logger, tracer Tracer) GetCourseDetailQuery {
-	handler := &GetCourseDetailHandler{
+func NewGetCourseDetailHandler(getCourseDetailReadModel GetCourseDetailReadModel, authorizationSvc *domain.AuthorizationSvc) *GetCourseDetailHandler {
+	return &GetCourseDetailHandler{
 		getCourseDetailReadModel: getCourseDetailReadModel,
 		authorizationSvc:         authorizationSvc,
 	}
-	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Query[GetCourseDetail, *CourseDetail] = (*GetCourseDetailHandler)(nil)
+var _ commonhandler.Query[GetCourseDetail, *CourseDetail] = (*GetCourseDetailHandler)(nil)
 
 func (h *GetCourseDetailHandler) Handle(ctx context.Context, query *GetCourseDetail) (*CourseDetail, error) {
 	roles := make([]string, len(query.UserRoles))

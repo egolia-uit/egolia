@@ -1,6 +1,13 @@
 'use client';
 
-import { Eye, EyeOff, FilePlus2, Pencil, Trash2 } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  FilePlus2,
+  Pencil,
+  Trash2,
+  Send,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -8,7 +15,7 @@ import { useMemo, useState } from 'react';
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
 import { Button } from '#/components/ui/neumorphism/button';
-import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/neumorphism/card';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Dialog,
   DialogContent,
@@ -26,15 +33,16 @@ import {
   getCourseForUpdate,
   getMyCourses,
   hideCourse,
+  submitCourse,
   unhideCourse,
   updateCourse,
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import type { Viewer } from '#/lib/auth/roles';
 
-import { CourseHero, CourseStructure } from './course-detail';
+import { CourseCurriculumEditor } from './course-curriculum-editor';
 import { CourseForm } from './course-form';
-import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
+import { CourseGridSkeleton, ErrorState } from './course-states';
 import { isDraftLike, ListContent, normalizeTab, type ResourceState, uploadCourseVideo, useCourseDetail, useCourseList } from './course-shared';
 
 function InstructorCoursesContent({
@@ -52,8 +60,8 @@ function InstructorCoursesContent({
     'uploads',
     'reviews',
   ]);
+  const { success: showToast } = useToast();
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
   const courses = useCourseList(
@@ -87,7 +95,6 @@ function InstructorCoursesContent({
   async function create(body: CourseCourseWritable) {
     setSubmitting(true);
     setActionError(null);
-    setActionMessage(null);
     try {
       const response = await createCourse({
         body,
@@ -95,10 +102,11 @@ function InstructorCoursesContent({
         throwOnError: true,
       });
       courses.reload();
+      showToast('Course created successfully!');
+      setCreateOpen(false);
       const location = response.response.headers.get('Content-Location');
       const courseId = location?.split('/').filter(Boolean).at(-1);
       if (courseId) {
-        setCreateOpen(false);
         router.push(`/instructor/courses/${courseId}`);
       }
     } catch (error) {
@@ -110,10 +118,9 @@ function InstructorCoursesContent({
 
   async function mutateCourse(action: () => Promise<unknown>, success: string) {
     setActionError(null);
-    setActionMessage(null);
     try {
       await action();
-      setActionMessage(success);
+      showToast(success);
       courses.reload();
     } catch (error) {
       setActionError(normalizeApiError(error));
@@ -123,8 +130,8 @@ function InstructorCoursesContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Giảng dạy"
-      title="Quản lý khóa học"
+      eyebrow="Teaching"
+      title="Manage Courses"
       actions={
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
@@ -146,7 +153,7 @@ function InstructorCoursesContent({
                 submitting={submitting}
                 error={actionError?.message}
                 forceIntroductionVideoKey={true}
-                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo('new', file, onProgress)}
+                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo(crypto.randomUUID(), file, onProgress)}
                 onSubmit={create}
               />
             </div>
@@ -155,9 +162,6 @@ function InstructorCoursesContent({
       }
     >
       <div className="grid gap-4">
-        {actionMessage && (
-          <InlineNotice title="Success" description={actionMessage} />
-        )}
         {actionError && <ErrorState error={actionError} />}
         <ListContent
           state={displayedCourses}
@@ -165,18 +169,18 @@ function InstructorCoursesContent({
           destination="instructor"
           emptyTitle={
             activeTab === 'drafts'
-              ? 'Chưa có bản nháp'
-              : 'Chưa có khóa học của bạn'
+              ? 'No drafts available'
+              : 'You do not have any courses'
           }
           emptyDescription={
             activeTab === 'drafts'
-              ? 'Nhấn edit trong chi tiết khóa học đã duyệt để tạo bản nháp.'
-              : 'Tạo khóa học đầu tiên bằng nút Create course.'
+              ? 'Click edit in the approved course details to create a draft.'
+              : 'Create your first course using the Create course button.'
           }
           actionFor={(course) => (
             <div className="flex flex-wrap gap-2">
               <Button asChild variant="outline">
-                <Link href={`/instructor/courses/${course.id}`}>
+                <Link href={`/instructor/courses/${course.id}${course.status === 'draft' ? '/builder' : ''}`}>
                   <Eye className="mr-2 size-4" />
                   Manage
                 </Link>
@@ -189,16 +193,16 @@ function InstructorCoursesContent({
                     () =>
                       course.hidden
                         ? unhideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          })
+                          client: apiClient,
+                          path: { courseId: course.id ?? '' },
+                          throwOnError: true,
+                        })
                         : hideCourse({
-                            client: apiClient,
-                            path: { courseId: course.id ?? '' },
-                            throwOnError: true,
-                          }),
-                    course.hidden ? 'Khóa học đã hiện.' : 'Khóa học đã ẩn.'
+                          client: apiClient,
+                          path: { courseId: course.id ?? '' },
+                          throwOnError: true,
+                        }),
+                    course.hidden ? 'Course is now visible.' : 'Course is now hidden.'
                   )
                 }
               >
@@ -220,7 +224,7 @@ function InstructorCoursesContent({
                         path: { courseId: course.id ?? '' },
                         throwOnError: true,
                       }),
-                    'Khóa học đã được xóa.'
+                    'Course has been deleted.'
                   )
                 }
               >
@@ -257,19 +261,17 @@ function InstructorCourseDetailContent({
   courseId: string;
 }) {
   const router = useRouter();
-  const { state, reload, setState } = useCourseDetail(courseId);
+  const { success: showToast } = useToast();
+  const { state, reload } = useCourseDetail(courseId);
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
     setActionError(null);
-    setActionMessage(null);
     try {
       await action();
-      setActionMessage(success);
+      showToast(success);
       reload();
       return true;
     } catch (error) {
@@ -316,28 +318,205 @@ function InstructorCourseDetailContent({
   return (
     <AppShell
       viewer={viewer}
-      eyebrow="Quản lý"
-      title="Chi tiết khóa học"
+      eyebrow="Management"
+      title="Course Detail"
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
       )}
       {state.status === 'ready' && (
-        <div className="grid gap-6">
-          <CourseHero
+        <div className="grid gap-4">
+          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
+            <div className="
+              flex flex-col gap-3
+              lg:flex-row lg:items-center lg:justify-between
+            ">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-slate-500 uppercase">
+                  View
+                </p>
+                <h2 className="truncate text-xl font-semibold text-slate-950">
+                  {state.data.title}
+                </h2>
+                {state.data.overview && (
+                  <p className="mt-1 line-clamp-1 text-sm text-slate-600">
+                    {state.data.overview}
+                  </p>
+                )}
+              </div>
+
+              <div className="
+                flex flex-wrap gap-2
+                lg:justify-end
+              ">
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={submitting}
+                  className="
+                    bg-primary text-primary-foreground shadow-nm-flat
+                    hover:bg-primary/90
+                  "
+                  onClick={() => {
+                    runAction(async () => {
+                      const editableId = await ensureEditableCourseId();
+                      router.push(`/instructor/courses/${editableId}/builder`);
+                    }, 'Opening Editor...');
+                  }}
+                >
+                  <Pencil className="mr-2 size-4" />
+                  Edit Course
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  disabled={submitting}
+                  className="
+                    text-slate-600
+                    hover:bg-white/60 hover:text-slate-900
+                  "
+                  onClick={() =>
+                    runAction(
+                      () =>
+                        state.data.hidden
+                          ? unhideCourse({
+                            client: apiClient,
+                            path: { courseId },
+                            throwOnError: true,
+                          })
+                          : hideCourse({
+                            client: apiClient,
+                            path: { courseId },
+                            throwOnError: true,
+                          }),
+                      state.data.hidden
+                        ? 'Course is now visible.'
+                        : 'Course is now hidden.'
+                    )
+                  }
+                >
+                  {state.data.hidden ? (
+                    <Eye className="mr-2 size-4" />
+                  ) : (
+                    <EyeOff className="mr-2 size-4" />
+                  )}
+                  {state.data.hidden ? 'Unhide course' : 'Hide course'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  disabled={submitting}
+                  className="
+                    text-slate-500
+                    hover:bg-red-50 hover:text-destructive
+                  "
+                  onClick={() =>
+                    runAction(
+                      () =>
+                        deleteCourse({
+                          client: apiClient,
+                          path: { courseId },
+                          throwOnError: true,
+                        }),
+                      'Course has been deleted.'
+                    ).then((ok) => {
+                      if (ok) {
+                        router.push('/instructor/courses');
+                      }
+                    })
+                  }
+                >
+                  <Trash2 className="mr-2 size-4" />
+                  Delete course
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {actionError && <ErrorState error={actionError} />}
+          
+          <CourseCurriculumEditor
+            courseId={courseId}
             course={state.data}
-            actions={
-              <div className="grid gap-2">
+            reload={reload}
+            readOnly={true}
+            setCourse={() => undefined}
+          />
+        </div>
+      )}
+    </AppShell>
+  );
+}
+
+export function InstructorCourseBuilderContent({
+  viewer,
+  courseId,
+}: {
+  viewer: Viewer;
+  courseId: string;
+}) {
+  const router = useRouter();
+  const { success: showToast } = useToast();
+  const { state, reload, setState } = useCourseDetail(courseId);
+  const [actionError, setActionError] = useState<ApiProblem | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
+  async function runAction(action: () => Promise<unknown>, success: string) {
+    setSubmitting(true);
+    setActionError(null);
+    try {
+      await action();
+      showToast(success);
+      reload();
+      return true;
+    } catch (error) {
+      setActionError(normalizeApiError(error));
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <AppShell
+      viewer={viewer}
+      eyebrow="Management"
+      title="Manage Course"
+    >
+      {state.status === 'loading' && <CourseGridSkeleton />}
+      {state.status === 'error' && (
+        <ErrorState error={state.error} onRetry={reload} />
+      )}
+      {state.status === 'ready' && (
+        <div className="grid gap-4">
+          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
+            <div className="
+              flex flex-col gap-3
+              lg:flex-row lg:items-center lg:justify-between
+            ">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-slate-500 uppercase">
+                  Curriculum Editor
+                </p>
+                <h2 className="truncate text-xl font-semibold text-slate-950">
+                  {state.data.title}
+                </h2>
+              </div>
+
+              <div className="
+                flex flex-wrap gap-2
+                lg:justify-end
+              ">
                 <Dialog open={editOpen} onOpenChange={setEditOpen}>
                   <DialogTrigger asChild>
-                    <Button
-                      type="button"
-                      disabled={submitting}
-                      className="w-full"
-                    >
+                    <Button type="button" size="sm" variant="outline" disabled={submitting}>
                       <Pencil className="mr-2 size-4" />
-                      Edit course
+                      Edit basic info
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-xl">
@@ -357,9 +536,9 @@ function InstructorCourseDetailContent({
                         }
                         onSubmit={async (body) => {
                           if (state.status !== 'ready') return;
-                          
+
                           const previousState = state.data;
-                          
+
                           setState({
                             status: 'ready',
                             data: {
@@ -370,27 +549,20 @@ function InstructorCourseDetailContent({
                             }
                           });
 
-                          let editableCourseId = courseId;
                           const ok = await runAction(
                             async () => {
-                              editableCourseId = await ensureEditableCourseId();
                               await updateCourse({
                                 body,
                                 client: apiClient,
-                                path: { courseId: editableCourseId },
+                                path: { courseId: courseId },
                                 throwOnError: true,
                               });
                             },
-                            isDraftLike(previousState)
-                              ? 'Khóa học đã được cập nhật.'
-                              : 'Bản nháp mới đã được tạo và cập nhật.'
+                            'Course has been updated.'
                           );
 
                           if (ok) {
                             setEditOpen(false);
-                            if (editableCourseId !== courseId) {
-                              router.replace(`/instructor/courses/${editableCourseId}`);
-                            }
                           } else {
                             setState({ status: 'ready', data: previousState });
                           }
@@ -400,103 +572,85 @@ function InstructorCourseDetailContent({
                   </DialogContent>
                 </Dialog>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={submitting}
-                  className="w-full"
-                  onClick={() =>
-                    runAction(
-                      () =>
-                        state.data.hidden
-                          ? unhideCourse({
-                              client: apiClient,
-                              path: { courseId },
-                              throwOnError: true,
-                            })
-                          : hideCourse({
-                              client: apiClient,
-                              path: { courseId },
-                              throwOnError: true,
-                            }),
-                      state.data.hidden
-                        ? 'Khóa học đã hiện.'
-                        : 'Khóa học đã ẩn.'
-                    )
-                  }
-                >
-                  {state.data.hidden ? (
-                    <Eye className="mr-2 size-4" />
-                  ) : (
-                    <EyeOff className="mr-2 size-4" />
-                  )}
-                  {state.data.hidden ? 'Unhide course' : 'Hide course'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  disabled={submitting}
-                  className="w-full"
-                  onClick={() =>
-                    runAction(
-                      () =>
-                        deleteCourse({
-                          client: apiClient,
-                          path: { courseId },
-                          throwOnError: true,
-                        }),
-                      'Khóa học đã được xóa.'
-                    ).then((ok) => {
-                      if (ok) {
-                        router.push('/instructor/courses');
-                      }
-                    })
-                  }
-                >
-                  <Trash2 className="mr-2 size-4" />
-                  Delete course
-                </Button>
+                {state.data.status === 'draft' && (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled={submitting}
+                        className="
+                          bg-primary text-primary-foreground shadow-nm-flat
+                          hover:bg-primary/90
+                        "
+                      >
+                        <Send className="mr-2 size-4" />
+                        Submit for Review
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Submit Course for Review?</DialogTitle>
+                        <DialogDescription>
+                          Once submitted, your course will be reviewed by an administrator. You may not be able to edit it while it is pending review. Do you want to proceed?
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="flex justify-end gap-2 pt-4">
+                        <DialogTrigger asChild>
+                          <Button variant="outline" type="button" disabled={submitting}>
+                            Cancel
+                          </Button>
+                        </DialogTrigger>
+                        <Button
+                          type="button"
+                          className="
+                            bg-primary text-primary-foreground shadow-nm-flat
+                            hover:bg-primary/90
+                          "
+                          disabled={submitting}
+                          onClick={() => {
+                            runAction(
+                              async () => {
+                                await submitCourse({
+                                  client: apiClient,
+                                  path: { courseId },
+                                  throwOnError: true,
+                                });
+                                reload();
+                                router.push('/instructor/courses');
+                              },
+                              'Course has been submitted for review.'
+                            );
+                          }}
+                        >
+                          Confirm & Submit
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
-            }
-          />
-
-          {actionMessage && (
-            <InlineNotice title="Success" description={actionMessage} />
-          )}
-          {actionError && <ErrorState error={actionError} />}
-
-          <div
-            className="
-              grid gap-6
-              xl:grid-cols-[1fr_340px]
-            "
-          >
-            <div className="grid gap-3">
-              <h2 className="text-lg font-semibold">Course structure</h2>
-              <CourseStructure course={state.data} />
-              <InlineNotice
-                title="Sắp ra mắt"
-                description="Tính năng thêm Section và Lesson đang được hoàn thiện."
-              />
-            </div>
-
-            <div className="grid gap-4">
-              <Card className="bg-nm-bg">
-                <CardHeader>
-                  <CardTitle>Ghi chú</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm text-slate-600">
-                  <p>
-                    Nhấn <strong>Edit course</strong> để thay đổi thông tin cơ bản.
-                  </p>
-                  <InlineNotice
-                    title="Storage"
-                    description="Video được upload trực tiếp lên hệ thống lưu trữ RustFS qua link bảo mật."
-                  />
-                </CardContent>
-              </Card>
             </div>
           </div>
+
+          {actionError && <ErrorState error={actionError} />}
+
+          <CourseCurriculumEditor
+            courseId={courseId}
+            course={state.data}
+            reload={reload}
+            setCourse={(updater) => {
+              setState((current) => {
+                if (current.status !== 'ready') {
+                  return current;
+                }
+                return {
+                  ...current,
+                  data: updater(current.data),
+                };
+              });
+            }}
+          />
         </div>
       )}
     </AppShell>
@@ -508,6 +662,16 @@ export function InstructorCourseDetailPage({ courseId }: { courseId: string }) {
     <AuthGate allowedRoles={['instructor', 'admin']}>
       {(viewer) => (
         <InstructorCourseDetailContent viewer={viewer} courseId={courseId} />
+      )}
+    </AuthGate>
+  );
+}
+
+export function InstructorCourseBuilderPage({ courseId }: { courseId: string }) {
+  return (
+    <AuthGate allowedRoles={['instructor', 'admin']}>
+      {(viewer) => (
+        <InstructorCourseBuilderContent viewer={viewer} courseId={courseId} />
       )}
     </AuthGate>
   );

@@ -1,8 +1,8 @@
 import { AdminBlogPage } from '#/features/blog';
 
 export const metadata = {
-  title: 'Quản lý Blog - Egolia Admin',
-  description: 'Quản lý bài viết blog',
+  title: 'Manage Blog - Egolia Admin',
+  description: 'Manage blog articles',
 };
 
 export default function AdminBlogRoute() {

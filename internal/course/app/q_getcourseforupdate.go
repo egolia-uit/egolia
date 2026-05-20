@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/course/domain"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/google/uuid"
+
+	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
 )
 
 type GetCourseForUpdate struct {
@@ -14,22 +15,19 @@ type GetCourseForUpdate struct {
 	UserID   string
 }
 
-type GetCourseForUpdateQuery Query[GetCourseForUpdate, *CourseDetail]
-
 type GetCourseForUpdateHandler struct {
 	getCourseDetailReadModel GetCourseDetailReadModel
 	authorizationSvc         *domain.AuthorizationSvc
 }
 
-func NewGetCourseForUpdateHandler(uow domain.UnitOfWork, getCourseDetailReadModel GetCourseDetailReadModel, logger *slog.Logger, tracer Tracer) GetCourseForUpdateQuery {
-	handler := &GetCourseForUpdateHandler{
+func NewGetCourseForUpdateHandler(uow domain.UnitOfWork, getCourseDetailReadModel GetCourseDetailReadModel) *GetCourseForUpdateHandler {
+	return &GetCourseForUpdateHandler{
 		getCourseDetailReadModel: getCourseDetailReadModel,
 		authorizationSvc:         &domain.AuthorizationSvc{},
 	}
-	return NewQSpan(NewQLog(handler, logger), tracer)
 }
 
-var _ Query[GetCourseForUpdate, *CourseDetail] = (*GetCourseForUpdateHandler)(nil)
+var _ commonhandler.Query[GetCourseForUpdate, *CourseDetail] = (*GetCourseForUpdateHandler)(nil)
 
 func (h *GetCourseForUpdateHandler) Handle(ctx context.Context, query *GetCourseForUpdate) (*CourseDetail, error) {
 	deleted := false
