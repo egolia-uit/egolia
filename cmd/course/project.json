@@ -9,12 +9,29 @@
       "goFiles",
       "{workspaceRoot}/api/**/*.go",
       "{workspaceRoot}/internal/course/**/*.go"
+    ],
+    "mock": [
+      "{workspaceRoot}/internal/course/app/svc_*.go",
+      "{workspaceRoot}/internal/course/domain/*repo.go",
+      "{workspaceRoot}/internal/course/domain/uow.go"
+    ],
+    "test": [
+      "{projectRoot}/**/*_test.go",
+      "{workspaceRoot}/internal/course/**/*_test.go"
     ]
   },
   "targets": {
+    "gen:mockery": {
+      "executor": "nx:run-commands",
+      "inputs": ["mock"],
+      "outputs": ["{projectRoot}/**/mock.go"],
+      "options": {
+        "command": "mockery",
+        "cwd": "{projectRoot}"
+      }
+    },
     "gen:wire": {
       "executor": "nx:run-commands",
-      "inputs": ["default"],
       "outputs": ["{projectRoot}/wire_gen.go"],
       "options": {
         "command": "wire",
@@ -22,13 +39,8 @@
       },
       "cache": false
     },
-    "gen:mockery": {
-      "executor": "nx:noop",
-      "dependsOn": ["^gen:mockery"]
-    },
     "run": {
       "executor": "nx:run-commands",
-      "inputs": ["default"],
       "options": {
         "command": "go run .",
         "cwd": "{projectRoot}",
@@ -39,7 +51,6 @@
     },
     "build": {
       "executor": "nx:run-commands",
-      "inputs": ["default"],
       "options": {
         "command": "go build -o ./cmd/course/course ./cmd/course/",
         "cwd": "{workspaceRoot}"
@@ -63,7 +74,6 @@
     },
     "preview": {
       "executor": "nx:run-commands",
-      "inputs": ["default"],
       "options": {
         "command": "./course",
         "cwd": "{projectRoot}",
@@ -91,18 +101,35 @@
       "cache": false,
       "parallelism": false
     },
-    "test": {
-      "executor": "nx:noop",
-      "dependsOn": ["^test"]
-    },
     "gen": {
       "dependsOn": ["gen:wire", "gen:mockery"]
     },
     "nx-release-publish": {
       "parallelism": false
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "inputs": ["default", "test"],
+      "outputs": ["{workspaceRoot}/coverage/course"],
+      "options": {
+        "command": "./test.sh",
+        "cwd": "{projectRoot}"
+      },
+      "configurations": {
+        "production": {
+          "command": "./test.sh --production"
+        }
+      }
+    },
+    "upload-codecov": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "codecov --disable-telem upload-process --disable-search --file ./coverage/course/coverage.out --flag course"
+      },
+      "dependsOn": ["test"]
     }
   },
-  "implicitDependencies": ["pkg", "internal/course"],
+  "implicitDependencies": ["pkg"],
   "release": {
     "docker": {
       "repositoryName": "egolia-uit/course"
