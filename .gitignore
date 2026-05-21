@@ -1,3 +1,6 @@
+# Duc uses mac
+.DS_Store
+
 node_modules
 **/*.env.local
 **/*.local.env
