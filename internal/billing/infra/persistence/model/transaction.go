@@ -32,6 +32,7 @@ func TransactionFromDomain(transaction *core.Transaction) *Transaction {
 		Amount:      transaction.Amount,
 		Status:      transaction.Status,
 		PaidAt:      transaction.PaidAt,
+		UpdatedAt:   transaction.UpdatedAt,
 		CreatedAt:   transaction.CreatedAt,
 	}
 }
@@ -46,5 +47,6 @@ func (m *Transaction) ToDomain() *core.Transaction {
 		Status:      m.Status,
 		PaidAt:      m.PaidAt,
 		CreatedAt:   m.CreatedAt,
+		UpdatedAt:   m.UpdatedAt,
 	}
 }

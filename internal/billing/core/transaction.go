@@ -24,6 +24,7 @@ type Transaction struct {
 	Amount      int64
 	Status      TransactionStatus
 	PaidAt      *time.Time
+	UpdatedAt   time.Time
 	CreatedAt   time.Time
 }
 
@@ -71,6 +72,7 @@ func (s *TransactionSvc) CheckoutCourse(ctx context.Context, params CheckoutCour
 		Status:      TransactionStatusPending,
 		PaidAt:      nil,
 		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 	if err := s.transactionRepo.Save(ctx, transaction); err != nil {
 		return nil, err
@@ -119,6 +121,7 @@ func (s *TransactionSvc) ProcessVnpayIPN(ctx context.Context, params VnpayIPNPar
 	now := time.Now()
 	transaction.Status = TransactionStatusCompleted
 	transaction.PaidAt = &now
+	transaction.UpdatedAt = time.Now()
 	if err := s.transactionRepo.Save(ctx, transaction); err != nil {
 		return nil, err
 	}
