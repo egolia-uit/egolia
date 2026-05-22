@@ -1072,6 +1072,29 @@ export const zGetTransactionsResponse = z.object({
     pagination: zBillingPagination
 });
 
+export const zVnpayIpnQuery = z.object({
+    vnp_Amount: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+    vnp_BankCode: z.string().optional(),
+    vnp_BankTranNo: z.string().optional(),
+    vnp_CardType: z.string().optional(),
+    vnp_OrderInfo: z.string().optional(),
+    vnp_PayDate: z.string().optional(),
+    vnp_ResponseCode: z.string(),
+    vnp_SecureHash: z.string(),
+    vnp_TmnCode: z.string().optional(),
+    vnp_TransactionNo: z.string().optional(),
+    vnp_TransactionStatus: z.string().optional(),
+    vnp_TxnRef: z.uuid()
+});
+
+/**
+ * VNPAY IPN result
+ */
+export const zVnpayIpnResponse = z.object({
+    RspCode: z.string(),
+    Message: z.string()
+});
+
 export const zSearchPostsQuery = z.object({
     q: z.string().optional(),
     tag: z.string().optional(),

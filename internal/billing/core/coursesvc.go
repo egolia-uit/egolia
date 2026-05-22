@@ -17,4 +17,5 @@ type Course struct {
 
 type CourseSvc interface {
 	GetCourse(ctx context.Context, id uuid.UUID) (*Course, error)
+	EnrollCourseForUser(ctx context.Context, courseID uuid.UUID, userID string) error
 }

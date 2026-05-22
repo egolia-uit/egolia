@@ -15,6 +15,9 @@ import (
 	"github.com/egolia-uit/egolia/internal/billing/controller/http"
 	"github.com/egolia-uit/egolia/internal/billing/core"
 	"github.com/egolia-uit/egolia/internal/billing/infra/identity"
+	"github.com/egolia-uit/egolia/internal/billing/infra/payment"
+	"github.com/egolia-uit/egolia/internal/billing/infra/persistence"
+	"github.com/egolia-uit/egolia/internal/billing/infra/persistence/repo"
 	"github.com/egolia-uit/egolia/internal/billing/infra/service"
 	"github.com/egolia-uit/egolia/pkg/common/http"
 	"github.com/egolia-uit/egolia/pkg/logging"
@@ -58,12 +61,21 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 	}
 	authentik := &configConfig.Authentik
 	identityAuthentik := identity.NewAuthentik(authentik)
-	transactionSvc := core.NewTransactionSvc(course, identityAuthentik)
+	db, cleanup3, err := persistence.NewDB(ctx, configConfig, logger)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	transactionRepo := repo.NewTransactionRepo(db)
+	vnpay := payment.NewVnpay()
+	transactionSvc := core.NewTransactionSvc(course, identityAuthentik, transactionRepo, vnpay)
 	server := &configConfig.Server
 	strictHandler := http.NewStrictHandler(transactionSvc, server)
 	serverInterface := http.NewHandler(strictHandler)
-	httpHTTP, cleanup3, err := http.New(ctx, engine, serverInterface, server, logger)
+	httpHTTP, cleanup4, err := http.New(ctx, engine, serverInterface, server, logger)
 	if err != nil {
+		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
@@ -71,6 +83,7 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 	healthHealth := health.New(server, authentik)
 	billingServer := billing.NewServer(httpHTTP, healthHealth, logger)
 	return billingServer, func() {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()

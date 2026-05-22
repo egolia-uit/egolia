@@ -6,6 +6,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	"github.com/egolia-uit/egolia/pkg/pb"
+	"github.com/google/uuid"
 )
 
 type ServiceServer struct {
@@ -44,16 +45,12 @@ func (ss *ServiceServer) GetCourse(ctx context.Context, params *pb.GetCourseRequ
 }
 
 func (ss *ServiceServer) EnrollCourseForUser(ctx context.Context, params *pb.EnrollCourseForUserRequest) (*pb.EnrollCourseForUserResponse, error) {
-	return nil, errs.Unimplemented
-	// cmd := &app.EnrollCourseForUser{
-	// 	CourseID: params.CourseId,
-	// 	UserID:   params.UserId,
-	// }
-	// enrollmentID, err := ss.app.Commands.EnrollCourseForUser.Handle(ctx, cmd)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// return &pb.EnrollCourseForUserResponse{
-	// 	EnrollmentId: enrollmentID,
-	// }, nil
+	cmd := &app.EnrollInCourse{
+		CourseID: uuid.MustParse(params.CourseId),
+		ActorID:  params.UserId,
+	}
+	if err := ss.app.Cmds.EnrollInCourse.Handle(ctx, cmd); err != nil {
+		return nil, err
+	}
+	return &pb.EnrollCourseForUserResponse{}, nil
 }

@@ -1,0 +1,87 @@
+sequenceDiagram
+
+autonumber
+
+actor User as Học viên
+
+participant FE as Frontend (UI)
+
+participant BE as Backend (Egolia API)
+
+participant DB as Database
+
+participant PG as Cổng thanh toán (Momo/VNPay/Stripe)
+
+%% Giai đoạn 1: Tạo đơn
+
+rect rgb(240, 248, 255)
+
+Note right of User: BƯỚC 1 & 2: KHỞI TẠO & THANH TOÁN
+
+User->>FE: Bấm nút "Mua khóa học"
+
+FE->>BE: POST /course/transactions/checkout
+
+Note over BE, DB: Backend kiểm tra Course Price<br/>Khởi tạo giao dịch chờ xử lý
+
+BE->>DB: Insert bản ghi Transaction (status: 'pending')
+
+DB-->>BE: Success
+
+BE->>PG: Gọi API Cổng thanh toán sinh URL
+
+PG-->>BE: Trả về [Payment URL]
+
+BE-->>FE: Trả về [Payment URL] cho Client
+
+FE->>User: Redirect (Chuyển hướng) sang trang Momo/VNPay
+
+User->>PG: Thực hiện quét mã QR / Điền thẻ trả tiền
+
+end
+
+%% Giai đoạn 2: Webhook và Xử lý ngầm
+
+rect rgb(255, 250, 240)
+
+Note right of User: BƯỚC 3 & 4: WEBHOOK & GHI DANH (Chạy ngầm)
+
+PG->>BE: HTTP POST /course/transactions/webhook
+
+Note over BE: Backend verify chữ ký bảo mật (Signature)<br/>Đảm bảo request đến từ Momo/VNPay
+
+BE->>DB: Update Transaction (status: 'completed')
+
+Note over BE, DB: Tự động trigger Use Case Ghi danh
+
+BE->>DB: Insert bản ghi Enrollment (Khớp UserID & CourseID)
+
+DB-->>BE: Success
+
+BE-->>PG: Trả về 200 OK (Báo Cổng thanh toán đừng gọi lại nữa)
+
+end
+
+%% Giai đoạn 3: Trải nghiệm sau mua
+
+rect rgb(240, 255, 240)
+
+Note right of User: BƯỚC 5: MỞ KHÓA BÀI HỌC
+
+PG->>User: Redirect học viên về lại trang web Egolia
+
+User->>FE: Tải lại trang chi tiết khóa học
+
+FE->>BE: GET /course/courses/me/enrolled
+
+BE->>DB: Truy vấn danh sách khóa học
+
+DB-->>BE: Trả về khóa học vừa được ghi danh
+
+BE-->>FE: Trả dữ liệu JSON (kèm thẻ Enrollment)
+
+Note over FE: Frontend nhận diện học viên đã sở hữu khóa học
+
+FE-->>User: Ẩn nút "Mua", hiển thị nút "Vào học" (Unlock)
+
+end
