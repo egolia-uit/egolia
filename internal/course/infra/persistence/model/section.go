@@ -9,14 +9,15 @@ import (
 )
 
 type Section struct {
-	ID        uuid.UUID      `gorm:"type:uuid;primaryKey"`
-	CourseID  uuid.UUID      `gorm:"type:uuid;not null"`
-	Title     string         `gorm:"type:varchar(255);not null"`
-	Index     int            `gorm:"column:index;type:integer;not null;default:0"`
-	Lessons   []Lesson       `gorm:"foreignKey:SectionID"`
-	CreatedAt time.Time      `gorm:"autoCreateTime"`
-	UpdatedAt time.Time      `gorm:"autoUpdateTime"`
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID                uuid.UUID      `gorm:"type:uuid;primaryKey"`
+	CourseID          uuid.UUID      `gorm:"type:uuid;not null"`
+	OriginalSectionID *uuid.UUID     `gorm:"type:uuid;column:original_section_id"`
+	Title             string         `gorm:"type:varchar(255);not null"`
+	Index             int            `gorm:"column:index;type:integer;not null;default:0"`
+	Lessons           []Lesson       `gorm:"foreignKey:SectionID"`
+	CreatedAt         time.Time      `gorm:"autoCreateTime"`
+	UpdatedAt         time.Time      `gorm:"autoUpdateTime"`
+	DeletedAt         gorm.DeletedAt `gorm:"index"`
 }
 
 func (Section) TableName() string { return "sections" }
@@ -35,14 +36,15 @@ func SectionFromDomain(index int, s *domain.Section, courseID uuid.UUID) *Sectio
 	}
 
 	return &Section{
-		ID:        s.ID(),
-		CourseID:  courseID,
-		Title:     s.Title(),
-		Index:     index,
-		Lessons:   lessons,
-		CreatedAt: time.Time{},
-		UpdatedAt: time.Time{},
-		DeletedAt: deletedAt,
+		ID:                s.ID(),
+		CourseID:          courseID,
+		OriginalSectionID: s.OriginalSectionID(),
+		Title:             s.Title(),
+		Index:             index,
+		Lessons:           lessons,
+		CreatedAt:         time.Time{},
+		UpdatedAt:         time.Time{},
+		DeletedAt:         deletedAt,
 	}
 }
 
@@ -58,5 +60,5 @@ func (m *Section) ToDomain() *domain.Section {
 			lessons = append(lessons, l)
 		}
 	}
-	return domain.UnmarshalSection(m.ID, m.Title, deletedAt, nil, lessons)
+	return domain.UnmarshalSection(m.ID, m.Title, deletedAt, m.OriginalSectionID, lessons)
 }

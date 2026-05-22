@@ -9,16 +9,17 @@ import (
 )
 
 type Lesson struct {
-	ID          uuid.UUID         `gorm:"type:uuid;primaryKey"`
-	SectionID   uuid.UUID         `gorm:"type:uuid;not null"`
-	Title       string            `gorm:"type:varchar(255);not null"`
-	Index       int               `gorm:"column:index;type:integer;not null;default:0"`
-	LessonType  domain.LessonType `gorm:"column:lesson_type;type:varchar(50);not null"`
-	VideoLesson *VideoLesson      `gorm:"foreignKey:LessonID"`
-	TestLesson  *TestLesson       `gorm:"foreignKey:LessonID"`
-	DeletedAt   gorm.DeletedAt    `gorm:"index"`
-	CreatedAt   time.Time         `gorm:"autoCreateTime"`
-	UpdatedAt   time.Time         `gorm:"autoUpdateTime"`
+	ID               uuid.UUID         `gorm:"type:uuid;primaryKey"`
+	SectionID        uuid.UUID         `gorm:"type:uuid;not null"`
+	OriginalLessonID *uuid.UUID        `gorm:"type:uuid;column:original_lesson_id"`
+	Title            string            `gorm:"type:varchar(255);not null"`
+	Index            int               `gorm:"column:index;type:integer;not null;default:0"`
+	LessonType       domain.LessonType `gorm:"column:lesson_type;type:varchar(50);not null"`
+	VideoLesson      *VideoLesson      `gorm:"foreignKey:LessonID"`
+	TestLesson       *TestLesson       `gorm:"foreignKey:LessonID"`
+	DeletedAt        gorm.DeletedAt    `gorm:"index"`
+	CreatedAt        time.Time         `gorm:"autoCreateTime"`
+	UpdatedAt        time.Time         `gorm:"autoUpdateTime"`
 }
 
 func (Lesson) TableName() string { return "lessons" }
@@ -27,11 +28,12 @@ func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:
 		return &Lesson{
-			ID:         l.ID(),
-			SectionID:  sectionID,
-			Title:      l.Title(),
-			Index:      index,
-			LessonType: domain.LessonTypeVideo,
+			ID:               l.ID(),
+			SectionID:        sectionID,
+			OriginalLessonID: lesson.OriginalLessonID(),
+			Title:            l.Title(),
+			Index:            index,
+			LessonType:       domain.LessonTypeVideo,
 			VideoLesson: &VideoLesson{
 				LessonID: l.ID(),
 				VideoKey: lesson.GetVideoKey(),
@@ -48,12 +50,13 @@ func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
 			questions = append(questions, TestQuestionFromDomain(q, l.ID()))
 		}
 		return &Lesson{
-			ID:          l.ID(),
-			SectionID:   sectionID,
-			Title:       l.Title(),
-			Index:       index,
-			LessonType:  domain.LessonTypeTest,
-			VideoLesson: nil,
+			ID:               l.ID(),
+			SectionID:        sectionID,
+			OriginalLessonID: lesson.OriginalLessonID(),
+			Title:            l.Title(),
+			Index:            index,
+			LessonType:       domain.LessonTypeTest,
+			VideoLesson:      nil,
 			TestLesson: &TestLesson{
 				LessonID:     l.ID(),
 				QuestionType: lesson.QuestionType(),
@@ -73,12 +76,14 @@ func (m *Lesson) ToDomain() domain.Lesson {
 		if m.VideoLesson == nil {
 			return nil
 		}
-		return domain.UnmarshalVideoLesson(
+		l := domain.UnmarshalVideoLesson(
 			m.ID,
 			m.Title,
 			m.VideoLesson.VideoKey,
 			time.Duration(m.VideoLesson.Duration)*time.Second,
 		)
+		l.SetOriginalLessonID(m.OriginalLessonID)
+		return l
 	case domain.LessonTypeTest:
 		if m.TestLesson == nil {
 			return nil
@@ -87,12 +92,14 @@ func (m *Lesson) ToDomain() domain.Lesson {
 		for i := range m.TestLesson.Questions {
 			questions = append(questions, m.TestLesson.Questions[i].ToDomain())
 		}
-		return domain.UnmarshalTestLesson(
+		l := domain.UnmarshalTestLesson(
 			m.ID,
 			m.Title,
 			m.TestLesson.QuestionType,
 			questions,
 		)
+		l.SetOriginalLessonID(m.OriginalLessonID)
+		return l
 	}
 	return nil
 }

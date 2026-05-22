@@ -74,6 +74,14 @@ func UnmarshalLessonBase(
 
 func (l *LessonBase) isLesson() {}
 
+func (l *LessonBase) OriginalLessonID() *uuid.UUID {
+	return l.originalLessonID
+}
+
+func (l *LessonBase) SetOriginalLessonID(id *uuid.UUID) {
+	l.originalLessonID = id
+}
+
 func (l *LessonBase) ID() uuid.UUID {
 	return l.id
 }
@@ -142,6 +150,10 @@ func (s *Section) ID() uuid.UUID {
 
 func (s *Section) Title() string {
 	return s.title
+}
+
+func (s *Section) OriginalSectionID() *uuid.UUID {
+	return s.originalSectionID
 }
 
 func (s *Section) SetOriginalSectionID(originalSectionID *uuid.UUID) {
