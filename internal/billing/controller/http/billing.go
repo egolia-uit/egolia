@@ -2,11 +2,13 @@ package http
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/egolia-uit/egolia/internal/billing/core"
 	"github.com/egolia-uit/egolia/internal/billing/errs"
 	"github.com/egolia-uit/egolia/pkg/api/billing"
 	commonhttp "github.com/egolia-uit/egolia/pkg/common/http"
+	"github.com/gin-gonic/gin"
 )
 
 func (h *StrictHandler) GetPlatformRevenueAnalytics(ctx context.Context, request billing.GetPlatformRevenueAnalyticsRequestObject) (billing.GetPlatformRevenueAnalyticsResponseObject, error) {
@@ -40,6 +42,7 @@ func (h *StrictHandler) CheckoutCourse(ctx context.Context, request billing.Chec
 	params := &core.CheckoutCourseParams{
 		CourseID: request.CourseId,
 		UserID:   user.ID,
+		ClientIP: clientIPFromContext(ctx),
 	}
 	transaction, err := h.transactionSvc.CheckoutCourse(ctx, *params)
 	if err != nil {
@@ -49,6 +52,14 @@ func (h *StrictHandler) CheckoutCourse(ctx context.Context, request billing.Chec
 		TransactionId: transaction.TransactionID,
 		PaymentUrl:    transaction.PaymentURL,
 	}, nil
+}
+
+func clientIPFromContext(ctx context.Context) string {
+	g, ok := ctx.(*gin.Context)
+	if !ok {
+		return ""
+	}
+	return g.ClientIP()
 }
 
 func (h *StrictHandler) GetTransactions(ctx context.Context, request billing.GetTransactionsRequestObject) (billing.GetTransactionsResponseObject, error) {
@@ -86,7 +97,7 @@ func (h *StrictHandler) VnpayIpn(ctx context.Context, request billing.VnpayIpnRe
 		TransactionNo:     *request.Params.VnpTransactionNo,
 		TransactionStatus: *request.Params.VnpTransactionStatus,
 		TxnRef:            request.Params.VnpTxnRef,
-		RawValues:         h.BaseURL.Query(),
+		RawValues:         queryValuesFromContext(ctx),
 	})
 	if err != nil {
 		return nil, err
@@ -95,4 +106,12 @@ func (h *StrictHandler) VnpayIpn(ctx context.Context, request billing.VnpayIpnRe
 		RspCode: result.RspCode,
 		Message: result.Message,
 	}, nil
+}
+
+func queryValuesFromContext(ctx context.Context) url.Values {
+	g, ok := ctx.(*gin.Context)
+	if !ok || g.Request == nil || g.Request.URL == nil {
+		return url.Values{}
+	}
+	return g.Request.URL.Query()
 }

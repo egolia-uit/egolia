@@ -8,6 +8,7 @@ import (
 
 var ProviderSet = wire.NewSet(
 	NewDB,
+	NewPG,
 	repo.NewTransactionRepo,
 	wire.Bind(new(core.TransactionRepo), new(*repo.TransactionRepo)),
 )

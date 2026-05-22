@@ -81,7 +81,8 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 		return nil, nil, err
 	}
 	healthHealth := health.New(server, authentik)
-	billingServer := billing.NewServer(httpHTTP, healthHealth, logger)
+	pg := persistence.NewPG(db)
+	billingServer := billing.NewServer(httpHTTP, healthHealth, pg, logger)
 	return billingServer, func() {
 		cleanup4()
 		cleanup3()

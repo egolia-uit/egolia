@@ -4,6 +4,7 @@ import (
 	"context"
 
 	commonhandler "github.com/egolia-uit/egolia/pkg/common/handler"
+	"github.com/google/uuid"
 )
 
 type GetCourse struct {
@@ -21,5 +22,5 @@ func NewGetCourseHandler(readModel GetCourseReadModel) *GetCourseHandler {
 var _ commonhandler.Query[GetCourse, *Course] = (*GetCourseHandler)(nil)
 
 func (h *GetCourseHandler) Handle(ctx context.Context, query *GetCourse) (*Course, error) {
-	panic("GetCourseHandler.Handle is not implemented yet")
+	return h.readModel.GetCourse(ctx, uuid.MustParse(query.CourseID))
 }

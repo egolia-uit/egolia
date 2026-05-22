@@ -8,7 +8,7 @@ import (
 )
 
 type PaymentGateway interface {
-	CreatePaymentURL(ctx context.Context, transaction *Transaction) (string, error)
+	CreatePaymentURL(ctx context.Context, transaction *Transaction, ipAddr string) (string, error)
 	VerifyIPN(values url.Values) error
 }
 

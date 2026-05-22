@@ -20,7 +20,6 @@ import (
 type Vnpay struct {
 	baseURL    string
 	returnURL  string
-	ipnURL     string
 	tmnCode    string
 	hashSecret string
 	version    string
@@ -38,7 +37,6 @@ func NewVnpay() *Vnpay {
 	return &Vnpay{
 		baseURL:    baseURL,
 		returnURL:  os.Getenv("VNPAY_RETURN_URL"),
-		ipnURL:     os.Getenv("VNPAY_IPN_URL"),
 		tmnCode:    os.Getenv("VNPAY_TMN_CODE"),
 		hashSecret: os.Getenv("VNPAY_HASH_SECRET"),
 		version:    valueOrDefault(os.Getenv("VNPAY_VERSION"), "2.1.0"),
@@ -51,7 +49,7 @@ func NewVnpay() *Vnpay {
 
 var _ core.PaymentGateway = (*Vnpay)(nil)
 
-func (v *Vnpay) CreatePaymentURL(ctx context.Context, transaction *core.Transaction) (string, error) {
+func (v *Vnpay) CreatePaymentURL(ctx context.Context, transaction *core.Transaction, ipAddr string) (string, error) {
 	if transaction == nil {
 		return "", fmt.Errorf("transaction is required")
 	}
@@ -66,21 +64,37 @@ func (v *Vnpay) CreatePaymentURL(ctx context.Context, transaction *core.Transact
 	values.Set("vnp_Amount", strconv.FormatInt(transaction.Amount*100, 10))
 	values.Set("vnp_CurrCode", v.currency)
 	values.Set("vnp_TxnRef", transaction.ID.String())
-	values.Set("vnp_OrderInfo", fmt.Sprintf("Thanh toan khoa hoc %s", transaction.CourseTitle))
+	values.Set("vnp_OrderInfo", fmt.Sprintf("Thanh toan khoa hoc %s", transaction.CourseID.String()))
 	values.Set("vnp_OrderType", v.orderType)
 	values.Set("vnp_Locale", v.locale)
 	values.Set("vnp_ReturnUrl", v.returnURL)
-	if v.ipnURL != "" {
-		values.Set("vnp_IpnUrl", v.ipnURL)
+	if ipAddr == "" {
+		ipAddr = "127.0.0.1"
 	}
-	values.Set("vnp_CreateDate", time.Now().Format(v.payDateFmt))
-	values.Set("vnp_ExpireDate", time.Now().Add(15*time.Minute).Format(v.payDateFmt))
+	values.Set("vnp_IpAddr", ipAddr)
 
+	// 1. Ép buộc sử dụng múi giờ Việt Nam (GMT+7)
+	loc, err := time.LoadLocation("Asia/Ho_Chi_Minh")
+	if err != nil {
+		// Fallback an toàn nếu hệ điều hành thiếu file timezone
+		loc = time.FixedZone("ICT", 7*3600)
+	}
+	now := time.Now().In(loc)
+	values.Set("vnp_CreateDate", now.Format(v.payDateFmt))
+	values.Set("vnp_ExpireDate", now.Add(15*time.Minute).Format(v.payDateFmt))
+
+	// Build canonical query and signature using canonicalQuery
 	query := canonicalQuery(values)
-	signature := sign(v.hashSecret, query)
-	values.Set("vnp_SecureHash", signature)
 
-	return v.baseURL + "?" + values.Encode(), nil
+	// Use HMAC-SHA512 as default for VNPAY signing (supported: SHA256, HMACSHA512)
+	h := hmac.New(sha512.New, []byte(v.hashSecret))
+	h.Write([]byte(query))
+	signature := hex.EncodeToString(h.Sum(nil))
+
+	// 5. Trả về URL cuối cùng (gắn SecureHash vào đuôi)
+	paymentURL := fmt.Sprintf("%s?%s&vnp_SecureHash=%s", v.baseURL, query, signature)
+
+	return paymentURL, nil
 }
 
 func (v *Vnpay) VerifyIPN(values url.Values) error {
@@ -117,9 +131,12 @@ func canonicalQuery(values url.Values) string {
 		keys = append(keys, key)
 	}
 	sort.Strings(keys)
+
 	parts := make([]string, 0, len(keys))
 	for _, key := range keys {
-		parts = append(parts, url.QueryEscape(key)+"="+url.QueryEscape(values.Get(key)))
+		encodedKey := url.QueryEscape(key)
+		encodedVal := url.QueryEscape(values.Get(key))
+		parts = append(parts, encodedKey+"="+encodedVal)
 	}
 	return strings.Join(parts, "&")
 }

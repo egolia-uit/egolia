@@ -52,6 +52,7 @@ func NewTransactionSvc(courseSvc CourseSvc, identitySvc IdentitySvc, transaction
 type CheckoutCourseParams struct {
 	CourseID uuid.UUID
 	UserID   string
+	ClientIP string
 }
 
 func (s *TransactionSvc) CheckoutCourse(ctx context.Context, params CheckoutCourseParams) (*CheckoutCourseResult, error) {
@@ -59,12 +60,12 @@ func (s *TransactionSvc) CheckoutCourse(ctx context.Context, params CheckoutCour
 	if err != nil {
 		return nil, err
 	}
-	id, err := uuid.NewV7()
-	if err != nil {
+	if course == nil {
 		return nil, errs.NewInternalGenerateID(err)
 	}
+
 	transaction := &Transaction{
-		ID:          id,
+		ID:          uuid.New(),
 		UserID:      params.UserID,
 		CourseID:    params.CourseID,
 		CourseTitle: course.Title,
@@ -78,12 +79,12 @@ func (s *TransactionSvc) CheckoutCourse(ctx context.Context, params CheckoutCour
 		return nil, err
 	}
 
-	paymentURL, err := s.paymentGateway.CreatePaymentURL(ctx, transaction)
+	paymentURL, err := s.paymentGateway.CreatePaymentURL(ctx, transaction, params.ClientIP)
 	if err != nil {
 		return nil, err
 	}
 	return &CheckoutCourseResult{
-		TransactionID: id,
+		TransactionID: transaction.ID,
 		PaymentURL:    paymentURL,
 	}, nil
 }

@@ -7,13 +7,12 @@
 package pb
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -383,8 +382,8 @@ func (x *EnrollCourseForUserRequest) GetUserId() string {
 }
 
 type EnrollCourseForUserResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// EnrollmentId  string                 `protobuf:"bytes,1,opt,name=enrollment_id,json=enrollmentId,proto3" json:"enrollment_id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EnrollmentId  string                 `protobuf:"bytes,1,opt,name=enrollment_id,json=enrollmentId,proto3" json:"enrollment_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -419,12 +418,12 @@ func (*EnrollCourseForUserResponse) Descriptor() ([]byte, []int) {
 	return file_course_proto_rawDescGZIP(), []int{6}
 }
 
-// func (x *EnrollCourseForUserResponse) GetEnrollmentId() string {
-// 	if x != nil {
-// 		return x.EnrollmentId
-// 	}
-// 	return ""
-// }
+func (x *EnrollCourseForUserResponse) GetEnrollmentId() string {
+	if x != nil {
+		return x.EnrollmentId
+	}
+	return ""
+}
 
 var File_course_proto protoreflect.FileDescriptor
 
