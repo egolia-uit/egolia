@@ -114,7 +114,6 @@ func (s *TransactionSvc) ProcessVnpayIPN(ctx context.Context, params VnpayIPNPar
 		}
 		return &VnpayIPNResult{RspCode: "00", Message: "Confirm Success"}, nil
 	}
-
 	if err := s.courseSvc.EnrollCourseForUser(ctx, transaction.CourseID, transaction.UserID); err != nil {
 		return nil, err
 	}

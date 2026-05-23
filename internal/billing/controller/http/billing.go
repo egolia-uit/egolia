@@ -66,23 +66,6 @@ func (h *StrictHandler) GetTransactions(ctx context.Context, request billing.Get
 	return nil, nil
 }
 
-// type VnpayIPNParams struct {
-// 	Amount            int64
-// 	BankCode          string
-// 	BankTranNo        string
-// 	CardType          string
-// 	OrderInfo         string
-// 	PayDate           string
-// 	ResponseCode      string
-// 	SecureHash        string
-// 	TmnCode           string
-// 	TransactionNo     string
-// 	TransactionStatus string
-// 	TxnRef            uuid.UUID
-// 	RawValues         url.Values
-// }
-
-// VnpayIpn implements [billing.StrictServerInterface].
 func (h *StrictHandler) VnpayIpn(ctx context.Context, request billing.VnpayIpnRequestObject) (billing.VnpayIpnResponseObject, error) {
 	result, err := h.transactionSvc.ProcessVnpayIPN(ctx, core.VnpayIPNParams{
 		Amount:            request.Params.VnpAmount,
