@@ -188,3 +188,19 @@ type GetTransactionsParams struct {
 
 // GetTransactionsParamsOrder defines parameters for GetTransactions.
 type GetTransactionsParamsOrder string
+
+// VnpayIpnParams defines parameters for VnpayIpn.
+type VnpayIpnParams struct {
+	VnpAmount            int64              `form:"vnp_Amount" json:"vnp_Amount"`
+	VnpBankCode          *string            `form:"vnp_BankCode,omitempty" json:"vnp_BankCode,omitempty"`
+	VnpBankTranNo        *string            `form:"vnp_BankTranNo,omitempty" json:"vnp_BankTranNo,omitempty"`
+	VnpCardType          *string            `form:"vnp_CardType,omitempty" json:"vnp_CardType,omitempty"`
+	VnpOrderInfo         *string            `form:"vnp_OrderInfo,omitempty" json:"vnp_OrderInfo,omitempty"`
+	VnpPayDate           *string            `form:"vnp_PayDate,omitempty" json:"vnp_PayDate,omitempty"`
+	VnpResponseCode      string             `form:"vnp_ResponseCode" json:"vnp_ResponseCode"`
+	VnpSecureHash        string             `form:"vnp_SecureHash" json:"vnp_SecureHash"`
+	VnpTmnCode           *string            `form:"vnp_TmnCode,omitempty" json:"vnp_TmnCode,omitempty"`
+	VnpTransactionNo     *string            `form:"vnp_TransactionNo,omitempty" json:"vnp_TransactionNo,omitempty"`
+	VnpTransactionStatus *string            `form:"vnp_TransactionStatus,omitempty" json:"vnp_TransactionStatus,omitempty"`
+	VnpTxnRef            openapi_types.UUID `form:"vnp_TxnRef" json:"vnp_TxnRef"`
+}

@@ -8,24 +8,28 @@ import (
 
 	"github.com/egolia-uit/egolia/internal/billing/controller/health"
 	"github.com/egolia-uit/egolia/internal/billing/controller/http"
+	"github.com/egolia-uit/egolia/internal/billing/infra/persistence"
 	"golang.org/x/sync/errgroup"
 )
 
 type Server struct {
 	http   *http.HTTP
 	health *health.Health
+	pg     *persistence.PG
 	logger *slog.Logger
 }
 
 func NewServer(
 	http *http.HTTP,
 	health *health.Health,
+	pg *persistence.PG,
 	logger *slog.Logger,
 ) *Server {
 	slog.SetDefault(logger)
 	return &Server{
 		http:   http,
 		health: health,
+		pg:     pg,
 		logger: logger,
 	}
 }
@@ -62,6 +66,13 @@ func (s *Server) Run(ctx context.Context) error {
 		}()
 		if err := s.health.Run(); err != nil {
 			return fmt.Errorf("failed to run health server: %w", err)
+		}
+		return nil
+	})
+
+	g.Go(func() error {
+		if err := s.pg.RunMigrations(); err != nil {
+			return fmt.Errorf("failed to run database migrations: %w", err)
 		}
 		return nil
 	})

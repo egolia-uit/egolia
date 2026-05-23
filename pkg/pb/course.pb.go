@@ -383,7 +383,6 @@ func (x *EnrollCourseForUserRequest) GetUserId() string {
 
 type EnrollCourseForUserResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	EnrollmentId  string                 `protobuf:"bytes,1,opt,name=enrollment_id,json=enrollmentId,proto3" json:"enrollment_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -418,13 +417,6 @@ func (*EnrollCourseForUserResponse) Descriptor() ([]byte, []int) {
 	return file_course_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *EnrollCourseForUserResponse) GetEnrollmentId() string {
-	if x != nil {
-		return x.EnrollmentId
-	}
-	return ""
-}
-
 var File_course_proto protoreflect.FileDescriptor
 
 const file_course_proto_rawDesc = "" +
@@ -447,9 +439,8 @@ const file_course_proto_rawDesc = "" +
 	"\x06course\x18\x01 \x01(\v2\x0e.course.CourseB\x06\xbaH\x03\xc8\x01\x01R\x06course\"g\n" +
 	"\x1aEnrollCourseForUserRequest\x12(\n" +
 	"\tcourse_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\xb0\x01\x01R\bcourseId\x12\x1f\n" +
-	"\auser_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06userId\"O\n" +
-	"\x1bEnrollCourseForUserResponse\x120\n" +
-	"\renrollment_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\xb0\x01\x01R\fenrollmentId*\x99\x01\n" +
+	"\auser_id\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06userId\"\x1d\n" +
+	"\x1bEnrollCourseForUserResponse*\x99\x01\n" +
 	"\fCourseStatus\x12\x1d\n" +
 	"\x19COURSE_STATUS_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13COURSE_STATUS_DRAFT\x10\x01\x12\x19\n" +
