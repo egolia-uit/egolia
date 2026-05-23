@@ -32,8 +32,9 @@ var ProviderSetCmds = wire.NewSet(
 	NewDeleteLessonCommentHandler,
 	NewDeclineCourseHandler,
 	NewMarkLessonAsCompletedHandler,
-	NewGetCourseProgressHandler,
+	NewResetLessonProgressHandler,
 	NewCmds,
+	// wire.Struct(new(Cmds), "*"),
 )
 
 var ProviderSetQueries = wire.NewSet(
@@ -52,6 +53,7 @@ var ProviderSetQueries = wire.NewSet(
 	NewGetLessonCommentsHandler,
 	NewGetLessonProgressHandler,
 	NewGetUploadVideoLessonURLHandler,
+	NewGetCourseProgressHandler,
 	NewQueries,
 )
 

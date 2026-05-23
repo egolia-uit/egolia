@@ -1779,6 +1779,63 @@ func (_c *MockLessonProgressRepo_GetByUserIDAndLesson_Call) RunAndReturn(run fun
 	return _c
 }
 
+// ResetByLessonID provides a mock function for the type MockLessonProgressRepo
+func (_mock *MockLessonProgressRepo) ResetByLessonID(ctx context.Context, lessonID uuid.UUID) error {
+	ret := _mock.Called(ctx, lessonID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ResetByLessonID")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID) error); ok {
+		r0 = returnFunc(ctx, lessonID)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockLessonProgressRepo_ResetByLessonID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ResetByLessonID'
+type MockLessonProgressRepo_ResetByLessonID_Call struct {
+	*mock.Call
+}
+
+// ResetByLessonID is a helper method to define mock.On call
+//   - ctx context.Context
+//   - lessonID uuid.UUID
+func (_e *MockLessonProgressRepo_Expecter) ResetByLessonID(ctx interface{}, lessonID interface{}) *MockLessonProgressRepo_ResetByLessonID_Call {
+	return &MockLessonProgressRepo_ResetByLessonID_Call{Call: _e.mock.On("ResetByLessonID", ctx, lessonID)}
+}
+
+func (_c *MockLessonProgressRepo_ResetByLessonID_Call) Run(run func(ctx context.Context, lessonID uuid.UUID)) *MockLessonProgressRepo_ResetByLessonID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
+	})
+	return _c
+}
+
+func (_c *MockLessonProgressRepo_ResetByLessonID_Call) Return(err error) *MockLessonProgressRepo_ResetByLessonID_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockLessonProgressRepo_ResetByLessonID_Call) RunAndReturn(run func(ctx context.Context, lessonID uuid.UUID) error) *MockLessonProgressRepo_ResetByLessonID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Save provides a mock function for the type MockLessonProgressRepo
 func (_mock *MockLessonProgressRepo) Save(ctx context.Context, progress LessonProgress) error {
 	ret := _mock.Called(ctx, progress)

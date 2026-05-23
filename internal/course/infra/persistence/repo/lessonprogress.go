@@ -15,6 +15,10 @@ type LessonProgressRepo struct {
 	db *gorm.DB
 }
 
+func (r *LessonProgressRepo) ResetByLessonID(ctx context.Context, lessonID uuid.UUID) error {
+	panic("unimplemented")
+}
+
 func NewLessonProgressRepo(db *gorm.DB) *LessonProgressRepo {
 	return &LessonProgressRepo{db: db}
 }

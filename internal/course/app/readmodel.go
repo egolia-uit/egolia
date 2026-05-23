@@ -37,6 +37,7 @@ type GetCoursesReadModel interface {
 	GetMyBookmarkedCourses(ctx context.Context, params *GetMyBookmarkedCourses) (*Paginated[Course], error)
 	GetMyEnrolledCourses(ctx context.Context, params *GetMyEnrolledCourses) (*Paginated[Course], error)
 	GetCourseByID(ctx context.Context, query *GetCourseLandingPage) (*Course, error)
+	GetMyCourses(ctx context.Context, params *GetMyCourses) (*Paginated[Course], error)
 }
 
 type GetCourseReviewsReadModel interface {
@@ -48,4 +49,12 @@ type GetMyCertificatesReadModel interface {
 }
 type GetLessonCommentsReadModel interface {
 	GetLessonComments(ctx context.Context, params *GetLessonComments) ([]*LessonComment, error)
+}
+
+type GetCourseProgressReadModel interface {
+	GetCourseProgress(ctx context.Context, params *GetCourseProgress) (*CourseProgress, error)
+}
+
+type GetLessonProgressReadModel interface {
+	GetLessonProgress(ctx context.Context, params *GetLessonProgress) (LessonProgress, error)
 }

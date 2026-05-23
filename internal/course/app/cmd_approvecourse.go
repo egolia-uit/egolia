@@ -25,7 +25,7 @@ func NewApproveCourseHandler(uow domain.UnitOfWork) *ApproveCourseHandler {
 var _ commonhandler.Cmd[ApproveCourse] = (*ApproveCourseHandler)(nil)
 
 func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) error {
-	var changedLessonIDs []uuid.UUID
+	var events []domain.DomainEvent
 	var publishedCourseID uuid.UUID
 
 	err := h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
@@ -46,7 +46,7 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 				return err
 			}
 
-			changedLessonIDs, err = originalCourse.Merge(course)
+			events, err = originalCourse.Merge(course)
 			if err != nil {
 				return err
 			}
@@ -68,31 +68,13 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 		return err
 	}
 
-	// Cập nhật lại isCompleted cho các bài học đã bị thay đổi trong goroutine
-	if len(changedLessonIDs) > 0 && publishedCourseID != uuid.Nil {
-		go func(courseID uuid.UUID, lessonIDs []uuid.UUID) {
-			bgCtx := context.Background() // Dùng Background context để tránh bị hủy khi request kết thúc
-			_ = h.uow.Execute(bgCtx, func(repoRegistry domain.RepoRegistry) error {
-				enrollments, err := repoRegistry.Enrollment().GetByCourseID(bgCtx, courseID)
-				if err != nil {
-					return err
-				}
-
-				for _, enrollment := range enrollments {
-					if enrollment == nil {
-						continue
-					}
-					for _, lessonID := range lessonIDs {
-						progress, err := repoRegistry.LessonProgress().GetByUserIDAndLesson(bgCtx, enrollment.LearnerID(), lessonID)
-						if err == nil && progress != nil && progress.IsCompleted() {
-							progress.ResetProgress()
-							_ = repoRegistry.LessonProgress().Save(bgCtx, progress)
-						}
-					}
-				}
-				return nil
-			})
-		}(publishedCourseID, changedLessonIDs)
+	if len(events) > 0 {
+		// for _, event := range events {
+		// 	// if err := h.eventPublisher.Publish(ctx, event); err != nil {
+		// 	// 	return err
+		// 	// }
+		// }
+		return nil
 	}
 
 	return nil

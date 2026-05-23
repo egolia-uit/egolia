@@ -42,7 +42,6 @@ type (
 	EditVideoLessonCmd         commonhandler.Cmd[EditVideoLesson]
 	EnrollInCourseCmd          commonhandler.Cmd[EnrollInCourse]
 	FinishCourseCmd            commonhandler.Cmd[FinishCourse]
-	GetCourseProgressCmd       commonhandler.Cmd[GetCourseProgress]
 	HideCourseCmd              commonhandler.Cmd[HideCourse]
 	MarkLessonAsCompletedCmd   commonhandler.Cmd[MarkLessonAsCompleted]
 	MoveLessonCmd              commonhandler.Cmd[MoveLesson]
@@ -64,7 +63,7 @@ type (
 	GetCourseReviewsQuery        commonhandler.Query[GetCourseReviews, *Paginated[Review]]
 	GetLessonCommentsQuery       commonhandler.Query[GetLessonComments, []*LessonComment]
 	GetLessonDetailQuery         commonhandler.Query[GetLessonDetail, Lesson]
-	GetLessonProgressQuery       commonhandler.Query[GetLessonProgress, domain.LessonProgress]
+	GetLessonProgressQuery       commonhandler.Query[GetLessonProgress, LessonProgress]
 	GetMyBookmarkedCoursesQuery  commonhandler.Query[GetMyBookmarkedCourses, *Paginated[Course]]
 	GetMyCertificatesQuery       commonhandler.Query[GetMyCertificates, *Paginated[Certificate]]
 	GetMyCoursesQuery            commonhandler.Query[GetMyCourses, *Paginated[Course]]
@@ -92,7 +91,6 @@ type Cmds struct {
 	EditVideoLesson         EditVideoLessonCmd
 	EnrollInCourse          EnrollInCourseCmd
 	FinishCourse            FinishCourseCmd
-	GetCourseProgress       GetCourseProgressCmd
 	HideCourse              HideCourseCmd
 	MarkLessonAsCompleted   MarkLessonAsCompletedCmd
 	MoveLesson              MoveLessonCmd
@@ -162,7 +160,6 @@ func NewCmds(
 		EditVideoLesson:         commonhandler.DecorateCmd(hp, editVideoLessonHandler),
 		EnrollInCourse:          commonhandler.DecorateCmd(hp, enrollInCourseHandler),
 		FinishCourse:            commonhandler.DecorateCmd(hp, finishCourseHandler),
-		GetCourseProgress:       commonhandler.DecorateCmd(hp, getCourseProgressHandler),
 		HideCourse:              commonhandler.DecorateCmd(hp, hideCourseHandler),
 		MarkLessonAsCompleted:   markCompleted,
 		MoveLesson:              commonhandler.DecorateCmd(hp, moveLessonHandler),

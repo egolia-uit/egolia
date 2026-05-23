@@ -14,6 +14,8 @@ var ReadModelProviderSet = wire.NewSet(
 	readmodel.NewReviewReadRepo,
 	readmodel.NewCertificateReadRepo,
 	readmodel.NewLessonCommentReadRepo,
+	readmodel.NewLessonProgressReadRepo,
+	readmodel.NewCourseProgressReadRepo,
 	wire.Bind(new(app.GetCourseReadModel), new(*readmodel.CourseReadRepo)),
 	wire.Bind(new(app.GetCoursesReadModel), new(*readmodel.CourseReadRepo)),
 	wire.Bind(new(app.GetCourseDetailReadModel), new(*readmodel.CourseReadRepo)),
@@ -21,6 +23,8 @@ var ReadModelProviderSet = wire.NewSet(
 	wire.Bind(new(app.GetCourseReviewsReadModel), new(*readmodel.ReviewReadRepo)),
 	wire.Bind(new(app.GetMyCertificatesReadModel), new(*readmodel.CertificateReadRepo)),
 	wire.Bind(new(app.GetLessonCommentsReadModel), new(*readmodel.LessonCommentReadRepo)),
+	wire.Bind(new(app.GetLessonProgressReadModel), new(*readmodel.LessonProgressReadRepo)),
+	wire.Bind(new(app.GetCourseProgressReadModel), new(*readmodel.CourseProgressReadRepo)),
 )
 
 var RepoProviderSet = wire.NewSet(

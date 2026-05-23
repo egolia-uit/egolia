@@ -80,17 +80,19 @@ func (s *Seed) createCourses() []model.Course {
 			IntroductionVideoKey: "flowchart_intro.mp4",
 			Sections: []model.Section{
 				{
-					ID:       uuid.MustParse("00000000-0000-0000-0000-000000000011"),
-					CourseID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-					Title:    "Intro",
-					Index:    1,
+					ID:                uuid.MustParse("00000000-0000-0000-0000-000000000011"),
+					CourseID:          uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					OriginalSectionID: nil,
+					Title:             "Intro",
+					Index:             1,
 					Lessons: []model.Lesson{
 						{
-							ID:         uuid.MustParse("00000000-0000-0000-0000-000000000111"),
-							SectionID:  uuid.MustParse("00000000-0000-0000-0000-000000000011"),
-							Title:      "LĐTT Lý thuyết Lưu đồ Thuật toán",
-							Index:      1,
-							LessonType: domain.LessonTypeVideo,
+							ID:               uuid.MustParse("00000000-0000-0000-0000-000000000111"),
+							SectionID:        uuid.MustParse("00000000-0000-0000-0000-000000000011"),
+							OriginalLessonID: nil,
+							Title:            "LĐTT Lý thuyết Lưu đồ Thuật toán",
+							Index:            1,
+							LessonType:       domain.LessonTypeVideo,
 							VideoLesson: &model.VideoLesson{
 								LessonID: uuid.MustParse("00000000-0000-0000-0000-000000000111"),
 								VideoKey: "flowchart_lesson_01.mp4",
@@ -102,12 +104,13 @@ func (s *Seed) createCourses() []model.Course {
 							DeletedAt:  gorm.DeletedAt{},
 						},
 						{
-							ID:          uuid.MustParse("00000000-0000-0000-0000-000000000112"),
-							SectionID:   uuid.MustParse("00000000-0000-0000-0000-000000000011"),
-							Title:       "Đây là cái gì",
-							Index:       2,
-							LessonType:  domain.LessonTypeTest,
-							VideoLesson: nil,
+							ID:               uuid.MustParse("00000000-0000-0000-0000-000000000112"),
+							SectionID:        uuid.MustParse("00000000-0000-0000-0000-000000000011"),
+							OriginalLessonID: nil,
+							Title:            "Đây là cái gì",
+							Index:            2,
+							LessonType:       domain.LessonTypeTest,
+							VideoLesson:      nil,
 							TestLesson: &model.TestLesson{
 								LessonID:     uuid.MustParse("00000000-0000-0000-0000-000000000112"),
 								QuestionType: domain.QuestionTypeSingleChoice,

@@ -9,4 +9,5 @@ import (
 type LessonProgressRepo interface {
 	Save(ctx context.Context, progress LessonProgress) error
 	GetByUserIDAndLesson(ctx context.Context, userID string, lessonID uuid.UUID) (LessonProgress, error)
+	ResetByLessonID(ctx context.Context, lessonID uuid.UUID) error
 }
