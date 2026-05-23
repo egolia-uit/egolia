@@ -71,6 +71,17 @@ func (c *Course) GetCourse(ctx context.Context, id uuid.UUID) (*core.Course, err
 	return toCouse(coursePb.Course), nil
 }
 
+func (c *Course) EnrollCourseForUser(ctx context.Context, courseID uuid.UUID, userID string) error {
+	_, err := c.client.EnrollCourseForUser(ctx, &pb.EnrollCourseForUserRequest{
+		CourseId: courseID.String(),
+		UserId:   userID,
+	})
+	if err != nil {
+		return mapGrpcError(err)
+	}
+	return nil
+}
+
 func toCouse(pbCourse *pb.Course) *core.Course {
 	return &core.Course{
 		ID:           uuid.MustParse(pbCourse.Id),
@@ -90,6 +101,9 @@ func courseUnaryClientErrorInterceptor() grpc.UnaryClientInterceptor {
 		opts ...grpc.CallOption,
 	) error {
 		err := invoker(ctx, method, req, reply, cc, opts...)
+		if err == nil {
+			return nil
+		}
 		return mapGrpcError(err)
 	}
 }

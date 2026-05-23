@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://www.schemastore.org/codecov.json
+flag_management:
+  default_rules:
+    carryforward: true
+
+  individual_flags:
+    - name: course
+      paths:
+        - cmd/course/
+        - internal/course/
+    - name: billing
+      paths:
+        - cmd/billing/
+        - internal/billing/
+    - name: blog
+      paths:
+        - cmd/blog/
+        - internal/blog/
+
+ignore:
+  - '**/*.bak'
+  - '**/*wire.go'
+  - '**/mock.go'
+  - '**/_test.go'

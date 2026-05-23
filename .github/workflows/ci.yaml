@@ -91,32 +91,9 @@ on:
 
 env:
   MISE_OVERRIDE_CONFIG_FILENAMES: .mise.ci.toml
-  IS_RENOVATE: ${{ startsWith(github.head_ref || github.ref_name, 'renovate/') }}
-  NX_CACHE_ACTION_SKIP_UPLOAD_CACHE: ${{ startsWith(github.head_ref || github.ref_name, 'renovate/') }}
-  SHOULD_CACHE: >-
-    ${{
-      (
-        github.ref_name == 'main' ||
-        github.ref_name == 'dev' ||
-        github.base_ref == 'main' ||
-        github.base_ref == 'dev'
-      ) && (
-        !startsWith(github.head_ref || github.ref_name, 'renovate/')
-      )
-    }}
-  SHOULD_RELEASE: >-
-    ${{
-      github.event_name == 'workflow_dispatch' &&
-      github.ref_name == 'main' &&
-      (
-        github.event.inputs.releaseCourse == 'true' ||
-        github.event.inputs.releaseBilling == 'true' ||
-        github.event.inputs.releaseBlog == 'true' ||
-        github.event.inputs.releaseWeb == 'true' ||
-        github.event.inputs.releaseAll == 'true'
-      )
-    }}
   NX_PARALLEL: 3
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 concurrency:
   group: ${{ github.ref == 'refs/heads/main' && format('{0}-{1}', github.workflow, github.ref) || github.run_id }}
@@ -136,9 +113,45 @@ jobs:
       - name: Expose GitHub Runtime
         uses: crazy-max/ghaction-github-runtime@v4
 
+      - name: Setup Variables
+        id: setup-vars
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_RELEASE_WEB: ${{ github.event.inputs.releaseWeb }}
+          INPUT_RELEASE_COURSE: ${{ github.event.inputs.releaseCourse }}
+          INPUT_RELEASE_BILLING: ${{ github.event.inputs.releaseBilling }}
+          INPUT_RELEASE_BLOG: ${{ github.event.inputs.releaseBlog }}
+          INPUT_RELEASE_ALL: ${{ github.event.inputs.releaseAll }}
+        run: |
+          if [[ "$HEAD_REF" == renovate/* ]] || [[ "$REF_NAME" == renovate/* ]]; then
+            IS_RENOVATE=true
+          else
+            IS_RENOVATE=false
+          fi
+
+          echo "IS_RENOVATE=$IS_RENOVATE" >> "$GITHUB_OUTPUT"
+          echo "NX_CACHE_ACTION_SKIP_UPLOAD_CACHE=$IS_RENOVATE" >> "$GITHUB_OUTPUT"
+
+          if [[ "$IS_RENOVATE" == false ]] && [[ "$REF_NAME" == "main" || "$REF_NAME" == "dev" || "$BASE_REF" == "main" || "$BASE_REF" == "dev" ]]; then
+            echo "SHOULD_CACHE=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "SHOULD_CACHE=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          SHOULD_RELEASE=false
+          if [[ "$EVENT_NAME" == "workflow_dispatch" && "$REF_NAME" == "main" ]]; then
+            if [[ "$INPUT_RELEASE_ALL" == "true" || "$INPUT_RELEASE_WEB" == "true" || "$INPUT_RELEASE_COURSE" == "true" || "$INPUT_RELEASE_BILLING" == "true" || "$INPUT_RELEASE_BLOG" == "true" ]]; then
+              SHOULD_RELEASE=true
+            fi
+          fi
+          echo "SHOULD_RELEASE=$SHOULD_RELEASE" >> "$GITHUB_OUTPUT"
+
       - name: Get token
         id: get-bot-token
-        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        if: ${{ steps.setup-vars.outputs.SHOULD_RELEASE == 'true' }}
         uses: actions/create-github-app-token@v2
         with:
           private-key: ${{ secrets.EGOLIA_BOT_PRIVATE_KEY }}
@@ -156,7 +169,7 @@ jobs:
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
-        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        if: ${{ steps.setup-vars.outputs.SHOULD_RELEASE == 'true' }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -165,7 +178,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
         id: setup-buildx
-        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        if: ${{ steps.setup-vars.outputs.SHOULD_RELEASE == 'true' }}
 
       - uses: actions/checkout@v6
         with:
@@ -175,7 +188,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          cache: ${{ env.SHOULD_CACHE == 'true' }}
+          cache: ${{ steps.setup-vars.outputs.SHOULD_CACHE == 'true' }}
           version: 10.28.2
 
       - name: Setup Node
@@ -187,20 +200,20 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version-file: .tool-versions
-          cache: ${{ env.SHOULD_CACHE == 'true' }}
+          cache: ${{ steps.setup-vars.outputs.SHOULD_CACHE == 'true' }}
 
       - name: Setup golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
           install-only: true
           version-file: .tool-versions
-          skip-save-cache: ${{ env.SHOULD_CACHE == 'false' }}
+          skip-save-cache: ${{ steps.setup-vars.outputs.SHOULD_CACHE == 'false' }}
 
       - name: Setup Mise
         uses: jdx/mise-action@v4
         with:
           experimental: true
-          cache: ${{ env.SHOULD_CACHE == 'true' }}
+          cache: ${{ steps.setup-vars.outputs.SHOULD_CACHE == 'true' }}
 
       - name: Cache Buf dependencies
         uses: actions/cache@v5
@@ -231,19 +244,36 @@ jobs:
         run: pnpm exec nx reset
 
       - name: Nx all
+        env:
+          NX_CACHE_ACTION_SKIP_UPLOAD_CACHE: ${{ steps.setup-vars.outputs.NX_CACHE_ACTION_SKIP_UPLOAD_CACHE }}
         run: |
           nx-cache-action -- \
           pnpm exec nx ${{ github.event.inputs.nxAllCmd || 'affected' }} \
-            --target lint \
             --target format:check \
             --target gen \
+            --target typecheck \
+            --target lint \
             --target bundle \
             --target build \
             --target test \
-            --target typecheck \
+            --target upload-codecov \
             --parallel=${{env.NX_PARALLEL }} \
             --configuration 'production' \
             ${{ github.event.inputs.skipNxCache == 'true' && '--skipNxCache' || '' }}
+
+      - name: Publish Test Report
+        uses: ctrf-io/github-test-reporter@v1
+        if: always()
+        with:
+          report-path: './coverage/**/ctrf.json'
+          github-report: true
+          summary-delta-report: true
+          insights-report: true
+          flaky-rate-report: true
+          fail-rate-report: true
+          slowest-report: true
+          upload-artifact: true
+          pull-request-report: true
 
       - name: Check for changes after Build/Gen
         run: |
@@ -256,7 +286,7 @@ jobs:
 
       - name: Nx Deploy Page
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NX_CACHE_ACTION_SKIP_UPLOAD_CACHE: ${{ steps.setup-vars.outputs.NX_CACHE_ACTION_SKIP_UPLOAD_CACHE }}
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           nx-cache-action -- \
@@ -267,11 +297,11 @@ jobs:
             ${{ github.event.inputs.skipNxCache == 'true' && '--skipNxCache' || '' }}
 
       - name: Nx Release
-        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        if: ${{ steps.setup-vars.outputs.SHOULD_RELEASE == 'true' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BUILDX_BUILDER: ${{ steps.setup-buildx.outputs.name }}
           DOCKER_BUILDKIT: 1
+          NX_CACHE_ACTION_SKIP_UPLOAD_CACHE: ${{ steps.setup-vars.outputs.NX_CACHE_ACTION_SKIP_UPLOAD_CACHE }}
         run: |
           echo 'Build Docker images'
           nx-cache-action -- \
@@ -305,7 +335,7 @@ jobs:
 
       - name: Dispatch Update Deploy
         uses: benc-uk/workflow-dispatch@v1
-        if: ${{ env.SHOULD_RELEASE == 'true' }}
+        if: ${{ steps.setup-vars.outputs.SHOULD_RELEASE == 'true' }}
         with:
           workflow: update.yaml
           repo: ${{ github.repository_owner }}/infra
@@ -313,7 +343,7 @@ jobs:
 
       - name: Cache Docs diagrams
         uses: actions/cache/save@v5
-        if: ${{ env.SHOULD_CACHE == 'true' }}
+        if: ${{ steps.setup-vars.outputs.SHOULD_CACHE == 'true' }}
         with:
           path: docs/src/public/diagrams/
           key: docs-diagrams-${{ hashFiles('docs/src/public/diagrams/**') }}

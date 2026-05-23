@@ -26,6 +26,9 @@ type ServerInterface interface {
 	// Get transactions
 	// (GET /billing/transactions)
 	GetTransactions(c *gin.Context, params GetTransactionsParams)
+	// VNPAY IPN callback
+	// (GET /billing/transactions/vnpay_ipn)
+	VnpayIpn(c *gin.Context, params VnpayIpnParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -168,6 +171,121 @@ func (siw *ServerInterfaceWrapper) GetTransactions(c *gin.Context) {
 	siw.Handler.GetTransactions(c, params)
 }
 
+// VnpayIpn operation middleware
+func (siw *ServerInterfaceWrapper) VnpayIpn(c *gin.Context) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params VnpayIpnParams
+
+	// ------------- Required query parameter "vnp_Amount" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "vnp_Amount", c.Request.URL.Query(), &params.VnpAmount, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_Amount: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_BankCode" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_BankCode", c.Request.URL.Query(), &params.VnpBankCode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_BankCode: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_BankTranNo" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_BankTranNo", c.Request.URL.Query(), &params.VnpBankTranNo, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_BankTranNo: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_CardType" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_CardType", c.Request.URL.Query(), &params.VnpCardType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_CardType: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_OrderInfo" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_OrderInfo", c.Request.URL.Query(), &params.VnpOrderInfo, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_OrderInfo: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_PayDate" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_PayDate", c.Request.URL.Query(), &params.VnpPayDate, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_PayDate: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Required query parameter "vnp_ResponseCode" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "vnp_ResponseCode", c.Request.URL.Query(), &params.VnpResponseCode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_ResponseCode: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Required query parameter "vnp_SecureHash" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "vnp_SecureHash", c.Request.URL.Query(), &params.VnpSecureHash, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_SecureHash: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_TmnCode" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_TmnCode", c.Request.URL.Query(), &params.VnpTmnCode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_TmnCode: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_TransactionNo" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_TransactionNo", c.Request.URL.Query(), &params.VnpTransactionNo, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_TransactionNo: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Optional query parameter "vnp_TransactionStatus" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "vnp_TransactionStatus", c.Request.URL.Query(), &params.VnpTransactionStatus, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_TransactionStatus: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Required query parameter "vnp_TxnRef" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "vnp_TxnRef", c.Request.URL.Query(), &params.VnpTxnRef, runtime.BindQueryParameterOptions{Type: "string", Format: "uuid"})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter vnp_TxnRef: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.VnpayIpn(c, params)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -198,6 +316,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	router.GET(options.BaseURL+"/billing/admin/analytics/revenue", wrapper.GetPlatformRevenueAnalytics)
 	router.POST(options.BaseURL+"/billing/courses/:courseId/checkout", wrapper.CheckoutCourse)
 	router.GET(options.BaseURL+"/billing/transactions", wrapper.GetTransactions)
+	router.GET(options.BaseURL+"/billing/transactions/vnpay_ipn", wrapper.VnpayIpn)
 }
 
 type BadRequestErrorJSONResponse Error
@@ -412,6 +531,61 @@ func (response GetTransactions500JSONResponse) VisitGetTransactionsResponse(w ht
 	return err
 }
 
+type VnpayIpnRequestObject struct {
+	Params VnpayIpnParams
+}
+
+type VnpayIpnResponseObject interface {
+	VisitVnpayIpnResponse(w http.ResponseWriter) error
+}
+
+type VnpayIpn200JSONResponse struct {
+	Message string `json:"Message"`
+	RspCode string `json:"RspCode"`
+}
+
+func (response VnpayIpn200JSONResponse) VisitVnpayIpnResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VnpayIpn400JSONResponse struct{ BadRequestErrorJSONResponse }
+
+func (response VnpayIpn400JSONResponse) VisitVnpayIpnResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type VnpayIpn500JSONResponse struct {
+	InternalServerErrorJSONResponse
+}
+
+func (response VnpayIpn500JSONResponse) VisitVnpayIpnResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Get platform revenue analytics
@@ -423,6 +597,9 @@ type StrictServerInterface interface {
 	// Get transactions
 	// (GET /billing/transactions)
 	GetTransactions(ctx context.Context, request GetTransactionsRequestObject) (GetTransactionsResponseObject, error)
+	// VNPAY IPN callback
+	// (GET /billing/transactions/vnpay_ipn)
+	VnpayIpn(ctx context.Context, request VnpayIpnRequestObject) (VnpayIpnResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx *gin.Context, request any) (any, error)
@@ -553,6 +730,32 @@ func (sh *strictHandler) GetTransactions(ctx *gin.Context, params GetTransaction
 		sh.options.HandlerErrorFunc(ctx, err)
 	} else if validResponse, ok := response.(GetTransactionsResponseObject); ok {
 		if err := validResponse.VisitGetTransactionsResponse(ctx.Writer); err != nil {
+			sh.options.ResponseErrorHandlerFunc(ctx, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(ctx, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// VnpayIpn operation middleware
+func (sh *strictHandler) VnpayIpn(ctx *gin.Context, params VnpayIpnParams) {
+	var request VnpayIpnRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.VnpayIpn(ctx, request.(VnpayIpnRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "VnpayIpn")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		sh.options.HandlerErrorFunc(ctx, err)
+	} else if validResponse, ok := response.(VnpayIpnResponseObject); ok {
+		if err := validResponse.VisitVnpayIpnResponse(ctx.Writer); err != nil {
 			sh.options.ResponseErrorHandlerFunc(ctx, err)
 		}
 	} else if response != nil {

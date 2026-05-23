@@ -29,6 +29,8 @@ paths:
     $ref: ./paths/admin_analytics_revenue.yaml
   /billing/transactions:
     $ref: ./paths/transactions.yaml
+  /billing/transactions/vnpay_ipn:
+    $ref: ./paths/transactions_vnpay_ipn.yaml
 
 components:
   securitySchemes:

@@ -38,6 +38,69 @@ func (_m *MockCourseSvc) EXPECT() *MockCourseSvc_Expecter {
 	return &MockCourseSvc_Expecter{mock: &_m.Mock}
 }
 
+// EnrollCourseForUser provides a mock function for the type MockCourseSvc
+func (_mock *MockCourseSvc) EnrollCourseForUser(ctx context.Context, courseID uuid.UUID, userID string) error {
+	ret := _mock.Called(ctx, courseID, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for EnrollCourseForUser")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, string) error); ok {
+		r0 = returnFunc(ctx, courseID, userID)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockCourseSvc_EnrollCourseForUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EnrollCourseForUser'
+type MockCourseSvc_EnrollCourseForUser_Call struct {
+	*mock.Call
+}
+
+// EnrollCourseForUser is a helper method to define mock.On call
+//   - ctx context.Context
+//   - courseID uuid.UUID
+//   - userID string
+func (_e *MockCourseSvc_Expecter) EnrollCourseForUser(ctx interface{}, courseID interface{}, userID interface{}) *MockCourseSvc_EnrollCourseForUser_Call {
+	return &MockCourseSvc_EnrollCourseForUser_Call{Call: _e.mock.On("EnrollCourseForUser", ctx, courseID, userID)}
+}
+
+func (_c *MockCourseSvc_EnrollCourseForUser_Call) Run(run func(ctx context.Context, courseID uuid.UUID, userID string)) *MockCourseSvc_EnrollCourseForUser_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *MockCourseSvc_EnrollCourseForUser_Call) Return(err error) *MockCourseSvc_EnrollCourseForUser_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockCourseSvc_EnrollCourseForUser_Call) RunAndReturn(run func(ctx context.Context, courseID uuid.UUID, userID string) error) *MockCourseSvc_EnrollCourseForUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetCourse provides a mock function for the type MockCourseSvc
 func (_mock *MockCourseSvc) GetCourse(ctx context.Context, id uuid.UUID) (*Course, error) {
 	ret := _mock.Called(ctx, id)

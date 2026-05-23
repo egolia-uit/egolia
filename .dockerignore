@@ -52,3 +52,9 @@ skills-lock.json
 .vscode/
 
 !**/.next/standalone/node_modules
+
+# Agents
+.agents/
+.claude/
+CLAUDE.md
+AGENTS.md
