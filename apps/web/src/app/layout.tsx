@@ -1,12 +1,14 @@
+import Script from 'next/script';
 import 'plyr/dist/plyr.css';
+
+import { ToastProvider } from '#/components/ui/neumorphism/toast';
+
 import './global.css';
 
 export const metadata = {
   title: 'Egolia',
   description: 'Elearning on the Go',
 };
-
-import { ToastProvider } from '#/components/ui/neumorphism/toast';
 
 export default function RootLayout({
   children,
@@ -16,9 +18,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
-        <ToastProvider>
-          {children}
-        </ToastProvider>
+        <ToastProvider>{children}</ToastProvider>
+        <Script src="/runtime-env" strategy="beforeInteractive" />
       </body>
     </html>
   );

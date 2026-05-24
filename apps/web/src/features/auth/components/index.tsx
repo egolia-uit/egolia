@@ -16,32 +16,29 @@ import {
 } from '#/features/auth/popup';
 import { authClient } from '#/lib/auth';
 import { clearAuthentikAccessTokenCache } from '#/lib/auth/access-token';
-
-const defaultAuthentikEnrollmentUrl =
-  'http://authentik.egolia.localhost/if/flow/egolia-enrollment/';
-const defaultAuthentikLogoutUrl =
-  'http://authentik.egolia.localhost/if/flow/default-invalidation-flow/';
+import { getPublicRuntimeEnv } from '#/lib/env';
 
 function getPopupLogoutRedirectUri() {
+  const env = getPublicRuntimeEnv();
+
   return (
-    process.env.NEXT_PUBLIC_AUTHENTIK_POST_LOGOUT_REDIRECT_URI ||
+    env.NEXT_PUBLIC_AUTHENTIK_POST_LOGOUT_REDIRECT_URI ||
     `${window.location.origin}/auth/popup-logout`
   );
 }
 
 function getAuthentikEnrollmentUrl(nextUrl: string) {
-  const url = new URL(
-    process.env.NEXT_PUBLIC_AUTHENTIK_ENROLLMENT_URL ||
-      defaultAuthentikEnrollmentUrl
-  );
+  const env = getPublicRuntimeEnv();
+  const url = new URL(env.NEXT_PUBLIC_AUTHENTIK_ENROLLMENT_URL);
+
   url.searchParams.set('next', nextUrl);
   return url.toString();
 }
 
 function getAuthentikLogoutUrl(redirectUri: string) {
-  const url = new URL(
-    process.env.NEXT_PUBLIC_AUTHENTIK_LOGOUT_URL || defaultAuthentikLogoutUrl
-  );
+  const env = getPublicRuntimeEnv();
+  const url = new URL(env.NEXT_PUBLIC_AUTHENTIK_LOGOUT_URL);
+
   url.searchParams.set('next', redirectUri);
   return url.toString();
 }

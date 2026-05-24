@@ -2,14 +2,14 @@
 
 import { client } from '../../../../../packages/api-gen/src/client.gen';
 import { getCachedAuthentikAccessToken } from '../auth/access-token';
+import { getPublicRuntimeEnv } from '../env';
 
 const optionallyAuthenticatedUrls = new Set([
   '/course/courses/{courseId}/landing',
 ]);
 
 client.setConfig({
-  baseUrl:
-    process.env.NEXT_PUBLIC_API_BASE_URL || 'http://api.egolia.localhost',
+  baseUrl: getPublicRuntimeEnv().NEXT_PUBLIC_API_BASE_URL,
 });
 
 client.interceptors.request.use(async (config) => {
@@ -34,7 +34,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-export function resolveVideoUrl(videoKeyOrUrl: string | undefined): string | undefined {
+export function resolveVideoUrl(
+  videoKeyOrUrl: string | undefined
+): string | undefined {
   if (!videoKeyOrUrl) return undefined;
   if (videoKeyOrUrl.startsWith('http')) return videoKeyOrUrl;
 
