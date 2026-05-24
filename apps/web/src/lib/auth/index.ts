@@ -3,6 +3,8 @@
 import { genericOAuthClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 
+import { getPublicRuntimeEnv } from '../env';
+
 type AuthClientSession = {
   user?: {
     id?: string;
@@ -38,7 +40,7 @@ type WebAuthClient = {
 };
 
 const authClientOptions = {
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000',
+  baseURL: getPublicRuntimeEnv().NEXT_PUBLIC_BETTER_AUTH_URL,
   plugins: [genericOAuthClient()],
 };
 
