@@ -1,7 +1,6 @@
 'use client';
 
-import { BarChart3, CheckCircle2, Clock3, Eye, EyeOff, Layers3, RefreshCw, Search, ShieldCheck, Trash2, XCircle } from 'lucide-react';
-import Link from 'next/link';
+import { CheckCircle2, RefreshCw, Search, XCircle } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
@@ -28,19 +27,49 @@ import {
 } from '#/components/ui/shadcn/table';
 import { apiClient } from '#/lib/api';
 import {
+  type CourseCourse,
   approveCourse,
   declineCourse,
-  deleteCourse,
   getSystemCourses,
-  hideCourse,
-  unhideCourse,
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import { formatVnd } from '#/lib/api/format';
 import type { Viewer } from '#/lib/auth/roles';
 
-import { CourseGridSkeleton, EmptyState, ErrorState, InlineNotice } from './course-states';
-import { isPendingLike, MockPanel, normalizeTab, RoleTabs, useCourseList } from './course-shared';
+import {
+  MockPanel,
+  isPendingLike,
+  normalizeTab,
+  useCourseList,
+} from './course-shared';
+import {
+  CourseGridSkeleton,
+  EmptyState,
+  ErrorState,
+  InlineNotice,
+} from './course-states';
+
+type CourseWithInstructor = CourseCourse & {
+  instructorName?: string;
+  instructorUsername?: string;
+  instructor?: {
+    name?: string | null;
+    username?: string | null;
+    email?: string | null;
+  };
+};
+
+function instructorDisplayName(course: CourseCourse) {
+  const value = course as CourseWithInstructor;
+  return (
+    value.instructorName ||
+    value.instructor?.name ||
+    value.instructorUsername ||
+    value.instructor?.username ||
+    value.instructor?.email ||
+    'Instructor'
+  );
+}
 
 function AdminCoursesContent({
   initialTab,
@@ -73,22 +102,22 @@ function AdminCoursesContent({
     [submittedQuery]
   );
 
-  const rows = useMemo(
-    () => {
-      if (courses.state.status !== 'ready') {
-        return [];
-      }
+  const rows = useMemo(() => {
+    if (courses.state.status !== 'ready') {
+      return [];
+    }
 
-      if (activeTab === 'pending') {
-        return courses.state.data.data.filter(isPendingLike);
-      }
+    if (activeTab === 'pending') {
+      return courses.state.data.data.filter(isPendingLike);
+    }
 
-      return courses.state.data.data;
-    },
-    [activeTab, courses.state]
-  );
+    return courses.state.data.data;
+  }, [activeTab, courses.state]);
 
-  async function mutateAdminCourse(action: () => Promise<unknown>, success: string) {
+  async function mutateAdminCourse(
+    action: () => Promise<unknown>,
+    success: string
+  ) {
     setActionError(null);
     setActionMessage(null);
     try {
@@ -112,49 +141,15 @@ function AdminCoursesContent({
         </Button>
       }
     >
-      <RoleTabs
-        active={activeTab}
-        tabs={[
-          {
-            href: '/admin/courses',
-            icon: ShieldCheck,
-            label: 'System courses',
-            value: 'system',
-          },
-          {
-            href: '/admin/courses?tab=pending',
-            icon: Clock3,
-            label: 'Pending',
-            value: 'pending',
-          },
-          {
-            href: '/admin/courses?tab=archive',
-            icon: Layers3,
-            label: 'Hidden/deleted',
-            value: 'archive',
-          },
-          {
-            href: '/admin/courses?tab=stats',
-            icon: BarChart3,
-            label: 'Stats',
-            value: 'stats',
-          },
-        ]}
-      />
-
       {actionMessage && (
         <InlineNotice title="Success" description={actionMessage} />
       )}
 
       {activeTab === 'archive' && (
         <MockPanel
-          title="Hidden/deleted view"
+          title="Hidden courses"
           description="Mock view vi BE hien chua co archive pagination rieng."
-          items={[
-            'Hidden courses summary.',
-            'Deleted courses audit trail.',
-            'Restore flow placeholder.',
-          ]}
+          items={['Hidden courses summary.', 'Restore flow placeholder.']}
         />
       )}
 
@@ -179,10 +174,12 @@ function AdminCoursesContent({
               "
             >
               <div className="relative flex-1">
-                <Search className="
-                  pointer-events-none absolute top-1/2 left-4 size-4
-                  -translate-y-1/2 text-muted-foreground
-                " />
+                <Search
+                  className="
+                    pointer-events-none absolute top-1/2 left-4 size-4
+                    -translate-y-1/2 text-muted-foreground
+                  "
+                />
                 <Input
                   className="pl-10"
                   placeholder="Search system courses"
@@ -195,7 +192,10 @@ function AdminCoursesContent({
                   }}
                 />
               </div>
-              <Button type="button" onClick={() => setSubmittedQuery(query.trim())}>
+              <Button
+                type="button"
+                onClick={() => setSubmittedQuery(query.trim())}
+              >
                 <Search className="mr-2 size-4" />
                 Search
               </Button>
@@ -239,7 +239,9 @@ function AdminCoursesContent({
                         <TableCell>
                           <Badge
                             variant={
-                              course.status === 'approved' ? 'default' : 'secondary'
+                              course.status === 'approved'
+                                ? 'default'
+                                : 'secondary'
                             }
                           >
                             {course.status ?? 'draft'}
@@ -247,24 +249,22 @@ function AdminCoursesContent({
                         </TableCell>
                         <TableCell>{course.hidden ? 'Yes' : 'No'}</TableCell>
                         <TableCell>{formatVnd(course.price)}</TableCell>
-                        <TableCell>{course.instructorId ?? 'N/A'}</TableCell>
+                        <TableCell>{instructorDisplayName(course)}</TableCell>
                         <TableCell>
                           <div className="flex flex-wrap justify-end gap-2">
-                            <Button asChild variant="outline" size="sm">
-                              <Link href={`/instructor/courses/${course.id}`}>
-                                <Eye className="mr-1.5 size-4" />
-                                Detail
-                              </Link>
-                            </Button>
                             {isPendingLike(course) && (
                               <>
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button type="button" size="sm" className="
-                                      bg-primary text-primary-foreground
-                                      shadow-nm-flat
-                                      hover:bg-primary/90
-                                    ">
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      className="
+                                        bg-primary text-primary-foreground
+                                        shadow-nm-flat
+                                        hover:bg-primary/90
+                                      "
+                                    >
                                       <CheckCircle2 className="mr-1.5 size-4" />
                                       Approve
                                     </Button>
@@ -273,7 +273,10 @@ function AdminCoursesContent({
                                     <DialogHeader>
                                       <DialogTitle>Approve Course?</DialogTitle>
                                       <DialogDescription>
-                                        Are you sure you want to approve this course? Once approved, it will be available to students according to its visibility settings.
+                                        Are you sure you want to approve this
+                                        course? Once approved, it will be
+                                        available to students according to its
+                                        visibility settings.
                                       </DialogDescription>
                                     </DialogHeader>
                                     <div className="flex justify-end gap-2 pt-4">
@@ -295,7 +298,9 @@ function AdminCoursesContent({
                                               () =>
                                                 approveCourse({
                                                   client: apiClient,
-                                                  path: { courseId: course.id ?? '' },
+                                                  path: {
+                                                    courseId: course.id ?? '',
+                                                  },
                                                   throwOnError: true,
                                                 }),
                                               'Course has been approved.'
@@ -311,7 +316,11 @@ function AdminCoursesContent({
 
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button type="button" size="sm" variant="destructive">
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      variant="destructive"
+                                    >
                                       <XCircle className="mr-1.5 size-4" />
                                       Decline
                                     </Button>
@@ -320,7 +329,9 @@ function AdminCoursesContent({
                                     <DialogHeader>
                                       <DialogTitle>Decline Course?</DialogTitle>
                                       <DialogDescription>
-                                        Are you sure you want to decline this course? The instructor will be notified to make changes.
+                                        Are you sure you want to decline this
+                                        course? The instructor will be notified
+                                        to make changes.
                                       </DialogDescription>
                                     </DialogHeader>
                                     <div className="flex justify-end gap-2 pt-4">
@@ -338,7 +349,9 @@ function AdminCoursesContent({
                                               () =>
                                                 declineCourse({
                                                   client: apiClient,
-                                                  path: { courseId: course.id ?? '' },
+                                                  path: {
+                                                    courseId: course.id ?? '',
+                                                  },
                                                   throwOnError: true,
                                                 }),
                                               'Course has been rejected.'
@@ -353,54 +366,6 @@ function AdminCoursesContent({
                                 </Dialog>
                               </>
                             )}
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="outline"
-                              onClick={() =>
-                                mutateAdminCourse(
-                                  () =>
-                                    course.hidden
-                                      ? unhideCourse({
-                                        client: apiClient,
-                                        path: { courseId: course.id ?? '' },
-                                        throwOnError: true,
-                                      })
-                                      : hideCourse({
-                                        client: apiClient,
-                                        path: { courseId: course.id ?? '' },
-                                        throwOnError: true,
-                                      }),
-                                  course.hidden ? 'Course is now visible.' : 'Course is now hidden.'
-                                )
-                              }
-                            >
-                              {course.hidden ? (
-                                <Eye className="mr-1.5 size-4" />
-                              ) : (
-                                <EyeOff className="mr-1.5 size-4" />
-                              )}
-                              {course.hidden ? 'Unhide' : 'Hide'}
-                            </Button>
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="destructive"
-                              onClick={() =>
-                                mutateAdminCourse(
-                                  () =>
-                                    deleteCourse({
-                                      client: apiClient,
-                                      path: { courseId: course.id ?? '' },
-                                      throwOnError: true,
-                                    }),
-                                  'Course has been deleted.'
-                                )
-                              }
-                            >
-                              <Trash2 className="mr-1.5 size-4" />
-                              Delete
-                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
