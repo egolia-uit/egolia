@@ -6,15 +6,15 @@ import {
   CreditCard,
   GraduationCap,
   LibraryBig,
+  type LucideIcon,
   Menu,
   Newspaper,
   ShieldCheck,
   UserRound,
-  type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 import {
@@ -54,8 +54,9 @@ type NavGroup = {
 };
 
 function navForViewer(viewer?: Viewer | null): NavGroup[] {
-  const isLoggedIn = Boolean(viewer?.id || viewer?.accessToken);
-  const isInstructor = hasRole(viewer, 'instructor') || hasRole(viewer, 'admin');
+  const isLoggedIn = Boolean(viewer?.id && viewer?.accessToken);
+  const isInstructor =
+    hasRole(viewer, 'instructor') || hasRole(viewer, 'admin');
   const isAdmin = hasRole(viewer, 'admin');
 
   const groups: NavGroup[] = [];
@@ -84,7 +85,11 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
     groups.push({
       label: 'Teaching',
       items: [
-        { href: '/instructor/courses', icon: GraduationCap, label: 'My Courses' },
+        {
+          href: '/instructor/courses',
+          icon: GraduationCap,
+          label: 'My Courses',
+        },
       ],
     });
   }
@@ -95,7 +100,11 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
       label: 'Administration',
       items: [
         { href: '/admin/courses', icon: ShieldCheck, label: 'Manage Courses' },
-        { href: '/admin/courses?tab=pending', icon: BookOpenCheck, label: 'Pending Review' },
+        {
+          href: '/admin/courses?tab=pending',
+          icon: BookOpenCheck,
+          label: 'Pending Review',
+        },
         { href: '/admin/billing', icon: CreditCard, label: 'Revenue' },
         { href: '/admin/blog', icon: Newspaper, label: 'Manage Blog' },
       ],
@@ -117,7 +126,7 @@ function initials(name?: string | null, email?: string | null) {
 }
 
 function roleLabel(viewer?: Viewer | null) {
-  if (!viewer?.id && !viewer?.accessToken) {
+  if (!viewer?.id || !viewer?.accessToken) {
     return 'Guest';
   }
   if (hasRole(viewer, 'admin')) {
@@ -169,8 +178,7 @@ function NavList({
                       font-medium text-slate-600 transition-all
                       hover:bg-nm-bg hover:text-primary hover:shadow-nm-flat-sm
                     `,
-                    active &&
-                      `bg-nm-bg text-primary shadow-nm-inset`
+                    active && `bg-nm-bg text-primary shadow-nm-inset`
                   )}
                 >
                   <item.icon className="size-4 shrink-0" />
@@ -248,10 +256,12 @@ export function AppShell({
             </Sheet>
 
             <Link href="/courses" className="flex min-w-0 items-center gap-3">
-              <div className="
-                flex size-9 shrink-0 items-center justify-center rounded-lg
-                bg-slate-950 text-white
-              ">
+              <div
+                className="
+                  flex size-9 shrink-0 items-center justify-center rounded-lg
+                  bg-slate-950 text-white
+                "
+              >
                 <GraduationCap className="size-5" />
               </div>
               <div className="min-w-0">
@@ -264,12 +274,14 @@ export function AppShell({
           </div>
 
           <div className="flex min-w-0 items-center gap-3">
-            {viewer?.id || viewer?.accessToken ? (
+            {viewer?.id && viewer?.accessToken ? (
               <>
-                <div className="
-                  hidden min-w-0 items-center gap-2
-                  sm:flex
-                ">
+                <div
+                  className="
+                    hidden min-w-0 items-center gap-2
+                    sm:flex
+                  "
+                >
                   <Avatar className="size-8">
                     <AvatarImage
                       alt={viewer.name ?? viewer.email ?? 'User'}
@@ -306,10 +318,12 @@ export function AppShell({
           lg:grid-cols-[260px_minmax(0,1fr)] lg:py-8
         "
       >
-        <aside className="
-          hidden
-          lg:block
-        ">
+        <aside
+          className="
+            hidden
+            lg:block
+          "
+        >
           <div className="sticky top-24 grid gap-4">
             <div className="rounded-2xl border-none bg-nm-bg p-4 shadow-nm-flat">
               <div className="mb-4 flex items-center gap-3 px-2">

@@ -13,7 +13,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
@@ -170,7 +170,10 @@ function useLearnerTransactions() {
     })
       .then(({ data }) => {
         if (mounted) {
-          setState({ status: 'ready', data: data.data });
+          setState({
+            status: 'ready',
+            data: Array.isArray(data?.data) ? data.data : [],
+          });
         }
       })
       .catch((error) => {
@@ -285,24 +288,23 @@ function TransactionSummary({
 }: {
   transactions: BillingTransaction[];
 }) {
-  const summary = useMemo(() => {
-    return transactions.reduce(
-      (result, transaction) => {
-        if (transaction.status === 'completed') {
-          result.totalSpent += Number(transaction.amount);
-          result.completed += 1;
-        }
-        if (transaction.status === 'pending') {
-          result.pending += 1;
-        }
-        if (transaction.status === 'failed') {
-          result.failed += 1;
-        }
-        return result;
-      },
-      { completed: 0, failed: 0, pending: 0, totalSpent: 0 }
-    );
-  }, [transactions]);
+  const safeTransactions = Array.isArray(transactions) ? transactions : [];
+  const summary = safeTransactions.reduce(
+    (result, transaction) => {
+      if (transaction.status === 'completed') {
+        result.totalSpent += Number(transaction.amount);
+        result.completed += 1;
+      }
+      if (transaction.status === 'pending') {
+        result.pending += 1;
+      }
+      if (transaction.status === 'failed') {
+        result.failed += 1;
+      }
+      return result;
+    },
+    { completed: 0, failed: 0, pending: 0, totalSpent: 0 }
+  );
 
   return (
     <div
@@ -416,9 +418,9 @@ function LearnerTransactionTable({
 function BillingLoadingState() {
   return (
     <Card className="border-none bg-nm-bg shadow-nm-flat">
-      <CardContent
-        className="flex items-center gap-3 py-8 text-sm text-slate-600"
-      >
+      <CardContent className="
+        flex items-center gap-3 py-8 text-sm text-slate-600
+      ">
         <Loader2 className="size-5 animate-spin text-primary" />
         Loading billing history...
       </CardContent>
@@ -471,7 +473,8 @@ function LearnerBillingContent({ viewer }: { viewer: Viewer }) {
   const { reload, state } = useLearnerTransactions();
   const paymentReturn = usePaymentReturn();
 
-  const transactions = state.status === 'ready' ? state.data : [];
+  const transactions =
+    state.status === 'ready' && Array.isArray(state.data) ? state.data : [];
 
   return (
     <AppShell

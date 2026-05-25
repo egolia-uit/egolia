@@ -169,6 +169,12 @@ function PurchaseCourseActions({
         return;
       }
 
+      try {
+        window.sessionStorage.setItem('egolia:external-checkout', 'vnpay');
+      } catch {
+        // Ignore storage failures and continue to the payment gateway.
+      }
+
       window.location.assign(paymentUrl.toString());
     } catch (error) {
       setCheckoutError(normalizeApiError(error));
@@ -371,7 +377,7 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
                   enrollmentLoading={
                     viewerLoading || Boolean(viewer?.id && !enrolledCourseIds)
                   }
-                  viewerId={viewer?.id}
+                  viewerId={viewer?.accessToken ? viewer.id : undefined}
                 />
                 <Button asChild variant="outline" className="w-full">
                   <Link href="/courses">Back to marketplace</Link>
