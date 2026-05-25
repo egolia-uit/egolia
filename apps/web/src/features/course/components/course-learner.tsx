@@ -6,11 +6,17 @@ import {
   BookOpen,
   BookOpenCheck,
   Bookmark,
+  Check,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  Circle,
   ClipboardList,
+  Clock3,
+  FileQuestion,
   Home,
+  Layers3,
+  ListChecks,
   type LucideIcon,
   MessageSquareText,
   PlayCircle,
@@ -21,10 +27,12 @@ import {
   Star,
   Trophy,
   Video,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import {
   type DependencyList,
+  type ReactNode,
   type SyntheticEvent,
   useCallback,
   useEffect,
@@ -35,6 +43,7 @@ import {
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
+import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
 import { Button } from '#/components/ui/neumorphism/button';
 import {
@@ -63,6 +72,8 @@ import {
   type CourseLessonComment,
   type CourseLessonDetail,
   type CoursePagination,
+  type CourseTestAnswer,
+  type CourseTestQuestion,
   bookmarkCourse,
   commentOnLesson,
   finishCourse,
@@ -77,10 +88,9 @@ import {
   unbookmarkCourse,
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
-import { formatDateTime, formatDuration } from '#/lib/api/format';
+import { formatDateTime, formatDuration, formatVnd } from '#/lib/api/format';
 import type { Viewer } from '#/lib/auth/roles';
 
-import { CourseHero, CourseStructure } from './course-detail';
 import {
   type CourseListResponse,
   CourseReviewsPanel,
@@ -196,6 +206,71 @@ function apiDate(value = new Date()) {
   return value.toISOString() as unknown as Date;
 }
 
+const learnerPanel =
+  'rounded-xl border border-slate-200/80 bg-white/85 shadow-sm backdrop-blur';
+const learnerSoftPanel =
+  'rounded-xl border border-slate-200/70 bg-slate-50/70 shadow-none';
+const learnerIconBox =
+  'flex shrink-0 items-center justify-center rounded-lg bg-blue-50 text-primary ring-1 ring-blue-100';
+const learnerButton =
+  'border border-slate-200/80 bg-white/90 shadow-sm hover:bg-slate-50 hover:shadow-sm focus:shadow-sm active:shadow-sm';
+
+type NormalizedQuizAnswer = Pick<
+  CourseTestAnswer,
+  'content' | 'id' | 'isCorrect'
+>;
+
+type NormalizedQuizQuestion = Pick<CourseTestQuestion, 'id' | 'question'> & {
+  answers: NormalizedQuizAnswer[];
+};
+
+function normalizeQuizQuestions(items: unknown[]): NormalizedQuizQuestion[] {
+  return items.map((item, index) => {
+    const question = isRecord(item) ? item : {};
+    const questionId =
+      typeof question.id === 'string' && question.id
+        ? question.id
+        : `question-${index + 1}`;
+    const questionText =
+      typeof question.question === 'string' && question.question
+        ? question.question
+        : `Question ${index + 1}`;
+    const answers = Array.isArray(question.answers) ? question.answers : [];
+
+    return {
+      answers: answers.map((answer, answerIndex) => {
+        const record = isRecord(answer) ? answer : {};
+        const answerId =
+          typeof record.id === 'string' && record.id
+            ? record.id
+            : `${questionId}-answer-${answerIndex + 1}`;
+
+        return {
+          content:
+            typeof record.content === 'string' && record.content
+              ? record.content
+              : `Answer ${answerIndex + 1}`,
+          id: answerId,
+          isCorrect: record.isCorrect === true,
+        };
+      }),
+      id: questionId,
+      question: questionText,
+    };
+  });
+}
+
+function sameAnswerSet(selectedIds: string[], correctIds: string[]) {
+  if (selectedIds.length !== correctIds.length) {
+    return false;
+  }
+
+  const selected = [...selectedIds].sort();
+  const correct = [...correctIds].sort();
+
+  return selected.every((id, index) => id === correct[index]);
+}
+
 function StatCard({
   icon: Icon,
   label,
@@ -227,6 +302,264 @@ function StatCard({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function LearnerMetric({
+  helper,
+  icon: Icon,
+  label,
+  value,
+}: {
+  helper: string;
+  icon: LucideIcon;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className={cn(learnerSoftPanel, 'p-4')}>
+      <div className="flex items-start gap-3">
+        <span className={cn(learnerIconBox, 'size-10')}>
+          <Icon className="size-4" />
+        </span>
+        <span className="min-w-0">
+          <span
+            className="
+              block text-xs font-semibold tracking-normal text-slate-500
+              uppercase
+            "
+          >
+            {label}
+          </span>
+          <span className="mt-1 block text-xl font-semibold text-slate-950">
+            {value}
+          </span>
+          <span className="mt-1 block text-xs leading-5 text-slate-500">
+            {helper}
+          </span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function LearnerCourseHero({
+  actions,
+  course,
+  lessonCount,
+}: {
+  actions: ReactNode;
+  course: CourseCourseDetail;
+  lessonCount: number;
+}) {
+  return (
+    <Card className={cn(learnerPanel, 'overflow-hidden')}>
+      <CardContent
+        className="
+          grid gap-6 p-4
+          lg:grid-cols-[minmax(0,1fr)_360px] lg:p-6
+        "
+      >
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="inset">
+              <CheckCircle2 className="size-3" />
+              {course.status ?? 'ready'}
+            </Badge>
+            <Badge variant="outline">
+              <Layers3 className="size-3" />
+              {course.sections.length} sections
+            </Badge>
+            <Badge variant="outline">
+              <ListChecks className="size-3" />
+              {lessonCount} lessons
+            </Badge>
+          </div>
+
+          <div className="mt-5 grid gap-3">
+            <h2 className="text-3xl leading-tight font-semibold text-slate-950">
+              {course.title}
+            </h2>
+            <p className="max-w-3xl text-sm leading-6 text-slate-600">
+              {course.overview?.trim() ||
+                'Course overview is not available yet. You can still start from the first lesson and follow the roadmap below.'}
+            </p>
+          </div>
+
+          <div className="
+            mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-950
+            shadow-sm
+          ">
+            {course.introductionVideoUrl ? (
+              <CourseVideoPlayer
+                className="shadow-none"
+                src={course.introductionVideoUrl}
+                title={`${course.title} introduction`}
+              />
+            ) : (
+              <div
+                className="
+                  flex aspect-video items-center justify-center rounded-xl
+                  bg-slate-50 p-8 text-center text-sm text-slate-500
+                "
+              >
+                <div className="grid justify-items-center gap-3">
+                  <BookOpen className="size-8 text-primary" />
+                  <span>No introduction video is available.</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <aside className={cn(learnerSoftPanel, 'grid content-start gap-4 p-4')}>
+          <div>
+            <p className="text-sm font-semibold text-primary">Study plan</p>
+            <h3 className="mt-2 text-2xl font-semibold text-slate-950">
+              Continue with structure
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Start from the first lesson, save the course, or leave a review
+              after learning.
+            </p>
+          </div>
+
+          <div className="grid gap-3">
+            <LearnerMetric
+              helper="Course price"
+              icon={Award}
+              label="Price"
+              value={formatVnd(course.price)}
+            />
+            <LearnerMetric
+              helper="Instructor profile"
+              icon={BookOpenCheck}
+              label="Instructor"
+              value={course.instructorId ?? 'N/A'}
+            />
+            <LearnerMetric
+              helper="Saved progress is tracked per lesson"
+              icon={Clock3}
+              label="Workspace"
+              value="Ready"
+            />
+          </div>
+
+          <div className="grid gap-2">{actions}</div>
+        </aside>
+      </CardContent>
+    </Card>
+  );
+}
+
+function LearnerCourseRoadmap({
+  course,
+  courseId,
+}: {
+  course: CourseCourseDetail;
+  courseId: string;
+}) {
+  const lessons = flattenLessons(course, courseId);
+
+  if (!lessons.length) {
+    return (
+      <EmptyState
+        title="No lessons"
+        description="This course does not have lessons yet."
+      />
+    );
+  }
+
+  return (
+    <section className="grid gap-4">
+      <div
+        className={cn(
+          learnerSoftPanel,
+          'flex flex-wrap items-end justify-between gap-3 p-5'
+        )}
+      >
+        <div>
+          <p className="text-sm font-semibold text-primary">Roadmap</p>
+          <h2 className="mt-1 text-2xl font-semibold text-slate-950">
+            Course content
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Follow the sections in order. Lesson pages handle progress, tests,
+            and discussion.
+          </p>
+        </div>
+        <Badge variant="outline">
+          <ListChecks className="size-3" />
+          {lessons.length} lessons
+        </Badge>
+      </div>
+
+      <div className="grid gap-4">
+        {course.sections.map((section, sectionIndex) => (
+          <div key={section.id} className={cn(learnerPanel, 'p-4')}>
+            <div className="flex flex-wrap items-center gap-3">
+              <span
+                className={cn(learnerIconBox, 'size-10 text-sm font-semibold')}
+              >
+                {sectionIndex + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="truncate text-lg font-semibold text-slate-950">
+                  {section.title}
+                </h3>
+                <p className="text-sm text-slate-500">
+                  {section.lessons.length} lessons
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-2">
+              {section.lessons.map((lesson, lessonIndex) => {
+                const href = `/learn/courses/${courseId}/sections/${section.id}/lessons/${lesson.id}`;
+
+                return (
+                  <Link
+                    key={lesson.id ?? `${section.id}-${lessonIndex}`}
+                    className="
+                      group grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto]
+                      items-center gap-3 rounded-lg border border-slate-200/70
+                      bg-white px-4 py-3 transition-colors
+                      hover:border-primary/30 hover:bg-blue-50/40
+                      focus-visible:ring-2 focus-visible:ring-primary
+                      focus-visible:outline-none
+                    "
+                    href={href}
+                  >
+                    <span className={cn(learnerIconBox, 'size-9')}>
+                      <PlayCircle className="size-4" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="
+                        block truncate font-semibold text-slate-950
+                      ">
+                        {lesson.title}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-slate-500">
+                        Lesson {lessonIndex + 1}
+                      </span>
+                    </span>
+                    <span
+                      className="
+                        rounded-md border border-slate-200 bg-white px-3 py-1
+                        text-xs font-semibold text-slate-600 transition-colors
+                        group-hover:text-primary
+                      "
+                    >
+                      Open
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -364,9 +697,9 @@ function CertificateList({
             "
           >
             <div className="min-w-0">
-              <div
-                className="flex items-center gap-2 font-semibold text-slate-900"
-              >
+              <div className="
+                flex items-center gap-2 font-semibold text-slate-900
+              ">
                 <Award className="size-4 text-primary" />
                 Certificate {certificate.id.slice(0, 8)}
               </div>
@@ -633,9 +966,9 @@ function LearnerCourseContent({
 
   return (
     <AppShell
-      description="Study the course outline, save the course, submit reviews, and continue into individual lessons."
+      description="Pick up the course roadmap, move through lessons, and keep every learning action in one workspace."
       eyebrow="Learning"
-      title="Course Content"
+      title="Learning Studio"
       viewer={viewer}
     >
       {state.status === 'loading' && <CourseGridSkeleton />}
@@ -644,18 +977,22 @@ function LearnerCourseContent({
       )}
       {state.status === 'ready' && (
         <div className="grid gap-6">
-          <CourseHero
+          <LearnerCourseHero
             actions={
-              <div className="grid gap-2">
+              <>
                 {firstLesson ? (
-                  <Button asChild className="w-full">
+                  <Button asChild className={cn(learnerButton, 'w-full')}>
                     <Link href={firstLesson}>
                       <PlayCircle className="mr-2 size-4" />
-                      Start learning
+                      Continue learning
                     </Link>
                   </Button>
                 ) : (
-                  <Button className="w-full" disabled type="button">
+                  <Button
+                    className={cn(learnerButton, 'w-full')}
+                    disabled
+                    type="button"
+                  >
                     <PlayCircle className="mr-2 size-4" />
                     No lessons
                   </Button>
@@ -663,7 +1000,11 @@ function LearnerCourseContent({
 
                 <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
                   <DialogTrigger asChild>
-                    <Button type="button" variant="outline" className="w-full">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className={cn(learnerButton, 'w-full')}
+                    >
                       <Star className="mr-2 size-4" />
                       Review course
                     </Button>
@@ -719,9 +1060,9 @@ function LearnerCourseContent({
                         <textarea
                           id="review"
                           className="
-                            min-h-24 w-full rounded-xl border-none bg-nm-bg px-4
-                            py-2 text-sm shadow-nm-inset transition-colors
-                            outline-none
+                            min-h-24 w-full rounded-lg border border-slate-200
+                            bg-white px-4 py-2 text-sm shadow-sm
+                            transition-colors outline-none
                             placeholder:text-muted-foreground
                             focus-visible:ring-2 focus-visible:ring-ring
                             focus-visible:ring-offset-2
@@ -734,6 +1075,7 @@ function LearnerCourseContent({
                       <Button
                         disabled={busyAction === 'review' || !comment.trim()}
                         type="submit"
+                        className={learnerButton}
                       >
                         <Save className="mr-2 size-4" />
                         Submit review
@@ -743,10 +1085,10 @@ function LearnerCourseContent({
                 </Dialog>
 
                 <Button
-                  className="w-full"
                   disabled={busyAction === 'bookmark'}
                   type="button"
                   variant="outline"
+                  className={cn(learnerButton, 'w-full')}
                   onClick={() =>
                     runAction(
                       'bookmark',
@@ -772,10 +1114,10 @@ function LearnerCourseContent({
                   {bookmarked ? 'Unbookmark' : 'Bookmark'}
                 </Button>
                 <Button
-                  className="w-full"
                   disabled={busyAction === 'finish'}
                   type="button"
                   variant="outline"
+                  className={cn(learnerButton, 'w-full')}
                   onClick={() =>
                     runAction(
                       'finish',
@@ -792,36 +1134,11 @@ function LearnerCourseContent({
                   <CheckCircle2 className="mr-2 size-4" />
                   Mark finished
                 </Button>
-              </div>
+              </>
             }
             course={state.data}
+            lessonCount={lessonCount}
           />
-
-          <div
-            className="
-              grid gap-4
-              md:grid-cols-3
-            "
-          >
-            <StatCard
-              helper="Available modules"
-              icon={ClipboardList}
-              label="Sections"
-              value={state.data.sections.length.toString()}
-            />
-            <StatCard
-              helper="Lessons in this course"
-              icon={PlayCircle}
-              label="Lessons"
-              value={lessonCount.toString()}
-            />
-            <StatCard
-              helper="Use lesson pages to save progress"
-              icon={BookOpenCheck}
-              label="Workspace"
-              value="Ready"
-            />
-          </div>
 
           {actionMessage && (
             <InlineNotice title="Success" description={actionMessage} />
@@ -829,13 +1146,7 @@ function LearnerCourseContent({
           {actionError && <ErrorState error={actionError} />}
 
           <section className="grid gap-6">
-            <div className="grid gap-3">
-              <h2 className="text-lg font-semibold">Course Content</h2>
-              <CourseStructure
-                baseHref={`/learn/courses/${courseId}`}
-                course={state.data}
-              />
-            </div>
+            <LearnerCourseRoadmap course={state.data} courseId={courseId} />
             <CourseReviewsPanel reload={reviews.reload} state={reviews.state} />
           </section>
         </div>
@@ -897,43 +1208,74 @@ function LessonOutline({
   }
 
   return (
-    <Card className="bg-nm-bg shadow-nm-flat">
+    <Card className={learnerPanel}>
       <CardHeader>
-        <CardTitle className="text-xl">Course Outline</CardTitle>
-        <CardDescription>
-          {lessons.length} lessons across {course.data.sections.length} sections
-        </CardDescription>
+        <div className="flex items-start gap-3">
+          <span className={cn(learnerIconBox, 'size-11')}>
+            <ListChecks className="size-5" />
+          </span>
+          <div>
+            <CardTitle className="text-xl">Lesson map</CardTitle>
+            <CardDescription>
+              {lessons.length} lessons across {course.data.sections.length}{' '}
+              sections
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="grid gap-2">
         {lessons.map((lesson) => {
           const active = lesson.lessonId === activeLessonId;
           return (
-            <Button
+            <Link
               key={lesson.lessonId}
-              asChild
-              className="h-auto justify-start px-3 py-3 text-left"
-              variant={active ? 'inset' : 'ghost'}
+              aria-current={active ? 'page' : undefined}
+              className={cn(
+                `
+                  grid min-h-14 grid-cols-[auto_minmax(0,1fr)] items-center
+                  gap-3 rounded-lg px-3 py-3 text-left transition-colors
+                  focus-visible:ring-2 focus-visible:ring-primary
+                  focus-visible:outline-none
+                `,
+                active
+                  ? 'border border-primary/25 bg-blue-50 text-primary'
+                  : `
+                    border border-transparent bg-transparent
+                    hover:border-slate-200 hover:bg-slate-50
+                  `
+              )}
+              href={lesson.href}
             >
-              <Link href={lesson.href}>
+              <span
+                className={cn(
+                  `
+                    flex size-8 shrink-0 items-center justify-center rounded-lg
+                    text-xs font-semibold ring-1
+                  `,
+                  active
+                    ? 'bg-white text-primary ring-primary/20'
+                    : 'bg-slate-50 text-slate-500 ring-slate-200'
+                )}
+              >
+                {active ? (
+                  <PlayCircle className="size-4" />
+                ) : (
+                  lesson.lessonNumber
+                )}
+              </span>
+              <span className="min-w-0">
                 <span
                   className="
-                    flex size-8 shrink-0 items-center justify-center rounded-xl
-                    bg-nm-bg text-xs font-semibold text-primary
-                    shadow-nm-flat-sm
+                    block truncate text-sm font-semibold text-slate-950
                   "
                 >
-                  {lesson.lessonNumber}
+                  {lesson.title}
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">
-                    {lesson.title}
-                  </span>
-                  <span className="block truncate text-xs text-slate-500">
-                    {lesson.sectionTitle}
-                  </span>
+                <span className="block truncate text-xs text-slate-500">
+                  {lesson.sectionTitle}
                 </span>
-              </Link>
-            </Button>
+              </span>
+            </Link>
           );
         })}
       </CardContent>
@@ -955,13 +1297,19 @@ function LessonCommentsPanel({
   onChange: (value: string) => void;
 }) {
   return (
-    <Card className="bg-nm-bg shadow-nm-flat">
+    <Card className={learnerPanel}>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <MessageSquareText className="size-5 text-primary" />
-          Discussion
-        </CardTitle>
-        <CardDescription>Top-level lesson comments</CardDescription>
+        <div className="flex items-start gap-3">
+          <span className={cn(learnerIconBox, 'size-11')}>
+            <MessageSquareText className="size-5" />
+          </span>
+          <div>
+            <CardTitle className="text-xl">Discussion</CardTitle>
+            <CardDescription>
+              Ask questions or leave notes for this lesson.
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="grid gap-4">
         <form
@@ -972,18 +1320,18 @@ function LessonCommentsPanel({
           }}
         >
           <label className="text-sm font-medium" htmlFor="lesson-comment">
-            Comment
+            Add a note
           </label>
           <textarea
             id="lesson-comment"
             className="
-              min-h-24 w-full rounded-xl border-none bg-nm-bg px-4 py-3 text-sm
-              shadow-nm-inset outline-none
+              min-h-24 w-full rounded-lg border border-slate-200 bg-white px-4
+              py-3 text-sm shadow-sm outline-none
               placeholder:text-muted-foreground
               focus-visible:ring-2 focus-visible:ring-ring
               focus-visible:ring-offset-2
             "
-            placeholder="Ask a question or leave a note"
+            placeholder="Ask a question or share what you noticed"
             value={value}
             onChange={(event) => onChange(event.target.value)}
           />
@@ -1000,10 +1348,11 @@ function LessonCommentsPanel({
         {comments.status === 'ready' && !comments.data.data.length && (
           <div
             className="
-              rounded-2xl bg-nm-bg p-5 text-center text-sm text-slate-500
-              shadow-nm-inset
+              grid justify-items-center gap-2 rounded-xl border border-slate-200
+              bg-slate-50 p-6 text-center text-sm text-slate-500
             "
           >
+            <MessageSquareText className="size-5 text-primary" />
             No comments yet.
           </div>
         )}
@@ -1012,11 +1361,11 @@ function LessonCommentsPanel({
             {comments.data.data.map((item) => (
               <div
                 key={item.id}
-                className="rounded-2xl bg-nm-bg p-4 shadow-nm-inset"
+                className="rounded-lg border border-slate-200 bg-slate-50 p-4"
               >
-                <div
-                  className="flex flex-wrap items-center justify-between gap-2"
-                >
+                <div className="
+                  flex flex-wrap items-center justify-between gap-2
+                ">
                   <div className="font-medium text-slate-900">
                     User {item.userId}
                   </div>
@@ -1045,23 +1394,37 @@ function LessonNavigation({
 }) {
   return (
     <div
-      className="
-        grid gap-3
-        md:grid-cols-[1fr_auto_auto]
-      "
+      className={cn(
+        learnerPanel,
+        `
+          grid gap-3 p-3
+          md:grid-cols-[1fr_auto_auto] md:items-center
+        `
+      )}
     >
-      <div className="rounded-2xl bg-nm-bg p-4 shadow-nm-inset">
-        <p className="text-xs font-medium text-slate-500 uppercase">
-          Current lesson
-        </p>
-        <p className="mt-1 truncate font-semibold text-slate-950">
-          {current?.title ?? 'Lesson'}
-        </p>
+      <div className="flex min-w-0 items-center gap-3 px-1">
+        <span className={cn(learnerIconBox, 'size-11')}>
+          <BookOpenCheck className="size-5" />
+        </span>
+        <span className="min-w-0">
+          <span
+            className="
+              block text-xs font-semibold tracking-normal text-slate-500
+              uppercase
+            "
+          >
+            Current lesson
+          </span>
+          <span className="mt-1 block truncate font-semibold text-slate-950">
+            {current?.title ?? 'Lesson'}
+          </span>
+        </span>
       </div>
       <Button
         asChild={Boolean(previous)}
         disabled={!previous}
         variant="outline"
+        className={cn(learnerButton, 'min-w-32')}
       >
         {previous ? (
           <Link href={previous.href}>
@@ -1075,7 +1438,11 @@ function LessonNavigation({
           </span>
         )}
       </Button>
-      <Button asChild={Boolean(next)} disabled={!next}>
+      <Button
+        asChild={Boolean(next)}
+        disabled={!next}
+        className={cn(learnerButton, 'min-w-32')}
+      >
         {next ? (
           <Link href={next.href}>
             Next
@@ -1094,63 +1461,282 @@ function LessonNavigation({
 
 function TestLessonContent({
   lesson,
+  completing = false,
+  onComplete,
 }: {
+  completing?: boolean;
   lesson: Extract<CourseLessonDetail, { lessonType: 'test' }>;
+  onComplete?: () => Promise<void>;
 }) {
-  const questions = Array.isArray(lesson.questions) ? lesson.questions : [];
+  const questions = useMemo(
+    () =>
+      normalizeQuizQuestions(
+        Array.isArray(lesson.questions) ? lesson.questions : []
+      ),
+    [lesson.questions]
+  );
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Record<string, string[]>
+  >({});
+  const [submitted, setSubmitted] = useState(false);
+  const multipleChoice = lesson.questionType === 'multipleChoice';
+  const answeredCount = questions.filter(
+    (question) => (selectedAnswers[question.id] ?? []).length > 0
+  ).length;
+  const score = questions.reduce((result, question) => {
+    const selected = selectedAnswers[question.id] ?? [];
+    const correct = question.answers
+      .filter((answer) => answer.isCorrect)
+      .map((answer) => answer.id);
+
+    return result + (sameAnswerSet(selected, correct) ? 1 : 0);
+  }, 0);
+  const scorePercent = questions.length
+    ? Math.round((score / questions.length) * 100)
+    : 0;
+
+  function toggleAnswer(questionId: string, answerId: string) {
+    if (submitted) {
+      return;
+    }
+
+    setSelectedAnswers((current) => {
+      const selected = current[questionId] ?? [];
+      const next = multipleChoice
+        ? selected.includes(answerId)
+          ? selected.filter((id) => id !== answerId)
+          : [...selected, answerId]
+        : [answerId];
+
+      return {
+        ...current,
+        [questionId]: next,
+      };
+    });
+  }
 
   return (
-    <div className="grid gap-4">
-      <div className="rounded-2xl bg-nm-bg p-5 shadow-nm-inset">
-        <div className="flex items-center gap-3">
-          <ClipboardList className="size-5 text-primary" />
-          <div>
-            <p className="font-semibold text-slate-950">
-              {questions.length} questions
+    <div className="grid gap-5">
+      <div
+        className={cn(
+          learnerSoftPanel,
+          `
+            grid gap-4 p-5
+            sm:grid-cols-[1fr_auto] sm:items-center
+          `
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <span className={cn(learnerIconBox, 'size-12')}>
+            <FileQuestion className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-lg font-semibold text-slate-950">
+              Knowledge check
             </p>
-            <p className="text-sm text-slate-500">{lesson.questionType}</p>
+            <p className="text-sm text-slate-500">
+              {questions.length} questions -{' '}
+              {multipleChoice ? 'multiple choice' : 'single choice'}
+            </p>
           </div>
+        </div>
+        <div className="min-w-40">
+          <div
+            className="
+              mb-2 flex items-center justify-between text-xs font-medium
+              text-slate-500
+            "
+          >
+            <span>Answered</span>
+            <span>
+              {answeredCount}/{questions.length}
+            </span>
+          </div>
+          <Progress
+            className="h-2 bg-slate-200 shadow-none"
+            value={
+              questions.length ? (answeredCount / questions.length) * 100 : 0
+            }
+          />
         </div>
       </div>
 
+      {!questions.length && (
+        <div
+          className="
+            rounded-xl border border-slate-200 bg-slate-50 p-6 text-sm
+            text-slate-500
+          "
+        >
+          This test does not have questions yet.
+        </div>
+      )}
+
       {questions.map((question, index) => {
-        const text =
-          isRecord(question) && typeof question.question === 'string'
-            ? question.question
-            : `Question ${index + 1}`;
-        const answers =
-          isRecord(question) && Array.isArray(question.answers)
-            ? question.answers
-            : [];
+        const selected = selectedAnswers[question.id] ?? [];
+        const correctAnswers = question.answers
+          .filter((answer) => answer.isCorrect)
+          .map((answer) => answer.id);
+        const questionCorrect = sameAnswerSet(selected, correctAnswers);
 
         return (
-          <div
-            key={`${text}-${index}`}
-            className="rounded-2xl bg-nm-bg p-5 shadow-nm-inset"
-          >
-            <h3 className="font-semibold text-slate-950">{text}</h3>
-            <div className="mt-3 grid gap-2">
-              {answers.map((answer, answerIndex) => {
-                const answerText =
-                  isRecord(answer) && typeof answer.content === 'string'
-                    ? answer.content
-                    : `Answer ${answerIndex + 1}`;
+          <fieldset key={question.id} className={cn(learnerPanel, 'p-5')}>
+            <legend className="w-full">
+              <div className="flex items-start gap-3">
+                <span
+                  className={cn(learnerIconBox, 'size-9 text-sm font-semibold')}
+                >
+                  {index + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-base font-semibold text-slate-950">
+                    {question.question}
+                  </h3>
+                  {submitted && (
+                    <p
+                      className={cn(
+                        'mt-2 flex items-center gap-2 text-sm font-medium',
+                        questionCorrect ? 'text-emerald-700' : 'text-rose-700'
+                      )}
+                    >
+                      {questionCorrect ? (
+                        <Check className="size-4" />
+                      ) : (
+                        <X className="size-4" />
+                      )}
+                      {questionCorrect ? 'Correct' : 'Needs review'}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </legend>
+
+            <div
+              aria-label={question.question}
+              className="mt-4 grid gap-2"
+              role={multipleChoice ? 'group' : 'radiogroup'}
+            >
+              {question.answers.map((answer) => {
+                const checked = selected.includes(answer.id);
+                const revealCorrect = submitted && answer.isCorrect;
+                const revealWrong = submitted && checked && !answer.isCorrect;
+
                 return (
-                  <div
-                    key={`${answerText}-${answerIndex}`}
-                    className="
-                      rounded-xl bg-nm-bg px-3 py-2 text-sm text-slate-700
-                      shadow-nm-flat-sm
-                    "
+                  <button
+                    key={answer.id}
+                    aria-checked={checked}
+                    className={cn(
+                      `
+                        grid min-h-12 grid-cols-[auto_minmax(0,1fr)_auto]
+                        items-center gap-3 rounded-lg border px-4 py-3 text-left
+                        text-sm text-slate-700 shadow-sm transition-colors
+                        hover:bg-slate-50
+                        focus-visible:ring-2 focus-visible:ring-primary
+                        focus-visible:outline-none
+                      `,
+                      checked
+                        ? 'border-primary/30 bg-blue-50 text-slate-950'
+                        : 'border-slate-200 bg-white',
+                      revealCorrect &&
+                        'border-emerald-200 bg-emerald-50 text-emerald-800',
+                      revealWrong && 'border-rose-200 bg-rose-50 text-rose-800'
+                    )}
+                    disabled={submitted}
+                    role={multipleChoice ? 'checkbox' : 'radio'}
+                    type="button"
+                    onClick={() => toggleAnswer(question.id, answer.id)}
                   >
-                    {answerText}
-                  </div>
+                    <span
+                      className={cn(
+                        `
+                          flex size-7 shrink-0 items-center justify-center
+                          rounded-md border bg-white
+                        `,
+                        checked || revealCorrect
+                          ? 'border-primary/30 text-primary'
+                          : 'border-slate-200 text-slate-400'
+                      )}
+                    >
+                      {checked || revealCorrect ? (
+                        <Check className="size-4" />
+                      ) : (
+                        <Circle className="size-3" />
+                      )}
+                    </span>
+                    <span className="min-w-0 leading-6">{answer.content}</span>
+                    {submitted && (
+                      <span className="text-xs font-semibold">
+                        {revealCorrect
+                          ? 'Correct'
+                          : revealWrong
+                            ? 'Your answer'
+                            : ''}
+                      </span>
+                    )}
+                  </button>
                 );
               })}
             </div>
-          </div>
+          </fieldset>
         );
       })}
+
+      <div
+        className={cn(
+          learnerSoftPanel,
+          'flex flex-wrap items-center justify-between gap-3 p-4'
+        )}
+      >
+        <div>
+          <p className="font-semibold text-slate-950">
+            {submitted
+              ? `Score ${score}/${questions.length} (${scorePercent}%)`
+              : 'Submit when every question has an answer'}
+          </p>
+          <p className="text-sm text-slate-500">
+            Results are shown immediately for this lesson test.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {submitted && (
+            <Button
+              type="button"
+              variant="outline"
+              className={learnerButton}
+              onClick={() => {
+                setSelectedAnswers({});
+                setSubmitted(false);
+              }}
+            >
+              <RefreshCw className="mr-2 size-4" />
+              Try again
+            </Button>
+          )}
+          {!submitted ? (
+            <Button
+              disabled={!questions.length || answeredCount < questions.length}
+              type="button"
+              className={learnerButton}
+              onClick={() => setSubmitted(true)}
+            >
+              <ListChecks className="mr-2 size-4" />
+              Submit answers
+            </Button>
+          ) : (
+            <Button
+              disabled={completing || !onComplete}
+              type="button"
+              className={learnerButton}
+              onClick={() => {
+                void onComplete?.();
+              }}
+            >
+              <CheckCircle2 className="mr-2 size-4" />
+              Mark lesson completed
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -1333,14 +1919,14 @@ function LearnerLessonContent({
 
   return (
     <AppShell
-      description="Watch the lesson, keep progress updated, and discuss the material."
+      description="Watch, test your understanding, save progress, and discuss the lesson."
       eyebrow="Lesson"
-      title="Lesson Content"
+      title="Lesson Workspace"
       viewer={viewer}
     >
       <div className="grid gap-4">
         <div>
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm" className={learnerButton}>
             <Link href={`/learn/courses/${courseId}`}>
               <ArrowLeft className="mr-2 size-4" />
               Back to course
@@ -1370,48 +1956,53 @@ function LearnerLessonContent({
               <ErrorState error={state.error} onRetry={reloadLesson} />
             )}
             {state.status === 'ready' && (
-              <Card className="bg-nm-bg shadow-nm-flat">
+              <Card className={learnerPanel}>
                 <CardHeader>
-                  <div className="mb-2 flex flex-wrap gap-2">
-                    <Badge variant="inset">
+                  <div className="flex flex-wrap items-start gap-4">
+                    <span className={cn(learnerIconBox, 'size-12')}>
                       {state.data.lessonType === 'video' ? (
-                        <Video className="size-3" />
+                        <Video className="size-5" />
                       ) : (
-                        <ClipboardList className="size-3" />
+                        <FileQuestion className="size-5" />
                       )}
-                      {state.data.lessonType}
-                    </Badge>
-                    {state.data.lessonType === 'video' && (
-                      <Badge variant="outline">
-                        {formatDuration(state.data.duration)}
-                      </Badge>
-                    )}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-2 flex flex-wrap gap-2">
+                        <Badge variant="inset">
+                          {state.data.lessonType === 'video' ? (
+                            <Video className="size-3" />
+                          ) : (
+                            <ClipboardList className="size-3" />
+                          )}
+                          {state.data.lessonType === 'video'
+                            ? 'Video lesson'
+                            : 'Test lesson'}
+                        </Badge>
+                        {state.data.lessonType === 'video' && (
+                          <Badge variant="outline">
+                            <Clock3 className="size-3" />
+                            {formatDuration(state.data.duration)}
+                          </Badge>
+                        )}
+                      </div>
+                      <CardTitle className="text-2xl leading-tight">
+                        {state.data.title}
+                      </CardTitle>
+                    </div>
                   </div>
-                  <CardTitle className="flex items-center gap-2">
-                    {state.data.lessonType === 'video' ? (
-                      <PlayCircle className="size-5 text-primary" />
-                    ) : (
-                      <ClipboardList className="size-5 text-primary" />
-                    )}
-                    {state.data.title}
-                  </CardTitle>
                 </CardHeader>
                 <CardContent className="grid gap-5">
                   {state.data.lessonType === 'video' && state.data.videoUrl ? (
                     <>
                       <CourseVideoPlayer
-                        className="shadow-nm-flat"
+                        className="border border-slate-200 shadow-sm"
                         src={state.data.videoUrl}
                         title={state.data.title}
                         onEnded={handleVideoEnded}
                         onPause={handleVideoPause}
                         onTimeUpdate={handleTimeUpdate}
                       />
-                      <div
-                        className="
-                          grid gap-3 rounded-2xl bg-nm-bg p-4 shadow-nm-inset
-                        "
-                      >
+                      <div className={cn(learnerSoftPanel, 'grid gap-3 p-4')}>
                         <div
                           className="
                             flex items-center justify-between gap-3 text-sm
@@ -1425,6 +2016,7 @@ function LearnerLessonContent({
                           </span>
                         </div>
                         <Progress
+                          className="h-2 bg-slate-200 shadow-none"
                           value={
                             state.data.duration
                               ? Math.min(
@@ -1440,6 +2032,7 @@ function LearnerLessonContent({
                             disabled={busyAction === 'progress'}
                             type="button"
                             variant="outline"
+                            className={learnerButton}
                             onClick={() => saveProgress(watchSeconds, false)}
                           >
                             <Save className="mr-2 size-4" />
@@ -1448,6 +2041,7 @@ function LearnerLessonContent({
                           <Button
                             disabled={busyAction === 'complete'}
                             type="button"
+                            className={learnerButton}
                             onClick={markCompleted}
                           >
                             <CheckCircle2 className="mr-2 size-4" />
@@ -1457,12 +2051,17 @@ function LearnerLessonContent({
                       </div>
                     </>
                   ) : state.data.lessonType === 'test' ? (
-                    <TestLessonContent lesson={state.data} />
+                    <TestLessonContent
+                      key={state.data.id ?? lessonId}
+                      completing={busyAction === 'complete'}
+                      lesson={state.data}
+                      onComplete={markCompleted}
+                    />
                   ) : (
                     <div
                       className="
-                        rounded-xl bg-nm-bg p-6 text-sm text-slate-500
-                        shadow-nm-inset
+                        rounded-xl border border-slate-200 bg-slate-50 p-6
+                        text-sm text-slate-500
                       "
                     >
                       This lesson does not have playable content yet.
@@ -1487,7 +2086,7 @@ function LearnerLessonContent({
               course={course.state}
               courseId={courseId}
             />
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className={learnerButton}>
               <Link href={`/learn/courses/${courseId}`}>
                 <RefreshCw className="mr-2 size-4" />
                 Course overview
