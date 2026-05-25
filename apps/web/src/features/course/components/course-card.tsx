@@ -1,18 +1,11 @@
 'use client';
 
-import {
-  BookOpen,
-  ChevronRight,
-  EyeOff,
-  GraduationCap,
-  ShieldCheck,
-} from 'lucide-react';
+import { BookOpen, EyeOff, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
-import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
@@ -24,6 +17,15 @@ import type { CourseCourse } from '#/lib/api/course';
 import { formatVnd } from '#/lib/api/format';
 
 export type CourseDestination = 'public' | 'learner' | 'instructor';
+type CourseWithInstructor = CourseCourse & {
+  instructorName?: string;
+  instructorUsername?: string;
+  instructor?: {
+    name?: string | null;
+    username?: string | null;
+    email?: string | null;
+  };
+};
 
 function statusLabel(status?: CourseCourse['status']) {
   switch (status) {
@@ -49,6 +51,18 @@ function destinationHref(courseId: string, destination: CourseDestination) {
   }
 }
 
+function instructorDisplayName(course: CourseCourse) {
+  const value = course as CourseWithInstructor;
+  return (
+    value.instructorName ||
+    value.instructor?.name ||
+    value.instructorUsername ||
+    value.instructor?.username ||
+    value.instructor?.email ||
+    'Instructor'
+  );
+}
+
 export function CourseCard({
   course,
   destination = 'public',
@@ -65,13 +79,14 @@ export function CourseCard({
   const courseId = course.id;
   const href = courseId ? destinationHref(courseId, destination) : '#';
   const showProgress = destination === 'learner' && progress !== undefined;
+  const showStatusBadges = destination === 'instructor';
 
   // Add #t=0.001 to ensure a frame is shown for video thumbnails
   const videoSrc = course.introductionVideoUrl
     ? `${course.introductionVideoUrl}#t=0.001`
     : undefined;
 
-  return (
+  const cardBody = (
     <Card
       className={cn(
         `
@@ -83,10 +98,12 @@ export function CourseCard({
       )}
     >
       <div className="p-3 pb-0">
-        <div className="
-          relative aspect-video w-full overflow-hidden rounded-xl bg-nm-bg
-          shadow-nm-inset
-        ">
+        <div
+          className="
+            relative aspect-video w-full overflow-hidden rounded-xl bg-nm-bg
+            shadow-nm-inset
+          "
+        >
           {videoSrc ? (
             <video
               className={cn(
@@ -109,27 +126,31 @@ export function CourseCard({
               <BookOpen className="size-12 opacity-20" />
             </div>
           )}
-          <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-2">
-            <Badge
-              className="shadow-nm-flat-sm"
-              variant={course.status === 'approved' ? 'default' : 'secondary'}
-            >
-              {statusLabel(course.status)}
-            </Badge>
-            {course.hidden && (
-              <Badge className="shadow-nm-flat-sm" variant="outline">
-                <EyeOff className="size-3" />
-                Hidden
+          {showStatusBadges && (
+            <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-2">
+              <Badge
+                className="shadow-nm-flat-sm"
+                variant={course.status === 'approved' ? 'default' : 'secondary'}
+              >
+                {statusLabel(course.status)}
               </Badge>
-            )}
-          </div>
+              {course.hidden && (
+                <Badge className="shadow-nm-flat-sm" variant="outline">
+                  <EyeOff className="size-3" />
+                  Hidden
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       <CardHeader className="px-5 pt-4 pb-2">
-        <CardTitle className="
-          line-clamp-2 min-h-12 text-lg leading-tight font-bold text-slate-800
-        ">
+        <CardTitle
+          className="
+            line-clamp-2 min-h-12 text-lg leading-tight font-bold text-slate-800
+          "
+        >
           {course.title}
         </CardTitle>
       </CardHeader>
@@ -143,7 +164,9 @@ export function CourseCard({
         {showProgress && (
           <div className="grid gap-2">
             <div className="flex items-center justify-between px-1 text-xs">
-              <span className="font-medium text-slate-500">Learning Progress</span>
+              <span className="font-medium text-slate-500">
+                Learning Progress
+              </span>
               <span className="font-bold text-primary">{progress}%</span>
             </div>
             <div
@@ -176,9 +199,11 @@ export function CourseCard({
           )}
         >
           <div className="space-y-1">
-            <div className="
-              flex items-center gap-1.5 text-xs font-medium text-slate-500
-            ">
+            <div
+              className="
+                flex items-center gap-1.5 text-xs font-medium text-slate-500
+              "
+            >
               <BookOpen className="size-3.5" />
               Course Price
             </div>
@@ -187,30 +212,41 @@ export function CourseCard({
             </div>
           </div>
           <div className="space-y-1 border-l border-slate-200/50 pl-4">
-            <div className="
-              flex items-center gap-1.5 text-xs font-medium text-slate-500
-            ">
+            <div
+              className="
+                flex items-center gap-1.5 text-xs font-medium text-slate-500
+              "
+            >
               <ShieldCheck className="size-3.5" />
               Instructor
             </div>
             <div className="truncate font-semibold text-slate-700">
-              {course.instructorId ?? 'N/A'}
+              {instructorDisplayName(course)}
             </div>
           </div>
         </div>
       </CardContent>
 
-      <CardFooter className="bg-nm-bg px-5 pt-0 pb-5">
-        {action ?? (
-          <Button asChild variant="outline" className="w-full">
-            <Link href={href}>
-              <GraduationCap className="mr-2 size-4" />
-              View Details
-              <ChevronRight className="ml-auto size-4" />
-            </Link>
-          </Button>
-        )}
-      </CardFooter>
+      {action && (
+        <CardFooter className="bg-nm-bg px-5 pt-0 pb-5">{action}</CardFooter>
+      )}
     </Card>
+  );
+
+  if (action) {
+    return cardBody;
+  }
+
+  return (
+    <Link
+      href={href}
+      className="
+        block
+        focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+        focus-visible:outline-none
+      "
+    >
+      {cardBody}
+    </Link>
   );
 }

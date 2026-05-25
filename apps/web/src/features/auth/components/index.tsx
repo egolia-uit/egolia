@@ -3,29 +3,12 @@
 import { LogOut, UserPlus } from 'lucide-react';
 
 import { Button } from '#/components/ui/neumorphism/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '#/components/ui/shadcn/dropdown-menu';
-import {
-  openCenteredPopup,
-  postAuthPopupMessage,
-  waitForAuthPopup,
-} from '#/features/auth/popup';
+import { openCenteredPopup, waitForAuthPopup } from '#/features/auth/popup';
 import { authClient } from '#/lib/auth';
 import { clearAuthentikAccessTokenCache } from '#/lib/auth/access-token';
 import { getPublicRuntimeEnv } from '#/lib/env';
 
-function getPopupLogoutRedirectUri() {
-  const env = getPublicRuntimeEnv();
-
-  return (
-    env.NEXT_PUBLIC_AUTHENTIK_POST_LOGOUT_REDIRECT_URI ||
-    `${window.location.origin}/auth/popup-logout`
-  );
-}
+const AUTHENTIK_LOGOUT_POPUP_TIMEOUT_MS = 4_000;
 
 function getAuthentikEnrollmentUrl(nextUrl: string) {
   const env = getPublicRuntimeEnv();
@@ -41,6 +24,48 @@ function getAuthentikLogoutUrl(redirectUri: string) {
 
   url.searchParams.set('next', redirectUri);
   return url.toString();
+}
+
+function getWebUrl(path: string) {
+  const env = getPublicRuntimeEnv();
+  return new URL(path, env.NEXT_PUBLIC_BETTER_AUTH_URL).toString();
+}
+
+function logoutAuthentikInPopup() {
+  return new Promise<void>((resolve) => {
+    const popup = openCenteredPopup(
+      getAuthentikLogoutUrl('/'),
+      'egolia-auth-logout'
+    );
+
+    if (!popup) {
+      window.location.href = getAuthentikLogoutUrl(getWebUrl('/login'));
+      return;
+    }
+
+    let done = false;
+
+    const cleanup = () => {
+      if (done) {
+        return;
+      }
+      done = true;
+      popup.close();
+      resolve();
+    };
+
+    const poll = window.setInterval(() => {
+      if (popup.closed) {
+        window.clearInterval(poll);
+        cleanup();
+      }
+    }, 250);
+
+    window.setTimeout(() => {
+      window.clearInterval(poll);
+      cleanup();
+    }, AUTHENTIK_LOGOUT_POPUP_TIMEOUT_MS);
+  });
 }
 
 export function SignInButton() {
@@ -155,10 +180,8 @@ export function SignUpButton() {
 }
 
 export function SignOutButton() {
-  const handleSignOut = async (logoutAuthentik: boolean) => {
-    const popup = logoutAuthentik
-      ? openCenteredPopup('about:blank', 'egolia-auth-logout')
-      : null;
+  const handleSignOut = async () => {
+    const loginUrl = getWebUrl('/login');
 
     clearAuthentikAccessTokenCache();
     await authClient.signOut({
@@ -167,57 +190,23 @@ export function SignOutButton() {
       },
     });
 
-    if (!logoutAuthentik) {
-      if (window.opener) {
-        postAuthPopupMessage('signed-out', '/courses');
-        window.close();
-      } else {
-        window.location.href = '/courses';
-      }
-      return;
-    }
-
-    if (!popup) {
-      window.location.href = getAuthentikLogoutUrl(
-        `${window.location.origin}/courses`
-      );
-      return;
-    }
-
-    try {
-      popup.location.href = getAuthentikLogoutUrl(getPopupLogoutRedirectUri());
-      await waitForAuthPopup(popup, 60_000);
-      window.location.href = '/courses';
-    } catch {
-      popup.close();
-      window.location.href = '/courses';
-    }
+    await logoutAuthentikInPopup();
+    window.location.href = loginUrl;
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          id="sign-out-button"
-          variant="ghost"
-          size="sm"
-          className="
-            cursor-pointer gap-2 text-muted-foreground
-            hover:text-foreground
-          "
-        >
-          <LogOut className="size-4" />
-          Sign out
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuItem onSelect={() => handleSignOut(false)}>
-          Sign out from Egolia only
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => handleSignOut(true)}>
-          Sign out from Authentik completely
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button
+      id="sign-out-button"
+      variant="ghost"
+      size="sm"
+      onClick={handleSignOut}
+      className="
+        cursor-pointer gap-2 text-muted-foreground
+        hover:text-foreground
+      "
+    >
+      <LogOut className="size-4" />
+      Sign out
+    </Button>
   );
 }

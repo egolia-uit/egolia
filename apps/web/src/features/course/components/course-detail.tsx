@@ -1,10 +1,9 @@
 'use client';
 
-import { BookOpen, Clock, EyeOff, ListChecks, PlayCircle } from 'lucide-react';
+import { BookOpen, Clock, PlayCircle } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-import { Badge } from '#/components/ui/neumorphism/badge';
 import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
@@ -17,14 +16,26 @@ import { formatDuration, formatVnd } from '#/lib/api/format';
 
 import { CourseVideoPlayer } from './course-video-player';
 
-function courseStatus(status?: CourseCourse['status']) {
-  if (status === 'approved') {
-    return 'Approved';
-  }
-  if (status === 'pending') {
-    return 'Pending';
-  }
-  return 'Draft';
+type CourseWithInstructor = CourseCourse & {
+  instructorName?: string;
+  instructorUsername?: string;
+  instructor?: {
+    name?: string | null;
+    username?: string | null;
+    email?: string | null;
+  };
+};
+
+function instructorDisplayName(course: CourseCourse) {
+  const value = course as CourseWithInstructor;
+  return (
+    value.instructorName ||
+    value.instructor?.name ||
+    value.instructorUsername ||
+    value.instructor?.username ||
+    value.instructor?.email ||
+    'Instructor'
+  );
 }
 
 export function CourseHero({
@@ -35,21 +46,14 @@ export function CourseHero({
   actions?: ReactNode;
 }) {
   return (
-    <section className="
-      grid gap-4
-      lg:grid-cols-[1fr_340px]
-    ">
+    <section
+      className="
+        grid gap-4
+        lg:grid-cols-[1fr_340px]
+      "
+    >
       <Card className="bg-nm-bg">
         <CardHeader>
-          <div className="flex flex-wrap gap-2">
-            <Badge>{courseStatus(course.status)}</Badge>
-            {course.hidden && (
-              <Badge variant="outline">
-                <EyeOff className="size-3" />
-                Hidden
-              </Badge>
-            )}
-          </div>
           <CardTitle className="text-2xl">{course.title}</CardTitle>
         </CardHeader>
         <CardContent>
@@ -82,16 +86,10 @@ export function CourseHero({
           <div className="grid gap-3 text-sm">
             <div className="flex items-center gap-2 text-slate-600">
               <BookOpen className="size-4" />
-              Instructor: {course.instructorId ?? 'N/A'}
-            </div>
-            <div className="flex items-center gap-2 text-slate-600">
-              <ListChecks className="size-4" />
-              Status: {courseStatus(course.status)}
+              Instructor: {instructorDisplayName(course)}
             </div>
           </div>
-          <div className="pt-2">
-            {actions}
-          </div>
+          <div className="pt-2">{actions}</div>
         </CardContent>
       </Card>
     </section>
@@ -121,10 +119,12 @@ export function CourseStructure({
         <Card key={section.id} className="bg-nm-bg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <span className="
-                flex size-7 items-center justify-center rounded-xl bg-nm-bg
-                text-xs font-bold text-primary shadow-nm-inset
-              ">
+              <span
+                className="
+                  flex size-7 items-center justify-center rounded-xl bg-nm-bg
+                  text-xs font-bold text-primary shadow-nm-inset
+                "
+              >
                 {sectionIndex + 1}
               </span>
               {section.title}
@@ -135,15 +135,20 @@ export function CourseStructure({
               {section.lessons.length ? (
                 section.lessons.map((lesson, lessonIndex) => {
                   const content = (
-                    <div className="
-                      flex items-center justify-between gap-3 rounded-2xl
-                      bg-nm-bg px-4 py-3 text-sm shadow-nm-inset transition-all
-                    ">
+                    <div
+                      className="
+                        flex items-center justify-between gap-3 rounded-2xl
+                        bg-nm-bg px-4 py-3 text-sm shadow-nm-inset
+                        transition-all
+                      "
+                    >
                       <div className="flex min-w-0 items-center gap-3">
-                        <div className="
-                          flex size-9 shrink-0 items-center justify-center
-                          rounded-xl bg-nm-bg text-primary shadow-nm-flat-sm
-                        ">
+                        <div
+                          className="
+                            flex size-9 shrink-0 items-center justify-center
+                            rounded-xl bg-nm-bg text-primary shadow-nm-flat-sm
+                          "
+                        >
                           <PlayCircle className="size-4" />
                         </div>
                         <div className="min-w-0">
@@ -172,9 +177,12 @@ export function CourseStructure({
                   );
                 })
               ) : (
-                <div className="
-                  rounded-xl bg-nm-bg p-4 text-sm text-slate-500 shadow-nm-inset
-                ">
+                <div
+                  className="
+                    rounded-xl bg-nm-bg p-4 text-sm text-slate-500
+                    shadow-nm-inset
+                  "
+                >
                   This section has no lessons.
                 </div>
               )}
