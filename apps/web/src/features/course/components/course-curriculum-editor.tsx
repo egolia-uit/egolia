@@ -532,8 +532,7 @@ function TestQuestionBuilder({
   return (
     <div
       className="
-        space-y-4 rounded-2xl border border-slate-200/70 bg-nm-bg p-4
-        shadow-nm-inset
+        space-y-4 rounded-2xl border border-slate-200/60 bg-slate-50/50 p-4
       "
     >
       <div
@@ -555,17 +554,17 @@ function TestQuestionBuilder({
         >
           <SelectTrigger
             className="
-              h-10 w-full rounded-xl border-none bg-nm-bg px-4 shadow-nm-inset
+              h-10 w-full rounded-xl border border-slate-200/80 bg-white px-4
               focus-visible:ring-2 focus-visible:ring-ring
             "
           >
             <SelectValue placeholder="Select question type" />
           </SelectTrigger>
-          <SelectContent className="border-none bg-nm-bg shadow-nm-flat">
+          <SelectContent className="border border-slate-200/80 bg-white shadow-md">
             <SelectItem
               className="
                 rounded-lg
-                data-[highlighted]:bg-nm-bg data-[highlighted]:shadow-nm-inset
+                data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900
               "
               value="singleChoice"
             >
@@ -574,7 +573,7 @@ function TestQuestionBuilder({
             <SelectItem
               className="
                 rounded-lg
-                data-[highlighted]:bg-nm-bg data-[highlighted]:shadow-nm-inset
+                data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900
               "
               value="multipleChoice"
             >
@@ -595,7 +594,7 @@ function TestQuestionBuilder({
             <Card
               key={question.id}
               className="
-                border border-slate-200/70 bg-nm-bg py-3 shadow-nm-flat-sm
+                border border-slate-200/60 bg-white/90 shadow-sm
               "
             >
               <CardHeader className="px-3 pb-2">
@@ -1214,27 +1213,7 @@ export function CourseCurriculumEditor({
       reload();
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        const sectionId = localId('section');
-        setSections((sections) => [
-          ...sections,
-          { id: sectionId, title, lessons: [] },
-        ]);
-        setSelectedSectionId(sectionId);
-        setSelectedLessonKey(null);
-        setExpandedSections((current) => ({
-          ...current,
-          [sectionId]: true,
-        }));
-        setRenamingSectionId(sectionId);
-        setRenamingSectionTitle(title);
-        setActionMessage(
-          'Create section not implemented in backend yet, mocked data on FE.'
-        );
-        setCreateSectionTitle('');
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1272,20 +1251,7 @@ export function CourseCurriculumEditor({
       setRenamingSectionTitle('');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        setSections((sections) =>
-          sections.map((section) =>
-            section.id === sectionId ? { ...section, title } : section
-          )
-        );
-        setActionMessage(
-          'Update section not implemented in backend yet, mocked data on FE.'
-        );
-        setRenamingSectionId(null);
-        setRenamingSectionTitle('');
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1322,29 +1288,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Section deleted.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        setSections((sections) =>
-          sections.filter((section) => section.id !== sectionId)
-        );
-        if (selectedSectionId === sectionId) {
-          setSelectedSectionId(null);
-          setSelectedLessonKey(null);
-          setLessonEditor(null);
-        }
-        setExpandedSections((current) => {
-          if (!(sectionId in current)) {
-            return current;
-          }
-          const next = { ...current };
-          delete next[sectionId];
-          return next;
-        });
-        setActionMessage(
-          'Delete section not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1380,16 +1324,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Section order updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        setSections((sections) =>
-          moveItem(sections, currentIndex, targetIndex)
-        );
-        setActionMessage(
-          'Move section not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1481,39 +1416,7 @@ export function CourseCurriculumEditor({
       reload();
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        const id = localId('lesson');
-        setSections((sections) =>
-          sections.map((section) =>
-            section.id === sectionId
-              ? { ...section, lessons: [...section.lessons, { id, title }] }
-              : section
-          )
-        );
-        setLocalLessonMeta((current) => ({
-          ...current,
-          [id]: {
-            lessonType: newLessonType,
-            questionType:
-              newLessonType === 'test' ? newLessonQuestionType : undefined,
-            videoKey:
-              newLessonType === 'video' ? newLessonVideoKey.trim() : undefined,
-            videoUrl: undefined,
-            duration: newLessonType === 'video' ? newLessonDuration : undefined,
-            questions:
-              newLessonType === 'test'
-                ? cloneQuestions(newLessonQuestions)
-                : undefined,
-          },
-        }));
-        setActionMessage(
-          'Create lesson not implemented in backend yet, mocked data on FE.'
-        );
-        setAddingLessonSectionId(null);
-        resetLessonForm();
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1560,6 +1463,7 @@ export function CourseCurriculumEditor({
           client: apiClient,
           path: { courseId, sectionId, lessonId: lesson.id },
           throwOnError: true,
+          responseValidator: async (data: any) => data,
         });
 
         if (data.data.lessonType === 'video') {
@@ -1794,64 +1698,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Lesson updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        updateLessonTitle(lessonEditor.sectionId, lessonEditor.key, title);
-        if (
-          lessonEditor.lessonType === 'video' &&
-          replacementVideoFile &&
-          savedVideoKey
-        ) {
-          savedVideoUrl =
-            createSavedVideoPreviewUrl(replacementVideoFile) ?? savedVideoUrl;
-        }
-        setLessonEditor((current) => {
-          if (!current || current.key !== editorKey) {
-            return current;
-          }
-
-          if (current.lessonType === 'video') {
-            return {
-              ...current,
-              title,
-              videoKey: savedVideoKey,
-              videoUrl: savedVideoUrl,
-              duration: savedDuration,
-            };
-          }
-
-          return {
-            ...current,
-            title,
-            questionType: lessonEditor.questionType,
-            questions: cloneQuestions(lessonEditor.questions),
-          };
-        });
-        upsertLocalLessonMeta(lessonEditor.key, lessonEditor.lessonId, {
-          lessonType: lessonEditor.lessonType,
-          questionType:
-            lessonEditor.lessonType === 'test'
-              ? lessonEditor.questionType
-              : undefined,
-          videoKey:
-            lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
-          videoUrl:
-            lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
-          duration:
-            lessonEditor.lessonType === 'video' ? savedDuration : undefined,
-          questions:
-            lessonEditor.lessonType === 'test'
-              ? cloneQuestions(lessonEditor.questions)
-              : undefined,
-        });
-        if (lessonEditor.lessonType === 'video' && replacementVideoFile) {
-          resetEditLessonVideoUploadState();
-        }
-        setActionMessage(
-          'Update lesson not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1888,14 +1735,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Lesson order updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        moveLessonLocally(sectionId, fromIndex, targetIndex);
-        setActionMessage(
-          'Move lesson not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -2561,16 +2401,13 @@ export function CourseCurriculumEditor({
                         >
                           <SelectTrigger
                             className="
-                              h-10 w-full rounded-xl border-none bg-nm-bg px-4
-                              shadow-nm-inset
+                              h-10 w-full rounded-xl border border-slate-200/80 bg-white px-4
                               focus-visible:ring-2 focus-visible:ring-ring
                             "
                           >
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent
-                            className="border-none bg-nm-bg shadow-nm-flat"
-                          >
+                          <SelectContent className="border border-slate-200/80 bg-white shadow-md">
                             <SelectItem value="video">Video lesson</SelectItem>
                             <SelectItem value="test">Test lesson</SelectItem>
                           </SelectContent>
@@ -2582,8 +2419,7 @@ export function CourseCurriculumEditor({
                       <div className="space-y-4">
                         <div
                           className="
-                            space-y-2 rounded-xl border border-slate-200/70
-                            bg-nm-bg p-3 shadow-nm-inset
+                            space-y-2 rounded-xl border border-slate-100 bg-slate-50/50 p-3
                           "
                         >
                           <Label htmlFor="new-video-file-builder">
@@ -2607,8 +2443,8 @@ export function CourseCurriculumEditor({
                           {newLessonVideoFile && newLessonVideoPreviewUrl && (
                             <div
                               className="
-                                grid gap-3 rounded-xl border border-slate-200/70
-                                bg-nm-bg p-3 shadow-nm-flat-sm
+                                grid gap-3 rounded-xl border border-slate-200/60
+                                bg-white p-3 shadow-sm
                                 md:grid-cols-[180px_minmax(0,1fr)]
                               "
                             >
@@ -2644,8 +2480,7 @@ export function CourseCurriculumEditor({
                             <div className="mt-1 grid gap-1">
                               <div
                                 className="
-                                  h-2 overflow-hidden rounded-full bg-nm-bg
-                                  shadow-nm-inset
+                                  h-2 overflow-hidden rounded-full bg-slate-200
                                 "
                               >
                                 <div
@@ -2818,6 +2653,7 @@ export function CourseCurriculumEditor({
                         <Input
                           disabled={readOnly || Boolean(busyAction)}
                           value={lessonEditor.lessonType}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -2942,8 +2778,7 @@ export function CourseCurriculumEditor({
                               <div className="mt-1 grid gap-1">
                                 <div
                                   className="
-                                    h-2 overflow-hidden rounded-full bg-nm-bg
-                                    shadow-nm-inset
+                                    h-2 overflow-hidden rounded-full bg-slate-200
                                   "
                                 >
                                   <div
@@ -3103,9 +2938,7 @@ export function CourseCurriculumEditor({
                     )}
                   </>
                 ) : (
-                  <div
-                    className="flex items-center gap-2 text-sm text-slate-500"
-                  >
+                  <div className="flex items-center gap-2 text-sm text-slate-500">
                     <Loader2 className="size-4 animate-spin" />
                     Loading lesson editor...
                   </div>

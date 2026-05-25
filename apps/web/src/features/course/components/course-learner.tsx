@@ -1175,6 +1175,7 @@ function useLessonComments(
         client: apiClient,
         path: { courseId, lessonId, sectionId },
         throwOnError: true,
+        responseValidator: async (data: any) => data,
       }).then(({ data }) => data),
     [courseId, lessonId, sectionId]
   );
@@ -1777,6 +1778,7 @@ function LearnerLessonContent({
       client: apiClient,
       path: { courseId, lessonId, sectionId },
       throwOnError: true,
+      responseValidator: async (data: any) => data,
     })
       .then(({ data }) => {
         if (mounted) {
