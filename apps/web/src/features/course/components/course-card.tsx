@@ -1,6 +1,14 @@
 'use client';
 
-import { BookOpen, Eye, EyeOff, Loader2, MoreVertical, ShieldCheck, Trash2 } from 'lucide-react';
+import {
+  BookOpen,
+  Eye,
+  EyeOff,
+  Loader2,
+  MoreVertical,
+  ShieldCheck,
+  Trash2,
+} from 'lucide-react';
 import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
 
@@ -14,6 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from '#/components/ui/neumorphism/card';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Dialog,
   DialogContent,
@@ -27,9 +36,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '#/components/ui/shadcn/dropdown-menu';
-import { useToast } from '#/components/ui/neumorphism/toast';
 import { apiClient } from '#/lib/api';
-import { type CourseCourse, deleteCourse, hideCourse, unhideCourse } from '#/lib/api/course';
+import {
+  type CourseCourse,
+  deleteCourse,
+  hideCourse,
+  unhideCourse,
+} from '#/lib/api/course';
 import { formatVnd } from '#/lib/api/format';
 
 export type CourseDestination = 'public' | 'learner' | 'instructor';
@@ -68,7 +81,11 @@ function statusVariant(
   }
 }
 
-function destinationHref(courseId: string, destination: CourseDestination, status?: string) {
+function destinationHref(
+  courseId: string,
+  destination: CourseDestination,
+  status?: string
+) {
   switch (destination) {
     case 'learner':
       return `/learn/courses/${courseId}`;
@@ -108,7 +125,9 @@ export function CourseCard({
   onRefresh?: () => void;
 }) {
   const courseId = course.id;
-  const href = courseId ? destinationHref(courseId, destination, course.status) : '#';
+  const href = courseId
+    ? destinationHref(courseId, destination, course.status)
+    : '#';
   const showProgress = destination === 'learner' && progress !== undefined;
   const showStatusBadges = destination === 'instructor';
 
@@ -202,22 +221,23 @@ export function CourseCard({
               src={videoSrc}
             />
           ) : (
-            <div className="
+            <div
+              className="
               flex h-full w-full flex-col items-center justify-center gap-2
-            ">
-              <div className="
+            "
+            >
+              <div
+                className="
                 rounded-full border border-slate-100/50 bg-white/80 p-2.5
                 shadow-sm
-              ">
+              "
+              >
                 <BookOpen className="size-6 stroke-[1.5] text-indigo-400/80" />
               </div>
             </div>
           )}
-
           {showStatusBadges && (
-            <div
-              className="absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5"
-            >
+            <div className="absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5">
               <Badge variant={statusVariant(course.status)}>
                 {statusLabel(course.status)}
               </Badge>
@@ -229,7 +249,6 @@ export function CourseCard({
               )}
             </div>
           )}
-
           {/* Instructor Kebab Menu Actions */}
           {destination === 'instructor' && (
             <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
@@ -334,9 +353,7 @@ export function CourseCard({
               <span className="font-medium text-slate-500">Progress</span>
               <span className="font-semibold text-blue-600">{progress}%</span>
             </div>
-            <div
-              className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100"
-            >
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
               <div
                 className="
                   h-full rounded-full bg-blue-600 transition-all duration-700
@@ -356,9 +373,11 @@ export function CourseCard({
           "
         >
           <div className="space-y-0.5">
-            <div className="
+            <div
+              className="
               flex items-center gap-1 text-xs font-semibold text-slate-500
-            ">
+            "
+            >
               <BookOpen className="size-3.5 text-slate-400" />
               Price
             </div>
@@ -392,7 +411,9 @@ export function CourseCard({
               group-hover:text-blue-700
             "
           >
-            <span>{destination === 'instructor' ? 'Manage' : 'View details'}</span>
+            <span>
+              {destination === 'instructor' ? 'Manage' : 'View details'}
+            </span>
             <svg
               className="
                 size-3.5 transition-transform duration-300
@@ -448,7 +469,8 @@ export function CourseCard({
             <DialogHeader>
               <DialogTitle>Delete course</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete <strong>{course.title}</strong>? This action is permanent and cannot be undone.
+                Are you sure you want to delete <strong>{course.title}</strong>?
+                This action is permanent and cannot be undone.
               </DialogDescription>
             </DialogHeader>
             <div className="flex justify-end gap-2 pt-4">
