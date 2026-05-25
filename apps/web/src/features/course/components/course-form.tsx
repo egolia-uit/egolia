@@ -1,10 +1,10 @@
 'use client';
 
-import { Save, UploadCloud } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { cn } from '#/components/lib/shadcn/utils';
 import { Button } from '#/components/ui/neumorphism/button';
+import { Input } from '#/components/ui/neumorphism/input';
 import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Field,
@@ -13,9 +13,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from '#/components/ui/shadcn/field';
-import { Input } from '#/components/ui/neumorphism/input';
 import type { CourseCourse, CourseCourseWritable } from '#/lib/api/course';
-import { formatDateTime } from '#/lib/api/format';
 
 type CourseFormValues = {
   title: string;
@@ -179,11 +177,7 @@ export function CourseForm({
         }
 
         let nextValues = values;
-        if (
-          forceIntroductionVideoKey &&
-          !nextValues.introductionVideoKey.trim() &&
-          canUploadVideo
-        ) {
+        if (!nextValues.introductionVideoKey.trim() && canUploadVideo) {
           const videoKey = await uploadSelectedVideo();
           if (!videoKey) {
             return;
@@ -264,16 +258,11 @@ export function CourseForm({
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="course-video-key">
-            Introduction video key
-          </FieldLabel>
-
           {onUploadIntroductionVideo && (
-            <div
-              className={cn(
-                'grid gap-2 rounded-xl bg-nm-bg p-4 shadow-nm-inset'
-              )}
-            >
+            <div className="grid gap-2 rounded-xl bg-nm-bg p-4 shadow-nm-inset">
+              <FieldLabel htmlFor="course-video-file">
+                Introduction video
+              </FieldLabel>
               <Input
                 id="course-video-file"
                 accept="video/*"
@@ -285,20 +274,14 @@ export function CourseForm({
                   setUploadError(null);
                 }}
               />
-              <Button
-                type="button"
-                variant="outline"
-                disabled={!selectedVideo || uploading || submitting}
-                onClick={uploadSelectedVideo}
-              >
-                <UploadCloud className="size-4" />
-                {uploading ? 'Uploading...' : 'Upload intro video'}
-              </Button>
               {uploadProgress !== null && (
                 <div className="mt-2 grid gap-2">
-                  <div className="
-                    h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
-                  ">
+                  <div
+                    className="
+                      h-2.5 overflow-hidden rounded-full bg-nm-bg
+                      shadow-nm-inset
+                    "
+                  >
                     <div
                       className="
                         h-full rounded-full bg-primary shadow-nm-flat-sm
@@ -320,31 +303,11 @@ export function CourseForm({
                       {selectedVideo?.name ?? 'video'}
                     </span>
                   </div>
-                  {uploadedVideo.expiresAt && (
-                    <div>
-                      URL expires: {formatDateTime(uploadedVideo.expiresAt)}
-                    </div>
-                  )}
                 </div>
               )}
               {uploadError && <FieldError>{uploadError}</FieldError>}
             </div>
           )}
-
-          <Input
-            id="course-video-key"
-            value={values.introductionVideoKey}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                introductionVideoKey: event.target.value,
-              }))
-            }
-            placeholder="videos/course-intro.mp4"
-          />
-          <FieldDescription>
-            Intro video is optional. Upload to get a video key, or add it later.
-          </FieldDescription>
         </Field>
 
         {touched && validationError && (

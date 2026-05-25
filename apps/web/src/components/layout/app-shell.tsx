@@ -10,7 +10,6 @@ import {
   Menu,
   Newspaper,
   ShieldCheck,
-  UserRound,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -326,17 +325,6 @@ export function AppShell({
         >
           <div className="sticky top-24 grid gap-4">
             <div className="rounded-2xl border-none bg-nm-bg p-4 shadow-nm-flat">
-              <div className="mb-4 flex items-center gap-3 px-2">
-                <UserRound className="size-4 text-slate-500" />
-                <div className="min-w-0">
-                  <div className="truncate text-sm font-medium">
-                    {roleLabel(viewer)}
-                  </div>
-                  <div className="truncate text-xs text-slate-500">
-                    {viewer?.email ?? 'Not logged in'}
-                  </div>
-                </div>
-              </div>
               <NavList
                 currentSearch={currentSearch}
                 groups={groups}
