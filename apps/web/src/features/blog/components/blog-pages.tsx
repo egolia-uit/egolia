@@ -2,7 +2,6 @@
 
 import {
   Calendar,
-  ChevronRight,
   Edit,
   Eye,
   Plus,
@@ -18,7 +17,6 @@ import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '#/components/ui/neumorphism/card';
@@ -70,41 +68,69 @@ const MOCK_POSTS = [
 
 function BlogCard({ post }: { post: (typeof MOCK_POSTS)[0] }) {
   return (
-    <Card
-      className="
-        transition-shadow
-        hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)]
-      "
-    >
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Badge variant="inset">{post.category}</Badge>
-          <span className="text-xs text-slate-500">{post.readTime}</span>
-        </div>
-        <CardTitle className="line-clamp-2 text-lg">{post.title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="line-clamp-3 text-sm/6 text-slate-600">{post.excerpt}</p>
-        <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
-          <span className="flex items-center gap-1">
-            <User className="size-3" />
-            {post.author}
-          </span>
-          <span className="flex items-center gap-1">
-            <Calendar className="size-3" />
-            {post.date}
-          </span>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button asChild variant="ghost" size="sm">
-          <Link href={`/blog/${post.slug}`}>
-            Read more
-            <ChevronRight className="size-4" />
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+    <Link href={`/blog/${post.slug}`} className="block focus-visible:outline-none">
+      <Card
+        className="
+          group flex h-full flex-col overflow-hidden border border-slate-200/60
+          bg-white/95
+          shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+          transition-all duration-300 ease-out
+          hover:-translate-y-1 hover:border-slate-300/80
+          hover:shadow-[0_20px_40px_rgba(15,23,42,0.08)]
+        "
+      >
+        <CardHeader className="px-5 pt-5 pb-2">
+          <div className="flex items-center gap-2">
+            <Badge variant="inset">{post.category}</Badge>
+            <span className="text-xs text-slate-500 font-medium">{post.readTime}</span>
+          </div>
+          <CardTitle className="line-clamp-2 text-lg font-semibold text-slate-900 mt-2 transition-colors duration-200 group-hover:text-blue-600">
+            {post.title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-1 flex-col gap-3 px-5 pb-5">
+          <p className="line-clamp-3 text-sm/6 text-slate-600">{post.excerpt}</p>
+          <div className="mt-auto flex items-center gap-3 border-t border-slate-50 pt-3 text-xs text-slate-500 font-medium">
+            <span className="flex items-center gap-1">
+              <User className="size-3.5 text-slate-400" />
+              {post.author}
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar className="size-3.5 text-slate-400" />
+              {post.date}
+            </span>
+          </div>
+          
+          {/* Subtle Read more CTA for clickable affordance */}
+          <div
+            className="
+              mt-2 flex items-center justify-end gap-1 border-t border-slate-50
+              pt-2.5 text-xs font-semibold text-blue-600 transition-colors
+              duration-200
+              group-hover:text-blue-700
+            "
+          >
+            <span>Read more</span>
+            <svg
+              className="
+                size-3.5 transition-transform duration-300
+                group-hover:translate-x-0.5
+              "
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 

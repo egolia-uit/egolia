@@ -8,7 +8,6 @@ import {
   Trash2,
   Send,
 } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -116,16 +115,6 @@ function InstructorCoursesContent({
     }
   }
 
-  async function mutateCourse(action: () => Promise<unknown>, success: string) {
-    setActionError(null);
-    try {
-      await action();
-      showToast(success);
-      courses.reload();
-    } catch (error) {
-      setActionError(normalizeApiError(error));
-    }
-  }
 
   return (
     <AppShell
@@ -177,62 +166,6 @@ function InstructorCoursesContent({
               ? 'Click edit in the approved course details to create a draft.'
               : 'Create your first course using the Create course button.'
           }
-          actionFor={(course) => (
-            <div className="flex flex-wrap gap-2">
-              <Button asChild variant="outline">
-                <Link href={`/instructor/courses/${course.id}${course.status === 'draft' ? '/builder' : ''}`}>
-                  <Eye className="mr-2 size-4" />
-                  Manage
-                </Link>
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  mutateCourse(
-                    () =>
-                      course.hidden
-                        ? unhideCourse({
-                          client: apiClient,
-                          path: { courseId: course.id ?? '' },
-                          throwOnError: true,
-                        })
-                        : hideCourse({
-                          client: apiClient,
-                          path: { courseId: course.id ?? '' },
-                          throwOnError: true,
-                        }),
-                    course.hidden ? 'Course is now visible.' : 'Course is now hidden.'
-                  )
-                }
-              >
-                {course.hidden ? (
-                  <Eye className="mr-2 size-4" />
-                ) : (
-                  <EyeOff className="mr-2 size-4" />
-                )}
-                {course.hidden ? 'Unhide' : 'Hide'}
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() =>
-                  mutateCourse(
-                    () =>
-                      deleteCourse({
-                        client: apiClient,
-                        path: { courseId: course.id ?? '' },
-                        throwOnError: true,
-                      }),
-                    'Course has been deleted.'
-                  )
-                }
-              >
-                <Trash2 className="mr-2 size-4" />
-                Delete
-              </Button>
-            </div>
-          )}
         />
       </div>
     </AppShell>
@@ -327,7 +260,7 @@ function InstructorCourseDetailContent({
       )}
       {state.status === 'ready' && (
         <div className="grid gap-4">
-          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
+          <div className="rounded-2xl border border-slate-200/60 bg-white/95 px-5 py-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]">
             <div className="
               flex flex-col gap-3
               lg:flex-row lg:items-center lg:justify-between
@@ -494,7 +427,7 @@ export function InstructorCourseBuilderContent({
       )}
       {state.status === 'ready' && (
         <div className="grid gap-4">
-          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
+          <div className="rounded-2xl border border-slate-200/60 bg-white/95 px-5 py-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]">
             <div className="
               flex flex-col gap-3
               lg:flex-row lg:items-center lg:justify-between

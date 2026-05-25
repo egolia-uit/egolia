@@ -1,11 +1,12 @@
 'use client';
 
-import { BookOpen, EyeOff, ShieldCheck } from 'lucide-react';
+import { BookOpen, Eye, EyeOff, Loader2, MoreVertical, Settings, ShieldCheck, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
+import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
@@ -13,7 +14,22 @@ import {
   CardHeader,
   CardTitle,
 } from '#/components/ui/neumorphism/card';
-import type { CourseCourse } from '#/lib/api/course';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/shadcn/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '#/components/ui/shadcn/dropdown-menu';
+import { useToast } from '#/components/ui/neumorphism/toast';
+import { apiClient } from '#/lib/api';
+import { type CourseCourse, deleteCourse, hideCourse, unhideCourse } from '#/lib/api/course';
 import { formatVnd } from '#/lib/api/format';
 
 export type CourseDestination = 'public' | 'learner' | 'instructor';
@@ -52,12 +68,12 @@ function statusVariant(
   }
 }
 
-function destinationHref(courseId: string, destination: CourseDestination) {
+function destinationHref(courseId: string, destination: CourseDestination, status?: string) {
   switch (destination) {
     case 'learner':
       return `/learn/courses/${courseId}`;
     case 'instructor':
-      return `/instructor/courses/${courseId}`;
+      return `/instructor/courses/${courseId}${status === 'draft' ? '/builder' : ''}`;
     case 'public':
     default:
       return `/courses/${courseId}`;
@@ -82,17 +98,70 @@ export function CourseCard({
   className,
   action,
   progress,
+  onRefresh,
 }: {
   course: CourseCourse;
   destination?: CourseDestination;
   className?: string;
   action?: ReactNode;
   progress?: number;
+  onRefresh?: () => void;
 }) {
   const courseId = course.id;
-  const href = courseId ? destinationHref(courseId, destination) : '#';
+  const href = courseId ? destinationHref(courseId, destination, course.status) : '#';
   const showProgress = destination === 'learner' && progress !== undefined;
   const showStatusBadges = destination === 'instructor';
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const { success: showToast, error: showErrorToast } = useToast();
+
+  const handleToggleHide = async () => {
+    if (!courseId) return;
+    setBusy(true);
+    try {
+      if (course.hidden) {
+        await unhideCourse({
+          client: apiClient,
+          path: { courseId },
+          throwOnError: true,
+        });
+        showToast('Course is now visible.');
+      } else {
+        await hideCourse({
+          client: apiClient,
+          path: { courseId },
+          throwOnError: true,
+        });
+        showToast('Course is now hidden.');
+      }
+      onRefresh?.();
+    } catch (error) {
+      showErrorToast?.('Failed to update course visibility.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!courseId) return;
+    setBusy(true);
+    try {
+      await deleteCourse({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
+      showToast('Course has been deleted.');
+      setDeleteOpen(false);
+      onRefresh?.();
+    } catch (error) {
+      showErrorToast?.('Failed to delete course.');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const videoSrc = course.introductionVideoUrl
     ? `${course.introductionVideoUrl}#t=0.001`
@@ -159,6 +228,74 @@ export function CourseCard({
                 </Badge>
               )}
             </div>
+          )}
+
+          {/* Instructor Kebab Menu Actions */}
+          {destination === 'instructor' && (
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="
+                    absolute top-2.5 right-2.5 z-20 h-8 w-8 rounded-full
+                    bg-white/90 border border-white/70 text-slate-600 shadow-sm
+                    hover:bg-white hover:text-slate-900 opacity-90
+                    transition-opacity duration-200
+                  "
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <MoreVertical className="size-4" />
+                  <span className="sr-only">Actions</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-lg z-30"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <DropdownMenuItem
+                  className="flex items-center gap-2 py-2 px-3 rounded-lg cursor-pointer text-sm"
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDropdownOpen(false);
+                    await handleToggleHide();
+                  }}
+                >
+                  {course.hidden ? (
+                    <>
+                      <Eye className="size-4" />
+                      <span>Unhide course</span>
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="size-4" />
+                      <span>Hide course</span>
+                    </>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="flex items-center gap-2 py-2 px-3 rounded-lg text-red-600 focus:text-red-700 cursor-pointer text-sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDropdownOpen(false);
+                    setDeleteOpen(true);
+                  }}
+                >
+                  <Trash2 className="size-4" />
+                  <span>Delete course</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>
@@ -245,7 +382,7 @@ export function CourseCard({
               group-hover:text-blue-700
             "
           >
-            <span>View details</span>
+            <span>{destination === 'instructor' ? 'Manage' : 'View details'}</span>
             <svg
               className="
                 size-3.5 transition-transform duration-300
@@ -270,20 +407,68 @@ export function CourseCard({
     </Card>
   );
 
-  if (action) {
-    return cardBody;
-  }
-
   return (
-    <Link
-      href={href}
-      className="
-        block rounded-2xl
-        focus-visible:ring-2 focus-visible:ring-blue-500
-        focus-visible:ring-offset-2 focus-visible:outline-none
-      "
-    >
-      {cardBody}
-    </Link>
+    <>
+      {action ? (
+        cardBody
+      ) : (
+        <Link
+          href={href}
+          className="
+            block rounded-2xl
+            focus-visible:ring-2 focus-visible:ring-blue-500
+            focus-visible:ring-offset-2 focus-visible:outline-none
+          "
+        >
+          {cardBody}
+        </Link>
+      )}
+
+      {destination === 'instructor' && (
+        <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <DialogContent
+            className="sm:max-w-md z-40"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Delete course</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete <strong>{course.title}</strong>? This action is permanent and cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busy}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setDeleteOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={busy}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  await handleDelete();
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {busy && <Loader2 className="mr-2 size-4 animate-spin" />}
+                Delete
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }

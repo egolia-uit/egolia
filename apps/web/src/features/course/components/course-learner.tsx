@@ -213,7 +213,7 @@ const learnerSoftPanel =
 const learnerIconBox =
   'flex shrink-0 items-center justify-center rounded-lg bg-blue-50 text-primary ring-1 ring-blue-100';
 const learnerButton =
-  'border border-slate-200/80 bg-white/90 shadow-sm hover:bg-slate-50 hover:shadow-sm focus:shadow-sm active:shadow-sm';
+  'transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0';
 
 type NormalizedQuizAnswer = Pick<
   CourseTestAnswer,

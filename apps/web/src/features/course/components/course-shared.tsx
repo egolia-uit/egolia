@@ -286,6 +286,7 @@ export function useCourseReviews(courseId: string) {
       path: { courseId },
       query: { limit: 6, page: 1 },
       throwOnError: true,
+      responseValidator: async (data: any) => data,
     })
       .then(({ data }) => {
         if (mounted) {
@@ -319,10 +320,12 @@ export function CourseGrid({
   courses,
   destination,
   actionFor,
+  onRefresh,
 }: {
   courses: CourseCourse[];
   destination?: 'public' | 'learner' | 'instructor';
   actionFor?: (course: CourseCourse) => ReactNode;
+  onRefresh?: () => void;
 }) {
   return (
     <div
@@ -338,6 +341,7 @@ export function CourseGrid({
           course={course}
           destination={destination}
           action={actionFor?.(course)}
+          onRefresh={onRefresh}
         />
       ))}
     </div>
@@ -378,6 +382,7 @@ export function ListContent({
         actionFor={actionFor}
         courses={state.data.data}
         destination={destination}
+        onRefresh={reload}
       />
     </div>
   );

@@ -1999,7 +1999,8 @@ export function CourseCurriculumEditor({
       >
         <Card
           className="
-            h-fit border-none bg-nm-bg/95 shadow-nm-flat-sm
+            h-fit border border-slate-200/60 bg-white/95
+            shadow-[0_8px_30px_rgba(15,23,42,0.04)]
             xl:sticky xl:top-24
           "
         >
@@ -2254,7 +2255,8 @@ export function CourseCurriculumEditor({
           {!selectedSection && (
             <Card
               className="
-                border border-slate-200/70 bg-nm-bg/95 shadow-nm-flat-sm
+                border border-slate-200/60 bg-white/95
+                shadow-[0_8px_30px_rgba(15,23,42,0.04)]
               "
             >
               <CardContent className="py-8 text-sm text-slate-500">
@@ -2266,7 +2268,7 @@ export function CourseCurriculumEditor({
           )}
 
           {selectedSection && !selectedLessonKey && (
-            <Card className="border-none bg-nm-bg/95 shadow-nm-flat-sm">
+            <Card className="border border-slate-200/60 bg-white/95 shadow-[0_8px_30px_rgba(15,23,42,0.04)]">
               <CardHeader className="px-5 pt-5 pb-3">
                 <CardTitle className="text-lg text-slate-900">
                   {readOnly ? 'Section details' : 'Editing section'}
@@ -2775,7 +2777,8 @@ export function CourseCurriculumEditor({
           {selectedLessonKey && (
             <Card
               className="
-                border border-slate-200/70 bg-nm-bg/95 shadow-nm-flat-sm
+                border border-slate-200/60 bg-white/95
+                shadow-[0_8px_30px_rgba(15,23,42,0.04)]
               "
             >
               <CardHeader className="pb-4">
@@ -2822,8 +2825,7 @@ export function CourseCurriculumEditor({
                     {lessonEditor.lessonType === 'video' ? (
                       <div
                         className="
-                          space-y-4 rounded-2xl border border-slate-200/70
-                          bg-nm-bg p-4 shadow-nm-inset
+                          space-y-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4
                         "
                       >
                         {lessonEditor.videoUrl ? (
@@ -2867,8 +2869,8 @@ export function CourseCurriculumEditor({
                         {!readOnly && (
                           <div
                             className="
-                              space-y-2 rounded-xl border border-slate-200/70
-                              bg-nm-bg p-3 shadow-nm-inset
+                              space-y-2 rounded-xl border border-slate-100
+                              bg-slate-50/50 p-3
                             "
                           >
                             <Label htmlFor="edit-video-file">
