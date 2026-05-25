@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { Progress as ProgressPrimitive } from "radix-ui"
+import { Progress as ProgressPrimitive } from 'radix-ui';
+import * as React from 'react';
 
-import { cn } from "#/components/lib/shadcn/utils"
+import { cn } from '#/components/lib/shadcn/utils';
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
@@ -12,23 +12,20 @@ const Progress = React.forwardRef<
   <ProgressPrimitive.Root
     ref={ref}
     className={cn(
-      `
-        relative h-4 w-full overflow-hidden rounded-full bg-nm-bg
-        shadow-nm-inset
-      `,
+      'relative h-2 w-full overflow-hidden rounded-full bg-slate-200',
       className
     )}
     {...props}
   >
     <ProgressPrimitive.Indicator
       className="
-        h-full w-full flex-1 rounded-full bg-primary shadow-nm-flat-sm
-        transition-all
+        h-full w-full flex-1 rounded-full bg-blue-600 transition-all
+        duration-500
       "
       style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
     />
   </ProgressPrimitive.Root>
-))
-Progress.displayName = ProgressPrimitive.Root.displayName
+));
+Progress.displayName = ProgressPrimitive.Root.displayName;
 
-export { Progress }
+export { Progress };

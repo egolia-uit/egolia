@@ -127,12 +127,12 @@ function BillingStatCard({
   value: string;
 }) {
   return (
-    <Card className="border-none bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardContent className="flex items-center gap-4 py-4">
         <div
           className="
-            flex size-11 shrink-0 items-center justify-center rounded-2xl
-            bg-nm-bg text-primary shadow-nm-inset
+            flex size-11 shrink-0 items-center justify-center rounded-xl
+            bg-blue-50 text-blue-600
           "
         >
           <Icon className="size-5" />
@@ -227,7 +227,7 @@ function PaymentReturnNotice({
   const Icon = successful ? CheckCircle2 : XCircle;
 
   return (
-    <Card className="border-none bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardContent
         className="
           flex flex-col gap-4 py-4
@@ -237,8 +237,8 @@ function PaymentReturnNotice({
         <div className="flex items-start gap-3">
           <div
             className="
-              flex size-11 shrink-0 items-center justify-center rounded-2xl
-              bg-nm-bg text-primary shadow-nm-inset
+              flex size-11 shrink-0 items-center justify-center rounded-xl
+              bg-slate-100 text-slate-600
             "
           >
             <Icon className="size-5" />
@@ -342,20 +342,20 @@ function LearnerTransactionTable({
 }) {
   if (!transactions.length) {
     return (
-      <Card className="border-none bg-nm-bg shadow-nm-flat">
-        <CardContent
+    <Card>
+      <CardContent
+        className="
+          flex flex-col items-center justify-center gap-3 py-12 text-center
+        "
+      >
+        <div
           className="
-            flex flex-col items-center justify-center gap-3 py-12 text-center
+            flex size-12 items-center justify-center rounded-2xl bg-slate-100
+            text-slate-400
           "
         >
-          <div
-            className="
-              flex size-12 items-center justify-center rounded-2xl bg-nm-bg
-              text-slate-400 shadow-nm-inset
-            "
-          >
-            <Receipt className="size-6" />
-          </div>
+          <Receipt className="size-6" />
+        </div>
           <div>
             <CardTitle className="text-lg">No transactions yet</CardTitle>
             <CardDescription className="mt-1">
@@ -436,7 +436,7 @@ function BillingErrorState({
   onRetry: () => void;
 }) {
   return (
-    <Card className="border-none bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardContent
         className="
           flex flex-col gap-4 py-5
@@ -446,8 +446,8 @@ function BillingErrorState({
         <div className="flex items-start gap-3">
           <div
             className="
-              flex size-11 shrink-0 items-center justify-center rounded-2xl
-              bg-nm-bg text-destructive shadow-nm-inset
+              flex size-11 shrink-0 items-center justify-center rounded-xl
+              bg-red-50 text-red-600
             "
           >
             <AlertCircle className="size-5" />
@@ -517,7 +517,7 @@ function AdminTransactionTable({
   transactions: typeof MOCK_TRANSACTIONS;
 }) {
   return (
-    <Card className="bg-nm-bg">
+    <Card>
       <CardContent className="overflow-x-auto py-4">
         <Table>
           <TableHeader>
@@ -589,7 +589,7 @@ function AdminBillingContent({ viewer }: { viewer: Viewer }) {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-nm-bg">
+        <Card>
           <CardContent className="py-4">
             <div className="text-sm text-slate-500">Processing</div>
             <div className="mt-1 text-2xl font-semibold text-amber-600">

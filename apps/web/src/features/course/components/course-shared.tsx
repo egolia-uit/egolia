@@ -92,12 +92,10 @@ export function MockPanel({
   items: string[];
 }) {
   return (
-    <Card className="bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary" className="bg-amber-100 text-amber-800">
-            Mock
-          </Badge>
+          <Badge variant="warning">Mock</Badge>
           <CardTitle>{title}</CardTitle>
         </div>
         {description && <CardDescription>{description}</CardDescription>}
@@ -112,7 +110,8 @@ export function MockPanel({
           <div
             key={item}
             className="
-              rounded-xl bg-nm-bg p-4 text-sm text-slate-700 shadow-nm-inset
+              rounded-xl border border-slate-200/60 bg-slate-50 p-4 text-sm
+              text-slate-700
             "
           >
             {item}
@@ -138,7 +137,8 @@ export function RoleTabs({
   return (
     <div
       className="
-        flex gap-2 overflow-x-auto rounded-xl bg-nm-bg p-2 shadow-nm-inset
+        flex gap-1 overflow-x-auto rounded-xl border border-slate-200/60
+        bg-slate-100/70 p-1
       "
     >
       {tabs.map((tab) => (
@@ -410,7 +410,7 @@ export function CourseReviewsPanel({
   }
 
   return (
-    <Card className="bg-nm-bg">
+    <Card>
       <CardHeader>
         <CardTitle>Reviews</CardTitle>
         <CardDescription>
@@ -418,14 +418,16 @@ export function CourseReviewsPanel({
           {state.data.pagination?.total ?? reviews.length}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid gap-3">
         {reviews.map((review) => (
           <div
             key={review.id}
-            className="rounded-2xl bg-nm-bg p-4 shadow-nm-inset"
+            className="rounded-xl border border-slate-200/60 bg-slate-50 p-4"
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="font-medium">Rating {review.rating}/5</div>
+              <div className="font-medium text-slate-900">
+                Rating {review.rating}/5
+              </div>
               <div className="text-xs text-slate-500">
                 {formatDateTime(review.createdAt)}
               </div>

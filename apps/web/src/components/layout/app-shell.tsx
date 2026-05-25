@@ -174,10 +174,10 @@ function NavList({
                   className={cn(
                     `
                       flex min-h-10 items-center gap-3 rounded-xl px-3 text-sm
-                      font-medium text-slate-600 transition-all
-                      hover:bg-nm-bg hover:text-primary hover:shadow-nm-flat-sm
+                      font-medium text-slate-600 transition-colors
+                      hover:bg-slate-100 hover:text-slate-900
                     `,
-                    active && `bg-nm-bg text-primary shadow-nm-inset`
+                    active && 'border border-blue-100 bg-blue-50 text-blue-700'
                   )}
                 >
                   <item.icon className="size-4 shrink-0" />
@@ -213,8 +213,13 @@ export function AppShell({
   }, [pathname]);
 
   return (
-    <div className="min-h-dvh bg-nm-bg text-slate-950">
-      <header className="sticky top-0 z-40 bg-nm-bg shadow-nm-flat-sm">
+    <div className="min-h-dvh bg-slate-50 text-slate-950">
+      <header
+        className="
+          sticky top-0 z-40 border-b border-slate-200/70 bg-white/90
+          backdrop-blur-sm
+        "
+      >
         <div
           className="
             mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4
@@ -324,7 +329,12 @@ export function AppShell({
           "
         >
           <div className="sticky top-24 grid gap-4">
-            <div className="rounded-2xl border-none bg-nm-bg p-4 shadow-nm-flat">
+            <div
+              className="
+                rounded-2xl border border-slate-200/80 bg-white/95 p-4
+                shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+              "
+            >
               <NavList
                 currentSearch={currentSearch}
                 groups={groups}
@@ -349,7 +359,12 @@ export function AppShell({
           >
             <div className="min-w-0">
               {eyebrow && (
-                <div className="mb-2 text-sm font-medium text-indigo-600">
+                <div
+                  className="
+                    mb-2 text-xs font-semibold tracking-wide text-blue-600
+                    uppercase
+                  "
+                >
                   {eyebrow}
                 </div>
               )}

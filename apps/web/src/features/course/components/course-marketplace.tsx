@@ -81,7 +81,10 @@ export function MarketplacePage({
         </Button>
       }
     >
-      <Card className="mb-6 bg-nm-bg shadow-nm-flat">
+      <Card className="
+        mb-6 border border-slate-200/80 bg-white/95
+        shadow-[0_12px_36px_rgba(15,23,42,0.05),0_1px_3px_rgba(0,0,0,0.01)]
+      ">
         <CardContent
           className="
             flex flex-col gap-3 py-4
@@ -231,7 +234,7 @@ function PurchaseCourseActions({
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-2">
-          <div className="rounded-2xl bg-nm-bg p-4 shadow-nm-inset">
+          <div className="rounded-xl border border-slate-200/60 bg-slate-50 p-4">
             <div className="text-sm font-semibold text-slate-900">
               {course.title}
             </div>
@@ -245,8 +248,8 @@ function PurchaseCourseActions({
 
           <div
             className="
-              flex items-start gap-3 rounded-2xl bg-nm-bg p-4 text-sm
-              text-slate-600 shadow-nm-inset
+              flex items-start gap-3 rounded-xl border border-blue-100
+              bg-blue-50 p-4 text-sm text-blue-800
             "
           >
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />

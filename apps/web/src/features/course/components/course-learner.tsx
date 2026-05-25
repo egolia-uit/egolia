@@ -283,12 +283,12 @@ function StatCard({
   helper: string;
 }) {
   return (
-    <Card className="bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardContent className="flex items-center gap-4 p-5">
         <div
           className="
-            flex size-12 shrink-0 items-center justify-center rounded-2xl
-            bg-nm-bg text-primary shadow-nm-inset
+            flex size-12 shrink-0 items-center justify-center rounded-xl
+            bg-blue-50 text-blue-600
           "
         >
           <Icon className="size-5" />
@@ -605,7 +605,7 @@ function ContinueLearningCard({ course }: { course?: CourseCourse }) {
   const href = course?.id ? `/learn/courses/${course.id}` : '/courses';
 
   return (
-    <Card className="bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardContent
         className="
           grid gap-5 p-5
@@ -680,7 +680,7 @@ function CertificateList({
   }
 
   return (
-    <Card className="bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardHeader>
         <CardTitle>Certificates</CardTitle>
         <CardDescription>
@@ -692,7 +692,8 @@ function CertificateList({
           <div
             key={certificate.id}
             className="
-              flex flex-col gap-3 rounded-2xl bg-nm-bg p-4 shadow-nm-inset
+              flex flex-col gap-3 rounded-xl border border-slate-200/60
+              bg-slate-50 p-4
               md:flex-row md:items-center md:justify-between
             "
           >

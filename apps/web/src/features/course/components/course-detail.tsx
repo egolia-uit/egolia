@@ -52,9 +52,12 @@ export function CourseHero({
         lg:grid-cols-[1fr_340px]
       "
     >
-      <Card className="bg-nm-bg">
+      {/* Main content card */}
+      <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">{course.title}</CardTitle>
+          <CardTitle className="text-2xl font-semibold text-slate-950">
+            {course.title}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {course.introductionVideoUrl && (
@@ -70,22 +73,29 @@ export function CourseHero({
         </CardContent>
       </Card>
 
-      <Card className="bg-nm-bg">
+      {/* Study plan / snapshot card */}
+      <Card>
         <CardHeader>
-          <CardTitle>Course snapshot</CardTitle>
+          <CardTitle className="text-base font-semibold text-slate-900">
+            Course snapshot
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <div className="text-xs tracking-wide text-slate-500 uppercase">
+            <div
+              className="
+                text-xs font-medium tracking-wide text-slate-400 uppercase
+              "
+            >
               Price
             </div>
             <div className="mt-1 text-2xl font-semibold text-slate-900">
               {formatVnd(course.price)}
             </div>
           </div>
-          <div className="grid gap-3 text-sm">
+          <div className="grid gap-2 text-sm">
             <div className="flex items-center gap-2 text-slate-600">
-              <BookOpen className="size-4" />
+              <BookOpen className="size-4 shrink-0 text-blue-500" />
               Instructor: {instructorDisplayName(course)}
             </div>
           </div>
@@ -105,7 +115,7 @@ export function CourseStructure({
 }) {
   if (!course.sections.length) {
     return (
-      <Card className="bg-nm-bg">
+      <Card>
         <CardContent className="py-8 text-sm text-slate-600">
           There are no sections/lessons for this course.
         </CardContent>
@@ -116,13 +126,13 @@ export function CourseStructure({
   return (
     <div className="grid gap-4">
       {course.sections.map((section, sectionIndex) => (
-        <Card key={section.id} className="bg-nm-bg">
+        <Card key={section.id}>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <span
                 className="
-                  flex size-7 items-center justify-center rounded-xl bg-nm-bg
-                  text-xs font-bold text-primary shadow-nm-inset
+                  flex size-7 items-center justify-center rounded-lg border
+                  border-blue-100 bg-blue-50 text-xs font-bold text-blue-700
                 "
               >
                 {sectionIndex + 1}
@@ -131,31 +141,33 @@ export function CourseStructure({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3">
+            <div className="grid gap-2">
               {section.lessons.length ? (
                 section.lessons.map((lesson, lessonIndex) => {
                   const content = (
                     <div
                       className="
-                        flex items-center justify-between gap-3 rounded-2xl
-                        bg-nm-bg px-4 py-3 text-sm shadow-nm-inset
-                        transition-all
+                        flex items-center justify-between gap-3 rounded-xl
+                        border border-slate-200/70 bg-white px-4 py-3 text-sm
+                        transition-colors
+                        hover:border-blue-200 hover:bg-blue-50/30
                       "
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <div
                           className="
-                            flex size-9 shrink-0 items-center justify-center
-                            rounded-xl bg-nm-bg text-primary shadow-nm-flat-sm
+                            flex size-8 shrink-0 items-center justify-center
+                            rounded-lg border border-blue-100 bg-blue-50
+                            text-blue-600
                           "
                         >
                           <PlayCircle className="size-4" />
                         </div>
                         <div className="min-w-0">
-                          <div className="truncate font-bold text-slate-800">
+                          <div className="truncate font-semibold text-slate-800">
                             {lesson.title}
                           </div>
-                          <div className="text-xs font-medium text-slate-500">
+                          <div className="text-xs text-slate-500">
                             Lesson {lessonIndex + 1}
                           </div>
                         </div>
@@ -171,6 +183,11 @@ export function CourseStructure({
                     <Link
                       key={lesson.id}
                       href={`${baseHref}/sections/${section.id}/lessons/${lesson.id}`}
+                      className="
+                        block rounded-xl
+                        focus-visible:ring-2 focus-visible:ring-blue-500
+                        focus-visible:outline-none
+                      "
                     >
                       {content}
                     </Link>
@@ -179,8 +196,8 @@ export function CourseStructure({
               ) : (
                 <div
                   className="
-                    rounded-xl bg-nm-bg p-4 text-sm text-slate-500
-                    shadow-nm-inset
+                    rounded-xl border border-slate-200/60 bg-slate-50 p-4
+                    text-sm text-slate-500
                   "
                 >
                   This section has no lessons.
@@ -202,10 +219,10 @@ export function LessonSummary({
   duration?: bigint | number;
 }) {
   return (
-    <Card className="bg-nm-bg">
+    <Card>
       <CardContent className="flex items-center justify-between gap-3 py-4">
         <div>
-          <div className="font-medium">{title}</div>
+          <div className="font-semibold text-slate-900">{title}</div>
           <div className="mt-1 flex items-center gap-1.5 text-sm text-slate-500">
             <Clock className="size-4" />
             {formatDuration(duration)}

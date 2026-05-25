@@ -1,6 +1,14 @@
 'use client';
 
-import { Calendar, ChevronRight, Edit, Eye, Plus, Trash2, User } from 'lucide-react';
+import {
+  Calendar,
+  ChevronRight,
+  Edit,
+  Eye,
+  Plus,
+  Trash2,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { AppShell } from '#/components/layout/app-shell';
@@ -21,7 +29,8 @@ const MOCK_POSTS = [
   {
     slug: 'huong-dan-bat-dau-voi-egolia',
     title: 'Getting Started with Egolia',
-    excerpt: 'Learn how to register, choose the right course, and start your learning journey on Egolia.',
+    excerpt:
+      'Learn how to register, choose the right course, and start your learning journey on Egolia.',
     author: 'Admin',
     date: '2026-05-10',
     category: 'Guide',
@@ -30,7 +39,8 @@ const MOCK_POSTS = [
   {
     slug: 'top-5-khoa-hoc-duoc-yeu-thich-nhat',
     title: 'Top 5 Most Popular Courses in May 2026',
-    excerpt: 'Discover the hottest courses on Egolia with thousands of enrollments and positive reviews.',
+    excerpt:
+      'Discover the hottest courses on Egolia with thousands of enrollments and positive reviews.',
     author: 'Editor',
     date: '2026-05-08',
     category: 'News',
@@ -39,7 +49,8 @@ const MOCK_POSTS = [
   {
     slug: 'lam-the-nao-de-hoc-online-hieu-qua',
     title: 'How to Learn Online Effectively?',
-    excerpt: 'Share tips and methods to help you optimize your online learning time and achieve the best results.',
+    excerpt:
+      'Share tips and methods to help you optimize your online learning time and achieve the best results.',
     author: 'Admin',
     date: '2026-05-05',
     category: 'Experience',
@@ -48,7 +59,8 @@ const MOCK_POSTS = [
   {
     slug: 'cap-nhat-tinh-nang-moi-thang-5',
     title: 'New Feature Updates in May 2026',
-    excerpt: 'Egolia has launched many new features: bookmark system, course reviews, and improved UI.',
+    excerpt:
+      'Egolia has launched many new features: bookmark system, course reviews, and improved UI.',
     author: 'Dev Team',
     date: '2026-05-01',
     category: 'Update',
@@ -56,15 +68,17 @@ const MOCK_POSTS = [
   },
 ];
 
-function BlogCard({ post }: { post: typeof MOCK_POSTS[0] }) {
+function BlogCard({ post }: { post: (typeof MOCK_POSTS)[0] }) {
   return (
-    <Card className="
-      bg-nm-bg transition-shadow
-      hover:shadow-md
-    ">
+    <Card
+      className="
+        transition-shadow
+        hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)]
+      "
+    >
       <CardHeader>
         <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-indigo-50 text-indigo-700">{post.category}</Badge>
+          <Badge variant="inset">{post.category}</Badge>
           <span className="text-xs text-slate-500">{post.readTime}</span>
         </div>
         <CardTitle className="line-clamp-2 text-lg">{post.title}</CardTitle>
@@ -72,12 +86,18 @@ function BlogCard({ post }: { post: typeof MOCK_POSTS[0] }) {
       <CardContent>
         <p className="line-clamp-3 text-sm/6 text-slate-600">{post.excerpt}</p>
         <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
-          <span className="flex items-center gap-1"><User className="size-3" />{post.author}</span>
-          <span className="flex items-center gap-1"><Calendar className="size-3" />{post.date}</span>
+          <span className="flex items-center gap-1">
+            <User className="size-3" />
+            {post.author}
+          </span>
+          <span className="flex items-center gap-1">
+            <Calendar className="size-3" />
+            {post.date}
+          </span>
         </div>
       </CardContent>
       <CardFooter>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="ghost" size="sm">
           <Link href={`/blog/${post.slug}`}>
             Read more
             <ChevronRight className="size-4" />
@@ -92,15 +112,13 @@ export function BlogListPage() {
   const { viewer } = useViewer();
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Blog"
-      title="News & Guide"
-    >
-      <div className="
-        grid gap-4
-        md:grid-cols-2
-      ">
+    <AppShell viewer={viewer} eyebrow="Blog" title="News & Guide">
+      <div
+        className="
+          grid gap-4
+          md:grid-cols-2
+        "
+      >
         {MOCK_POSTS.map((post) => (
           <BlogCard key={post.slug} post={post} />
         ))}
@@ -114,28 +132,44 @@ export function BlogDetailPage({ slug }: { slug: string }) {
   const post = MOCK_POSTS.find((p) => p.slug === slug) ?? MOCK_POSTS[0];
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Blog"
-      title={post.title}
-    >
-      <Card className="bg-nm-bg">
+    <AppShell viewer={viewer} eyebrow="Blog" title={post.title}>
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-3 text-sm text-slate-500">
-            <Badge variant="secondary" className="bg-indigo-50 text-indigo-700">{post.category}</Badge>
-            <span className="flex items-center gap-1"><User className="size-3.5" />{post.author}</span>
-            <span className="flex items-center gap-1"><Calendar className="
-              size-3.5
-            " />{post.date}</span>
+            <Badge variant="inset">{post.category}</Badge>
+            <span className="flex items-center gap-1">
+              <User className="size-3.5" />
+              {post.author}
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar
+                className="size-3.5"
+              />
+              {post.date}
+            </span>
             <span>{post.readTime}</span>
           </div>
         </CardHeader>
         <CardContent className="max-w-none">
-          <p className="text-lg leading-relaxed text-slate-700">{post.excerpt}</p>
+          <p className="text-lg leading-relaxed text-slate-700">
+            {post.excerpt}
+          </p>
           <div className="mt-6 space-y-4 text-sm/7 text-slate-600">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>The detailed content of the article will be updated when the blog service is completed.</p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+            </p>
+            <p>
+              Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt mollit
+              anim id est laborum.
+            </p>
+            <p>
+              The detailed content of the article will be updated when the blog
+              service is completed.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -153,13 +187,17 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
       eyebrow="Administration"
       title="Manage Articles"
       actions={
-        <Button onClick={() => alert('Article creation feature is under development.')}>
+        <Button
+          onClick={() =>
+            alert('Article creation feature is under development.')
+          }
+        >
           <Plus className="size-4" />
           Create Article
         </Button>
       }
     >
-      <Card className="bg-nm-bg">
+      <Card>
         <CardContent className="py-4">
           <div className="grid gap-3">
             {MOCK_POSTS.map((post) => (
@@ -172,12 +210,16 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
               >
                 <div className="min-w-0">
                   <div className="font-medium">{post.title}</div>
-                  <div className="
-                    mt-1 flex items-center gap-3 text-xs text-slate-500
-                  ">
+                  <div
+                    className="
+                      mt-1 flex items-center gap-3 text-xs text-slate-500
+                    "
+                  >
                     <span>{post.author}</span>
                     <span>{post.date}</span>
-                    <Badge variant="secondary" className="text-xs">{post.category}</Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {post.category}
+                    </Badge>
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-2">
@@ -187,11 +229,19 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
                       View
                     </Link>
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => alert('Action successful!')}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => alert('Action successful!')}
+                  >
                     <Edit className="size-4" />
                     Edit
                   </Button>
-                  <Button variant="destructive" size="sm" onClick={() => alert('Action successful!')}>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => alert('Action successful!')}
+                  >
                     <Trash2 className="size-4" />
                     Delete
                   </Button>

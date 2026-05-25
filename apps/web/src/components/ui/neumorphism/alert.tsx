@@ -1,7 +1,7 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import { type VariantProps, cva } from 'class-variance-authority';
+import * as React from 'react';
 
-import { cn } from "#/components/lib/shadcn/utils"
+import { cn } from '#/components/lib/shadcn/utils';
 
 const alertVariants = cva(
   `
@@ -13,20 +13,19 @@ const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-foreground",
-        destructive:
-          `
-            border-none text-destructive shadow-nm-flat
-            [&>svg]:text-destructive
-          `,
-        inset: "border-none shadow-nm-inset",
+        default: 'text-foreground',
+        destructive: `
+          border-none text-destructive shadow-nm-flat
+          [&>svg]:text-destructive
+        `,
+        inset: 'border-none shadow-nm-inset',
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: 'default',
     },
   }
-)
+);
 
 const Alert = React.forwardRef<
   HTMLDivElement,
@@ -38,8 +37,8 @@ const Alert = React.forwardRef<
     className={cn(alertVariants({ variant }), className)}
     {...props}
   />
-))
-Alert.displayName = "Alert"
+));
+Alert.displayName = 'Alert';
 
 const AlertTitle = React.forwardRef<
   HTMLParagraphElement,
@@ -47,11 +46,11 @@ const AlertTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h5
     ref={ref}
-    className={cn("mb-1 leading-none font-medium tracking-tight", className)}
+    className={cn('mb-1 leading-none font-medium tracking-tight', className)}
     {...props}
   />
-))
-AlertTitle.displayName = "AlertTitle"
+));
+AlertTitle.displayName = 'AlertTitle';
 
 const AlertDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -59,13 +58,16 @@ const AlertDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(`
-      text-sm
-      [&_p]:leading-relaxed
-    `, className)}
+    className={cn(
+      `
+        text-sm
+        [&_p]:leading-relaxed
+      `,
+      className
+    )}
     {...props}
   />
-))
-AlertDescription.displayName = "AlertDescription"
+));
+AlertDescription.displayName = 'AlertDescription';
 
-export { Alert, AlertTitle, AlertDescription }
+export { Alert, AlertTitle, AlertDescription };

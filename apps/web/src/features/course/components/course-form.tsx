@@ -240,11 +240,11 @@ export function CourseForm({
           <textarea
             id="course-overview"
             className="
-              min-h-24 w-full rounded-xl border-none bg-nm-bg px-4 py-2 text-sm
-              shadow-nm-inset transition-colors outline-none
-              placeholder:text-muted-foreground
-              focus-visible:ring-2 focus-visible:ring-ring
-              focus-visible:ring-offset-2
+              min-h-24 w-full rounded-xl border border-slate-200 bg-white px-4
+              py-2 text-sm text-foreground transition-colors outline-none
+              placeholder:text-slate-400
+              focus-visible:border-blue-400 focus-visible:ring-2
+              focus-visible:ring-blue-500 focus-visible:ring-offset-2
             "
             value={values.overview}
             onChange={(event) =>
@@ -259,7 +259,9 @@ export function CourseForm({
 
         <Field>
           {onUploadIntroductionVideo && (
-            <div className="grid gap-2 rounded-xl bg-nm-bg p-4 shadow-nm-inset">
+            <div className="
+              grid gap-2 rounded-xl border border-slate-200/60 bg-slate-50 p-4
+            ">
               <FieldLabel htmlFor="course-video-file">
                 Introduction video
               </FieldLabel>
@@ -276,16 +278,13 @@ export function CourseForm({
               />
               {uploadProgress !== null && (
                 <div className="mt-2 grid gap-2">
-                  <div
-                    className="
-                      h-2.5 overflow-hidden rounded-full bg-nm-bg
-                      shadow-nm-inset
-                    "
-                  >
+                  <div className="
+                    h-2.5 overflow-hidden rounded-full bg-slate-200
+                  ">
                     <div
                       className="
-                        h-full rounded-full bg-primary shadow-nm-flat-sm
-                        transition-all duration-300
+                        h-full rounded-full bg-blue-600 transition-all
+                        duration-700 ease-out
                       "
                       style={{ width: `${uploadProgress}%` }}
                     />
