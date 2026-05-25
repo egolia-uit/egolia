@@ -8,6 +8,8 @@ import { authClient } from '#/lib/auth';
 import { clearAuthentikAccessTokenCache } from '#/lib/auth/access-token';
 import { getPublicRuntimeEnv } from '#/lib/env';
 
+const AUTHENTIK_LOGOUT_POPUP_TIMEOUT_MS = 4_000;
+
 function getAuthentikEnrollmentUrl(nextUrl: string) {
   const env = getPublicRuntimeEnv();
   const url = new URL(env.NEXT_PUBLIC_AUTHENTIK_ENROLLMENT_URL);
@@ -22,6 +24,48 @@ function getAuthentikLogoutUrl(redirectUri: string) {
 
   url.searchParams.set('next', redirectUri);
   return url.toString();
+}
+
+function getWebUrl(path: string) {
+  const env = getPublicRuntimeEnv();
+  return new URL(path, env.NEXT_PUBLIC_BETTER_AUTH_URL).toString();
+}
+
+function logoutAuthentikInPopup() {
+  return new Promise<void>((resolve) => {
+    const popup = openCenteredPopup(
+      getAuthentikLogoutUrl('/'),
+      'egolia-auth-logout'
+    );
+
+    if (!popup) {
+      window.location.href = getAuthentikLogoutUrl(getWebUrl('/login'));
+      return;
+    }
+
+    let done = false;
+
+    const cleanup = () => {
+      if (done) {
+        return;
+      }
+      done = true;
+      popup.close();
+      resolve();
+    };
+
+    const poll = window.setInterval(() => {
+      if (popup.closed) {
+        window.clearInterval(poll);
+        cleanup();
+      }
+    }, 250);
+
+    window.setTimeout(() => {
+      window.clearInterval(poll);
+      cleanup();
+    }, AUTHENTIK_LOGOUT_POPUP_TIMEOUT_MS);
+  });
 }
 
 export function SignInButton() {
@@ -137,6 +181,8 @@ export function SignUpButton() {
 
 export function SignOutButton() {
   const handleSignOut = async () => {
+    const loginUrl = getWebUrl('/login');
+
     clearAuthentikAccessTokenCache();
     await authClient.signOut({
       fetchOptions: {
@@ -144,9 +190,8 @@ export function SignOutButton() {
       },
     });
 
-    window.location.href = getAuthentikLogoutUrl(
-      `${window.location.origin}/login`
-    );
+    await logoutAuthentikInPopup();
+    window.location.href = loginUrl;
   };
 
   return (
