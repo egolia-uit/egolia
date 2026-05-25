@@ -2,10 +2,12 @@
 
 import {
   ArrowLeft,
+  Award,
   Bookmark,
   CheckCircle2,
   ClipboardList,
   PlayCircle,
+  RefreshCw,
   Save,
   Search,
   Star,
@@ -22,6 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from '#/components/ui/neumorphism/card';
+import { Input } from '#/components/ui/neumorphism/input';
 import {
   Dialog,
   DialogContent,
@@ -30,31 +33,213 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '#/components/ui/shadcn/dialog';
-import { Input } from '#/components/ui/neumorphism/input';
 import { apiClient } from '#/lib/api';
 import {
   bookmarkCourse,
   finishCourse,
+  getCourseProgress,
   getLessonDetail,
   getMyBookmarkedCourses,
+  getMyCertificates,
   getMyEnrolledCourses,
+  markLessonAsCompleted,
   reviewCourse,
+  saveVideoLessonProgress,
   unbookmarkCourse,
 } from '#/lib/api/course';
-import type { CourseLessonDetail } from '#/lib/api/course';
+import type {
+  CourseCertificate,
+  CourseCourseProgress,
+  CourseLessonDetail,
+} from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
+import { formatDateTime } from '#/lib/api/format';
 import type { Viewer } from '#/lib/auth/roles';
 
 import { CourseHero, CourseStructure } from './course-detail';
-import { CourseVideoPlayer } from './course-video-player';
-import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
 import {
-  type ResourceState,
   ListContent,
+  type ResourceState,
   normalizeTab,
   useCourseDetail,
   useCourseList,
 } from './course-shared';
+import { CourseGridSkeleton, ErrorState, InlineNotice } from './course-states';
+import { CourseVideoPlayer } from './course-video-player';
+
+type CertificateListResponse = {
+  data: CourseCertificate[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+};
+
+type TestAnswerView = {
+  id?: string;
+  content?: string;
+  isCorrect?: boolean;
+};
+
+type TestQuestionView = {
+  id?: string;
+  question?: string;
+  answers?: TestAnswerView[];
+};
+
+function parseTestQuestions(raw: unknown): TestQuestionView[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+
+  return raw
+    .map((item) =>
+      typeof item === 'object' && item !== null
+        ? (item as TestQuestionView)
+        : null
+    )
+    .filter((item): item is TestQuestionView => Boolean(item));
+}
+
+function ProgressBar({ value }: { value: number }) {
+  const normalized = Math.max(0, Math.min(100, Math.round(value)));
+
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="font-medium text-slate-600">Progress</span>
+        <span className="font-semibold text-primary">{normalized}%</span>
+      </div>
+      <div
+        className="h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset"
+      >
+        <div
+          className="h-full rounded-full bg-primary transition-all duration-500"
+          style={{ width: `${normalized}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function CourseProgressPanel({
+  progress,
+  reload,
+}: {
+  progress: ResourceState<CourseCourseProgress>;
+  reload: () => void;
+}) {
+  if (progress.status === 'loading') {
+    return <CourseGridSkeleton />;
+  }
+
+  if (progress.status === 'error') {
+    return <ErrorState error={progress.error} onRetry={reload} />;
+  }
+
+  return (
+    <Card className="bg-nm-bg">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <CheckCircle2 className="size-5 text-primary" />
+          Learning Progress
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <ProgressBar value={progress.data.progressPercent} />
+        <div
+          className="
+            grid gap-3 rounded-xl bg-nm-bg p-4 text-sm shadow-nm-inset
+            md:grid-cols-3
+          "
+        >
+          <div>
+            <div className="text-xs text-slate-500 uppercase">Lessons</div>
+            <div className="mt-1 font-semibold text-slate-900">
+              {progress.data.completedLessons}/{progress.data.totalLessons}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-slate-500 uppercase">State</div>
+            <div className="mt-1 font-semibold text-slate-900">
+              {progress.data.isCompleted ? 'Completed' : 'In progress'}
+            </div>
+          </div>
+          <div>
+            <Button type="button" variant="outline" size="sm" onClick={reload}>
+              <RefreshCw className="mr-2 size-4" />
+              Refresh
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function CertificatesPanel({
+  state,
+  reload,
+}: {
+  state: ResourceState<CertificateListResponse>;
+  reload: () => void;
+}) {
+  if (state.status === 'loading') {
+    return <CourseGridSkeleton />;
+  }
+
+  if (state.status === 'error') {
+    return <ErrorState error={state.error} onRetry={reload} />;
+  }
+
+  if (!state.data.data.length) {
+    return (
+      <Card className="bg-nm-bg">
+        <CardContent className="py-8 text-sm text-slate-600">
+          You do not have any certificates yet.
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div
+      className="
+        grid gap-4
+        md:grid-cols-2
+      "
+    >
+      {state.data.data.map((certificate) => (
+        <Card key={certificate.id} className="bg-nm-bg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Award className="size-5 text-primary" />
+              Certificate
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-3 text-sm">
+            <div>
+              <div className="text-xs text-slate-500 uppercase">Course</div>
+              <div className="mt-1 font-medium break-all text-slate-900">
+                {certificate.courseId}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-slate-500 uppercase">Issued</div>
+              <div className="mt-1 font-medium text-slate-900">
+                {formatDateTime(certificate.createdAt)}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
 
 function LearnerHomeContent({
   initialTab,
@@ -64,9 +249,9 @@ function LearnerHomeContent({
   viewer: Viewer;
 }) {
   const activeTab = normalizeTab(initialTab, [
-    'home',
     'enrolled',
     'bookmarked',
+    'certificates',
   ]);
   const enrolled = useCourseList(
     () =>
@@ -86,6 +271,39 @@ function LearnerHomeContent({
       }).then(({ data }) => data),
     []
   );
+  const [certificates, setCertificates] = useState<
+    ResourceState<CertificateListResponse>
+  >({ status: 'loading' });
+  const [certificateReloadKey, setCertificateReloadKey] = useState(0);
+
+  const reloadCertificates = useCallback(
+    () => setCertificateReloadKey((key) => key + 1),
+    []
+  );
+
+  useEffect(() => {
+    let mounted = true;
+
+    getMyCertificates({
+      client: apiClient,
+      query: { limit: 12, page: 1 },
+      throwOnError: true,
+    })
+      .then(({ data }) => {
+        if (mounted) {
+          setCertificates({ status: 'ready', data });
+        }
+      })
+      .catch((error) => {
+        if (mounted) {
+          setCertificates({ status: 'error', error: normalizeApiError(error) });
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [certificateReloadKey]);
 
   return (
     <AppShell
@@ -101,7 +319,7 @@ function LearnerHomeContent({
         </Button>
       }
     >
-      {(activeTab === 'home' || activeTab === 'enrolled') && (
+      {activeTab === 'enrolled' && (
         <section className="grid gap-6">
           <div className="flex flex-col gap-3">
             <h2 className="text-lg font-semibold">In Progress</h2>
@@ -113,18 +331,6 @@ function LearnerHomeContent({
               emptyDescription="Go to explore to see available courses."
             />
           </div>
-          {activeTab === 'home' && (
-            <div className="flex flex-col gap-3">
-              <h2 className="text-lg font-semibold">Saved</h2>
-              <ListContent
-                state={bookmarked.state}
-                reload={bookmarked.reload}
-                destination="learner"
-                emptyTitle="No bookmarks yet"
-                emptyDescription="Bookmarks help you return to your courses faster."
-              />
-            </div>
-          )}
         </section>
       )}
 
@@ -140,12 +346,19 @@ function LearnerHomeContent({
           />
         </section>
       )}
+
+      {activeTab === 'certificates' && (
+        <section className="grid gap-3">
+          <h2 className="text-lg font-semibold">Certificates</h2>
+          <CertificatesPanel state={certificates} reload={reloadCertificates} />
+        </section>
+      )}
     </AppShell>
   );
 }
 
 export function LearnerHomePage({
-  initialTab = 'home',
+  initialTab = 'enrolled',
 }: {
   initialTab?: string;
 }) {
@@ -166,6 +379,10 @@ function LearnerCourseContent({
   courseId: string;
 }) {
   const { state, reload } = useCourseDetail(courseId);
+  const [progress, setProgress] = useState<ResourceState<CourseCourseProgress>>(
+    { status: 'loading' }
+  );
+  const [progressReloadKey, setProgressReloadKey] = useState(0);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
@@ -196,9 +413,42 @@ function LearnerCourseContent({
     refreshBookmarks();
   }, [refreshBookmarks]);
 
+  const reloadProgress = useCallback(
+    () => setProgressReloadKey((key) => key + 1),
+    []
+  );
+
+  useEffect(() => {
+    let mounted = true;
+
+    getCourseProgress({
+      client: apiClient,
+      path: { courseId },
+      throwOnError: true,
+    })
+      .then(({ data }) => {
+        if (mounted) {
+          setProgress({ status: 'ready', data: data.data });
+        }
+      })
+      .catch((error) => {
+        if (mounted) {
+          setProgress({ status: 'error', error: normalizeApiError(error) });
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [courseId, progressReloadKey]);
+
   const bookmarked = bookmarkedIds.has(courseId);
 
-  async function runAction(name: string, action: () => Promise<unknown>, success: string) {
+  async function runAction(
+    name: string,
+    action: () => Promise<unknown>,
+    success: string
+  ) {
     setBusyAction(name);
     setActionError(null);
     setActionMessage(null);
@@ -206,6 +456,7 @@ function LearnerCourseContent({
       await action();
       setActionMessage(success);
       refreshBookmarks();
+      reloadProgress();
       reload();
       return true;
     } catch (error) {
@@ -217,11 +468,7 @@ function LearnerCourseContent({
   }
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Chi tiết"
-      title="Course Content"
-    >
+    <AppShell viewer={viewer} eyebrow="Chi tiết" title="Course Content">
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
@@ -271,7 +518,9 @@ function LearnerCourseContent({
                       }}
                     >
                       <div className="grid gap-2">
-                        <label className="text-sm font-medium">Rating (1-5)</label>
+                        <label className="text-sm font-medium">
+                          Rating (1-5)
+                        </label>
                         <Input
                           min={1}
                           max={5}
@@ -281,7 +530,9 @@ function LearnerCourseContent({
                         />
                       </div>
                       <div className="grid gap-2">
-                        <label className="text-sm font-medium">Your comment</label>
+                        <label className="text-sm font-medium">
+                          Your comment
+                        </label>
                         <textarea
                           className="
                             min-h-24 w-full rounded-xl border-none bg-nm-bg px-4
@@ -327,7 +578,9 @@ function LearnerCourseContent({
                               path: { courseId },
                               throwOnError: true,
                             }),
-                      bookmarked ? 'Course removed from bookmarks.' : 'Course saved to bookmarks.'
+                      bookmarked
+                        ? 'Course removed from bookmarks.'
+                        : 'Course saved to bookmarks.'
                     )
                   }
                 >
@@ -365,6 +618,7 @@ function LearnerCourseContent({
           {actionError && <ErrorState error={actionError} />}
 
           <section className="grid gap-6">
+            <CourseProgressPanel progress={progress} reload={reloadProgress} />
             <div className="grid gap-3">
               <h2 className="text-lg font-semibold">Course Content</h2>
               <CourseStructure
@@ -401,6 +655,10 @@ function LearnerLessonContent({
   const [state, setState] = useState<ResourceState<CourseLessonDetail>>({
     status: 'loading',
   });
+  const [watchedSeconds, setWatchedSeconds] = useState(0);
+  const [actionError, setActionError] = useState<ApiProblem | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [busyAction, setBusyAction] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -426,6 +684,24 @@ function LearnerLessonContent({
     };
   }, [courseId, lessonId, sectionId]);
 
+  async function runLessonAction(
+    name: string,
+    action: () => Promise<unknown>,
+    success: string
+  ) {
+    setBusyAction(name);
+    setActionError(null);
+    setActionMessage(null);
+    try {
+      await action();
+      setActionMessage(success);
+    } catch (error) {
+      setActionError(normalizeApiError(error));
+    } finally {
+      setBusyAction(null);
+    }
+  }
+
   return (
     <AppShell viewer={viewer} eyebrow="Lesson" title="Lesson Content">
       <div className="grid gap-4">
@@ -440,6 +716,10 @@ function LearnerLessonContent({
 
         {state.status === 'loading' && <CourseGridSkeleton />}
         {state.status === 'error' && <ErrorState error={state.error} />}
+        {actionMessage && (
+          <InlineNotice title="Success" description={actionMessage} />
+        )}
+        {actionError && <ErrorState error={actionError} />}
         {state.status === 'ready' && (
           <Card className="bg-nm-bg">
             <CardHeader>
@@ -452,12 +732,132 @@ function LearnerLessonContent({
                 {state.data.title}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="grid gap-4">
               {state.data.lessonType === 'video' && state.data.videoUrl ? (
-                <CourseVideoPlayer
-                  src={state.data.videoUrl}
-                  title={state.data.title}
-                />
+                <>
+                  <CourseVideoPlayer
+                    src={state.data.videoUrl}
+                    title={state.data.title}
+                    onEnded={() =>
+                      runLessonAction(
+                        'complete',
+                        () =>
+                          markLessonAsCompleted({
+                            client: apiClient,
+                            path: { courseId, lessonId, sectionId },
+                            throwOnError: true,
+                          }),
+                        'Lesson marked as completed.'
+                      )
+                    }
+                    onTimeUpdate={(currentTime) =>
+                      setWatchedSeconds(Math.max(0, Math.floor(currentTime)))
+                    }
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={busyAction === 'save-progress'}
+                      onClick={() =>
+                        runLessonAction(
+                          'save-progress',
+                          () =>
+                            saveVideoLessonProgress({
+                              body: {
+                                isCompleted: false,
+                                lastViewedAt: new Date(),
+                                lessonId,
+                                watchedSeconds,
+                              },
+                              client: apiClient,
+                              path: { courseId, lessonId, sectionId },
+                              throwOnError: true,
+                            }),
+                          'Video progress saved.'
+                        )
+                      }
+                    >
+                      <Save className="mr-2 size-4" />
+                      Save progress
+                    </Button>
+                    <Button
+                      type="button"
+                      disabled={busyAction === 'complete'}
+                      onClick={() =>
+                        runLessonAction(
+                          'complete',
+                          () =>
+                            markLessonAsCompleted({
+                              client: apiClient,
+                              path: { courseId, lessonId, sectionId },
+                              throwOnError: true,
+                            }),
+                          'Lesson marked as completed.'
+                        )
+                      }
+                    >
+                      <CheckCircle2 className="mr-2 size-4" />
+                      Mark completed
+                    </Button>
+                  </div>
+                </>
+              ) : state.data.lessonType === 'test' ? (
+                <div className="grid gap-4">
+                  {parseTestQuestions(state.data.questions).map(
+                    (question, questionIndex) => (
+                      <div
+                        key={question.id ?? questionIndex}
+                        className="rounded-xl bg-nm-bg p-4 shadow-nm-inset"
+                      >
+                        <div className="font-medium text-slate-900">
+                          {questionIndex + 1}.{' '}
+                          {question.question || 'Untitled question'}
+                        </div>
+                        <div className="mt-3 grid gap-2">
+                          {(question.answers ?? []).map(
+                            (answer, answerIndex) => (
+                              <label
+                                key={answer.id ?? answerIndex}
+                                className="
+                                  flex items-center gap-2 rounded-lg bg-white/45
+                                  px-3 py-2 text-sm text-slate-700
+                                "
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={answer.isCorrect === true}
+                                  readOnly
+                                  className="size-4"
+                                />
+                                {answer.content || `Answer ${answerIndex + 1}`}
+                              </label>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    )
+                  )}
+                  <Button
+                    type="button"
+                    disabled={busyAction === 'complete'}
+                    onClick={() =>
+                      runLessonAction(
+                        'complete',
+                        () =>
+                          markLessonAsCompleted({
+                            client: apiClient,
+                            path: { courseId, lessonId, sectionId },
+                            throwOnError: true,
+                          }),
+                        'Lesson marked as completed.'
+                      )
+                    }
+                  >
+                    <CheckCircle2 className="mr-2 size-4" />
+                    Mark completed
+                  </Button>
+                </div>
               ) : (
                 <div
                   className="

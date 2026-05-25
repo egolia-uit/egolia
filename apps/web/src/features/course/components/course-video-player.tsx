@@ -9,6 +9,8 @@ type CourseVideoPlayerProps = {
   title?: string;
   poster?: string;
   className?: string;
+  onEnded?: () => void;
+  onTimeUpdate?: (currentTime: number) => void;
 };
 
 function mediaTypeFromUrl(src: string) {
@@ -31,6 +33,8 @@ function mediaTypeFromUrl(src: string) {
 
 export function CourseVideoPlayer({
   className,
+  onEnded,
+  onTimeUpdate,
   poster,
   src,
   title,
@@ -136,6 +140,10 @@ export function CourseVideoPlayer({
         ref={videoRef}
         aria-label={title}
         controls
+        onEnded={onEnded}
+        onTimeUpdate={(event) =>
+          onTimeUpdate?.(event.currentTarget.currentTime)
+        }
         playsInline
         crossOrigin="anonymous"
         preload="metadata"
