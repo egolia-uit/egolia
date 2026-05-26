@@ -1,15 +1,17 @@
 'use client';
 
-import { BookOpen } from 'lucide-react';
+import { BookOpen, UploadCloud } from 'lucide-react';
 import Link from 'next/link';
 import {
   type DependencyList,
   type ReactNode,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
+import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
 import { Button } from '#/components/ui/neumorphism/button';
 import {
@@ -34,6 +36,99 @@ import { putFileToSignedUrl } from '#/lib/api/upload';
 
 import { CourseCard } from './course-card';
 import { CourseGridSkeleton, EmptyState, ErrorState } from './course-states';
+
+export function VideoDropZone({
+  id,
+  onChange,
+  onInvalidFile,
+}: {
+  id: string;
+  onChange: (file: File | null) => void;
+  onInvalidFile?: () => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+  const handleFile = useCallback(
+    (file: File | null) => {
+      if (file && file.type.startsWith('video/')) {
+        onChange(file);
+      } else if (file) {
+        onInvalidFile?.();
+        onChange(null);
+      }
+    },
+    [onChange, onInvalidFile]
+  );
+
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(true);
+  }, []);
+
+  const onDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+  }, []);
+
+  const onDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDraggingOver(false);
+      const file = e.dataTransfer.files?.[0] ?? null;
+      handleFile(file);
+    },
+    [handleFile]
+  );
+
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0] ?? null;
+      handleFile(file);
+      e.target.value = '';
+    },
+    [handleFile]
+  );
+
+  return (
+    <div
+      className={cn(
+        'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-6 transition-colors',
+        isDraggingOver
+          ? 'border-blue-400 bg-blue-50 text-blue-600'
+          : 'border-slate-200 bg-slate-50/60 text-slate-500 hover:border-slate-300 hover:bg-slate-50'
+      )}
+      onClick={() => inputRef.current?.click()}
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      <UploadCloud
+        className={cn(
+          'size-8 transition-colors',
+          isDraggingOver ? 'text-blue-500' : 'text-slate-400'
+        )}
+      />
+      <p className="text-center text-sm font-medium">
+        {isDraggingOver
+          ? 'Thả file vào đây'
+          : 'Kéo thả hoặc click để chọn file video'}
+      </p>
+      <p className="text-xs text-slate-400">MP4, MOV, AVI, WebM…</p>
+      <input
+        ref={inputRef}
+        accept="video/*"
+        className="hidden"
+        id={id}
+        type="file"
+        onChange={onInputChange}
+      />
+    </div>
+  );
+}
 
 export type ResourceState<T> =
   | { status: 'loading'; data?: undefined; error?: undefined }

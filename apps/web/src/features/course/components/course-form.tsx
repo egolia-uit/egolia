@@ -15,6 +15,8 @@ import {
 } from '#/components/ui/shadcn/field';
 import type { CourseCourse, CourseCourseWritable } from '#/lib/api/course';
 
+import { VideoDropZone } from './course-shared';
+
 type CourseFormValues = {
   title: string;
   price: string;
@@ -132,7 +134,7 @@ export function CourseForm({
     );
   }, [canUploadVideo, forceIntroductionVideoKey, values]);
 
-  const { success } = useToast();
+  const { success, error: showError } = useToast();
 
   async function uploadSelectedVideo() {
     if (!selectedVideo || !onUploadIntroductionVideo) {
@@ -259,28 +261,35 @@ export function CourseForm({
 
         <Field>
           {onUploadIntroductionVideo && (
-            <div className="
+            <div
+              className="
               grid gap-2 rounded-xl border border-slate-200/60 bg-slate-50 p-4
-            ">
+            "
+            >
               <FieldLabel htmlFor="course-video-file">
                 Introduction video
               </FieldLabel>
-              <Input
+              <VideoDropZone
                 id="course-video-file"
-                accept="video/*"
-                type="file"
-                onChange={(event) => {
-                  setSelectedVideo(event.target.files?.[0] ?? null);
+                onChange={(file) => {
+                  setSelectedVideo(file);
                   setUploadedVideo(null);
                   setUploadProgress(null);
                   setUploadError(null);
                 }}
+                onInvalidFile={() =>
+                  showError?.(
+                    'Vui lòng chọn file video hợp lệ (MP4, MOV, AVI…)'
+                  )
+                }
               />
               {uploadProgress !== null && (
                 <div className="mt-2 grid gap-2">
-                  <div className="
+                  <div
+                    className="
                     h-2.5 overflow-hidden rounded-full bg-slate-200
-                  ">
+                  "
+                  >
                     <div
                       className="
                         h-full rounded-full bg-blue-600 transition-all

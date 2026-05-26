@@ -14,8 +14,8 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
+import { cn } from '#/components/lib/shadcn/utils';
 import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
@@ -30,6 +30,7 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from '#/components/ui/neumorphism/radio-group';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import { Label } from '#/components/ui/shadcn/label';
 import {
   Select,
@@ -54,7 +55,7 @@ import {
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 
-import { uploadCourseVideo } from './course-shared';
+import { VideoDropZone, uploadCourseVideo } from './course-shared';
 import { ErrorState, InlineNotice } from './course-states';
 
 type QuestionType = 'singleChoice' | 'multipleChoice';
@@ -848,6 +849,7 @@ export function CourseCurriculumEditor({
     Record<string, LocalLessonMeta>
   >({});
   const savedVideoPreviewUrlsRef = useRef<Set<string>>(new Set());
+  const { error: showErrorToast } = useToast();
 
   function begin(actionKey: string) {
     setBusyAction(actionKey);
@@ -2426,12 +2428,9 @@ export function CourseCurriculumEditor({
                           <Label htmlFor="new-video-file-builder">
                             Lesson video
                           </Label>
-                          <Input
+                          <VideoDropZone
                             id="new-video-file-builder"
-                            accept="video/*"
-                            type="file"
-                            onChange={(event) => {
-                              const file = event.target.files?.[0] ?? null;
+                            onChange={(file) => {
                               setNewLessonVideoFile(file);
                               if (file) {
                                 setNewLessonVideoKey('');
@@ -2440,6 +2439,11 @@ export function CourseCurriculumEditor({
                               setNewLessonUploadProgress(null);
                               setNewLessonUploadError(null);
                             }}
+                            onInvalidFile={() =>
+                              showErrorToast?.(
+                                'Vui lòng chọn file video hợp lệ (MP4, MOV, AVI…)'
+                              )
+                            }
                           />
                           {newLessonVideoFile && newLessonVideoPreviewUrl && (
                             <div
@@ -2713,12 +2717,9 @@ export function CourseCurriculumEditor({
                             <Label htmlFor="edit-video-file">
                               Replacement video
                             </Label>
-                            <Input
+                            <VideoDropZone
                               id="edit-video-file"
-                              accept="video/*"
-                              type="file"
-                              onChange={(event) => {
-                                const file = event.target.files?.[0] ?? null;
+                              onChange={(file) => {
                                 setEditLessonVideoFile(file);
                                 if (file) {
                                   setLessonEditor((current) =>
@@ -2731,6 +2732,11 @@ export function CourseCurriculumEditor({
                                 setEditLessonUploadProgress(null);
                                 setEditLessonUploadError(null);
                               }}
+                              onInvalidFile={() =>
+                                showErrorToast?.(
+                                  'Vui lòng chọn file video hợp lệ (MP4, MOV, AVI…)'
+                                )
+                              }
                             />
                             {editLessonVideoFile &&
                               editLessonVideoPreviewUrl && (
