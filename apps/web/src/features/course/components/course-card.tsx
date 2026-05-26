@@ -22,6 +22,7 @@ import {
   CardTitle,
 } from '#/components/ui/neumorphism/card';
 import { useToast } from '#/components/ui/neumorphism/toast';
+import { Button } from '#/components/ui/shadcn/button';
 import {
   Dialog,
   DialogContent,
@@ -236,9 +237,11 @@ export function CourseCard({
             </div>
           )}
           {showStatusBadges && (
-            <div className="
+            <div
+              className="
               absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5
-            ">
+            "
+            >
               <Badge variant={statusVariant(course.status)}>
                 {statusLabel(course.status)}
               </Badge>
@@ -354,9 +357,11 @@ export function CourseCard({
               <span className="font-medium text-slate-500">Progress</span>
               <span className="font-semibold text-blue-600">{progress}%</span>
             </div>
-            <div className="
+            <div
+              className="
               h-1.5 w-full overflow-hidden rounded-full bg-slate-100
-            ">
+            "
+            >
               <div
                 className="
                   h-full rounded-full bg-blue-600 transition-all duration-700
