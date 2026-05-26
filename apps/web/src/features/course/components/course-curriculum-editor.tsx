@@ -1464,6 +1464,7 @@ export function CourseCurriculumEditor({
           path: { courseId, sectionId, lessonId: lesson.id },
           throwOnError: true,
           responseValidator: async (data: any) => data,
+          cache: 'no-store',
         });
 
         if (data.data.lessonType === 'video') {

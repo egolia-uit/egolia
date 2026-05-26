@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Eye,
-  EyeOff,
-  FilePlus2,
-  Pencil,
-  Trash2,
-  Send,
-} from 'lucide-react';
+import { Eye, EyeOff, FilePlus2, Pencil, Send, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -41,8 +34,16 @@ import type { Viewer } from '#/lib/auth/roles';
 
 import { CourseCurriculumEditor } from './course-curriculum-editor';
 import { CourseForm } from './course-form';
+import {
+  ListContent,
+  type ResourceState,
+  isDraftLike,
+  normalizeTab,
+  uploadCourseVideo,
+  useCourseDetail,
+  useCourseList,
+} from './course-shared';
 import { CourseGridSkeleton, ErrorState } from './course-states';
-import { isDraftLike, ListContent, normalizeTab, type ResourceState, uploadCourseVideo, useCourseDetail, useCourseList } from './course-shared';
 
 function InstructorCoursesContent({
   initialTab,
@@ -115,7 +116,6 @@ function InstructorCoursesContent({
     }
   }
 
-
   return (
     <AppShell
       viewer={viewer}
@@ -142,7 +142,9 @@ function InstructorCoursesContent({
                 submitting={submitting}
                 error={actionError?.message}
                 forceIntroductionVideoKey={true}
-                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo(crypto.randomUUID(), file, onProgress)}
+                onUploadIntroductionVideo={(file, onProgress) =>
+                  uploadCourseVideo(crypto.randomUUID(), file, onProgress)
+                }
                 onSubmit={create}
               />
             </div>
@@ -224,36 +226,36 @@ function InstructorCourseDetailContent({
       return state.data.id ?? courseId;
     }
 
-    let createDraftError: unknown;
-
-    try {
-      await createDraftVersion({
-        client: apiClient,
-        path: { courseId },
-        throwOnError: true,
-      });
-    } catch (error) {
-      createDraftError = error;
-    }
-
+    // Try to get the existing draft first to avoid 400 error from createDraftVersion
     try {
       const { data } = await getCourseForUpdate({
         client: apiClient,
         path: { courseId },
         throwOnError: true,
+        cache: 'no-store',
       });
       return data.data.id ?? courseId;
     } catch (error) {
-      throw createDraftError ?? error;
+      // Draft not found or other error, let's try to create a new draft
+      await createDraftVersion({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
+
+      // Get the draft again now that we created it
+      const { data } = await getCourseForUpdate({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+        cache: 'no-store',
+      });
+      return data.data.id ?? courseId;
     }
   }
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Management"
-      title="Course Detail"
-    >
+    <AppShell viewer={viewer} eyebrow="Management" title="Course Detail">
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
@@ -261,10 +263,12 @@ function InstructorCourseDetailContent({
       {state.status === 'ready' && (
         <div className="grid gap-4">
           <div className="rounded-2xl border border-slate-200/60 bg-white/95 px-5 py-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]">
-            <div className="
+            <div
+              className="
               flex flex-col gap-3
               lg:flex-row lg:items-center lg:justify-between
-            ">
+            "
+            >
               <div className="min-w-0">
                 <p className="text-xs font-medium text-slate-500 uppercase">
                   View
@@ -279,10 +283,12 @@ function InstructorCourseDetailContent({
                 )}
               </div>
 
-              <div className="
+              <div
+                className="
                 flex flex-wrap gap-2
                 lg:justify-end
-              ">
+              "
+              >
                 <Button
                   type="button"
                   size="sm"
@@ -316,15 +322,15 @@ function InstructorCourseDetailContent({
                       () =>
                         state.data.hidden
                           ? unhideCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          })
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            })
                           : hideCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          }),
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            }),
                       state.data.hidden
                         ? 'Course is now visible.'
                         : 'Course is now hidden.'
@@ -371,7 +377,7 @@ function InstructorCourseDetailContent({
           </div>
 
           {actionError && <ErrorState error={actionError} />}
-          
+
           <CourseCurriculumEditor
             courseId={courseId}
             course={state.data}
@@ -416,11 +422,7 @@ export function InstructorCourseBuilderContent({
   }
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Management"
-      title="Manage Course"
-    >
+    <AppShell viewer={viewer} eyebrow="Management" title="Manage Course">
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
@@ -428,10 +430,12 @@ export function InstructorCourseBuilderContent({
       {state.status === 'ready' && (
         <div className="grid gap-4">
           <div className="rounded-2xl border border-slate-200/60 bg-white/95 px-5 py-4 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]">
-            <div className="
+            <div
+              className="
               flex flex-col gap-3
               lg:flex-row lg:items-center lg:justify-between
-            ">
+            "
+            >
               <div className="min-w-0">
                 <p className="text-xs font-medium text-slate-500 uppercase">
                   Curriculum Editor
@@ -441,13 +445,20 @@ export function InstructorCourseBuilderContent({
                 </h2>
               </div>
 
-              <div className="
+              <div
+                className="
                 flex flex-wrap gap-2
                 lg:justify-end
-              ">
+              "
+              >
                 <Dialog open={editOpen} onOpenChange={setEditOpen}>
                   <DialogTrigger asChild>
-                    <Button type="button" size="sm" variant="outline" disabled={submitting}>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={submitting}
+                    >
                       <Pencil className="mr-2 size-4" />
                       Edit basic info
                     </Button>
@@ -456,7 +467,8 @@ export function InstructorCourseBuilderContent({
                     <DialogHeader>
                       <DialogTitle>Edit basic info</DialogTitle>
                       <DialogDescription>
-                        Update title, price, or overview. Changing these on a published course will create a new draft.
+                        Update title, price, or overview. Changing these on a
+                        published course will create a new draft.
                       </DialogDescription>
                     </DialogHeader>
                     <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
@@ -479,20 +491,17 @@ export function InstructorCourseBuilderContent({
                               title: body.title,
                               price: body.price,
                               overview: body.overview,
-                            }
+                            },
                           });
 
-                          const ok = await runAction(
-                            async () => {
-                              await updateCourse({
-                                body,
-                                client: apiClient,
-                                path: { courseId: courseId },
-                                throwOnError: true,
-                              });
-                            },
-                            'Course has been updated.'
-                          );
+                          const ok = await runAction(async () => {
+                            await updateCourse({
+                              body,
+                              client: apiClient,
+                              path: { courseId: courseId },
+                              throwOnError: true,
+                            });
+                          }, 'Course has been updated.');
 
                           if (ok) {
                             setEditOpen(false);
@@ -525,12 +534,18 @@ export function InstructorCourseBuilderContent({
                       <DialogHeader>
                         <DialogTitle>Submit Course for Review?</DialogTitle>
                         <DialogDescription>
-                          Once submitted, your course will be reviewed by an administrator. You may not be able to edit it while it is pending review. Do you want to proceed?
+                          Once submitted, your course will be reviewed by an
+                          administrator. You may not be able to edit it while it
+                          is pending review. Do you want to proceed?
                         </DialogDescription>
                       </DialogHeader>
                       <div className="flex justify-end gap-2 pt-4">
                         <DialogTrigger asChild>
-                          <Button variant="outline" type="button" disabled={submitting}>
+                          <Button
+                            variant="outline"
+                            type="button"
+                            disabled={submitting}
+                          >
                             Cancel
                           </Button>
                         </DialogTrigger>
@@ -542,18 +557,15 @@ export function InstructorCourseBuilderContent({
                           "
                           disabled={submitting}
                           onClick={() => {
-                            runAction(
-                              async () => {
-                                await submitCourse({
-                                  client: apiClient,
-                                  path: { courseId },
-                                  throwOnError: true,
-                                });
-                                reload();
-                                router.push('/instructor/courses');
-                              },
-                              'Course has been submitted for review.'
-                            );
+                            runAction(async () => {
+                              await submitCourse({
+                                client: apiClient,
+                                path: { courseId },
+                                throwOnError: true,
+                              });
+                              reload();
+                              router.push('/instructor/courses');
+                            }, 'Course has been submitted for review.');
                           }}
                         >
                           Confirm & Submit
@@ -600,7 +612,11 @@ export function InstructorCourseDetailPage({ courseId }: { courseId: string }) {
   );
 }
 
-export function InstructorCourseBuilderPage({ courseId }: { courseId: string }) {
+export function InstructorCourseBuilderPage({
+  courseId,
+}: {
+  courseId: string;
+}) {
   return (
     <AuthGate allowedRoles={['instructor', 'admin']}>
       {(viewer) => (

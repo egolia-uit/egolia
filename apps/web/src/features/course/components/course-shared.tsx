@@ -248,6 +248,7 @@ export function useCourseDetail(courseId: string) {
       client: apiClient,
       path: { courseId },
       throwOnError: true,
+      cache: 'no-store',
     })
       .then(({ data }) => {
         if (mounted) {
