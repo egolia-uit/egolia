@@ -223,21 +223,23 @@ export function CourseCard({
           ) : (
             <div
               className="
-              flex h-full w-full flex-col items-center justify-center gap-2
-            "
+                flex h-full w-full flex-col items-center justify-center gap-2
+              "
             >
               <div
                 className="
-                rounded-full border border-slate-100/50 bg-white/80 p-2.5
-                shadow-sm
-              "
+                  rounded-full border border-slate-100/50 bg-white/80 p-2.5
+                  shadow-sm
+                "
               >
                 <BookOpen className="size-6 stroke-[1.5] text-indigo-400/80" />
               </div>
             </div>
           )}
           {showStatusBadges && (
-            <div className="absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5">
+            <div className="
+              absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5
+            ">
               <Badge variant={statusVariant(course.status)}>
                 {statusLabel(course.status)}
               </Badge>
@@ -353,7 +355,9 @@ export function CourseCard({
               <span className="font-medium text-slate-500">Progress</span>
               <span className="font-semibold text-blue-600">{progress}%</span>
             </div>
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="
+              h-1.5 w-full overflow-hidden rounded-full bg-slate-100
+            ">
               <div
                 className="
                   h-full rounded-full bg-blue-600 transition-all duration-700
@@ -375,8 +379,8 @@ export function CourseCard({
           <div className="space-y-0.5">
             <div
               className="
-              flex items-center gap-1 text-xs font-semibold text-slate-500
-            "
+                flex items-center gap-1 text-xs font-semibold text-slate-500
+              "
             >
               <BookOpen className="size-3.5 text-slate-400" />
               Price

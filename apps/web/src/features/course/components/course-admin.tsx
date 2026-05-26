@@ -246,11 +246,11 @@ function AdminCoursesContent({
                           <div className="flex items-center gap-3">
                             <div
                               className="
-                              relative aspect-video w-20 shrink-0
-                              overflow-hidden rounded-lg border
-                              border-slate-100/60 bg-gradient-to-br
-                              from-blue-50/80 to-slate-50/80
-                            "
+                                relative aspect-video w-20 shrink-0
+                                overflow-hidden rounded-lg border
+                                border-slate-100/60 bg-gradient-to-br
+                                from-blue-50/80 to-slate-50/80
+                              "
                             >
                               {course.introductionVideoUrl ? (
                                 <video
@@ -262,8 +262,9 @@ function AdminCoursesContent({
                               ) : (
                                 <div
                                   className="
-                                  flex h-full w-full items-center justify-center
-                                "
+                                    flex h-full w-full items-center
+                                    justify-center
+                                  "
                                 >
                                   <BookOpen className="size-4 text-indigo-300" />
                                 </div>
@@ -272,15 +273,15 @@ function AdminCoursesContent({
                             <div className="min-w-0">
                               <div
                                 className="
-                                leading-snug font-semibold text-slate-900
-                              "
+                                  leading-snug font-semibold text-slate-900
+                                "
                               >
                                 {course.title}
                               </div>
                               <div
                                 className="
-                                mt-0.5 line-clamp-1 text-xs text-slate-500
-                              "
+                                  mt-0.5 line-clamp-1 text-xs text-slate-500
+                                "
                               >
                                 {course.overview || 'No overview'}
                               </div>
