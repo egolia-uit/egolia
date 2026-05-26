@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import type { SyntheticEvent } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 
@@ -9,6 +10,9 @@ type CourseVideoPlayerProps = {
   title?: string;
   poster?: string;
   className?: string;
+  onEnded?: (event: SyntheticEvent<HTMLVideoElement>) => void;
+  onPause?: (event: SyntheticEvent<HTMLVideoElement>) => void;
+  onTimeUpdate?: (event: SyntheticEvent<HTMLVideoElement>) => void;
 };
 
 function mediaTypeFromUrl(src: string) {
@@ -31,6 +35,9 @@ function mediaTypeFromUrl(src: string) {
 
 export function CourseVideoPlayer({
   className,
+  onEnded,
+  onPause,
+  onTimeUpdate,
   poster,
   src,
   title,
@@ -141,6 +148,9 @@ export function CourseVideoPlayer({
         preload="metadata"
         src={src}
         data-poster={poster}
+        onEnded={onEnded}
+        onPause={onPause}
+        onTimeUpdate={onTimeUpdate}
       />
     </div>
   );

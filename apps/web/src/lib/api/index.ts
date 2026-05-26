@@ -4,30 +4,45 @@ import { client } from '../../../../../packages/api-gen/src/client.gen';
 import { getCachedAuthentikAccessToken } from '../auth/access-token';
 import { getPublicRuntimeEnv } from '../env';
 
-const optionallyAuthenticatedUrls = new Set([
-  '/course/courses/{courseId}/landing',
-]);
+const anonymousUrls = new Set(['/course/courses/{courseId}/landing']);
 
 client.setConfig({
   baseUrl: getPublicRuntimeEnv().NEXT_PUBLIC_API_BASE_URL,
 });
 
 client.interceptors.request.use(async (config) => {
-  if (
-    !config.security?.length &&
-    !optionallyAuthenticatedUrls.has(config.url)
-  ) {
+  const requiresAuth = Boolean(config.security?.length);
+  const allowsAnonymous = anonymousUrls.has(config.url);
+
+  if (allowsAnonymous) {
     return;
   }
 
-  try {
-    const accessToken = await getCachedAuthentikAccessToken();
-    if (accessToken) {
-      config.headers.set('Authorization', `Bearer ${accessToken}`);
-    }
-  } catch {
-    // Public routes are allowed to call the API without an OAuth token.
+  if (!requiresAuth) {
+    return;
   }
+
+  const accessToken = await getCachedAuthentikAccessToken();
+  if (accessToken) {
+    config.headers.set('Authorization', `Bearer ${accessToken}`);
+    return;
+  }
+
+  const freshAccessToken = await getCachedAuthentikAccessToken({
+    force: true,
+    retries: 1,
+  });
+  if (freshAccessToken) {
+    config.headers.set('Authorization', `Bearer ${freshAccessToken}`);
+    return;
+  }
+
+  throw {
+    code: 'missingAccessToken',
+    message:
+      'The browser session exists, but no OAuth access token is available yet. Please retry or sign in again.',
+    status: 401,
+  };
 });
 
 function isRecord(value: unknown): value is Record<string, unknown> {

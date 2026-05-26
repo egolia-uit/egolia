@@ -2,8 +2,8 @@
 
 import { X } from 'lucide-react';
 import {
-  createContext,
   ReactNode,
+  createContext,
   useCallback,
   useContext,
   useState,
@@ -21,7 +21,10 @@ interface Toast {
 }
 
 interface ToastContextType {
-  toast: (message: string, options?: { title?: string; type?: ToastType }) => void;
+  toast: (
+    message: string,
+    options?: { title?: string; type?: ToastType }
+  ) => void;
   success: (message: string, title?: string) => void;
   error: (message: string, title?: string) => void;
 }
@@ -56,13 +59,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     [removeToast]
   );
 
-  const success = useCallback((message: string, title?: string) => {
-    toast(message, { title, type: 'success' });
-  }, [toast]);
+  const success = useCallback(
+    (message: string, title?: string) => {
+      toast(message, { title, type: 'success' });
+    },
+    [toast]
+  );
 
-  const error = useCallback((message: string, title?: string) => {
-    toast(message, { title, type: 'error' });
-  }, [toast]);
+  const error = useCallback(
+    (message: string, title?: string) => {
+      toast(message, { title, type: 'error' });
+    },
+    [toast]
+  );
 
   return (
     <ToastContext.Provider value={{ toast, success, error }}>
@@ -103,9 +112,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     'bg-amber-500': t.type === 'warning',
                   })}
                 />
-                <span className="
-                  text-xs font-bold tracking-wider text-slate-600 uppercase
-                ">
+                <span
+                  className="
+                    text-xs font-bold tracking-wider text-slate-600 uppercase
+                  "
+                >
                   {t.title || t.type}
                 </span>
               </div>

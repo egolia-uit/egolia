@@ -1,15 +1,17 @@
 'use client';
 
-import { BookOpen } from 'lucide-react';
+import { BookOpen, UploadCloud } from 'lucide-react';
 import Link from 'next/link';
 import {
   type DependencyList,
   type ReactNode,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
+import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
 import { Button } from '#/components/ui/neumorphism/button';
 import {
@@ -34,6 +36,105 @@ import { putFileToSignedUrl } from '#/lib/api/upload';
 
 import { CourseCard } from './course-card';
 import { CourseGridSkeleton, EmptyState, ErrorState } from './course-states';
+
+export function VideoDropZone({
+  id,
+  onChange,
+  onInvalidFile,
+}: {
+  id: string;
+  onChange: (file: File | null) => void;
+  onInvalidFile?: () => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
+
+  const handleFile = useCallback(
+    (file: File | null) => {
+      if (file && file.type.startsWith('video/')) {
+        onChange(file);
+      } else if (file) {
+        onInvalidFile?.();
+        onChange(null);
+      }
+    },
+    [onChange, onInvalidFile]
+  );
+
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(true);
+  }, []);
+
+  const onDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingOver(false);
+  }, []);
+
+  const onDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDraggingOver(false);
+      const file = e.dataTransfer.files?.[0] ?? null;
+      handleFile(file);
+    },
+    [handleFile]
+  );
+
+  const onInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0] ?? null;
+      handleFile(file);
+      e.target.value = '';
+    },
+    [handleFile]
+  );
+
+  return (
+    <div
+      className={cn(
+        `
+          flex cursor-pointer flex-col items-center justify-center gap-2
+          rounded-xl border-2 border-dashed px-4 py-6 transition-colors
+        `,
+        isDraggingOver
+          ? 'border-blue-400 bg-blue-50 text-blue-600'
+          : `
+            border-slate-200 bg-slate-50/60 text-slate-500
+            hover:border-slate-300 hover:bg-slate-50
+          `
+      )}
+      onClick={() => inputRef.current?.click()}
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      <UploadCloud
+        className={cn(
+          'size-8 transition-colors',
+          isDraggingOver ? 'text-blue-500' : 'text-slate-400'
+        )}
+      />
+      <p className="text-center text-sm font-medium">
+        {isDraggingOver
+          ? 'Thả file vào đây'
+          : 'Kéo thả hoặc click để chọn file video'}
+      </p>
+      <p className="text-xs text-slate-400">MP4, MOV, AVI, WebM…</p>
+      <input
+        ref={inputRef}
+        accept="video/*"
+        className="hidden"
+        id={id}
+        type="file"
+        onChange={onInputChange}
+      />
+    </div>
+  );
+}
 
 export type ResourceState<T> =
   | { status: 'loading'; data?: undefined; error?: undefined }
@@ -92,12 +193,10 @@ export function MockPanel({
   items: string[];
 }) {
   return (
-    <Card className="bg-nm-bg shadow-nm-flat">
+    <Card>
       <CardHeader>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="secondary" className="bg-amber-100 text-amber-800">
-            Mock
-          </Badge>
+          <Badge variant="warning">Mock</Badge>
           <CardTitle>{title}</CardTitle>
         </div>
         {description && <CardDescription>{description}</CardDescription>}
@@ -112,7 +211,8 @@ export function MockPanel({
           <div
             key={item}
             className="
-              rounded-xl bg-nm-bg p-4 text-sm text-slate-700 shadow-nm-inset
+              rounded-xl border border-slate-200/60 bg-slate-50 p-4 text-sm
+              text-slate-700
             "
           >
             {item}
@@ -138,7 +238,8 @@ export function RoleTabs({
   return (
     <div
       className="
-        flex gap-2 overflow-x-auto rounded-xl bg-nm-bg p-2 shadow-nm-inset
+        flex gap-1 overflow-x-auto rounded-xl border border-slate-200/60
+        bg-slate-100/70 p-1
       "
     >
       {tabs.map((tab) => (
@@ -248,6 +349,7 @@ export function useCourseDetail(courseId: string) {
       client: apiClient,
       path: { courseId },
       throwOnError: true,
+      cache: 'no-store',
     })
       .then(({ data }) => {
         if (mounted) {
@@ -286,6 +388,7 @@ export function useCourseReviews(courseId: string) {
       path: { courseId },
       query: { limit: 6, page: 1 },
       throwOnError: true,
+      responseValidator: async (data: any) => data,
     })
       .then(({ data }) => {
         if (mounted) {
@@ -319,10 +422,12 @@ export function CourseGrid({
   courses,
   destination,
   actionFor,
+  onRefresh,
 }: {
   courses: CourseCourse[];
   destination?: 'public' | 'learner' | 'instructor';
   actionFor?: (course: CourseCourse) => ReactNode;
+  onRefresh?: () => void;
 }) {
   return (
     <div
@@ -338,6 +443,7 @@ export function CourseGrid({
           course={course}
           destination={destination}
           action={actionFor?.(course)}
+          onRefresh={onRefresh}
         />
       ))}
     </div>
@@ -378,6 +484,7 @@ export function ListContent({
         actionFor={actionFor}
         courses={state.data.data}
         destination={destination}
+        onRefresh={reload}
       />
     </div>
   );
@@ -410,7 +517,7 @@ export function CourseReviewsPanel({
   }
 
   return (
-    <Card className="bg-nm-bg">
+    <Card>
       <CardHeader>
         <CardTitle>Reviews</CardTitle>
         <CardDescription>
@@ -418,14 +525,16 @@ export function CourseReviewsPanel({
           {state.data.pagination?.total ?? reviews.length}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid gap-3">
         {reviews.map((review) => (
           <div
             key={review.id}
-            className="rounded-2xl bg-nm-bg p-4 shadow-nm-inset"
+            className="rounded-xl border border-slate-200/60 bg-slate-50 p-4"
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="font-medium">Rating {review.rating}/5</div>
+              <div className="font-medium text-slate-900">
+                Rating {review.rating}/5
+              </div>
               <div className="text-xs text-slate-500">
                 {formatDateTime(review.createdAt)}
               </div>

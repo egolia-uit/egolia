@@ -1,6 +1,13 @@
 'use client';
 
-import { Calendar, ChevronRight, Edit, Eye, Plus, Trash2, User } from 'lucide-react';
+import {
+  Calendar,
+  Edit,
+  Eye,
+  Plus,
+  Trash2,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
 
 import { AppShell } from '#/components/layout/app-shell';
@@ -10,7 +17,6 @@ import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '#/components/ui/neumorphism/card';
@@ -21,7 +27,8 @@ const MOCK_POSTS = [
   {
     slug: 'huong-dan-bat-dau-voi-egolia',
     title: 'Getting Started with Egolia',
-    excerpt: 'Learn how to register, choose the right course, and start your learning journey on Egolia.',
+    excerpt:
+      'Learn how to register, choose the right course, and start your learning journey on Egolia.',
     author: 'Admin',
     date: '2026-05-10',
     category: 'Guide',
@@ -30,7 +37,8 @@ const MOCK_POSTS = [
   {
     slug: 'top-5-khoa-hoc-duoc-yeu-thich-nhat',
     title: 'Top 5 Most Popular Courses in May 2026',
-    excerpt: 'Discover the hottest courses on Egolia with thousands of enrollments and positive reviews.',
+    excerpt:
+      'Discover the hottest courses on Egolia with thousands of enrollments and positive reviews.',
     author: 'Editor',
     date: '2026-05-08',
     category: 'News',
@@ -39,7 +47,8 @@ const MOCK_POSTS = [
   {
     slug: 'lam-the-nao-de-hoc-online-hieu-qua',
     title: 'How to Learn Online Effectively?',
-    excerpt: 'Share tips and methods to help you optimize your online learning time and achieve the best results.',
+    excerpt:
+      'Share tips and methods to help you optimize your online learning time and achieve the best results.',
     author: 'Admin',
     date: '2026-05-05',
     category: 'Experience',
@@ -48,7 +57,8 @@ const MOCK_POSTS = [
   {
     slug: 'cap-nhat-tinh-nang-moi-thang-5',
     title: 'New Feature Updates in May 2026',
-    excerpt: 'Egolia has launched many new features: bookmark system, course reviews, and improved UI.',
+    excerpt:
+      'Egolia has launched many new features: bookmark system, course reviews, and improved UI.',
     author: 'Dev Team',
     date: '2026-05-01',
     category: 'Update',
@@ -56,35 +66,81 @@ const MOCK_POSTS = [
   },
 ];
 
-function BlogCard({ post }: { post: typeof MOCK_POSTS[0] }) {
+function BlogCard({ post }: { post: (typeof MOCK_POSTS)[0] }) {
   return (
-    <Card className="
-      bg-nm-bg transition-shadow
-      hover:shadow-md
+    <Link href={`/blog/${post.slug}`} className="
+      block
+      focus-visible:outline-none
     ">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-indigo-50 text-indigo-700">{post.category}</Badge>
-          <span className="text-xs text-slate-500">{post.readTime}</span>
-        </div>
-        <CardTitle className="line-clamp-2 text-lg">{post.title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="line-clamp-3 text-sm/6 text-slate-600">{post.excerpt}</p>
-        <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
-          <span className="flex items-center gap-1"><User className="size-3" />{post.author}</span>
-          <span className="flex items-center gap-1"><Calendar className="size-3" />{post.date}</span>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Button asChild variant="outline" size="sm">
-          <Link href={`/blog/${post.slug}`}>
-            Read more
-            <ChevronRight className="size-4" />
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+      <Card
+        className="
+          group flex h-full flex-col overflow-hidden border border-slate-200/60
+          bg-white/95
+          shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+          transition-all duration-300 ease-out
+          hover:-translate-y-1 hover:border-slate-300/80
+          hover:shadow-[0_20px_40px_rgba(15,23,42,0.08)]
+        "
+      >
+        <CardHeader className="px-5 pt-5 pb-2">
+          <div className="flex items-center gap-2">
+            <Badge variant="inset">{post.category}</Badge>
+            <span className="text-xs font-medium text-slate-500">{post.readTime}</span>
+          </div>
+          <CardTitle className="
+            mt-2 line-clamp-2 text-lg font-semibold text-slate-900
+            transition-colors duration-200
+            group-hover:text-blue-600
+          ">
+            {post.title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-1 flex-col gap-3 px-5 pb-5">
+          <p className="line-clamp-3 text-sm/6 text-slate-600">{post.excerpt}</p>
+          <div className="
+            mt-auto flex items-center gap-3 border-t border-slate-50 pt-3
+            text-xs font-medium text-slate-500
+          ">
+            <span className="flex items-center gap-1">
+              <User className="size-3.5 text-slate-400" />
+              {post.author}
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar className="size-3.5 text-slate-400" />
+              {post.date}
+            </span>
+          </div>
+          
+          {/* Subtle Read more CTA for clickable affordance */}
+          <div
+            className="
+              mt-2 flex items-center justify-end gap-1 border-t border-slate-50
+              pt-2.5 text-xs font-semibold text-blue-600 transition-colors
+              duration-200
+              group-hover:text-blue-700
+            "
+          >
+            <span>Read more</span>
+            <svg
+              className="
+                size-3.5 transition-transform duration-300
+                group-hover:translate-x-0.5
+              "
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -92,15 +148,13 @@ export function BlogListPage() {
   const { viewer } = useViewer();
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Blog"
-      title="News & Guide"
-    >
-      <div className="
-        grid gap-4
-        md:grid-cols-2
-      ">
+    <AppShell viewer={viewer} eyebrow="Blog" title="News & Guide">
+      <div
+        className="
+          grid gap-4
+          md:grid-cols-2
+        "
+      >
         {MOCK_POSTS.map((post) => (
           <BlogCard key={post.slug} post={post} />
         ))}
@@ -114,28 +168,44 @@ export function BlogDetailPage({ slug }: { slug: string }) {
   const post = MOCK_POSTS.find((p) => p.slug === slug) ?? MOCK_POSTS[0];
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Blog"
-      title={post.title}
-    >
-      <Card className="bg-nm-bg">
+    <AppShell viewer={viewer} eyebrow="Blog" title={post.title}>
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-3 text-sm text-slate-500">
-            <Badge variant="secondary" className="bg-indigo-50 text-indigo-700">{post.category}</Badge>
-            <span className="flex items-center gap-1"><User className="size-3.5" />{post.author}</span>
-            <span className="flex items-center gap-1"><Calendar className="
-              size-3.5
-            " />{post.date}</span>
+            <Badge variant="inset">{post.category}</Badge>
+            <span className="flex items-center gap-1">
+              <User className="size-3.5" />
+              {post.author}
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar
+                className="size-3.5"
+              />
+              {post.date}
+            </span>
             <span>{post.readTime}</span>
           </div>
         </CardHeader>
         <CardContent className="max-w-none">
-          <p className="text-lg leading-relaxed text-slate-700">{post.excerpt}</p>
+          <p className="text-lg leading-relaxed text-slate-700">
+            {post.excerpt}
+          </p>
           <div className="mt-6 space-y-4 text-sm/7 text-slate-600">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <p>The detailed content of the article will be updated when the blog service is completed.</p>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+            </p>
+            <p>
+              Duis aute irure dolor in reprehenderit in voluptate velit esse
+              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt mollit
+              anim id est laborum.
+            </p>
+            <p>
+              The detailed content of the article will be updated when the blog
+              service is completed.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -153,13 +223,17 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
       eyebrow="Administration"
       title="Manage Articles"
       actions={
-        <Button onClick={() => alert('Article creation feature is under development.')}>
+        <Button
+          onClick={() =>
+            alert('Article creation feature is under development.')
+          }
+        >
           <Plus className="size-4" />
           Create Article
         </Button>
       }
     >
-      <Card className="bg-nm-bg">
+      <Card>
         <CardContent className="py-4">
           <div className="grid gap-3">
             {MOCK_POSTS.map((post) => (
@@ -172,12 +246,16 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
               >
                 <div className="min-w-0">
                   <div className="font-medium">{post.title}</div>
-                  <div className="
-                    mt-1 flex items-center gap-3 text-xs text-slate-500
-                  ">
+                  <div
+                    className="
+                      mt-1 flex items-center gap-3 text-xs text-slate-500
+                    "
+                  >
                     <span>{post.author}</span>
                     <span>{post.date}</span>
-                    <Badge variant="secondary" className="text-xs">{post.category}</Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {post.category}
+                    </Badge>
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-2">
@@ -187,11 +265,19 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
                       View
                     </Link>
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => alert('Action successful!')}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => alert('Action successful!')}
+                  >
                     <Edit className="size-4" />
                     Edit
                   </Button>
-                  <Button variant="destructive" size="sm" onClick={() => alert('Action successful!')}>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => alert('Action successful!')}
+                  >
                     <Trash2 className="size-4" />
                     Delete
                   </Button>

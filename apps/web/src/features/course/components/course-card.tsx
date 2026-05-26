@@ -1,8 +1,16 @@
 'use client';
 
-import { BookOpen, EyeOff, ShieldCheck } from 'lucide-react';
+import {
+  BookOpen,
+  Eye,
+  EyeOff,
+  Loader2,
+  MoreVertical,
+  ShieldCheck,
+  Trash2,
+} from 'lucide-react';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
@@ -13,7 +21,27 @@ import {
   CardHeader,
   CardTitle,
 } from '#/components/ui/neumorphism/card';
-import type { CourseCourse } from '#/lib/api/course';
+import { useToast } from '#/components/ui/neumorphism/toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '#/components/ui/shadcn/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '#/components/ui/shadcn/dropdown-menu';
+import { apiClient } from '#/lib/api';
+import {
+  type CourseCourse,
+  deleteCourse,
+  hideCourse,
+  unhideCourse,
+} from '#/lib/api/course';
 import { formatVnd } from '#/lib/api/format';
 
 export type CourseDestination = 'public' | 'learner' | 'instructor';
@@ -39,12 +67,29 @@ function statusLabel(status?: CourseCourse['status']) {
   }
 }
 
-function destinationHref(courseId: string, destination: CourseDestination) {
+function statusVariant(
+  status?: CourseCourse['status']
+): 'inset' | 'warning' | 'secondary' {
+  switch (status) {
+    case 'approved':
+      return 'inset';
+    case 'pending':
+      return 'warning';
+    default:
+      return 'secondary';
+  }
+}
+
+function destinationHref(
+  courseId: string,
+  destination: CourseDestination,
+  status?: string
+) {
   switch (destination) {
     case 'learner':
       return `/learn/courses/${courseId}`;
     case 'instructor':
-      return `/instructor/courses/${courseId}`;
+      return `/instructor/courses/${courseId}${status === 'draft' ? '/builder' : ''}`;
     case 'public':
     default:
       return `/courses/${courseId}`;
@@ -69,19 +114,73 @@ export function CourseCard({
   className,
   action,
   progress,
+  onRefresh,
 }: {
   course: CourseCourse;
   destination?: CourseDestination;
   className?: string;
   action?: ReactNode;
   progress?: number;
+  onRefresh?: () => void;
 }) {
   const courseId = course.id;
-  const href = courseId ? destinationHref(courseId, destination) : '#';
+  const href = courseId
+    ? destinationHref(courseId, destination, course.status)
+    : '#';
   const showProgress = destination === 'learner' && progress !== undefined;
   const showStatusBadges = destination === 'instructor';
 
-  // Add #t=0.001 to ensure a frame is shown for video thumbnails
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const { success: showToast, error: showErrorToast } = useToast();
+
+  const handleToggleHide = async () => {
+    if (!courseId) return;
+    setBusy(true);
+    try {
+      if (course.hidden) {
+        await unhideCourse({
+          client: apiClient,
+          path: { courseId },
+          throwOnError: true,
+        });
+        showToast('Course is now visible.');
+      } else {
+        await hideCourse({
+          client: apiClient,
+          path: { courseId },
+          throwOnError: true,
+        });
+        showToast('Course is now hidden.');
+      }
+      onRefresh?.();
+    } catch (error) {
+      showErrorToast?.('Failed to update course visibility.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!courseId) return;
+    setBusy(true);
+    try {
+      await deleteCourse({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
+      showToast('Course has been deleted.');
+      setDeleteOpen(false);
+      onRefresh?.();
+    } catch (error) {
+      showErrorToast?.('Failed to delete course.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const videoSrc = course.introductionVideoUrl
     ? `${course.introductionVideoUrl}#t=0.001`
     : undefined;
@@ -90,28 +189,31 @@ export function CourseCard({
     <Card
       className={cn(
         `
-          group flex flex-col overflow-hidden bg-nm-bg transition-all
-          duration-300
-          hover:shadow-nm-inset
+          group flex flex-col overflow-hidden border border-slate-200/60
+          bg-white/95
+          shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+          transition-all duration-300 ease-out
+          hover:-translate-y-1 hover:border-slate-300/80
+          hover:shadow-[0_20px_40px_rgba(15,23,42,0.08)]
         `,
         className
       )}
     >
+      {/* Thumbnail */}
       <div className="p-3 pb-0">
         <div
           className="
-            relative aspect-video w-full overflow-hidden rounded-xl bg-nm-bg
-            shadow-nm-inset
+            relative aspect-video w-full overflow-hidden rounded-xl border
+            border-slate-100/60 bg-gradient-to-br from-blue-50 via-indigo-50/40
+            to-slate-50/80
           "
         >
           {videoSrc ? (
             <video
-              className={cn(
-                `
-                  h-full w-full object-cover transition-transform duration-500
-                  group-hover:scale-105
-                `
-              )}
+              className="
+                h-full w-full object-cover transition-transform duration-500
+                group-hover:scale-105
+              "
               muted
               playsInline
               preload="metadata"
@@ -119,28 +221,111 @@ export function CourseCard({
             />
           ) : (
             <div
-              className={cn(
-                'flex h-full w-full items-center justify-center text-slate-400'
-              )}
+              className="
+                flex h-full w-full flex-col items-center justify-center gap-2
+              "
             >
-              <BookOpen className="size-12 opacity-20" />
+              <div
+                className="
+                  rounded-full border border-slate-100/50 bg-white/80 p-2.5
+                  shadow-sm
+                "
+              >
+                <BookOpen className="size-6 stroke-[1.5] text-indigo-400/80" />
+              </div>
             </div>
           )}
           {showStatusBadges && (
-            <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-2">
-              <Badge
-                className="shadow-nm-flat-sm"
-                variant={course.status === 'approved' ? 'default' : 'secondary'}
-              >
+            <div className="
+              absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5
+            ">
+              <Badge variant={statusVariant(course.status)}>
                 {statusLabel(course.status)}
               </Badge>
               {course.hidden && (
-                <Badge className="shadow-nm-flat-sm" variant="outline">
+                <Badge variant="secondary">
                   <EyeOff className="size-3" />
                   Hidden
                 </Badge>
               )}
             </div>
+          )}
+          {/* Instructor Kebab Menu Actions */}
+          {destination === 'instructor' && (
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-xs"
+                  className="
+                    absolute top-2.5 right-2.5 z-20 h-8 w-8 rounded-full border
+                    border-white/70 bg-white/90 text-slate-600 opacity-90
+                    shadow-sm transition-opacity duration-200
+                    hover:bg-white hover:text-slate-900
+                  "
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <MoreVertical className="size-4" />
+                  <span className="sr-only">Actions</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="
+                  z-30 w-44 rounded-xl border border-slate-200 bg-white p-1
+                  shadow-lg
+                "
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <DropdownMenuItem
+                  className="
+                    flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2
+                    text-sm
+                  "
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDropdownOpen(false);
+                    await handleToggleHide();
+                  }}
+                >
+                  {course.hidden ? (
+                    <>
+                      <Eye className="size-4" />
+                      <span>Unhide course</span>
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="size-4" />
+                      <span>Hide course</span>
+                    </>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="
+                    flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2
+                    text-sm text-red-600
+                    focus:text-red-700
+                  "
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDropdownOpen(false);
+                    setDeleteOpen(true);
+                  }}
+                >
+                  <Trash2 className="size-4" />
+                  <span>Delete course</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>
@@ -148,105 +333,183 @@ export function CourseCard({
       <CardHeader className="px-5 pt-4 pb-2">
         <CardTitle
           className="
-            line-clamp-2 min-h-12 text-lg leading-tight font-bold text-slate-800
+            line-clamp-2 min-h-12 text-base leading-snug font-semibold
+            text-slate-900 transition-colors duration-200
+            group-hover:text-blue-600
           "
         >
           {course.title}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-1 flex-col gap-4 px-5 pb-5">
+      <CardContent className="flex flex-1 flex-col gap-3 px-5 pb-5">
         <p className="line-clamp-3 min-h-[4.5rem] text-sm/6 text-slate-600">
           {course.overview ||
             'Course has no description yet. Content will be updated later.'}
         </p>
 
         {showProgress && (
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between px-1 text-xs">
-              <span className="font-medium text-slate-500">
-                Learning Progress
-              </span>
-              <span className="font-bold text-primary">{progress}%</span>
+          <div className="grid gap-1.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium text-slate-500">Progress</span>
+              <span className="font-semibold text-blue-600">{progress}%</span>
             </div>
-            <div
-              className={cn(
-                `
-                  h-2.5 w-full overflow-hidden rounded-full bg-nm-bg
-                  shadow-nm-inset
-                `
-              )}
-            >
+            <div className="
+              h-1.5 w-full overflow-hidden rounded-full bg-slate-100
+            ">
               <div
-                className={cn(
-                  `
-                    h-full rounded-full bg-primary shadow-nm-flat-sm
-                    transition-all duration-1000 ease-out
-                  `
-                )}
+                className="
+                  h-full rounded-full bg-blue-600 transition-all duration-700
+                  ease-out
+                "
                 style={{ width: `${Math.min(progress, 100)}%` }}
               />
             </div>
           </div>
         )}
 
+        {/* Metadata row — flat, no nm shadow */}
         <div
-          className={cn(
-            `
-              mt-auto grid grid-cols-2 gap-4 rounded-xl bg-nm-bg p-4
-              shadow-nm-inset
-            `
-          )}
+          className="
+            mt-auto flex items-center justify-between gap-2 border-t
+            border-slate-100 pt-3
+          "
         >
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             <div
               className="
-                flex items-center gap-1.5 text-xs font-medium text-slate-500
+                flex items-center gap-1 text-xs font-semibold text-slate-500
               "
             >
-              <BookOpen className="size-3.5" />
-              Course Price
+              <BookOpen className="size-3.5 text-slate-400" />
+              Price
             </div>
-            <div className="font-bold text-primary">
+            <div className="text-sm font-bold text-slate-900">
               {formatVnd(course.price)}
             </div>
           </div>
-          <div className="space-y-1 border-l border-slate-200/50 pl-4">
+          <div className="min-w-0 space-y-0.5 text-right">
             <div
               className="
-                flex items-center gap-1.5 text-xs font-medium text-slate-500
+                flex items-center justify-end gap-1 text-xs font-semibold
+                text-slate-500
               "
             >
-              <ShieldCheck className="size-3.5" />
+              <ShieldCheck className="size-3.5 text-slate-400" />
               Instructor
             </div>
-            <div className="truncate font-semibold text-slate-700">
+            <div className="truncate text-sm font-semibold text-slate-800">
               {instructorDisplayName(course)}
             </div>
           </div>
         </div>
+
+        {/* Subtle View details CTA for clickable affordance */}
+        {!action && (
+          <div
+            className="
+              mt-2 flex items-center justify-end gap-1 border-t border-slate-50
+              pt-2.5 text-xs font-semibold text-blue-600 transition-colors
+              duration-200
+              group-hover:text-blue-700
+            "
+          >
+            <span>
+              {destination === 'instructor' ? 'Manage' : 'View details'}
+            </span>
+            <svg
+              className="
+                size-3.5 transition-transform duration-300
+                group-hover:translate-x-0.5
+              "
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </div>
+        )}
       </CardContent>
 
-      {action && (
-        <CardFooter className="bg-nm-bg px-5 pt-0 pb-5">{action}</CardFooter>
-      )}
+      {action && <CardFooter className="px-5 pt-0 pb-5">{action}</CardFooter>}
     </Card>
   );
 
-  if (action) {
-    return cardBody;
-  }
-
   return (
-    <Link
-      href={href}
-      className="
-        block
-        focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-        focus-visible:outline-none
-      "
-    >
-      {cardBody}
-    </Link>
+    <>
+      {action ? (
+        cardBody
+      ) : (
+        <Link
+          href={href}
+          className="
+            block rounded-2xl
+            focus-visible:ring-2 focus-visible:ring-blue-500
+            focus-visible:ring-offset-2 focus-visible:outline-none
+          "
+        >
+          {cardBody}
+        </Link>
+      )}
+
+      {destination === 'instructor' && (
+        <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <DialogContent
+            className="
+              z-40
+              sm:max-w-md
+            "
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Delete course</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete <strong>{course.title}</strong>?
+                This action is permanent and cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busy}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setDeleteOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={busy}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  await handleDelete();
+                }}
+                className="
+                  bg-red-600 text-white
+                  hover:bg-red-700
+                "
+              >
+                {busy && <Loader2 className="mr-2 size-4 animate-spin" />}
+                Delete
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }
