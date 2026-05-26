@@ -239,22 +239,69 @@ export function AppShell({
                   <span className="sr-only">Open navigation</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-80 overflow-y-auto p-0">
-                <SheetHeader className="border-b px-4 py-4 text-left">
-                  <SheetTitle>Egolia</SheetTitle>
-                </SheetHeader>
-                <div className="p-4">
-                  <NavList
-                    currentSearch={currentSearch}
-                    groups={groups}
-                    pathname={pathname}
-                    onNavigate={() => {
-                      window.setTimeout(
-                        () => setCurrentSearch(window.location.search),
-                        0
-                      );
-                    }}
-                  />
+              <SheetContent
+                side="left"
+                className="w-80 p-0 border-none bg-white shadow-xl"
+              >
+                <div className="flex flex-col h-full bg-white">
+                  <SheetHeader className="border-b border-slate-100 px-6 py-5 text-left bg-white">
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-950 text-white">
+                        <GraduationCap className="size-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <SheetTitle className="text-sm font-semibold tracking-tight text-slate-950">
+                          Egolia
+                        </SheetTitle>
+                        <div className="text-[11px] text-slate-500 font-medium">
+                          Elearning on the Go
+                        </div>
+                      </div>
+                    </div>
+                  </SheetHeader>
+                  <div className="flex-1 overflow-y-auto px-6 py-5 bg-white">
+                    <NavList
+                      currentSearch={currentSearch}
+                      groups={groups}
+                      pathname={pathname}
+                      onNavigate={() => {
+                        window.setTimeout(
+                          () => setCurrentSearch(window.location.search),
+                          0
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="border-t border-slate-100 p-6 bg-white">
+                    {viewer?.id && viewer?.accessToken ? (
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-2.5">
+                          <Avatar className="size-9">
+                            <AvatarImage
+                              alt={viewer.name ?? viewer.email ?? 'User'}
+                              src={viewer.image ?? undefined}
+                            />
+                            <AvatarFallback className="bg-slate-900 text-xs text-white">
+                              {initials(viewer.name, viewer.email)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <div className="truncate text-xs font-semibold text-slate-950">
+                              {viewer.name ?? viewer.email ?? 'User'}
+                            </div>
+                            <div className="text-[10px] font-medium text-slate-500">
+                              {roleLabel(viewer)}
+                            </div>
+                          </div>
+                        </div>
+                        <SignOutButton />
+                      </div>
+                    ) : (
+                      <div className="w-full">
+                        <SignInButton />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
