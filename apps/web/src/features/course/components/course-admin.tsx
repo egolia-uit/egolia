@@ -39,10 +39,7 @@ import {
   type CourseCourse,
   approveCourse,
   declineCourse,
-  deleteCourse,
   getSystemCourses,
-  hideCourse,
-  unhideCourse,
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import { formatVnd } from '#/lib/api/format';
