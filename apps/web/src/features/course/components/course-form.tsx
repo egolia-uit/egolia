@@ -263,8 +263,8 @@ export function CourseForm({
           {onUploadIntroductionVideo && (
             <div
               className="
-              grid gap-2 rounded-xl border border-slate-200/60 bg-slate-50 p-4
-            "
+                grid gap-2 rounded-xl border border-slate-200/60 bg-slate-50 p-4
+              "
             >
               <FieldLabel htmlFor="course-video-file">
                 Introduction video
@@ -286,9 +286,7 @@ export function CourseForm({
               {uploadProgress !== null && (
                 <div className="mt-2 grid gap-2">
                   <div
-                    className="
-                    h-2.5 overflow-hidden rounded-full bg-slate-200
-                  "
+                    className="h-2.5 overflow-hidden rounded-full bg-slate-200"
                   >
                     <div
                       className="

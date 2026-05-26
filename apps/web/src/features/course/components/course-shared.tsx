@@ -96,10 +96,16 @@ export function VideoDropZone({
   return (
     <div
       className={cn(
-        'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-6 transition-colors',
+        `
+          flex cursor-pointer flex-col items-center justify-center gap-2
+          rounded-xl border-2 border-dashed px-4 py-6 transition-colors
+        `,
         isDraggingOver
           ? 'border-blue-400 bg-blue-50 text-blue-600'
-          : 'border-slate-200 bg-slate-50/60 text-slate-500 hover:border-slate-300 hover:bg-slate-50'
+          : `
+            border-slate-200 bg-slate-50/60 text-slate-500
+            hover:border-slate-300 hover:bg-slate-50
+          `
       )}
       onClick={() => inputRef.current?.click()}
       onDragLeave={onDragLeave}

@@ -243,8 +243,13 @@ function AdminCoursesContent({
                     {rows.map((course) => (
                       <TableRow key={course.id ?? course.title}>
                         <TableCell className="max-w-96 whitespace-normal">
-                          <div className="flex gap-3 items-center">
-                            <div className="relative aspect-video w-20 shrink-0 overflow-hidden rounded-lg border border-slate-100/60 bg-gradient-to-br from-blue-50/80 to-slate-50/80">
+                          <div className="flex items-center gap-3">
+                            <div className="
+                              relative aspect-video w-20 shrink-0
+                              overflow-hidden rounded-lg border
+                              border-slate-100/60 bg-gradient-to-br
+                              from-blue-50/80 to-slate-50/80
+                            ">
                               {course.introductionVideoUrl ? (
                                 <video
                                   className="h-full w-full object-cover"
@@ -253,16 +258,22 @@ function AdminCoursesContent({
                                   preload="metadata"
                                 />
                               ) : (
-                                <div className="flex h-full w-full items-center justify-center">
+                                <div className="
+                                  flex h-full w-full items-center justify-center
+                                ">
                                   <BookOpen className="size-4 text-indigo-300" />
                                 </div>
                               )}
                             </div>
                             <div className="min-w-0">
-                              <div className="font-semibold text-slate-900 leading-snug">
+                              <div className="
+                                leading-snug font-semibold text-slate-900
+                              ">
                                 {course.title}
                               </div>
-                              <div className="line-clamp-1 text-xs text-slate-500 mt-0.5">
+                              <div className="
+                                mt-0.5 line-clamp-1 text-xs text-slate-500
+                              ">
                                 {course.overview || 'No overview'}
                               </div>
                             </div>

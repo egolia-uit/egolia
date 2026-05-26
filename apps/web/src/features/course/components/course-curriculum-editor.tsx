@@ -159,9 +159,6 @@ function createUuid() {
   return `00000000-0000-4000-8000-${suffix}`;
 }
 
-function localId(prefix: 'section' | 'lesson') {
-  return `local-${prefix}-${createUuid()}`;
-}
 
 function createAnswerDraft(content = '', isCorrect = false): LessonAnswerDraft {
   return { id: createUuid(), content, isCorrect };
@@ -561,11 +558,14 @@ function TestQuestionBuilder({
           >
             <SelectValue placeholder="Select question type" />
           </SelectTrigger>
-          <SelectContent className="border border-slate-200/80 bg-white shadow-md">
+          <SelectContent className="
+            border border-slate-200/80 bg-white shadow-md
+          ">
             <SelectItem
               className="
                 rounded-lg
-                data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900
+                data-[highlighted]:bg-slate-100
+                data-[highlighted]:text-slate-900
               "
               value="singleChoice"
             >
@@ -574,7 +574,8 @@ function TestQuestionBuilder({
             <SelectItem
               className="
                 rounded-lg
-                data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-900
+                data-[highlighted]:bg-slate-100
+                data-[highlighted]:text-slate-900
               "
               value="multipleChoice"
             >
@@ -594,9 +595,7 @@ function TestQuestionBuilder({
           return (
             <Card
               key={question.id}
-              className="
-                border border-slate-200/60 bg-white/90 shadow-sm
-              "
+              className="border border-slate-200/60 bg-white/90 shadow-sm"
             >
               <CardHeader className="px-3 pb-2">
                 <div className="flex items-center justify-between gap-2">
@@ -2111,7 +2110,10 @@ export function CourseCurriculumEditor({
           )}
 
           {selectedSection && !selectedLessonKey && (
-            <Card className="border border-slate-200/60 bg-white/95 shadow-[0_8px_30px_rgba(15,23,42,0.04)]">
+            <Card className="
+              border border-slate-200/60 bg-white/95
+              shadow-[0_8px_30px_rgba(15,23,42,0.04)]
+            ">
               <CardHeader className="px-5 pt-5 pb-3">
                 <CardTitle className="text-lg text-slate-900">
                   {readOnly ? 'Section details' : 'Editing section'}
@@ -2404,13 +2406,16 @@ export function CourseCurriculumEditor({
                         >
                           <SelectTrigger
                             className="
-                              h-10 w-full rounded-xl border border-slate-200/80 bg-white px-4
+                              h-10 w-full rounded-xl border border-slate-200/80
+                              bg-white px-4
                               focus-visible:ring-2 focus-visible:ring-ring
                             "
                           >
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="border border-slate-200/80 bg-white shadow-md">
+                          <SelectContent className="
+                            border border-slate-200/80 bg-white shadow-md
+                          ">
                             <SelectItem value="video">Video lesson</SelectItem>
                             <SelectItem value="test">Test lesson</SelectItem>
                           </SelectContent>
@@ -2422,7 +2427,8 @@ export function CourseCurriculumEditor({
                       <div className="space-y-4">
                         <div
                           className="
-                            space-y-2 rounded-xl border border-slate-100 bg-slate-50/50 p-3
+                            space-y-2 rounded-xl border border-slate-100
+                            bg-slate-50/50 p-3
                           "
                         >
                           <Label htmlFor="new-video-file-builder">
@@ -2666,7 +2672,8 @@ export function CourseCurriculumEditor({
                     {lessonEditor.lessonType === 'video' ? (
                       <div
                         className="
-                          space-y-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4
+                          space-y-4 rounded-2xl border border-slate-100
+                          bg-slate-50/50 p-4
                         "
                       >
                         {lessonEditor.videoUrl ? (
@@ -2785,7 +2792,8 @@ export function CourseCurriculumEditor({
                               <div className="mt-1 grid gap-1">
                                 <div
                                   className="
-                                    h-2 overflow-hidden rounded-full bg-slate-200
+                                    h-2 overflow-hidden rounded-full
+                                    bg-slate-200
                                   "
                                 >
                                   <div
@@ -2945,7 +2953,9 @@ export function CourseCurriculumEditor({
                     )}
                   </>
                 ) : (
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
+                  <div className="
+                    flex items-center gap-2 text-sm text-slate-500
+                  ">
                     <Loader2 className="size-4 animate-spin" />
                     Loading lesson editor...
                   </div>

@@ -296,12 +296,20 @@ function InstructorCourseDetailContent({
       )}
       {state.status === 'ready' && (
         <div className="grid gap-6">
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="
+            grid gap-6
+            lg:grid-cols-3
+          ">
             {/* Info and Actions */}
-            <div className="lg:col-span-2 flex flex-col justify-between rounded-2xl border border-slate-200/60 bg-white/95 p-6 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]">
+            <div className="
+              flex flex-col justify-between rounded-2xl border
+              border-slate-200/60 bg-white/95 p-6
+              shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+              lg:col-span-2
+            ">
               <div className="space-y-4">
                 <div>
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
                     <Badge variant={statusVariant(state.data.status)}>
                       {statusLabel(state.data.status)}
                     </Badge>
@@ -312,7 +320,10 @@ function InstructorCourseDetailContent({
                       </Badge>
                     )}
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-950 tracking-tight leading-snug">
+                  <h2 className="
+                    text-2xl leading-snug font-bold tracking-tight
+                    text-slate-950
+                  ">
                     {state.data.title}
                   </h2>
                 </div>
@@ -322,20 +333,23 @@ function InstructorCourseDetailContent({
                     {state.data.overview}
                   </p>
                 ) : (
-                  <p className="text-sm italic text-slate-400">
+                  <p className="text-sm text-slate-400 italic">
                     No overview description provided yet.
                   </p>
                 )}
 
-                <div className="flex flex-wrap items-center gap-6 text-sm border-t border-b border-slate-100 py-3">
+                <div className="
+                  flex flex-wrap items-center gap-6 border-t border-b
+                  border-slate-100 py-3 text-sm
+                ">
                   <div>
-                    <span className="text-slate-500 font-medium">Price: </span>
+                    <span className="font-medium text-slate-500">Price: </span>
                     <span className="font-bold text-slate-900">
                       {formatVnd(state.data.price)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500 font-medium">Status: </span>
+                    <span className="font-medium text-slate-500">Status: </span>
                     <span className="font-semibold text-slate-700 capitalize">
                       {state.data.status ?? 'draft'}
                     </span>
@@ -432,23 +446,40 @@ function InstructorCourseDetailContent({
             </div>
 
             {/* Intro Video / Thumbnail Preview Card */}
-            <div className="rounded-2xl border border-slate-200/60 bg-white/95 p-5 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+            <div className="
+              flex flex-col justify-between rounded-2xl border
+              border-slate-200/60 bg-white/95 p-5
+              shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+            ">
               <div className="space-y-3">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <h3 className="
+                  flex items-center gap-1.5 text-sm font-bold tracking-wider
+                  text-slate-800 uppercase
+                ">
                   <BookOpen className="size-4 text-indigo-500" />
                   Intro Video Preview
                 </h3>
                 {state.data.introductionVideoUrl ? (
-                  <div className="relative overflow-hidden rounded-xl bg-slate-950 aspect-video shadow-sm border border-slate-100/50">
+                  <div className="
+                    relative aspect-video overflow-hidden rounded-xl border
+                    border-slate-100/50 bg-slate-950 shadow-sm
+                  ">
                     <CourseVideoPlayer
                       src={state.data.introductionVideoUrl}
                       title={state.data.title}
-                      className="w-full h-full"
+                      className="h-full w-full"
                     />
                   </div>
                 ) : (
-                  <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-4 text-center">
-                    <div className="rounded-full border border-slate-200 bg-white p-2 shadow-xs">
+                  <div className="
+                    flex aspect-video w-full flex-col items-center
+                    justify-center gap-2 rounded-xl border border-dashed
+                    border-slate-200 bg-slate-50/50 p-4 text-center
+                  ">
+                    <div className="
+                      rounded-full border border-slate-200 bg-white p-2
+                      shadow-xs
+                    ">
                       <BookOpen className="size-6 text-slate-400" />
                     </div>
                     <span className="text-xs font-semibold text-slate-600">
@@ -521,18 +552,34 @@ export function InstructorCourseBuilderContent({
       {state.status === 'ready' && (
         <div className="grid gap-6">
           {/* Collapsible/Inline Edit Basic Info & Media Preview Panel */}
-          <div className="rounded-2xl border border-slate-200/60 bg-white/95 p-6 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)] transition-all duration-300">
+          <div className="
+            rounded-2xl border border-slate-200/60 bg-white/95 p-6
+            shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+            transition-all duration-300
+          ">
             {!isEditingBasic ? (
               // View Mode
-              <div className="grid gap-6 md:grid-cols-3">
+              <div className="
+                grid gap-6
+                md:grid-cols-3
+              ">
                 {/* Text Details */}
-                <div className="md:col-span-2 flex flex-col justify-between">
+                <div className="
+                  flex flex-col justify-between
+                  md:col-span-2
+                ">
                   <div className="space-y-4">
                     <div>
-                      <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+                      <span className="
+                        text-xs font-semibold tracking-wide text-blue-600
+                        uppercase
+                      ">
                         Basic Information
                       </span>
-                      <h2 className="text-2xl font-bold text-slate-950 tracking-tight leading-snug mt-1">
+                      <h2 className="
+                        mt-1 text-2xl leading-snug font-bold tracking-tight
+                        text-slate-950
+                      ">
                         {state.data.title}
                       </h2>
                     </div>
@@ -542,14 +589,17 @@ export function InstructorCourseBuilderContent({
                         {state.data.overview}
                       </p>
                     ) : (
-                      <p className="text-sm italic text-slate-400">
+                      <p className="text-sm text-slate-400 italic">
                         No overview description provided yet.
                       </p>
                     )}
 
-                    <div className="flex flex-wrap items-center gap-6 text-sm border-t border-slate-100 pt-4">
+                    <div className="
+                      flex flex-wrap items-center gap-6 border-t
+                      border-slate-100 pt-4 text-sm
+                    ">
                       <div>
-                        <span className="text-slate-500 font-medium">
+                        <span className="font-medium text-slate-500">
                           Price:{' '}
                         </span>
                         <span className="font-bold text-slate-900">
@@ -557,10 +607,12 @@ export function InstructorCourseBuilderContent({
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 font-medium">
+                        <span className="font-medium text-slate-500">
                           Status:{' '}
                         </span>
-                        <span className="font-semibold text-slate-700 capitalize">
+                        <span className="
+                          font-semibold text-slate-700 capitalize
+                        ">
                           {state.data.status ?? 'draft'}
                         </span>
                       </div>
@@ -618,7 +670,8 @@ export function InstructorCourseBuilderContent({
                             <Button
                               type="button"
                               className="
-                                bg-primary text-primary-foreground shadow-nm-flat
+                                bg-primary text-primary-foreground
+                                shadow-nm-flat
                                 hover:bg-primary/90
                               "
                               disabled={submitting}
@@ -644,23 +697,39 @@ export function InstructorCourseBuilderContent({
                 </div>
 
                 {/* Playable Video Preview */}
-                <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 flex flex-col justify-between">
+                <div className="
+                  flex flex-col justify-between rounded-xl border
+                  border-slate-100 bg-slate-50/50 p-4
+                ">
                   <div className="space-y-3">
-                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <h3 className="
+                      flex items-center gap-1.5 text-sm font-bold tracking-wider
+                      text-slate-800 uppercase
+                    ">
                       <BookOpen className="size-4 text-indigo-500" />
                       Intro Video Preview
                     </h3>
                     {state.data.introductionVideoUrl ? (
-                      <div className="relative overflow-hidden rounded-xl bg-slate-950 aspect-video shadow-sm border border-slate-100/50">
+                      <div className="
+                        relative aspect-video overflow-hidden rounded-xl border
+                        border-slate-100/50 bg-slate-950 shadow-sm
+                      ">
                         <CourseVideoPlayer
                           src={state.data.introductionVideoUrl}
                           title={state.data.title}
-                          className="w-full h-full"
+                          className="h-full w-full"
                         />
                       </div>
                     ) : (
-                      <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 bg-white p-4 text-center">
-                        <div className="rounded-full border border-slate-200 bg-slate-50 p-2 shadow-xs">
+                      <div className="
+                        flex aspect-video w-full flex-col items-center
+                        justify-center gap-2 rounded-xl border border-dashed
+                        border-slate-200 bg-white p-4 text-center
+                      ">
+                        <div className="
+                          rounded-full border border-slate-200 bg-slate-50 p-2
+                          shadow-xs
+                        ">
                           <BookOpen className="size-6 text-slate-400" />
                         </div>
                         <span className="text-xs font-semibold text-slate-600">
@@ -676,12 +745,24 @@ export function InstructorCourseBuilderContent({
               </div>
             ) : (
               // Edit Mode (Inline Form & Video Preview side by side!)
-              <div className="grid gap-6 md:grid-cols-3">
+              <div className="
+                grid gap-6
+                md:grid-cols-3
+              ">
                 {/* Form column */}
-                <div className="md:col-span-2 space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="
+                  space-y-4
+                  md:col-span-2
+                ">
+                  <div className="
+                    flex items-center justify-between border-b border-slate-100
+                    pb-3
+                  ">
                     <div>
-                      <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+                      <span className="
+                        text-xs font-semibold tracking-wide text-blue-600
+                        uppercase
+                      ">
                         Edit Mode
                       </span>
                       <h3 className="text-lg font-bold text-slate-950">
@@ -693,7 +774,10 @@ export function InstructorCourseBuilderContent({
                       variant="ghost"
                       size="sm"
                       onClick={() => setIsEditingBasic(false)}
-                      className="text-slate-500 hover:bg-slate-100"
+                      className="
+                        text-slate-500
+                        hover:bg-slate-100
+                      "
                     >
                       Cancel
                     </Button>
@@ -740,23 +824,39 @@ export function InstructorCourseBuilderContent({
                 </div>
 
                 {/* Active intro video preview next to it */}
-                <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 flex flex-col justify-between">
+                <div className="
+                  flex flex-col justify-between rounded-xl border
+                  border-slate-100 bg-slate-50/50 p-4
+                ">
                   <div className="space-y-3">
-                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                    <h3 className="
+                      flex items-center gap-1.5 text-sm font-bold tracking-wider
+                      text-slate-800 uppercase
+                    ">
                       <BookOpen className="size-4 text-indigo-500" />
                       Active Video
                     </h3>
                     {state.data.introductionVideoUrl ? (
-                      <div className="relative overflow-hidden rounded-xl bg-slate-950 aspect-video shadow-sm border border-slate-100/50">
+                      <div className="
+                        relative aspect-video overflow-hidden rounded-xl border
+                        border-slate-100/50 bg-slate-950 shadow-sm
+                      ">
                         <CourseVideoPlayer
                           src={state.data.introductionVideoUrl}
                           title={state.data.title}
-                          className="w-full h-full"
+                          className="h-full w-full"
                         />
                       </div>
                     ) : (
-                      <div className="flex aspect-video w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 bg-white p-4 text-center">
-                        <div className="rounded-full border border-slate-200 bg-slate-50 p-2 shadow-xs">
+                      <div className="
+                        flex aspect-video w-full flex-col items-center
+                        justify-center gap-2 rounded-xl border border-dashed
+                        border-slate-200 bg-white p-4 text-center
+                      ">
+                        <div className="
+                          rounded-full border border-slate-200 bg-slate-50 p-2
+                          shadow-xs
+                        ">
                           <BookOpen className="size-6 text-slate-400" />
                         </div>
                         <span className="text-xs font-semibold text-slate-600">
@@ -768,7 +868,9 @@ export function InstructorCourseBuilderContent({
                       </div>
                     )}
                   </div>
-                  <div className="mt-4 text-[11px] text-slate-400 italic text-center">
+                  <div className="
+                    mt-4 text-center text-[11px] text-slate-400 italic
+                  ">
                     Changes to title/price/overview are saved immediately when
                     clicking Save. Video uploads are auto-processed.
                   </div>

@@ -68,7 +68,10 @@ const MOCK_POSTS = [
 
 function BlogCard({ post }: { post: (typeof MOCK_POSTS)[0] }) {
   return (
-    <Link href={`/blog/${post.slug}`} className="block focus-visible:outline-none">
+    <Link href={`/blog/${post.slug}`} className="
+      block
+      focus-visible:outline-none
+    ">
       <Card
         className="
           group flex h-full flex-col overflow-hidden border border-slate-200/60
@@ -82,15 +85,22 @@ function BlogCard({ post }: { post: (typeof MOCK_POSTS)[0] }) {
         <CardHeader className="px-5 pt-5 pb-2">
           <div className="flex items-center gap-2">
             <Badge variant="inset">{post.category}</Badge>
-            <span className="text-xs text-slate-500 font-medium">{post.readTime}</span>
+            <span className="text-xs font-medium text-slate-500">{post.readTime}</span>
           </div>
-          <CardTitle className="line-clamp-2 text-lg font-semibold text-slate-900 mt-2 transition-colors duration-200 group-hover:text-blue-600">
+          <CardTitle className="
+            mt-2 line-clamp-2 text-lg font-semibold text-slate-900
+            transition-colors duration-200
+            group-hover:text-blue-600
+          ">
             {post.title}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-1 flex-col gap-3 px-5 pb-5">
           <p className="line-clamp-3 text-sm/6 text-slate-600">{post.excerpt}</p>
-          <div className="mt-auto flex items-center gap-3 border-t border-slate-50 pt-3 text-xs text-slate-500 font-medium">
+          <div className="
+            mt-auto flex items-center gap-3 border-t border-slate-50 pt-3
+            text-xs font-medium text-slate-500
+          ">
             <span className="flex items-center gap-1">
               <User className="size-3.5 text-slate-400" />
               {post.author}

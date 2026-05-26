@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, Eye, EyeOff, Loader2, MoreVertical, Settings, ShieldCheck, Trash2 } from 'lucide-react';
+import { BookOpen, Eye, EyeOff, Loader2, MoreVertical, ShieldCheck, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
 
@@ -239,10 +239,10 @@ export function CourseCard({
                   variant="ghost"
                   size="icon-xs"
                   className="
-                    absolute top-2.5 right-2.5 z-20 h-8 w-8 rounded-full
-                    bg-white/90 border border-white/70 text-slate-600 shadow-sm
-                    hover:bg-white hover:text-slate-900 opacity-90
-                    transition-opacity duration-200
+                    absolute top-2.5 right-2.5 z-20 h-8 w-8 rounded-full border
+                    border-white/70 bg-white/90 text-slate-600 opacity-90
+                    shadow-sm transition-opacity duration-200
+                    hover:bg-white hover:text-slate-900
                   "
                   onClick={(e) => {
                     e.preventDefault();
@@ -255,14 +255,20 @@ export function CourseCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-lg z-30"
+                className="
+                  z-30 w-44 rounded-xl border border-slate-200 bg-white p-1
+                  shadow-lg
+                "
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                 }}
               >
                 <DropdownMenuItem
-                  className="flex items-center gap-2 py-2 px-3 rounded-lg cursor-pointer text-sm"
+                  className="
+                    flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2
+                    text-sm
+                  "
                   onClick={async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -283,7 +289,11 @@ export function CourseCard({
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="flex items-center gap-2 py-2 px-3 rounded-lg text-red-600 focus:text-red-700 cursor-pointer text-sm"
+                  className="
+                    flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2
+                    text-sm text-red-600
+                    focus:text-red-700
+                  "
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -427,7 +437,10 @@ export function CourseCard({
       {destination === 'instructor' && (
         <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
           <DialogContent
-            className="sm:max-w-md z-40"
+            className="
+              z-40
+              sm:max-w-md
+            "
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -460,7 +473,10 @@ export function CourseCard({
                   e.stopPropagation();
                   await handleDelete();
                 }}
-                className="bg-red-600 hover:bg-red-700 text-white"
+                className="
+                  bg-red-600 text-white
+                  hover:bg-red-700
+                "
               >
                 {busy && <Loader2 className="mr-2 size-4 animate-spin" />}
                 Delete
