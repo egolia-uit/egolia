@@ -1,6 +1,15 @@
 'use client';
 
-import { CheckCircle2, RefreshCw, Search, XCircle } from 'lucide-react';
+import {
+  BookOpen,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  RefreshCw,
+  Search,
+  Trash2,
+  XCircle,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
@@ -30,7 +39,10 @@ import {
   type CourseCourse,
   approveCourse,
   declineCourse,
+  deleteCourse,
   getSystemCourses,
+  hideCourse,
+  unhideCourse,
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import { formatVnd } from '#/lib/api/format';
@@ -230,10 +242,30 @@ function AdminCoursesContent({
                   <TableBody>
                     {rows.map((course) => (
                       <TableRow key={course.id ?? course.title}>
-                        <TableCell className="max-w-80 whitespace-normal">
-                          <div className="font-medium">{course.title}</div>
-                          <div className="line-clamp-1 text-xs text-slate-500">
-                            {course.overview || 'No overview'}
+                        <TableCell className="max-w-96 whitespace-normal">
+                          <div className="flex gap-3 items-center">
+                            <div className="relative aspect-video w-20 shrink-0 overflow-hidden rounded-lg border border-slate-100/60 bg-gradient-to-br from-blue-50/80 to-slate-50/80">
+                              {course.introductionVideoUrl ? (
+                                <video
+                                  className="h-full w-full object-cover"
+                                  src={`${course.introductionVideoUrl}#t=0.001`}
+                                  muted
+                                  preload="metadata"
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center">
+                                  <BookOpen className="size-4 text-indigo-300" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="font-semibold text-slate-900 leading-snug">
+                                {course.title}
+                              </div>
+                              <div className="line-clamp-1 text-xs text-slate-500 mt-0.5">
+                                {course.overview || 'No overview'}
+                              </div>
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -366,6 +398,99 @@ function AdminCoursesContent({
                                 </Dialog>
                               </>
                             )}
+
+                            {course.status === 'approved' && (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="ghost"
+                                className="
+                                  text-slate-600
+                                  hover:bg-slate-100 hover:text-slate-900
+                                "
+                                onClick={() =>
+                                  mutateAdminCourse(
+                                    () =>
+                                      course.hidden
+                                        ? unhideCourse({
+                                            client: apiClient,
+                                            path: { courseId: course.id ?? '' },
+                                            throwOnError: true,
+                                          })
+                                        : hideCourse({
+                                            client: apiClient,
+                                            path: { courseId: course.id ?? '' },
+                                            throwOnError: true,
+                                          }),
+                                    course.hidden
+                                      ? 'Course is now visible.'
+                                      : 'Course is now hidden.'
+                                  )
+                                }
+                              >
+                                {course.hidden ? (
+                                  <Eye className="mr-1.5 size-4" />
+                                ) : (
+                                  <EyeOff className="mr-1.5 size-4" />
+                                )}
+                                {course.hidden ? 'Unhide' : 'Hide'}
+                              </Button>
+                            )}
+
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="ghost"
+                                  className="
+                                    text-slate-500
+                                    hover:bg-red-50 hover:text-destructive
+                                  "
+                                >
+                                  <Trash2 className="mr-1.5 size-4" />
+                                  Delete
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Delete Course?</DialogTitle>
+                                  <DialogDescription>
+                                    Are you sure you want to delete{' '}
+                                    <strong>{course.title}</strong>? This action
+                                    is permanent and cannot be undone.
+                                  </DialogDescription>
+                                </DialogHeader>
+                                <div className="flex justify-end gap-2 pt-4">
+                                  <DialogTrigger asChild>
+                                    <Button variant="outline" type="button">
+                                      Cancel
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogTrigger asChild>
+                                    <Button
+                                      type="button"
+                                      variant="destructive"
+                                      onClick={() =>
+                                        mutateAdminCourse(
+                                          () =>
+                                            deleteCourse({
+                                              client: apiClient,
+                                              path: {
+                                                courseId: course.id ?? '',
+                                              },
+                                              throwOnError: true,
+                                            }),
+                                          'Course has been deleted.'
+                                        )
+                                      }
+                                    >
+                                      Confirm Delete
+                                    </Button>
+                                  </DialogTrigger>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
                           </div>
                         </TableCell>
                       </TableRow>
