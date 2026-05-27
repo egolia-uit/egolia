@@ -54,7 +54,7 @@ type NavGroup = {
 };
 
 function navForViewer(viewer?: Viewer | null): NavGroup[] {
-  const isLoggedIn = Boolean(viewer?.id || viewer?.accessToken);
+  const isLoggedIn = Boolean(viewer?.id && viewer?.accessToken);
   const isInstructor =
     hasRole(viewer, 'instructor') || hasRole(viewer, 'admin');
   const isAdmin = hasRole(viewer, 'admin');
@@ -127,7 +127,7 @@ function initials(name?: string | null, email?: string | null) {
 }
 
 function roleLabel(viewer?: Viewer | null) {
-  if (!viewer?.id && !viewer?.accessToken) {
+  if (!viewer?.id || !viewer?.accessToken) {
     return 'Guest';
   }
   if (hasRole(viewer, 'admin')) {
@@ -176,10 +176,10 @@ function NavList({
                   className={cn(
                     `
                       flex min-h-10 items-center gap-3 rounded-xl px-3 text-sm
-                      font-medium text-slate-600 transition-all
-                      hover:bg-nm-bg hover:text-primary hover:shadow-nm-flat-sm
+                      font-medium text-slate-600 transition-colors
+                      hover:bg-slate-100 hover:text-slate-900
                     `,
-                    active && `bg-nm-bg text-primary shadow-nm-inset`
+                    active && 'border border-blue-100 bg-blue-50 text-blue-700'
                   )}
                 >
                   <item.icon className="size-4 shrink-0" />
@@ -215,8 +215,13 @@ export function AppShell({
   }, [pathname]);
 
   return (
-    <div className="min-h-dvh bg-nm-bg text-slate-950">
-      <header className="sticky top-0 z-40 bg-nm-bg shadow-nm-flat-sm">
+    <div className="min-h-dvh bg-slate-50 text-slate-950">
+      <header
+        className="
+          sticky top-0 z-40 border-b border-slate-200/70 bg-white/90
+          backdrop-blur-sm
+        "
+      >
         <div
           className="
             mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4
@@ -236,22 +241,82 @@ export function AppShell({
                   <span className="sr-only">Open navigation</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-80 overflow-y-auto p-0">
-                <SheetHeader className="border-b px-4 py-4 text-left">
-                  <SheetTitle>Egolia</SheetTitle>
-                </SheetHeader>
-                <div className="p-4">
-                  <NavList
-                    currentSearch={currentSearch}
-                    groups={groups}
-                    pathname={pathname}
-                    onNavigate={() => {
-                      window.setTimeout(
-                        () => setCurrentSearch(window.location.search),
-                        0
-                      );
-                    }}
-                  />
+              <SheetContent
+                side="left"
+                className="w-80 border-none bg-white p-0 shadow-xl"
+              >
+                <div className="flex h-full flex-col bg-white">
+                  <SheetHeader className="
+                    border-b border-slate-100 bg-white px-6 py-5 text-left
+                  ">
+                    <div className="flex items-center gap-3">
+                      <div className="
+                        flex size-9 shrink-0 items-center justify-center
+                        rounded-lg bg-slate-950 text-white
+                      ">
+                        <GraduationCap className="size-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <SheetTitle className="
+                          text-sm font-semibold tracking-tight text-slate-950
+                        ">
+                          Egolia
+                        </SheetTitle>
+                        <div className="text-[11px] font-medium text-slate-500">
+                          Elearning on the Go
+                        </div>
+                      </div>
+                    </div>
+                  </SheetHeader>
+                  <div className="flex-1 overflow-y-auto bg-white px-6 py-5">
+                    <NavList
+                      currentSearch={currentSearch}
+                      groups={groups}
+                      pathname={pathname}
+                      onNavigate={() => {
+                        window.setTimeout(
+                          () => setCurrentSearch(window.location.search),
+                          0
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="border-t border-slate-100 bg-white p-6">
+                    {viewer?.id && viewer?.accessToken ? (
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-2.5">
+                          <Avatar className="size-9">
+                            <AvatarImage
+                              alt={viewer.name ?? viewer.email ?? 'User'}
+                              src={viewer.image ?? undefined}
+                            />
+                            <AvatarFallback className="
+                              bg-slate-900 text-xs text-white
+                            ">
+                              {initials(viewer.name, viewer.email)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <div className="
+                              truncate text-xs font-semibold text-slate-950
+                            ">
+                              {viewer.name ?? viewer.email ?? 'User'}
+                            </div>
+                            <div className="
+                              text-[10px] font-medium text-slate-500
+                            ">
+                              {roleLabel(viewer)}
+                            </div>
+                          </div>
+                        </div>
+                        <SignOutButton />
+                      </div>
+                    ) : (
+                      <div className="w-full">
+                        <SignInButton />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -275,7 +340,7 @@ export function AppShell({
           </div>
 
           <div className="flex min-w-0 items-center gap-3">
-            {viewer?.id || viewer?.accessToken ? (
+            {viewer?.id && viewer?.accessToken ? (
               <>
                 <div
                   className="
@@ -326,7 +391,12 @@ export function AppShell({
           "
         >
           <div className="sticky top-24 grid gap-4">
-            <div className="rounded-2xl border-none bg-nm-bg p-4 shadow-nm-flat">
+            <div
+              className="
+                rounded-2xl border border-slate-200/80 bg-white/95 p-4
+                shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+              "
+            >
               <NavList
                 currentSearch={currentSearch}
                 groups={groups}
@@ -351,7 +421,12 @@ export function AppShell({
           >
             <div className="min-w-0">
               {eyebrow && (
-                <div className="mb-2 text-sm font-medium text-indigo-600">
+                <div
+                  className="
+                    mb-2 text-xs font-semibold tracking-wide text-blue-600
+                    uppercase
+                  "
+                >
                   {eyebrow}
                 </div>
               )}

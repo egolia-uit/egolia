@@ -1,19 +1,20 @@
 'use client';
 
 import {
+  BookOpen,
   Eye,
   EyeOff,
   FilePlus2,
   Pencil,
-  Trash2,
   Send,
+  Trash2,
 } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
+import { Badge } from '#/components/ui/neumorphism/badge';
 import { Button } from '#/components/ui/neumorphism/button';
 import { useToast } from '#/components/ui/neumorphism/toast';
 import {
@@ -38,12 +39,22 @@ import {
   updateCourse,
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
+import { formatVnd } from '#/lib/api/format';
 import type { Viewer } from '#/lib/auth/roles';
 
 import { CourseCurriculumEditor } from './course-curriculum-editor';
 import { CourseForm } from './course-form';
+import {
+  ListContent,
+  type ResourceState,
+  isDraftLike,
+  normalizeTab,
+  uploadCourseVideo,
+  useCourseDetail,
+  useCourseList,
+} from './course-shared';
 import { CourseGridSkeleton, ErrorState } from './course-states';
-import { isDraftLike, ListContent, normalizeTab, type ResourceState, uploadCourseVideo, useCourseDetail, useCourseList } from './course-shared';
+import { CourseVideoPlayer } from './course-video-player';
 
 function InstructorCoursesContent({
   initialTab,
@@ -116,17 +127,6 @@ function InstructorCoursesContent({
     }
   }
 
-  async function mutateCourse(action: () => Promise<unknown>, success: string) {
-    setActionError(null);
-    try {
-      await action();
-      showToast(success);
-      courses.reload();
-    } catch (error) {
-      setActionError(normalizeApiError(error));
-    }
-  }
-
   return (
     <AppShell
       viewer={viewer}
@@ -153,7 +153,9 @@ function InstructorCoursesContent({
                 submitting={submitting}
                 error={actionError?.message}
                 forceIntroductionVideoKey={true}
-                onUploadIntroductionVideo={(file, onProgress) => uploadCourseVideo(crypto.randomUUID(), file, onProgress)}
+                onUploadIntroductionVideo={(file, onProgress) =>
+                  uploadCourseVideo(crypto.randomUUID(), file, onProgress)
+                }
                 onSubmit={create}
               />
             </div>
@@ -177,62 +179,6 @@ function InstructorCoursesContent({
               ? 'Click edit in the approved course details to create a draft.'
               : 'Create your first course using the Create course button.'
           }
-          actionFor={(course) => (
-            <div className="flex flex-wrap gap-2">
-              <Button asChild variant="outline">
-                <Link href={`/instructor/courses/${course.id}${course.status === 'draft' ? '/builder' : ''}`}>
-                  <Eye className="mr-2 size-4" />
-                  Manage
-                </Link>
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  mutateCourse(
-                    () =>
-                      course.hidden
-                        ? unhideCourse({
-                          client: apiClient,
-                          path: { courseId: course.id ?? '' },
-                          throwOnError: true,
-                        })
-                        : hideCourse({
-                          client: apiClient,
-                          path: { courseId: course.id ?? '' },
-                          throwOnError: true,
-                        }),
-                    course.hidden ? 'Course is now visible.' : 'Course is now hidden.'
-                  )
-                }
-              >
-                {course.hidden ? (
-                  <Eye className="mr-2 size-4" />
-                ) : (
-                  <EyeOff className="mr-2 size-4" />
-                )}
-                {course.hidden ? 'Unhide' : 'Hide'}
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() =>
-                  mutateCourse(
-                    () =>
-                      deleteCourse({
-                        client: apiClient,
-                        path: { courseId: course.id ?? '' },
-                        throwOnError: true,
-                      }),
-                    'Course has been deleted.'
-                  )
-                }
-              >
-                <Trash2 className="mr-2 size-4" />
-                Delete
-              </Button>
-            </div>
-          )}
         />
       </div>
     </AppShell>
@@ -251,6 +197,29 @@ export function InstructorCoursesPage({
       )}
     </AuthGate>
   );
+}
+
+function statusLabel(status?: string) {
+  switch (status) {
+    case 'approved':
+      return 'Approved';
+    case 'pending':
+      return 'Pending';
+    case 'draft':
+    default:
+      return 'Draft';
+  }
+}
+
+function statusVariant(status?: string): 'inset' | 'warning' | 'secondary' {
+  switch (status) {
+    case 'approved':
+      return 'inset';
+    case 'pending':
+      return 'warning';
+    default:
+      return 'secondary';
+  }
 }
 
 function InstructorCourseDetailContent({
@@ -291,65 +260,104 @@ function InstructorCourseDetailContent({
       return state.data.id ?? courseId;
     }
 
-    let createDraftError: unknown;
-
-    try {
-      await createDraftVersion({
-        client: apiClient,
-        path: { courseId },
-        throwOnError: true,
-      });
-    } catch (error) {
-      createDraftError = error;
-    }
-
+    // Try to get the existing draft first to avoid 400 error from createDraftVersion
     try {
       const { data } = await getCourseForUpdate({
         client: apiClient,
         path: { courseId },
         throwOnError: true,
+        cache: 'no-store',
       });
       return data.data.id ?? courseId;
     } catch (error) {
-      throw createDraftError ?? error;
+      // Draft not found or other error, let's try to create a new draft
+      await createDraftVersion({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
+
+      // Get the draft again now that we created it
+      const { data } = await getCourseForUpdate({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+        cache: 'no-store',
+      });
+      return data.data.id ?? courseId;
     }
   }
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Management"
-      title="Course Detail"
-    >
+    <AppShell viewer={viewer} eyebrow="Management" title="Course Detail">
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
       )}
       {state.status === 'ready' && (
-        <div className="grid gap-4">
-          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
+        <div className="grid gap-6">
+          <div className="
+            grid gap-6
+            lg:grid-cols-3
+          ">
+            {/* Info and Actions */}
             <div className="
-              flex flex-col gap-3
-              lg:flex-row lg:items-center lg:justify-between
+              flex flex-col justify-between rounded-2xl border
+              border-slate-200/60 bg-white/95 p-6
+              shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+              lg:col-span-2
             ">
-              <div className="min-w-0">
-                <p className="text-xs font-medium text-slate-500 uppercase">
-                  View
-                </p>
-                <h2 className="truncate text-xl font-semibold text-slate-950">
-                  {state.data.title}
-                </h2>
-                {state.data.overview && (
-                  <p className="mt-1 line-clamp-1 text-sm text-slate-600">
+              <div className="space-y-4">
+                <div>
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <Badge variant={statusVariant(state.data.status)}>
+                      {statusLabel(state.data.status)}
+                    </Badge>
+                    {state.data.hidden && (
+                      <Badge variant="secondary">
+                        <EyeOff className="mr-1 size-3" />
+                        Hidden
+                      </Badge>
+                    )}
+                  </div>
+                  <h2 className="
+                    text-2xl leading-snug font-bold tracking-tight
+                    text-slate-950
+                  ">
+                    {state.data.title}
+                  </h2>
+                </div>
+
+                {state.data.overview ? (
+                  <p className="text-sm/6 text-slate-600">
                     {state.data.overview}
                   </p>
+                ) : (
+                  <p className="text-sm text-slate-400 italic">
+                    No overview description provided yet.
+                  </p>
                 )}
+
+                <div className="
+                  flex flex-wrap items-center gap-6 border-t border-b
+                  border-slate-100 py-3 text-sm
+                ">
+                  <div>
+                    <span className="font-medium text-slate-500">Price: </span>
+                    <span className="font-bold text-slate-900">
+                      {formatVnd(state.data.price)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-slate-500">Status: </span>
+                    <span className="font-semibold text-slate-700 capitalize">
+                      {state.data.status ?? 'draft'}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div className="
-                flex flex-wrap gap-2
-                lg:justify-end
-              ">
+              <div className="mt-6 flex flex-wrap gap-2.5">
                 <Button
                   type="button"
                   size="sm"
@@ -376,22 +384,22 @@ function InstructorCourseDetailContent({
                   disabled={submitting}
                   className="
                     text-slate-600
-                    hover:bg-white/60 hover:text-slate-900
+                    hover:bg-slate-50 hover:text-slate-900
                   "
                   onClick={() =>
                     runAction(
                       () =>
                         state.data.hidden
                           ? unhideCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          })
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            })
                           : hideCourse({
-                            client: apiClient,
-                            path: { courseId },
-                            throwOnError: true,
-                          }),
+                              client: apiClient,
+                              path: { courseId },
+                              throwOnError: true,
+                            }),
                       state.data.hidden
                         ? 'Course is now visible.'
                         : 'Course is now hidden.'
@@ -405,6 +413,7 @@ function InstructorCourseDetailContent({
                   )}
                   {state.data.hidden ? 'Unhide course' : 'Hide course'}
                 </Button>
+
                 <Button
                   type="button"
                   variant="ghost"
@@ -435,10 +444,62 @@ function InstructorCourseDetailContent({
                 </Button>
               </div>
             </div>
+
+            {/* Intro Video / Thumbnail Preview Card */}
+            <div className="
+              flex flex-col justify-between rounded-2xl border
+              border-slate-200/60 bg-white/95 p-5
+              shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+            ">
+              <div className="space-y-3">
+                <h3 className="
+                  flex items-center gap-1.5 text-sm font-bold tracking-wider
+                  text-slate-800 uppercase
+                ">
+                  <BookOpen className="size-4 text-indigo-500" />
+                  Intro Video Preview
+                </h3>
+                {state.data.introductionVideoUrl ? (
+                  <div className="
+                    relative aspect-video overflow-hidden rounded-xl border
+                    border-slate-100/50 bg-slate-950 shadow-sm
+                  ">
+                    <CourseVideoPlayer
+                      src={state.data.introductionVideoUrl}
+                      title={state.data.title}
+                      className="h-full w-full"
+                    />
+                  </div>
+                ) : (
+                  <div className="
+                    flex aspect-video w-full flex-col items-center
+                    justify-center gap-2 rounded-xl border border-dashed
+                    border-slate-200 bg-slate-50/50 p-4 text-center
+                  ">
+                    <div className="
+                      rounded-full border border-slate-200 bg-white p-2
+                      shadow-xs
+                    ">
+                      <BookOpen className="size-6 text-slate-400" />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-600">
+                      No introduction video uploaded
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      Click edit course to upload in the builder
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="mt-4 text-center text-xs text-slate-500">
+                This video is displayed on the landing page for prospective
+                students.
+              </div>
+            </div>
           </div>
 
           {actionError && <ErrorState error={actionError} />}
-          
+
           <CourseCurriculumEditor
             courseId={courseId}
             course={state.data}
@@ -464,7 +525,7 @@ export function InstructorCourseBuilderContent({
   const { state, reload, setState } = useCourseDetail(courseId);
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
+  const [isEditingBasic, setIsEditingBasic] = useState(false);
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
@@ -483,154 +544,339 @@ export function InstructorCourseBuilderContent({
   }
 
   return (
-    <AppShell
-      viewer={viewer}
-      eyebrow="Management"
-      title="Manage Course"
-    >
+    <AppShell viewer={viewer} eyebrow="Management" title="Manage Course">
       {state.status === 'loading' && <CourseGridSkeleton />}
       {state.status === 'error' && (
         <ErrorState error={state.error} onRetry={reload} />
       )}
       {state.status === 'ready' && (
-        <div className="grid gap-4">
-          <div className="rounded-2xl bg-nm-bg/95 px-4 py-3 shadow-nm-flat-sm">
-            <div className="
-              flex flex-col gap-3
-              lg:flex-row lg:items-center lg:justify-between
-            ">
-              <div className="min-w-0">
-                <p className="text-xs font-medium text-slate-500 uppercase">
-                  Curriculum Editor
-                </p>
-                <h2 className="truncate text-xl font-semibold text-slate-950">
-                  {state.data.title}
-                </h2>
-              </div>
-
+        <div className="grid gap-6">
+          {/* Collapsible/Inline Edit Basic Info & Media Preview Panel */}
+          <div className="
+            rounded-2xl border border-slate-200/60 bg-white/95 p-6
+            shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+            transition-all duration-300
+          ">
+            {!isEditingBasic ? (
+              // View Mode
               <div className="
-                flex flex-wrap gap-2
-                lg:justify-end
+                grid gap-6
+                md:grid-cols-3
               ">
-                <Dialog open={editOpen} onOpenChange={setEditOpen}>
-                  <DialogTrigger asChild>
-                    <Button type="button" size="sm" variant="outline" disabled={submitting}>
+                {/* Text Details */}
+                <div className="
+                  flex flex-col justify-between
+                  md:col-span-2
+                ">
+                  <div className="space-y-4">
+                    <div>
+                      <span className="
+                        text-xs font-semibold tracking-wide text-blue-600
+                        uppercase
+                      ">
+                        Basic Information
+                      </span>
+                      <h2 className="
+                        mt-1 text-2xl leading-snug font-bold tracking-tight
+                        text-slate-950
+                      ">
+                        {state.data.title}
+                      </h2>
+                    </div>
+
+                    {state.data.overview ? (
+                      <p className="text-sm/6 text-slate-600">
+                        {state.data.overview}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-slate-400 italic">
+                        No overview description provided yet.
+                      </p>
+                    )}
+
+                    <div className="
+                      flex flex-wrap items-center gap-6 border-t
+                      border-slate-100 pt-4 text-sm
+                    ">
+                      <div>
+                        <span className="font-medium text-slate-500">
+                          Price:{' '}
+                        </span>
+                        <span className="font-bold text-slate-900">
+                          {formatVnd(state.data.price)}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="font-medium text-slate-500">
+                          Status:{' '}
+                        </span>
+                        <span className="
+                          font-semibold text-slate-700 capitalize
+                        ">
+                          {state.data.status ?? 'draft'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap gap-2.5">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={submitting}
+                      onClick={() => setIsEditingBasic(true)}
+                    >
                       <Pencil className="mr-2 size-4" />
                       Edit basic info
                     </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-xl">
-                    <DialogHeader>
-                      <DialogTitle>Edit basic info</DialogTitle>
-                      <DialogDescription>
-                        Update title, price, or overview. Changing these on a published course will create a new draft.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="max-h-[80vh] overflow-y-auto px-1 pb-4">
-                      <CourseForm
-                        course={state.data}
-                        submitLabel="Save changes"
-                        submitting={submitting}
-                        onUploadIntroductionVideo={(file, onProgress) =>
-                          uploadCourseVideo(courseId, file, onProgress)
-                        }
-                        onSubmit={async (body) => {
-                          if (state.status !== 'ready') return;
 
-                          const previousState = state.data;
-
-                          setState({
-                            status: 'ready',
-                            data: {
-                              ...previousState,
-                              title: body.title,
-                              price: body.price,
-                              overview: body.overview,
-                            }
-                          });
-
-                          const ok = await runAction(
-                            async () => {
-                              await updateCourse({
-                                body,
-                                client: apiClient,
-                                path: { courseId: courseId },
-                                throwOnError: true,
-                              });
-                            },
-                            'Course has been updated.'
-                          );
-
-                          if (ok) {
-                            setEditOpen(false);
-                          } else {
-                            setState({ status: 'ready', data: previousState });
-                          }
-                        }}
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-                {state.data.status === 'draft' && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        type="button"
-                        size="sm"
-                        disabled={submitting}
-                        className="
-                          bg-primary text-primary-foreground shadow-nm-flat
-                          hover:bg-primary/90
-                        "
-                      >
-                        <Send className="mr-2 size-4" />
-                        Submit for Review
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Submit Course for Review?</DialogTitle>
-                        <DialogDescription>
-                          Once submitted, your course will be reviewed by an administrator. You may not be able to edit it while it is pending review. Do you want to proceed?
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="flex justify-end gap-2 pt-4">
+                    {state.data.status === 'draft' && (
+                      <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" type="button" disabled={submitting}>
-                            Cancel
+                          <Button
+                            type="button"
+                            size="sm"
+                            disabled={submitting}
+                            className="
+                              bg-primary text-primary-foreground shadow-nm-flat
+                              hover:bg-primary/90
+                            "
+                          >
+                            <Send className="mr-2 size-4" />
+                            Submit for Review
                           </Button>
                         </DialogTrigger>
-                        <Button
-                          type="button"
-                          className="
-                            bg-primary text-primary-foreground shadow-nm-flat
-                            hover:bg-primary/90
-                          "
-                          disabled={submitting}
-                          onClick={() => {
-                            runAction(
-                              async () => {
-                                await submitCourse({
-                                  client: apiClient,
-                                  path: { courseId },
-                                  throwOnError: true,
-                                });
-                                reload();
-                                router.push('/instructor/courses');
-                              },
-                              'Course has been submitted for review.'
-                            );
-                          }}
-                        >
-                          Confirm & Submit
-                        </Button>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Submit Course for Review?</DialogTitle>
+                            <DialogDescription>
+                              Once submitted, your course will be reviewed by an
+                              administrator. You may not be able to edit it
+                              while it is pending review. Do you want to
+                              proceed?
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="flex justify-end gap-2 pt-4">
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                type="button"
+                                disabled={submitting}
+                              >
+                                Cancel
+                              </Button>
+                            </DialogTrigger>
+                            <Button
+                              type="button"
+                              className="
+                                bg-primary text-primary-foreground
+                                shadow-nm-flat
+                                hover:bg-primary/90
+                              "
+                              disabled={submitting}
+                              onClick={() => {
+                                runAction(async () => {
+                                  await submitCourse({
+                                    client: apiClient,
+                                    path: { courseId },
+                                    throwOnError: true,
+                                  });
+                                  reload();
+                                  router.push('/instructor/courses');
+                                }, 'Course has been submitted for review.');
+                              }}
+                            >
+                              Confirm & Submit
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
+                </div>
+
+                {/* Playable Video Preview */}
+                <div className="
+                  flex flex-col justify-between rounded-xl border
+                  border-slate-100 bg-slate-50/50 p-4
+                ">
+                  <div className="space-y-3">
+                    <h3 className="
+                      flex items-center gap-1.5 text-sm font-bold tracking-wider
+                      text-slate-800 uppercase
+                    ">
+                      <BookOpen className="size-4 text-indigo-500" />
+                      Intro Video Preview
+                    </h3>
+                    {state.data.introductionVideoUrl ? (
+                      <div className="
+                        relative aspect-video overflow-hidden rounded-xl border
+                        border-slate-100/50 bg-slate-950 shadow-sm
+                      ">
+                        <CourseVideoPlayer
+                          src={state.data.introductionVideoUrl}
+                          title={state.data.title}
+                          className="h-full w-full"
+                        />
                       </div>
-                    </DialogContent>
-                  </Dialog>
-                )}
+                    ) : (
+                      <div className="
+                        flex aspect-video w-full flex-col items-center
+                        justify-center gap-2 rounded-xl border border-dashed
+                        border-slate-200 bg-white p-4 text-center
+                      ">
+                        <div className="
+                          rounded-full border border-slate-200 bg-slate-50 p-2
+                          shadow-xs
+                        ">
+                          <BookOpen className="size-6 text-slate-400" />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-600">
+                          No intro video uploaded
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          Click edit basic info to upload below
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              // Edit Mode (Inline Form & Video Preview side by side!)
+              <div className="
+                grid gap-6
+                md:grid-cols-3
+              ">
+                {/* Form column */}
+                <div className="
+                  space-y-4
+                  md:col-span-2
+                ">
+                  <div className="
+                    flex items-center justify-between border-b border-slate-100
+                    pb-3
+                  ">
+                    <div>
+                      <span className="
+                        text-xs font-semibold tracking-wide text-blue-600
+                        uppercase
+                      ">
+                        Edit Mode
+                      </span>
+                      <h3 className="text-lg font-bold text-slate-950">
+                        Edit Basic Info
+                      </h3>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsEditingBasic(false)}
+                      className="
+                        text-slate-500
+                        hover:bg-slate-100
+                      "
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+
+                  <CourseForm
+                    course={state.data}
+                    submitLabel="Save changes"
+                    submitting={submitting}
+                    onUploadIntroductionVideo={(file, onProgress) =>
+                      uploadCourseVideo(courseId, file, onProgress)
+                    }
+                    onSubmit={async (body) => {
+                      if (state.status !== 'ready') return;
+
+                      const previousState = state.data;
+
+                      setState({
+                        status: 'ready',
+                        data: {
+                          ...previousState,
+                          title: body.title,
+                          price: body.price,
+                          overview: body.overview,
+                        },
+                      });
+
+                      const ok = await runAction(async () => {
+                        await updateCourse({
+                          body,
+                          client: apiClient,
+                          path: { courseId: courseId },
+                          throwOnError: true,
+                        });
+                      }, 'Course has been updated.');
+
+                      if (ok) {
+                        setIsEditingBasic(false);
+                      } else {
+                        setState({ status: 'ready', data: previousState });
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* Active intro video preview next to it */}
+                <div className="
+                  flex flex-col justify-between rounded-xl border
+                  border-slate-100 bg-slate-50/50 p-4
+                ">
+                  <div className="space-y-3">
+                    <h3 className="
+                      flex items-center gap-1.5 text-sm font-bold tracking-wider
+                      text-slate-800 uppercase
+                    ">
+                      <BookOpen className="size-4 text-indigo-500" />
+                      Active Video
+                    </h3>
+                    {state.data.introductionVideoUrl ? (
+                      <div className="
+                        relative aspect-video overflow-hidden rounded-xl border
+                        border-slate-100/50 bg-slate-950 shadow-sm
+                      ">
+                        <CourseVideoPlayer
+                          src={state.data.introductionVideoUrl}
+                          title={state.data.title}
+                          className="h-full w-full"
+                        />
+                      </div>
+                    ) : (
+                      <div className="
+                        flex aspect-video w-full flex-col items-center
+                        justify-center gap-2 rounded-xl border border-dashed
+                        border-slate-200 bg-white p-4 text-center
+                      ">
+                        <div className="
+                          rounded-full border border-slate-200 bg-slate-50 p-2
+                          shadow-xs
+                        ">
+                          <BookOpen className="size-6 text-slate-400" />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-600">
+                          No intro video uploaded
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          Use the form on the left to upload a video
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="
+                    mt-4 text-center text-[11px] text-slate-400 italic
+                  ">
+                    Changes to title/price/overview are saved immediately when
+                    clicking Save. Video uploads are auto-processed.
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {actionError && <ErrorState error={actionError} />}
@@ -667,7 +913,11 @@ export function InstructorCourseDetailPage({ courseId }: { courseId: string }) {
   );
 }
 
-export function InstructorCourseBuilderPage({ courseId }: { courseId: string }) {
+export function InstructorCourseBuilderPage({
+  courseId,
+}: {
+  courseId: string;
+}) {
   return (
     <AuthGate allowedRoles={['instructor', 'admin']}>
       {(viewer) => (

@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { Switch as SwitchPrimitive } from "radix-ui"
+import { Switch as SwitchPrimitive } from 'radix-ui';
+import * as React from 'react';
 
-import { cn } from "#/components/lib/shadcn/utils"
+import { cn } from '#/components/lib/shadcn/utils';
 
 const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitive.Root>,
@@ -13,7 +13,7 @@ const Switch = React.forwardRef<
     className={cn(
       `
         peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center
-        rounded-full border-none shadow-nm-inset transition-colors
+        rounded-full border border-slate-200 bg-slate-100 transition-colors
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
         focus-visible:ring-offset-background focus-visible:outline-none
         disabled:cursor-not-allowed disabled:opacity-50
@@ -28,15 +28,15 @@ const Switch = React.forwardRef<
     <SwitchPrimitive.Thumb
       className={cn(
         `
-          pointer-events-none block h-5 w-5 rounded-full bg-nm-bg
-          shadow-nm-flat-sm ring-0 transition-transform
+          pointer-events-none block h-5 w-5 rounded-full bg-nm-bg shadow-sm
+          ring-0 transition-transform
           data-[state=checked]:translate-x-5
           data-[state=unchecked]:translate-x-0
         `
       )}
     />
   </SwitchPrimitive.Root>
-))
-Switch.displayName = SwitchPrimitive.Root.displayName
+));
+Switch.displayName = SwitchPrimitive.Root.displayName;
 
-export { Switch }
+export { Switch };
