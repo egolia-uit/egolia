@@ -1,4 +1,6 @@
+import { Suspense } from 'react';
 import { DashboardRedirectPage } from '#/features/course/components/course-pages';
+import { CourseGridSkeleton } from '#/features/course/components/course-states';
 
 export const metadata = {
   title: 'Dashboard - Egolia',
@@ -6,5 +8,9 @@ export const metadata = {
 };
 
 export default function DashboardPage() {
-  return <DashboardRedirectPage />;
+  return (
+    <Suspense fallback={<CourseGridSkeleton />}>
+      <DashboardRedirectPage />
+    </Suspense>
+  );
 }

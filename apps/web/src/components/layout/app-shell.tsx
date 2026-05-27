@@ -4,8 +4,10 @@ import {
   Award,
   BookOpen,
   BookOpenCheck,
+  Bookmark,
   CreditCard,
   GraduationCap,
+  Home,
   LibraryBig,
   type LucideIcon,
   Menu,
@@ -13,8 +15,8 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { type ReactNode, useEffect, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { type ReactNode, Suspense } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 import {
@@ -73,8 +75,9 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
     groups.push({
       label: 'Learning',
       items: [
-        { href: '/learn', icon: BookOpen, label: 'In Progress' },
-        { href: '/learn?tab=bookmarked', icon: BookOpenCheck, label: 'Saved' },
+        { href: '/learn', icon: Home, label: 'Overview' },
+        { href: '/learn?tab=enrolled', icon: BookOpen, label: 'Enrolled' },
+        { href: '/learn?tab=bookmarked', icon: Bookmark, label: 'Saved' },
         { href: '/learn?tab=certificates', icon: Award, label: 'Certificates' },
         { href: '/billing', icon: CreditCard, label: 'Billing' },
       ],
@@ -139,16 +142,14 @@ function roleLabel(viewer?: Viewer | null) {
   return 'Learner';
 }
 
-function NavList({
+function NavListInner({
   groups,
   currentSearch,
   pathname,
-  onNavigate,
 }: {
   groups: NavGroup[];
   currentSearch: string;
   pathname: string;
-  onNavigate?: () => void;
 }) {
   const currentTab = new URLSearchParams(currentSearch).get('tab') ?? '';
 
@@ -172,7 +173,6 @@ function NavList({
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={onNavigate}
                   className={cn(
                     `
                       flex min-h-10 items-center gap-3 rounded-xl px-3 text-sm
@@ -194,6 +194,44 @@ function NavList({
   );
 }
 
+function NavListActive({
+  groups,
+  pathname,
+}: {
+  groups: NavGroup[];
+  pathname: string;
+}) {
+  const searchParams = useSearchParams();
+  const currentSearch = searchParams.toString()
+    ? `?${searchParams.toString()}`
+    : '';
+  return (
+    <NavListInner
+      groups={groups}
+      currentSearch={currentSearch}
+      pathname={pathname}
+    />
+  );
+}
+
+function NavList({
+  groups,
+  pathname,
+}: {
+  groups: NavGroup[];
+  pathname: string;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <NavListInner groups={groups} currentSearch="" pathname={pathname} />
+      }
+    >
+      <NavListActive groups={groups} pathname={pathname} />
+    </Suspense>
+  );
+}
+
 export function AppShell({
   viewer,
   eyebrow,
@@ -203,16 +241,7 @@ export function AppShell({
   children,
 }: AppShellProps) {
   const pathname = usePathname();
-  const [currentSearch, setCurrentSearch] = useState('');
   const groups = navForViewer(viewer);
-
-  useEffect(() => {
-    const syncSearch = () => setCurrentSearch(window.location.search);
-
-    syncSearch();
-    window.addEventListener('popstate', syncSearch);
-    return () => window.removeEventListener('popstate', syncSearch);
-  }, [pathname]);
 
   return (
     <div className="min-h-dvh bg-slate-50 text-slate-950">
@@ -246,20 +275,26 @@ export function AppShell({
                 className="w-80 border-none bg-white p-0 shadow-xl"
               >
                 <div className="flex h-full flex-col bg-white">
-                  <SheetHeader className="
-                    border-b border-slate-100 bg-white px-6 py-5 text-left
-                  ">
+                  <SheetHeader
+                    className="
+                      border-b border-slate-100 bg-white px-6 py-5 text-left
+                    "
+                  >
                     <div className="flex items-center gap-3">
-                      <div className="
-                        flex size-9 shrink-0 items-center justify-center
-                        rounded-lg bg-slate-950 text-white
-                      ">
+                      <div
+                        className="
+                          flex size-9 shrink-0 items-center justify-center
+                          rounded-lg bg-slate-950 text-white
+                        "
+                      >
                         <GraduationCap className="size-5" />
                       </div>
                       <div className="min-w-0">
-                        <SheetTitle className="
-                          text-sm font-semibold tracking-tight text-slate-950
-                        ">
+                        <SheetTitle
+                          className="
+                            text-sm font-semibold tracking-tight text-slate-950
+                          "
+                        >
                           Egolia
                         </SheetTitle>
                         <div className="text-[11px] font-medium text-slate-500">
@@ -269,17 +304,7 @@ export function AppShell({
                     </div>
                   </SheetHeader>
                   <div className="flex-1 overflow-y-auto bg-white px-6 py-5">
-                    <NavList
-                      currentSearch={currentSearch}
-                      groups={groups}
-                      pathname={pathname}
-                      onNavigate={() => {
-                        window.setTimeout(
-                          () => setCurrentSearch(window.location.search),
-                          0
-                        );
-                      }}
-                    />
+                    <NavList groups={groups} pathname={pathname} />
                   </div>
                   <div className="border-t border-slate-100 bg-white p-6">
                     {viewer?.id && viewer?.accessToken ? (
@@ -290,21 +315,23 @@ export function AppShell({
                               alt={viewer.name ?? viewer.email ?? 'User'}
                               src={viewer.image ?? undefined}
                             />
-                            <AvatarFallback className="
-                              bg-slate-900 text-xs text-white
-                            ">
+                            <AvatarFallback
+                              className="bg-slate-900 text-xs text-white"
+                            >
                               {initials(viewer.name, viewer.email)}
                             </AvatarFallback>
                           </Avatar>
                           <div className="min-w-0">
-                            <div className="
-                              truncate text-xs font-semibold text-slate-950
-                            ">
+                            <div
+                              className="
+                                truncate text-xs font-semibold text-slate-950
+                              "
+                            >
                               {viewer.name ?? viewer.email ?? 'User'}
                             </div>
-                            <div className="
-                              text-[10px] font-medium text-slate-500
-                            ">
+                            <div
+                              className="text-[10px] font-medium text-slate-500"
+                            >
                               {roleLabel(viewer)}
                             </div>
                           </div>
@@ -397,17 +424,7 @@ export function AppShell({
                 shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
               "
             >
-              <NavList
-                currentSearch={currentSearch}
-                groups={groups}
-                pathname={pathname}
-                onNavigate={() => {
-                  window.setTimeout(
-                    () => setCurrentSearch(window.location.search),
-                    0
-                  );
-                }}
-              />
+              <NavList groups={groups} pathname={pathname} />
             </div>
           </div>
         </aside>

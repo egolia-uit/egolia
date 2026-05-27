@@ -12,7 +12,8 @@
     "radix-ui": "^1.4.3",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "sonner": "catalog:"
+    "sonner": "catalog:",
+    "framer-motion": "catalog:"
   },
   "devDependencies": {
     "autoprefixer": "catalog:",
