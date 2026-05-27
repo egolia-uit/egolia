@@ -139,9 +139,9 @@ function ProgressBar({ value }: { value: number }) {
         <span className="font-medium text-slate-600">Progress</span>
         <span className="font-semibold text-primary">{normalized}%</span>
       </div>
-      <div
-        className="h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset"
-      >
+      <div className="
+        h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
+      ">
         <div
           className="h-full rounded-full bg-primary transition-all duration-500"
           style={{ width: `${normalized}%` }}
@@ -463,7 +463,6 @@ function LearnerCourseHero({
                 'Course overview is not available yet. You can still start from the first lesson and follow the roadmap below.'}
             </p>
           </div>
-
           <div
             className="
               mt-6 overflow-hidden rounded-xl border border-slate-200
@@ -614,9 +613,9 @@ function LearnerCourseRoadmap({
                       <PlayCircle className="size-4" />
                     </span>
                     <span className="min-w-0">
-                      <span className="
-                        block truncate font-semibold text-slate-950
-                      ">
+                      <span
+                        className="block truncate font-semibold text-slate-950"
+                      >
                         {lesson.title}
                       </span>
                       <span className="mt-0.5 block text-xs text-slate-500">
@@ -1039,9 +1038,9 @@ function CertificateList({
                   Đức Nguyễn
                 </div>
                 <div className="h-px w-full bg-slate-200" />
-                <div
-                  className="text-[10px] font-semibold text-slate-400 uppercase"
-                >
+                <div className="
+                  text-[10px] font-semibold text-slate-400 uppercase
+                ">
                   Giám đốc học thuật
                 </div>
               </div>
@@ -1063,9 +1062,9 @@ function CertificateList({
                   Egolia Team
                 </div>
                 <div className="h-px w-full bg-slate-200" />
-                <div
-                  className="text-[10px] font-semibold text-slate-400 uppercase"
-                >
+                <div className="
+                  text-[10px] font-semibold text-slate-400 uppercase
+                ">
                   Giảng viên hướng dẫn
                 </div>
               </div>
@@ -1774,9 +1773,9 @@ function LessonCommentsPanel({
                 key={item.id}
                 className="rounded-lg border border-slate-200 bg-slate-50 p-4"
               >
-                <div className="
-                  flex flex-wrap items-center justify-between gap-2
-                ">
+                <div
+                  className="flex flex-wrap items-center justify-between gap-2"
+                >
                   <div className="font-medium text-slate-900">
                     User {item.userId}
                   </div>

@@ -70,7 +70,6 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
   ];
   groups.push({ label: 'Explore', items: mainItems });
 
-  // Learner — logged in users
   if (isLoggedIn) {
     groups.push({
       label: 'Learning',
@@ -315,9 +314,9 @@ export function AppShell({
                               alt={viewer.name ?? viewer.email ?? 'User'}
                               src={viewer.image ?? undefined}
                             />
-                            <AvatarFallback
-                              className="bg-slate-900 text-xs text-white"
-                            >
+                            <AvatarFallback className="
+                              bg-slate-900 text-xs text-white
+                            ">
                               {initials(viewer.name, viewer.email)}
                             </AvatarFallback>
                           </Avatar>
@@ -329,9 +328,9 @@ export function AppShell({
                             >
                               {viewer.name ?? viewer.email ?? 'User'}
                             </div>
-                            <div
-                              className="text-[10px] font-medium text-slate-500"
-                            >
+                            <div className="
+                              text-[10px] font-medium text-slate-500
+                            ">
                               {roleLabel(viewer)}
                             </div>
                           </div>
