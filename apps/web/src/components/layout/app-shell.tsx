@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Award,
   BookOpen,
   BookOpenCheck,
   CreditCard,
@@ -74,6 +75,7 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
       items: [
         { href: '/learn', icon: BookOpen, label: 'In Progress' },
         { href: '/learn?tab=bookmarked', icon: BookOpenCheck, label: 'Saved' },
+        { href: '/learn?tab=certificates', icon: Award, label: 'Certificates' },
         { href: '/billing', icon: CreditCard, label: 'Billing' },
       ],
     });

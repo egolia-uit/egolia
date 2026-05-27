@@ -69,6 +69,7 @@ import {
   type CourseCertificate,
   type CourseCourse,
   type CourseCourseDetail,
+  type CourseCourseProgress,
   type CourseLessonComment,
   type CourseLessonDetail,
   type CoursePagination,
@@ -77,6 +78,7 @@ import {
   bookmarkCourse,
   commentOnLesson,
   finishCourse,
+  getCourseProgress,
   getLessonComments,
   getLessonDetail,
   getMyBookmarkedCourses,
@@ -127,6 +129,80 @@ type FlatLesson = {
   sectionTitle: string;
   title: string;
 };
+
+function ProgressBar({ value }: { value: number }) {
+  const normalized = Math.max(0, Math.min(100, Math.round(value)));
+
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="font-medium text-slate-600">Progress</span>
+        <span className="font-semibold text-primary">{normalized}%</span>
+      </div>
+      <div className="h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset">
+        <div
+          className="h-full rounded-full bg-primary transition-all duration-500"
+          style={{ width: `${normalized}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function CourseProgressPanel({
+  progress,
+  reload,
+}: {
+  progress: ResourceState<CourseCourseProgress>;
+  reload: () => void;
+}) {
+  if (progress.status === 'loading') {
+    return <CourseGridSkeleton />;
+  }
+
+  if (progress.status === 'error') {
+    return <ErrorState error={progress.error} onRetry={reload} />;
+  }
+
+  return (
+    <Card className="bg-nm-bg">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <CheckCircle2 className="size-5 text-primary" />
+          Learning Progress
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <ProgressBar value={progress.data.progressPercent} />
+        <div
+          className="
+            grid gap-3 rounded-xl bg-nm-bg p-4 text-sm shadow-nm-inset
+            md:grid-cols-3
+          "
+        >
+          <div>
+            <div className="text-xs text-slate-500 uppercase">Lessons</div>
+            <div className="mt-1 font-semibold text-slate-900">
+              {progress.data.completedLessons}/{progress.data.totalLessons}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-slate-500 uppercase">State</div>
+            <div className="mt-1 font-semibold text-slate-900">
+              {progress.data.isCompleted ? 'Completed' : 'In progress'}
+            </div>
+          </div>
+          <div>
+            <Button type="button" variant="outline" size="sm" onClick={reload}>
+              <RefreshCw className="mr-2 size-4" />
+              Refresh
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 function useLearnerResource<T>(loader: () => Promise<T>, deps: DependencyList) {
   const [state, setState] = useState<ResourceState<T>>({
@@ -386,10 +462,12 @@ function LearnerCourseHero({
             </p>
           </div>
 
-          <div className="
+          <div
+            className="
             mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-950
             shadow-sm
-          ">
+          "
+          >
             {course.introductionVideoUrl ? (
               <CourseVideoPlayer
                 className="shadow-none"
@@ -534,9 +612,11 @@ function LearnerCourseRoadmap({
                       <PlayCircle className="size-4" />
                     </span>
                     <span className="min-w-0">
-                      <span className="
+                      <span
+                        className="
                         block truncate font-semibold text-slate-950
-                      ">
+                      "
+                      >
                         {lesson.title}
                       </span>
                       <span className="mt-0.5 block text-xs text-slate-500">
@@ -698,9 +778,11 @@ function CertificateList({
             "
           >
             <div className="min-w-0">
-              <div className="
+              <div
+                className="
                 flex items-center gap-2 font-semibold text-slate-900
-              ">
+              "
+              >
                 <Award className="size-4 text-primary" />
                 Certificate {certificate.id.slice(0, 8)}
               </div>
@@ -883,7 +965,7 @@ function LearnerHomeContent({
 }
 
 export function LearnerHomePage({
-  initialTab = 'home',
+  initialTab = 'enrolled',
 }: {
   initialTab?: string;
 }) {
@@ -905,6 +987,10 @@ function LearnerCourseContent({
 }) {
   const { success: showToast } = useToast();
   const { state, reload } = useCourseDetail(courseId);
+  const [progress, setProgress] = useState<ResourceState<CourseCourseProgress>>(
+    { status: 'loading' }
+  );
+  const [progressReloadKey, setProgressReloadKey] = useState(0);
   const reviews = useCourseReviews(courseId);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
@@ -936,7 +1022,36 @@ function LearnerCourseContent({
     refreshBookmarks();
   }, [refreshBookmarks]);
 
-  const bookmarked = bookmarkedIds.has(courseId);
+  const reloadProgress = useCallback(
+    () => setProgressReloadKey((key) => key + 1),
+    []
+  );
+
+  useEffect(() => {
+    let mounted = true;
+
+    getCourseProgress({
+      client: apiClient,
+      path: { courseId },
+      throwOnError: true,
+    })
+      .then(({ data }) => {
+        if (mounted) {
+          setProgress({ status: 'ready', data: data.data });
+        }
+      })
+      .catch((error) => {
+        if (mounted) {
+          setProgress({ status: 'error', error: normalizeApiError(error) });
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [courseId, progressReloadKey]);
+
+  const bookmarked = state.status === 'ready' && bookmarkedIds.has(courseId);
   const firstLesson =
     state.status === 'ready' ? firstLessonHref(state.data, courseId) : null;
   const lessonCount = state.status === 'ready' ? totalLessons(state.data) : 0;
@@ -954,6 +1069,7 @@ function LearnerCourseContent({
       setActionMessage(success);
       showToast(success);
       refreshBookmarks();
+      reloadProgress();
       reviews.reload();
       reload();
       return true;
@@ -1147,6 +1263,7 @@ function LearnerCourseContent({
           {actionError && <ErrorState error={actionError} />}
 
           <section className="grid gap-6">
+            <CourseProgressPanel progress={progress} reload={reloadProgress} />
             <LearnerCourseRoadmap course={state.data} courseId={courseId} />
             <CourseReviewsPanel reload={reviews.reload} state={reviews.state} />
           </section>
@@ -1365,9 +1482,11 @@ function LessonCommentsPanel({
                 key={item.id}
                 className="rounded-lg border border-slate-200 bg-slate-50 p-4"
               >
-                <div className="
+                <div
+                  className="
                   flex flex-wrap items-center justify-between gap-2
-                ">
+                "
+                >
                   <div className="font-medium text-slate-900">
                     User {item.userId}
                   </div>
