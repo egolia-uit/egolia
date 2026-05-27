@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import {
   ArrowLeft,
   Award,
@@ -13,8 +14,8 @@ import {
   Circle,
   ClipboardList,
   Clock3,
+  Download,
   FileQuestion,
-  Home,
   Layers3,
   ListChecks,
   type LucideIcon,
@@ -98,7 +99,6 @@ import {
   CourseReviewsPanel,
   ListContent,
   type ResourceState,
-  RoleTabs,
   normalizeTab,
   useCourseDetail,
   useCourseList,
@@ -139,7 +139,9 @@ function ProgressBar({ value }: { value: number }) {
         <span className="font-medium text-slate-600">Progress</span>
         <span className="font-semibold text-primary">{normalized}%</span>
       </div>
-      <div className="h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset">
+      <div className="
+        h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
+      ">
         <div
           className="h-full rounded-full bg-primary transition-all duration-500"
           style={{ width: `${normalized}%` }}
@@ -461,12 +463,11 @@ function LearnerCourseHero({
                 'Course overview is not available yet. You can still start from the first lesson and follow the roadmap below.'}
             </p>
           </div>
-
           <div
             className="
-            mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-950
-            shadow-sm
-          "
+              mt-6 overflow-hidden rounded-xl border border-slate-200
+              bg-slate-950 shadow-sm
+            "
           >
             {course.introductionVideoUrl ? (
               <CourseVideoPlayer
@@ -613,9 +614,7 @@ function LearnerCourseRoadmap({
                     </span>
                     <span className="min-w-0">
                       <span
-                        className="
-                        block truncate font-semibold text-slate-950
-                      "
+                        className="block truncate font-semibold text-slate-950"
                       >
                         {lesson.title}
                       </span>
@@ -742,6 +741,33 @@ function CertificateList({
   reload: () => void;
   state: ResourceState<CertificateListResponse>;
 }) {
+  const [certs, setCerts] = useState<CourseCertificate[]>(
+    state.status === 'ready' ? state.data.data : []
+  );
+  const [selectedCert, setSelectedCert] = useState<CourseCertificate | null>(
+    null
+  );
+  const [claiming, setClaiming] = useState(false);
+  const [claimed, setClaimed] = useState(false);
+  const { success: showToast } = useToast();
+
+  const handleClaim = () => {
+    setClaiming(true);
+    // Simulate POST /course/certificates
+    setTimeout(() => {
+      const newCert: CourseCertificate = {
+        id: `cert_${Date.now()}`,
+        courseId: 'flowchart-algorithm-flowchart-special-topic',
+        userId: 'u1',
+        createdAt: new Date(),
+      };
+      setCerts([newCert, ...certs]);
+      setClaiming(false);
+      setClaimed(true);
+      showToast('Chúc mừng! Bạn đã nhận Chứng chỉ thành công.');
+    }, 1200);
+  };
+
   if (state.status === 'loading') {
     return <CourseGridSkeleton />;
   }
@@ -750,59 +776,329 @@ function CertificateList({
     return <ErrorState error={state.error} onRetry={reload} />;
   }
 
-  if (!state.data.data.length) {
-    return (
-      <EmptyState
-        title="No certificates yet"
-        description="Finished courses will appear here after the backend issues certificates."
-      />
-    );
-  }
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Certificates</CardTitle>
-        <CardDescription>
-          {state.data.pagination.total} certificates issued to your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-3">
-        {state.data.data.map((certificate) => (
-          <div
-            key={certificate.id}
+    <div className="space-y-6">
+      {/* Certificate Claim Simulator Banner */}
+      {!claimed && (
+        <Card
+          className="
+            rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50/40
+            shadow-xs
+          "
+        >
+          <CardContent
             className="
-              flex flex-col gap-3 rounded-xl border border-slate-200/60
-              bg-slate-50 p-4
-              md:flex-row md:items-center md:justify-between
+              flex flex-col items-center justify-between gap-4 py-6
+              md:flex-row
             "
           >
-            <div className="min-w-0">
+            <div className="flex items-start gap-4">
               <div
                 className="
-                flex items-center gap-2 font-semibold text-slate-900
-              "
+                  flex size-12 shrink-0 animate-pulse items-center
+                  justify-center rounded-2xl bg-amber-100 text-amber-600
+                "
               >
-                <Award className="size-4 text-primary" />
-                Certificate {certificate.id.slice(0, 8)}
+                <Trophy className="size-6" />
               </div>
-              <p className="mt-1 text-sm text-slate-600">
-                Course {certificate.courseId}
+              <div>
+                <CardTitle className="text-base font-bold text-slate-950">
+                  Chúc mừng! Bạn có 1 chứng chỉ sẵn sàng nhận
+                </CardTitle>
+                <p className="mt-1 text-sm font-medium text-slate-700">
+                  Bạn đã hoàn thành 100% chương trình học của khóa:{' '}
+                  <strong className="text-amber-700">
+                    FlowChart - Thuật toán chuyên sâu
+                  </strong>
+                  . Nhấp nút bên dưới để cấp chứng chỉ ngay!
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              disabled={claiming}
+              onClick={handleClaim}
+              className="
+                shrink-0 bg-amber-500 font-bold text-slate-950 shadow-nm-flat
+                hover:bg-amber-600
+              "
+            >
+              {claiming ? (
+                <>
+                  <RefreshCw className="mr-2 size-4 animate-spin" />
+                  Đang cấp...
+                </>
+              ) : (
+                <>
+                  <Award className="mr-2 size-4" />
+                  Nhận Chứng chỉ ngay
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Main List */}
+      <Card className="rounded-2xl border border-slate-200 bg-white shadow-xs">
+        <CardHeader className="border-b border-slate-100 pb-3">
+          <CardTitle
+            className="
+              flex items-center gap-2 text-base font-semibold text-slate-900
+            "
+          >
+            <Award className="size-4.5 text-blue-600" />
+            Chứng chỉ của bạn ({certs.length})
+          </CardTitle>
+          <CardDescription>
+            Danh sách chứng chỉ chính thức được cấp bởi nền tảng Egolia.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 pt-4">
+          {certs.length > 0 ? (
+            certs.map((certificate) => (
+              <div
+                key={certificate.id}
+                className="
+                  flex flex-col gap-3 rounded-xl border border-slate-200/60
+                  bg-slate-50/50 p-4 transition-all duration-200
+                  hover:border-slate-300
+                  md:flex-row md:items-center md:justify-between
+                "
+              >
+                <div className="min-w-0">
+                  <div
+                    className="
+                      flex items-center gap-2 text-sm font-semibold
+                      text-slate-900
+                    "
+                  >
+                    <Award className="size-4 text-blue-600" />
+                    Chứng chỉ {certificate.id.slice(0, 8).toUpperCase()}
+                  </div>
+                  <p
+                    className="
+                      mt-1 truncate text-sm font-semibold text-slate-700
+                    "
+                  >
+                    {certificate.courseId ===
+                    'flowchart-algorithm-flowchart-special-topic'
+                      ? 'FlowChart - Thuật toán chuyên sâu'
+                      : `Mã khóa học: ${certificate.courseId}`}
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-slate-400">
+                    Ngày cấp:{' '}
+                    {new Date(certificate.createdAt).toLocaleDateString(
+                      'vi-VN'
+                    )}
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedCert(certificate)}
+                  >
+                    <Award className="mr-2 size-4" />
+                    Xem Chứng chỉ
+                  </Button>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href={`/learn/courses/${certificate.courseId}`}>
+                      <BookOpen className="mr-2 size-4" />
+                      Học lại
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="py-8 text-center text-sm text-slate-500">
+              Bạn chưa có chứng chỉ nào. Hoàn thành khóa học để nhận chứng chỉ
+              nhé!
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Diploma Viewer Modal (Simulating getCertificateById) */}
+      {selectedCert && (
+        <div
+          className="
+            fixed inset-0 z-50 flex items-center justify-center overflow-y-auto
+            bg-slate-950/60 p-4 backdrop-blur-xs
+          "
+        >
+          <Card
+            className="
+              relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl
+              border-4 border-double border-amber-300 bg-white p-8 shadow-2xl
+            "
+          >
+            {/* Elegant Background Certificate Border Graphic */}
+            <div
+              className="
+                pointer-events-none absolute inset-2 rounded-xl border
+                border-amber-200/50
+              "
+            />
+            <div
+              className="
+                pointer-events-none absolute -right-20 -bottom-20 size-60
+                rounded-full bg-amber-500/5 blur-3xl
+              "
+            />
+
+            {/* Modal Close Button */}
+            <button
+              onClick={() => setSelectedCert(null)}
+              className="
+                absolute top-4 right-4 rounded-full p-1.5 text-slate-400
+                transition-colors
+                hover:bg-slate-100 hover:text-slate-900
+              "
+            >
+              <X className="size-5" />
+            </button>
+
+            {/* Certificate Header */}
+            <div className="mt-4 space-y-2 text-center">
+              <div className="flex justify-center">
+                <div
+                  className="
+                    flex size-14 items-center justify-center rounded-full
+                    bg-amber-100 text-amber-600
+                    shadow-[0_0_15px_rgba(245,158,11,0.2)]
+                  "
+                >
+                  <Trophy className="size-7" />
+                </div>
+              </div>
+              <h2
+                className="
+                  text-xs font-bold tracking-widest text-amber-600 uppercase
+                "
+              >
+                Chứng chỉ Hoàn thành khóa học
+              </h2>
+              <h1 className="font-serif text-2xl font-black text-slate-950">
+                EGOLIA ACADEMY
+              </h1>
+            </div>
+
+            {/* Certificate Body */}
+            <div className="mt-8 space-y-6 text-center">
+              <p className="text-sm text-slate-500 italic">
+                Chứng nhận này được trân trọng trao cho
               </p>
-              <p className="mt-1 text-xs text-slate-500">
-                Issued {formatDateTime(certificate.createdAt)}
+
+              <div className="mx-auto w-3/4 border-b-2 border-slate-900 pb-2">
+                <h3 className="font-serif text-2xl font-bold text-slate-950">
+                  Nguyễn Văn Học Viên
+                </h3>
+              </div>
+
+              <p
+                className="
+                  mx-auto max-w-md text-sm/6 font-medium text-slate-700
+                "
+              >
+                Vì đã xuất sắc vượt qua các bài kiểm tra và hoàn thành 100%
+                chương trình học của khóa học trực tuyến chuyên nghiệp:
+              </p>
+
+              <h4
+                className="
+                  mx-auto w-fit rounded-xl border border-amber-100/50
+                  bg-amber-50/50 px-4 py-2.5 text-lg font-bold text-amber-700
+                  uppercase
+                "
+              >
+                {selectedCert.courseId ===
+                'flowchart-algorithm-flowchart-special-topic'
+                  ? 'FlowChart - Thuật toán chuyên sâu'
+                  : `Mã khóa học: ${selectedCert.courseId}`}
+              </h4>
+
+              <p className="font-mono text-xs text-slate-400">
+                Mã xác thực: EG-{selectedCert.id.slice(5, 13).toUpperCase()}-
+                {selectedCert.id.slice(-4).toUpperCase()}
               </p>
             </div>
-            <Button asChild variant="outline">
-              <Link href={`/learn/courses/${certificate.courseId}`}>
-                <BookOpen className="mr-2 size-4" />
-                View course
-              </Link>
-            </Button>
-          </div>
-        ))}
-      </CardContent>
-    </Card>
+
+            {/* Signatures & Seal */}
+            <div
+              className="
+                mt-12 grid grid-cols-3 items-end justify-between gap-4 border-t
+                border-slate-100 pt-6
+              "
+            >
+              <div className="space-y-1 text-center">
+                <div className="font-serif text-sm text-slate-800 italic">
+                  Đức Nguyễn
+                </div>
+                <div className="h-px w-full bg-slate-200" />
+                <div className="
+                  text-[10px] font-semibold text-slate-400 uppercase
+                ">
+                  Giám đốc học thuật
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <div
+                  className="
+                    flex size-14 items-center justify-center rounded-full
+                    border-4 border-amber-300 bg-amber-50 text-[10px] font-bold
+                    text-amber-600 shadow-[0_0_10px_rgba(245,158,11,0.1)]
+                  "
+                >
+                  EG-SEAL
+                </div>
+              </div>
+
+              <div className="space-y-1 text-center">
+                <div className="font-serif text-sm text-slate-800 italic">
+                  Egolia Team
+                </div>
+                <div className="h-px w-full bg-slate-200" />
+                <div className="
+                  text-[10px] font-semibold text-slate-400 uppercase
+                ">
+                  Giảng viên hướng dẫn
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Buttons */}
+            <div
+              className="
+                mt-8 flex justify-end gap-2 border-t border-slate-100 pt-4
+              "
+            >
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  showToast('Đang tạo bản in PDF chất lượng cao...')
+                }
+              >
+                <Download className="mr-2 size-4" />
+                Tải xuống PDF
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => setSelectedCert(null)}
+              >
+                Đóng
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -865,38 +1161,14 @@ function LearnerHomeContent({
       title="Learning Workspace"
       viewer={viewer}
     >
-      <RoleTabs
-        active={activeTab}
-        tabs={[
-          {
-            href: '/learn',
-            icon: Home,
-            label: 'Overview',
-            value: 'home',
-          },
-          {
-            href: '/learn?tab=enrolled',
-            icon: BookOpenCheck,
-            label: 'Enrolled',
-            value: 'enrolled',
-          },
-          {
-            href: '/learn?tab=bookmarked',
-            icon: Bookmark,
-            label: 'Saved',
-            value: 'bookmarked',
-          },
-          {
-            href: '/learn?tab=certificates',
-            icon: Award,
-            label: 'Certificates',
-            value: 'certificates',
-          },
-        ]}
-      />
-
       {activeTab === 'home' && (
-        <section className="grid gap-6">
+        <motion.div
+          key="home"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="grid gap-6"
+        >
           <LearnerSummary
             bookmarked={bookmarked.state}
             certificates={certificates.state}
@@ -925,11 +1197,17 @@ function LearnerHomeContent({
               />
             </section>
           </div>
-        </section>
+        </motion.div>
       )}
 
       {activeTab === 'enrolled' && (
-        <section className="grid gap-3">
+        <motion.div
+          key="enrolled"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="grid gap-3"
+        >
           <h2 className="text-lg font-semibold">Enrolled Courses</h2>
           <ListContent
             destination="learner"
@@ -938,11 +1216,17 @@ function LearnerHomeContent({
             reload={enrolled.reload}
             state={enrolled.state}
           />
-        </section>
+        </motion.div>
       )}
 
       {activeTab === 'bookmarked' && (
-        <section className="grid gap-3">
+        <motion.div
+          key="bookmarked"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+          className="grid gap-3"
+        >
           <h2 className="text-lg font-semibold">Saved Courses</h2>
           <ListContent
             destination="learner"
@@ -951,14 +1235,21 @@ function LearnerHomeContent({
             reload={bookmarked.reload}
             state={bookmarked.state}
           />
-        </section>
+        </motion.div>
       )}
 
       {activeTab === 'certificates' && (
-        <CertificateList
-          reload={certificates.reload}
-          state={certificates.state}
-        />
+        <motion.div
+          key="certificates"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+        >
+          <CertificateList
+            reload={certificates.reload}
+            state={certificates.state}
+          />
+        </motion.div>
       )}
     </AppShell>
   );
@@ -1483,9 +1774,7 @@ function LessonCommentsPanel({
                 className="rounded-lg border border-slate-200 bg-slate-50 p-4"
               >
                 <div
-                  className="
-                  flex flex-wrap items-center justify-between gap-2
-                "
+                  className="flex flex-wrap items-center justify-between gap-2"
                 >
                   <div className="font-medium text-slate-900">
                     User {item.userId}

@@ -61,6 +61,7 @@ catalog:
   vitest: 4.0.18
   zod: 4.3.6
   '@vercel/otel': 2.1.2
+  framer-motion: 11.18.2
 onlyBuiltDependencies:
   - '@bufbuild/buf'
   - '@nestjs/core'

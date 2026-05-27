@@ -2,12 +2,17 @@
 
 import {
   BookOpen,
+  CheckCircle,
   Eye,
   EyeOff,
   FilePlus2,
+  GraduationCap,
   Pencil,
+  Search,
   Send,
+  Sparkles,
   Trash2,
+  Users,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -16,6 +21,12 @@ import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
 import { Badge } from '#/components/ui/neumorphism/badge';
 import { Button } from '#/components/ui/neumorphism/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '#/components/ui/neumorphism/card';
 import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Dialog,
@@ -25,6 +36,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '#/components/ui/shadcn/dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '#/components/ui/shadcn/table';
 import { apiClient } from '#/lib/api';
 import {
   type CourseCourseWritable,
@@ -296,17 +315,21 @@ function InstructorCourseDetailContent({
       )}
       {state.status === 'ready' && (
         <div className="grid gap-6">
-          <div className="
-            grid gap-6
-            lg:grid-cols-3
-          ">
+          <div
+            className="
+              grid gap-6
+              lg:grid-cols-3
+            "
+          >
             {/* Info and Actions */}
-            <div className="
-              flex flex-col justify-between rounded-2xl border
-              border-slate-200/60 bg-white/95 p-6
-              shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
-              lg:col-span-2
-            ">
+            <div
+              className="
+                flex flex-col justify-between rounded-2xl border
+                border-slate-200/60 bg-white/95 p-6
+                shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+                lg:col-span-2
+              "
+            >
               <div className="space-y-4">
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -320,10 +343,12 @@ function InstructorCourseDetailContent({
                       </Badge>
                     )}
                   </div>
-                  <h2 className="
-                    text-2xl leading-snug font-bold tracking-tight
-                    text-slate-950
-                  ">
+                  <h2
+                    className="
+                      text-2xl leading-snug font-bold tracking-tight
+                      text-slate-950
+                    "
+                  >
                     {state.data.title}
                   </h2>
                 </div>
@@ -338,10 +363,12 @@ function InstructorCourseDetailContent({
                   </p>
                 )}
 
-                <div className="
-                  flex flex-wrap items-center gap-6 border-t border-b
-                  border-slate-100 py-3 text-sm
-                ">
+                <div
+                  className="
+                    flex flex-wrap items-center gap-6 border-t border-b
+                    border-slate-100 py-3 text-sm
+                  "
+                >
                   <div>
                     <span className="font-medium text-slate-500">Price: </span>
                     <span className="font-bold text-slate-900">
@@ -446,24 +473,30 @@ function InstructorCourseDetailContent({
             </div>
 
             {/* Intro Video / Thumbnail Preview Card */}
-            <div className="
-              flex flex-col justify-between rounded-2xl border
-              border-slate-200/60 bg-white/95 p-5
-              shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
-            ">
+            <div
+              className="
+                flex flex-col justify-between rounded-2xl border
+                border-slate-200/60 bg-white/95 p-5
+                shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+              "
+            >
               <div className="space-y-3">
-                <h3 className="
-                  flex items-center gap-1.5 text-sm font-bold tracking-wider
-                  text-slate-800 uppercase
-                ">
+                <h3
+                  className="
+                    flex items-center gap-1.5 text-sm font-bold tracking-wider
+                    text-slate-800 uppercase
+                  "
+                >
                   <BookOpen className="size-4 text-indigo-500" />
                   Intro Video Preview
                 </h3>
                 {state.data.introductionVideoUrl ? (
-                  <div className="
-                    relative aspect-video overflow-hidden rounded-xl border
-                    border-slate-100/50 bg-slate-950 shadow-sm
-                  ">
+                  <div
+                    className="
+                      relative aspect-video overflow-hidden rounded-xl border
+                      border-slate-100/50 bg-slate-950 shadow-sm
+                    "
+                  >
                     <CourseVideoPlayer
                       src={state.data.introductionVideoUrl}
                       title={state.data.title}
@@ -471,15 +504,19 @@ function InstructorCourseDetailContent({
                     />
                   </div>
                 ) : (
-                  <div className="
-                    flex aspect-video w-full flex-col items-center
-                    justify-center gap-2 rounded-xl border border-dashed
-                    border-slate-200 bg-slate-50/50 p-4 text-center
-                  ">
-                    <div className="
-                      rounded-full border border-slate-200 bg-white p-2
-                      shadow-xs
-                    ">
+                  <div
+                    className="
+                      flex aspect-video w-full flex-col items-center
+                      justify-center gap-2 rounded-xl border border-dashed
+                      border-slate-200 bg-slate-50/50 p-4 text-center
+                    "
+                  >
+                    <div
+                      className="
+                        rounded-full border border-slate-200 bg-white p-2
+                        shadow-xs
+                      "
+                    >
                       <BookOpen className="size-6 text-slate-400" />
                     </div>
                     <span className="text-xs font-semibold text-slate-600">
@@ -513,6 +550,254 @@ function InstructorCourseDetailContent({
   );
 }
 
+const MOCK_STUDENTS = [
+  {
+    id: 's1',
+    name: 'Phan Hoàng Long',
+    email: 'longph@gmail.com',
+    enrolledAt: '2026-05-02T10:15:00Z',
+    progress: 100,
+    status: 'completed',
+  },
+  {
+    id: 's2',
+    name: 'Nguyễn Minh Thư',
+    email: 'thunm@student.edu.vn',
+    enrolledAt: '2026-05-10T14:30:00Z',
+    progress: 78,
+    status: 'active',
+  },
+  {
+    id: 's3',
+    name: 'Trần Đại Nghĩa',
+    email: 'nghiatd@gmail.com',
+    enrolledAt: '2026-05-12T08:00:00Z',
+    progress: 45,
+    status: 'active',
+  },
+  {
+    id: 's4',
+    name: 'Lê Thảo Vy',
+    email: 'vylt@egolia.edu.vn',
+    enrolledAt: '2026-05-18T16:20:00Z',
+    progress: 12,
+    status: 'active',
+  },
+];
+
+function EnrolledStudentsPanel() {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredStudents = MOCK_STUDENTS.filter(
+    (student) =>
+      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const stats = useMemo(() => {
+    const total = MOCK_STUDENTS.length;
+    const completed = MOCK_STUDENTS.filter((s) => s.progress === 100).length;
+    const averageProgress = Math.round(
+      MOCK_STUDENTS.reduce((acc, curr) => acc + curr.progress, 0) / total
+    );
+    return { total, completed, averageProgress };
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      {/* Stat Cards */}
+      <div className="
+        grid gap-4
+        md:grid-cols-3
+      ">
+        <Card className="border border-slate-200 bg-white">
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="
+              flex size-11 items-center justify-center rounded-xl bg-blue-50
+              text-blue-600
+            ">
+              <Users className="size-5" />
+            </div>
+            <div>
+              <div className="
+                text-xs font-semibold tracking-wider text-slate-500 uppercase
+              ">
+                Học viên Đăng ký
+              </div>
+              <div className="mt-1 text-2xl font-bold text-slate-900">
+                {stats.total}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-slate-200 bg-white">
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="
+              flex size-11 items-center justify-center rounded-xl bg-emerald-50
+              text-emerald-600
+            ">
+              <GraduationCap className="size-5" />
+            </div>
+            <div>
+              <div className="
+                text-xs font-semibold tracking-wider text-slate-500 uppercase
+              ">
+                Hoàn thành
+              </div>
+              <div className="mt-1 text-2xl font-bold text-slate-900">
+                {stats.completed}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-slate-200 bg-white">
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="
+              flex size-11 items-center justify-center rounded-xl bg-violet-50
+              text-violet-600
+            ">
+              <Sparkles className="size-5" />
+            </div>
+            <div>
+              <div className="
+                text-xs font-semibold tracking-wider text-slate-500 uppercase
+              ">
+                Tiến độ Trung bình
+              </div>
+              <div className="mt-1 text-2xl font-bold text-slate-900">
+                {stats.averageProgress}%
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main List */}
+      <Card className="border border-slate-200 bg-white">
+        <CardHeader className="
+          flex flex-col gap-3 border-b border-slate-100 pb-3
+          sm:flex-row sm:items-center sm:justify-between
+        ">
+          <CardTitle className="text-base font-semibold text-slate-900">
+            Danh sách Học viên ({filteredStudents.length})
+          </CardTitle>
+          {/* Search bar */}
+          <div className="
+            relative w-full
+            sm:w-72
+          ">
+            <input
+              type="text"
+              placeholder="Tìm theo tên hoặc email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="
+                w-full rounded-lg border border-slate-200 bg-white py-1.5 pr-3
+                pl-8 text-sm
+                focus:border-blue-500 focus:outline-hidden
+              "
+            />
+            <Search className="
+              absolute top-2.5 left-2.5 size-3.5 text-slate-400
+            " />
+          </div>
+        </CardHeader>
+        <CardContent className="overflow-x-auto py-2">
+          {filteredStudents.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Học viên</TableHead>
+                  <TableHead>Ngày Đăng ký</TableHead>
+                  <TableHead>Tiến độ Học tập</TableHead>
+                  <TableHead>Trạng thái</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredStudents.map((student) => (
+                  <TableRow key={student.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-3">
+                        <div className="
+                          flex size-9 items-center justify-center rounded-full
+                          bg-slate-100 font-bold text-slate-700
+                        ">
+                          {student.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-slate-950">
+                            {student.name}
+                          </div>
+                          <div className="text-xs font-medium text-slate-500">
+                            {student.email}
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm font-medium text-slate-600">
+                      {new Date(student.enrolledAt).toLocaleDateString('vi-VN')}
+                    </TableCell>
+                    <TableCell className="w-1/3">
+                      <div className="space-y-1">
+                        <div className="
+                          flex items-center justify-between text-xs
+                          font-semibold text-slate-600
+                        ">
+                          <span>{student.progress}%</span>
+                        </div>
+                        <div className="
+                          h-2 w-full overflow-hidden rounded-full border
+                          border-slate-200/50 bg-slate-100
+                        ">
+                          <div
+                            className={`
+                              h-full rounded-full transition-all duration-300
+                              ${
+                              student.progress === 100
+                                ? 'bg-emerald-500'
+                                : 'bg-blue-600'
+                            }
+                            `}
+                            style={{ width: `${student.progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {student.progress === 100 ? (
+                        <Badge className="
+                          flex w-fit items-center gap-1 bg-emerald-100
+                          text-emerald-700
+                        ">
+                          <CheckCircle className="size-3" />
+                          Đã cấp Chứng chỉ
+                        </Badge>
+                      ) : (
+                        <Badge className="
+                          flex w-fit items-center gap-1 bg-blue-100
+                          text-blue-700
+                        ">
+                          Đang học
+                        </Badge>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="py-8 text-center text-sm text-slate-500">
+              Không tìm thấy học viên nào phù hợp.
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export function InstructorCourseBuilderContent({
   viewer,
   courseId,
@@ -526,6 +811,9 @@ export function InstructorCourseBuilderContent({
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [isEditingBasic, setIsEditingBasic] = useState(false);
+  const [builderTab, setBuilderTab] = useState<'curriculum' | 'students'>(
+    'curriculum'
+  );
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
@@ -552,34 +840,44 @@ export function InstructorCourseBuilderContent({
       {state.status === 'ready' && (
         <div className="grid gap-6">
           {/* Collapsible/Inline Edit Basic Info & Media Preview Panel */}
-          <div className="
-            rounded-2xl border border-slate-200/60 bg-white/95 p-6
-            shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
-            transition-all duration-300
-          ">
+          <div
+            className="
+              rounded-2xl border border-slate-200/60 bg-white/95 p-6
+              shadow-[0_8px_30px_rgba(15,23,42,0.04),0_1px_2px_rgba(0,0,0,0.02)]
+              transition-all duration-300
+            "
+          >
             {!isEditingBasic ? (
               // View Mode
-              <div className="
-                grid gap-6
-                md:grid-cols-3
-              ">
+              <div
+                className="
+                  grid gap-6
+                  md:grid-cols-3
+                "
+              >
                 {/* Text Details */}
-                <div className="
-                  flex flex-col justify-between
-                  md:col-span-2
-                ">
+                <div
+                  className="
+                    flex flex-col justify-between
+                    md:col-span-2
+                  "
+                >
                   <div className="space-y-4">
                     <div>
-                      <span className="
-                        text-xs font-semibold tracking-wide text-blue-600
-                        uppercase
-                      ">
+                      <span
+                        className="
+                          text-xs font-semibold tracking-wide text-blue-600
+                          uppercase
+                        "
+                      >
                         Basic Information
                       </span>
-                      <h2 className="
-                        mt-1 text-2xl leading-snug font-bold tracking-tight
-                        text-slate-950
-                      ">
+                      <h2
+                        className="
+                          mt-1 text-2xl leading-snug font-bold tracking-tight
+                          text-slate-950
+                        "
+                      >
                         {state.data.title}
                       </h2>
                     </div>
@@ -594,10 +892,12 @@ export function InstructorCourseBuilderContent({
                       </p>
                     )}
 
-                    <div className="
-                      flex flex-wrap items-center gap-6 border-t
-                      border-slate-100 pt-4 text-sm
-                    ">
+                    <div
+                      className="
+                        flex flex-wrap items-center gap-6 border-t
+                        border-slate-100 pt-4 text-sm
+                      "
+                    >
                       <div>
                         <span className="font-medium text-slate-500">
                           Price:{' '}
@@ -610,9 +910,9 @@ export function InstructorCourseBuilderContent({
                         <span className="font-medium text-slate-500">
                           Status:{' '}
                         </span>
-                        <span className="
-                          font-semibold text-slate-700 capitalize
-                        ">
+                        <span
+                          className="font-semibold text-slate-700 capitalize"
+                        >
                           {state.data.status ?? 'draft'}
                         </span>
                       </div>
@@ -697,23 +997,29 @@ export function InstructorCourseBuilderContent({
                 </div>
 
                 {/* Playable Video Preview */}
-                <div className="
-                  flex flex-col justify-between rounded-xl border
-                  border-slate-100 bg-slate-50/50 p-4
-                ">
+                <div
+                  className="
+                    flex flex-col justify-between rounded-xl border
+                    border-slate-100 bg-slate-50/50 p-4
+                  "
+                >
                   <div className="space-y-3">
-                    <h3 className="
-                      flex items-center gap-1.5 text-sm font-bold tracking-wider
-                      text-slate-800 uppercase
-                    ">
+                    <h3
+                      className="
+                        flex items-center gap-1.5 text-sm font-bold
+                        tracking-wider text-slate-800 uppercase
+                      "
+                    >
                       <BookOpen className="size-4 text-indigo-500" />
                       Intro Video Preview
                     </h3>
                     {state.data.introductionVideoUrl ? (
-                      <div className="
-                        relative aspect-video overflow-hidden rounded-xl border
-                        border-slate-100/50 bg-slate-950 shadow-sm
-                      ">
+                      <div
+                        className="
+                          relative aspect-video overflow-hidden rounded-xl
+                          border border-slate-100/50 bg-slate-950 shadow-sm
+                        "
+                      >
                         <CourseVideoPlayer
                           src={state.data.introductionVideoUrl}
                           title={state.data.title}
@@ -721,15 +1027,19 @@ export function InstructorCourseBuilderContent({
                         />
                       </div>
                     ) : (
-                      <div className="
-                        flex aspect-video w-full flex-col items-center
-                        justify-center gap-2 rounded-xl border border-dashed
-                        border-slate-200 bg-white p-4 text-center
-                      ">
-                        <div className="
-                          rounded-full border border-slate-200 bg-slate-50 p-2
-                          shadow-xs
-                        ">
+                      <div
+                        className="
+                          flex aspect-video w-full flex-col items-center
+                          justify-center gap-2 rounded-xl border border-dashed
+                          border-slate-200 bg-white p-4 text-center
+                        "
+                      >
+                        <div
+                          className="
+                            rounded-full border border-slate-200 bg-slate-50 p-2
+                            shadow-xs
+                          "
+                        >
                           <BookOpen className="size-6 text-slate-400" />
                         </div>
                         <span className="text-xs font-semibold text-slate-600">
@@ -745,24 +1055,32 @@ export function InstructorCourseBuilderContent({
               </div>
             ) : (
               // Edit Mode (Inline Form & Video Preview side by side!)
-              <div className="
-                grid gap-6
-                md:grid-cols-3
-              ">
+              <div
+                className="
+                  grid gap-6
+                  md:grid-cols-3
+                "
+              >
                 {/* Form column */}
-                <div className="
-                  space-y-4
-                  md:col-span-2
-                ">
-                  <div className="
-                    flex items-center justify-between border-b border-slate-100
-                    pb-3
-                  ">
+                <div
+                  className="
+                    space-y-4
+                    md:col-span-2
+                  "
+                >
+                  <div
+                    className="
+                      flex items-center justify-between border-b
+                      border-slate-100 pb-3
+                    "
+                  >
                     <div>
-                      <span className="
-                        text-xs font-semibold tracking-wide text-blue-600
-                        uppercase
-                      ">
+                      <span
+                        className="
+                          text-xs font-semibold tracking-wide text-blue-600
+                          uppercase
+                        "
+                      >
                         Edit Mode
                       </span>
                       <h3 className="text-lg font-bold text-slate-950">
@@ -824,23 +1142,29 @@ export function InstructorCourseBuilderContent({
                 </div>
 
                 {/* Active intro video preview next to it */}
-                <div className="
-                  flex flex-col justify-between rounded-xl border
-                  border-slate-100 bg-slate-50/50 p-4
-                ">
+                <div
+                  className="
+                    flex flex-col justify-between rounded-xl border
+                    border-slate-100 bg-slate-50/50 p-4
+                  "
+                >
                   <div className="space-y-3">
-                    <h3 className="
-                      flex items-center gap-1.5 text-sm font-bold tracking-wider
-                      text-slate-800 uppercase
-                    ">
+                    <h3
+                      className="
+                        flex items-center gap-1.5 text-sm font-bold
+                        tracking-wider text-slate-800 uppercase
+                      "
+                    >
                       <BookOpen className="size-4 text-indigo-500" />
                       Active Video
                     </h3>
                     {state.data.introductionVideoUrl ? (
-                      <div className="
-                        relative aspect-video overflow-hidden rounded-xl border
-                        border-slate-100/50 bg-slate-950 shadow-sm
-                      ">
+                      <div
+                        className="
+                          relative aspect-video overflow-hidden rounded-xl
+                          border border-slate-100/50 bg-slate-950 shadow-sm
+                        "
+                      >
                         <CourseVideoPlayer
                           src={state.data.introductionVideoUrl}
                           title={state.data.title}
@@ -848,15 +1172,19 @@ export function InstructorCourseBuilderContent({
                         />
                       </div>
                     ) : (
-                      <div className="
-                        flex aspect-video w-full flex-col items-center
-                        justify-center gap-2 rounded-xl border border-dashed
-                        border-slate-200 bg-white p-4 text-center
-                      ">
-                        <div className="
-                          rounded-full border border-slate-200 bg-slate-50 p-2
-                          shadow-xs
-                        ">
+                      <div
+                        className="
+                          flex aspect-video w-full flex-col items-center
+                          justify-center gap-2 rounded-xl border border-dashed
+                          border-slate-200 bg-white p-4 text-center
+                        "
+                      >
+                        <div
+                          className="
+                            rounded-full border border-slate-200 bg-slate-50 p-2
+                            shadow-xs
+                          "
+                        >
                           <BookOpen className="size-6 text-slate-400" />
                         </div>
                         <span className="text-xs font-semibold text-slate-600">
@@ -868,9 +1196,11 @@ export function InstructorCourseBuilderContent({
                       </div>
                     )}
                   </div>
-                  <div className="
-                    mt-4 text-center text-[11px] text-slate-400 italic
-                  ">
+                  <div
+                    className="
+                      mt-4 text-center text-[11px] text-slate-400 italic
+                    "
+                  >
                     Changes to title/price/overview are saved immediately when
                     clicking Save. Video uploads are auto-processed.
                   </div>
@@ -881,22 +1211,64 @@ export function InstructorCourseBuilderContent({
 
           {actionError && <ErrorState error={actionError} />}
 
-          <CourseCurriculumEditor
-            courseId={courseId}
-            course={state.data}
-            reload={reload}
-            setCourse={(updater) => {
-              setState((current) => {
-                if (current.status !== 'ready') {
-                  return current;
+          {/* Tab Selector */}
+          <div className="mt-4 mb-6 flex gap-2 border-b border-slate-200 pb-px">
+            <button
+              onClick={() => setBuilderTab('curriculum')}
+              className={`
+                border-b-2 px-4 py-2 text-sm font-semibold transition-all
+                duration-200
+                ${
+                  builderTab === 'curriculum'
+                    ? 'border-blue-600 text-blue-600'
+                    : `
+                      border-transparent text-slate-500
+                      hover:text-slate-900
+                    `
                 }
-                return {
-                  ...current,
-                  data: updater(current.data),
-                };
-              });
-            }}
-          />
+              `}
+            >
+              Curriculum Builder
+            </button>
+            <button
+              onClick={() => setBuilderTab('students')}
+              className={`
+                border-b-2 px-4 py-2 text-sm font-semibold transition-all
+                duration-200
+                ${
+                  builderTab === 'students'
+                    ? 'border-blue-600 text-blue-600'
+                    : `
+                      border-transparent text-slate-500
+                      hover:text-slate-900
+                    `
+                }
+              `}
+            >
+              Enrolled Students ({MOCK_STUDENTS.length})
+            </button>
+          </div>
+
+          {builderTab === 'curriculum' ? (
+            <CourseCurriculumEditor
+              courseId={courseId}
+              course={state.data}
+              reload={reload}
+              setCourse={(updater) => {
+                setState((current) => {
+                  if (current.status !== 'ready') {
+                    return current;
+                  }
+                  return {
+                    ...current,
+                    data: updater(current.data),
+                  };
+                });
+              }}
+            />
+          ) : (
+            <EnrolledStudentsPanel />
+          )}
         </div>
       )}
     </AppShell>

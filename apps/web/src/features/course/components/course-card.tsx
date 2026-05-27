@@ -238,9 +238,7 @@ export function CourseCard({
           )}
           {showStatusBadges && (
             <div
-              className="
-              absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5
-            "
+              className="absolute top-2.5 left-2.5 z-10 flex flex-wrap gap-1.5"
             >
               <Badge variant={statusVariant(course.status)}>
                 {statusLabel(course.status)}
@@ -358,9 +356,7 @@ export function CourseCard({
               <span className="font-semibold text-blue-600">{progress}%</span>
             </div>
             <div
-              className="
-              h-1.5 w-full overflow-hidden rounded-full bg-slate-100
-            "
+              className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100"
             >
               <div
                 className="
