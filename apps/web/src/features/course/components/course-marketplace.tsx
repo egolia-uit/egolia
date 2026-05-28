@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
   BookOpen,
   CreditCard,
+  Filter,
   Loader2,
   RefreshCw,
   Search,
