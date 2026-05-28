@@ -1078,7 +1078,7 @@ func (h *StrictHandler) SaveVideoLessonProgress(ctx context.Context, request cou
 		CourseID:       request.CourseId,
 		LessonID:       request.LessonId,
 		UserID:         userID,
-		WatchedSeconds: nil,
+		WatchedSeconds: &request.Body.WatchedSeconds,
 		LastViewedAt:   request.Body.LastViewedAt,
 		IsCompleted:    request.Body.IsCompleted,
 	}); err != nil {
