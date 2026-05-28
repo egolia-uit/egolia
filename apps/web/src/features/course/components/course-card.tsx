@@ -598,7 +598,6 @@ export function CourseCard({
         <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
           <DialogContent
             className="
-              z-40
               sm:max-w-md
             "
             onClick={(e) => {

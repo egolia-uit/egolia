@@ -98,6 +98,10 @@ func (l *LessonBase) DeletedAt() *time.Time {
 	return l.deletedAt
 }
 
+func (l *LessonBase) SetDeletedAt(deletedAt *time.Time) {
+	l.deletedAt = deletedAt
+}
+
 func (l *LessonBase) Delete() {
 	l.deletedAt = new(time.Time)
 	*l.deletedAt = time.Now()
@@ -684,6 +688,26 @@ func areQuestionsChanged(q1, q2 []*TestQuestion) bool {
 	return false
 }
 
+func cloneTestQuestionsWithNewIDs(questions []*TestQuestion) []*TestQuestion {
+	out := make([]*TestQuestion, 0, len(questions))
+	for _, question := range questions {
+		if question == nil {
+			continue
+		}
+
+		answers := make([]*TestAnswer, 0, len(question.Answers))
+		for _, answer := range question.Answers {
+			if answer == nil {
+				continue
+			}
+			answers = append(answers, NewTestAnswer(uuid.New(), answer.Content, answer.IsCorrect))
+		}
+
+		out = append(out, NewTestQuestion(uuid.New(), question.Question, answers))
+	}
+	return out
+}
+
 func (c *Course) Merge(draft *Course) ([]DomainEvent, error) {
 	if draft == nil {
 		return nil, errs.NewInvalid("draft course is required")
@@ -782,6 +806,7 @@ func (c *Course) Merge(draft *Course) ([]DomainEvent, error) {
 					newLesson := *l
 					newLesson.id = uuid.New()
 					newLesson.originalLessonID = nil
+					newLesson.questions = cloneTestQuestionsWithNewIDs(l.GetQuestions())
 					events = append(events, LessonContentUpdatedEvent{CourseID: c.id.String(), LessonID: newLesson.id.String()})
 					newLessons = append(newLessons, &newLesson)
 				default:
@@ -809,10 +834,10 @@ func (c *Course) Merge(draft *Course) ([]DomainEvent, error) {
 					}
 					if currentTestLesson.QuestionType() != l.QuestionType() || areQuestionsChanged(currentTestLesson.GetQuestions(), l.GetQuestions()) {
 						events = append(events, LessonContentUpdatedEvent{CourseID: c.id.String(), LessonID: currentTestLesson.ID().String()})
+						currentTestLesson.SetQuestions(cloneTestQuestionsWithNewIDs(l.GetQuestions()))
 					}
 					currentTestLesson.SetTitle(l.Title())
 					currentTestLesson.questionType = l.QuestionType()
-					currentTestLesson.SetQuestions(l.GetQuestions())
 					currentTestLesson.deletedAt = l.deletedAt
 					newLessons = append(newLessons, currentTestLesson)
 				default:
@@ -864,6 +889,7 @@ func (c *Course) CreateDraftVersion() *Course {
 				newLesson.id = uuid.New()
 				originalLessonID := l.ID()
 				newLesson.originalLessonID = &originalLessonID
+				newLesson.questions = cloneTestQuestionsWithNewIDs(l.GetQuestions())
 				newSection.lessons = append(newSection.lessons, &newLesson)
 			default:
 				newSection.lessons = append(newSection.lessons, lesson)

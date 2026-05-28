@@ -25,6 +25,11 @@ type Lesson struct {
 func (Lesson) TableName() string { return "lessons" }
 
 func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
+	var deletedAt gorm.DeletedAt
+	if l.DeletedAt() != nil {
+		deletedAt = gorm.DeletedAt{Time: *l.DeletedAt(), Valid: true}
+	}
+
 	switch lesson := l.(type) {
 	case *domain.VideoLesson:
 		return &Lesson{
@@ -40,7 +45,7 @@ func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
 				Duration: int64(lesson.GetDuration() / time.Second),
 			},
 			TestLesson: nil,
-			DeletedAt:  gorm.DeletedAt{},
+			DeletedAt:  deletedAt,
 			CreatedAt:  time.Time{},
 			UpdatedAt:  time.Time{},
 		}
@@ -62,7 +67,7 @@ func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
 				QuestionType: lesson.QuestionType(),
 				Questions:    questions,
 			},
-			DeletedAt: gorm.DeletedAt{},
+			DeletedAt: deletedAt,
 			CreatedAt: time.Time{},
 			UpdatedAt: time.Time{},
 		}
@@ -71,6 +76,11 @@ func LessonFromDomain(index int, l domain.Lesson, sectionID uuid.UUID) *Lesson {
 }
 
 func (m *Lesson) ToDomain() domain.Lesson {
+	var deletedAt *time.Time
+	if m.DeletedAt.Valid {
+		deletedAt = &m.DeletedAt.Time
+	}
+
 	switch m.LessonType {
 	case domain.LessonTypeVideo:
 		if m.VideoLesson == nil {
@@ -83,6 +93,7 @@ func (m *Lesson) ToDomain() domain.Lesson {
 			time.Duration(m.VideoLesson.Duration)*time.Second,
 		)
 		l.SetOriginalLessonID(m.OriginalLessonID)
+		l.SetDeletedAt(deletedAt)
 		return l
 	case domain.LessonTypeTest:
 		if m.TestLesson == nil {
@@ -99,6 +110,7 @@ func (m *Lesson) ToDomain() domain.Lesson {
 			questions,
 		)
 		l.SetOriginalLessonID(m.OriginalLessonID)
+		l.SetDeletedAt(deletedAt)
 		return l
 	}
 	return nil
