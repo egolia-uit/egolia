@@ -764,7 +764,7 @@ function CertificateList({
       setCerts([newCert, ...certs]);
       setClaiming(false);
       setClaimed(true);
-      showToast('Chúc mừng! Bạn đã nhận Chứng chỉ thành công.');
+      showToast('Congratulations! You have successfully received your Certificate.');
     }, 1200);
   };
 
@@ -803,14 +803,14 @@ function CertificateList({
               </div>
               <div>
                 <CardTitle className="text-base font-bold text-slate-950">
-                  Chúc mừng! Bạn có 1 chứng chỉ sẵn sàng nhận
+                  Congratulations! You have 1 certificate ready to claim
                 </CardTitle>
                 <p className="mt-1 text-sm font-medium text-slate-700">
-                  Bạn đã hoàn thành 100% chương trình học của khóa:{' '}
+                  You have completed 100% of the course curriculum:{' '}
                   <strong className="text-amber-700">
-                    FlowChart - Thuật toán chuyên sâu
+                    FlowChart - Advanced Algorithms
                   </strong>
-                  . Nhấp nút bên dưới để cấp chứng chỉ ngay!
+                  . Click the button below to claim your certificate now!
                 </p>
               </div>
             </div>
@@ -826,12 +826,12 @@ function CertificateList({
               {claiming ? (
                 <>
                   <RefreshCw className="mr-2 size-4 animate-spin" />
-                  Đang cấp...
+                  Claiming...
                 </>
               ) : (
                 <>
                   <Award className="mr-2 size-4" />
-                  Nhận Chứng chỉ ngay
+                  Claim Certificate Now
                 </>
               )}
             </Button>
@@ -848,10 +848,10 @@ function CertificateList({
             "
           >
             <Award className="size-4.5 text-blue-600" />
-            Chứng chỉ của bạn ({certs.length})
+            Your Certificates ({certs.length})
           </CardTitle>
           <CardDescription>
-            Danh sách chứng chỉ chính thức được cấp bởi nền tảng Egolia.
+            List of official certificates issued by the Egolia platform.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-3 pt-4">
@@ -874,7 +874,7 @@ function CertificateList({
                     "
                   >
                     <Award className="size-4 text-blue-600" />
-                    Chứng chỉ {certificate.id.slice(0, 8).toUpperCase()}
+                    Certificate {certificate.id.slice(0, 8).toUpperCase()}
                   </div>
                   <p
                     className="
@@ -883,13 +883,13 @@ function CertificateList({
                   >
                     {certificate.courseId ===
                     'flowchart-algorithm-flowchart-special-topic'
-                      ? 'FlowChart - Thuật toán chuyên sâu'
-                      : `Mã khóa học: ${certificate.courseId}`}
+                      ? 'FlowChart - Advanced Algorithms'
+                      : `Course ID: ${certificate.courseId}`}
                   </p>
                   <p className="mt-1 text-xs font-medium text-slate-400">
-                    Ngày cấp:{' '}
+                    Issued Date:{' '}
                     {new Date(certificate.createdAt).toLocaleDateString(
-                      'vi-VN'
+                      'en-US'
                     )}
                   </p>
                 </div>
@@ -901,12 +901,12 @@ function CertificateList({
                     onClick={() => setSelectedCert(certificate)}
                   >
                     <Award className="mr-2 size-4" />
-                    Xem Chứng chỉ
+                    View Certificate
                   </Button>
                   <Button asChild variant="ghost" size="sm">
                     <Link href={`/learn/courses/${certificate.courseId}`}>
                       <BookOpen className="mr-2 size-4" />
-                      Học lại
+                      Learn Again
                     </Link>
                   </Button>
                 </div>
@@ -914,8 +914,7 @@ function CertificateList({
             ))
           ) : (
             <div className="py-8 text-center text-sm text-slate-500">
-              Bạn chưa có chứng chỉ nào. Hoàn thành khóa học để nhận chứng chỉ
-              nhé!
+              You haven't earned any certificates yet. Complete the course to get your certificate!
             </div>
           )}
         </CardContent>
@@ -936,18 +935,21 @@ function CertificateList({
             "
           >
             {/* Elegant Background Certificate Border Graphic */}
-            <div
-              className="
-                pointer-events-none absolute inset-2 rounded-xl border
-                border-amber-200/50
-              "
-            />
-            <div
-              className="
-                pointer-events-none absolute -right-20 -bottom-20 size-60
-                rounded-full bg-amber-500/5 blur-3xl
-              "
-            />
+            <div className="
+              pointer-events-none absolute inset-0 overflow-hidden rounded-2xl
+            ">
+              <div
+                className="
+                  absolute inset-2 rounded-xl border border-amber-200/50
+                "
+              />
+              <div
+                className="
+                  absolute -right-20 -bottom-20 size-60 rounded-full
+                  bg-amber-500/5 blur-3xl
+                "
+              />
+            </div>
 
             {/* Modal Close Button */}
             <button
@@ -979,7 +981,7 @@ function CertificateList({
                   text-xs font-bold tracking-widest text-amber-600 uppercase
                 "
               >
-                Chứng chỉ Hoàn thành khóa học
+                CERTIFICATE OF COMPLETION
               </h2>
               <h1 className="font-serif text-2xl font-black text-slate-950">
                 EGOLIA ACADEMY
@@ -989,12 +991,12 @@ function CertificateList({
             {/* Certificate Body */}
             <div className="mt-8 space-y-6 text-center">
               <p className="text-sm text-slate-500 italic">
-                Chứng nhận này được trân trọng trao cho
+                This certificate is proudly presented to
               </p>
 
               <div className="mx-auto w-3/4 border-b-2 border-slate-900 pb-2">
                 <h3 className="font-serif text-2xl font-bold text-slate-950">
-                  Nguyễn Văn Học Viên
+                  Student Name
                 </h3>
               </div>
 
@@ -1003,8 +1005,7 @@ function CertificateList({
                   mx-auto max-w-md text-sm/6 font-medium text-slate-700
                 "
               >
-                Vì đã xuất sắc vượt qua các bài kiểm tra và hoàn thành 100%
-                chương trình học của khóa học trực tuyến chuyên nghiệp:
+                For successfully passing all assessments and completing 100% of the curriculum for the professional online course:
               </p>
 
               <h4
@@ -1016,12 +1017,12 @@ function CertificateList({
               >
                 {selectedCert.courseId ===
                 'flowchart-algorithm-flowchart-special-topic'
-                  ? 'FlowChart - Thuật toán chuyên sâu'
-                  : `Mã khóa học: ${selectedCert.courseId}`}
+                  ? 'FlowChart - Advanced Algorithms'
+                  : `Course ID: ${selectedCert.courseId}`}
               </h4>
 
               <p className="font-mono text-xs text-slate-400">
-                Mã xác thực: EG-{selectedCert.id.slice(5, 13).toUpperCase()}-
+                Verification ID: EG-{selectedCert.id.slice(5, 13).toUpperCase()}-
                 {selectedCert.id.slice(-4).toUpperCase()}
               </p>
             </div>
@@ -1041,7 +1042,7 @@ function CertificateList({
                 <div className="
                   text-[10px] font-semibold text-slate-400 uppercase
                 ">
-                  Giám đốc học thuật
+                  Academic Director
                 </div>
               </div>
 
@@ -1065,7 +1066,7 @@ function CertificateList({
                 <div className="
                   text-[10px] font-semibold text-slate-400 uppercase
                 ">
-                  Giảng viên hướng dẫn
+                  Course Instructor
                 </div>
               </div>
             </div>
