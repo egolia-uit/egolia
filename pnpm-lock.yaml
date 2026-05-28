@@ -418,8 +418,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2(vite@8.0.10(@types/node@25.3.5)(esbuild@0.27.7)(jiti@2.6.1)(less@4.5.1)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(yaml@2.8.3))(vitepress@2.0.0-alpha.17(@types/node@25.3.5)(axios@1.16.0)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.14)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3))
       vitepress-sidebar:
-        specifier: 1.33.2
-        version: 1.33.2
+        specifier: 1.36.1
+        version: 1.36.1
 
   packages/api-gen:
     devDependencies:
@@ -9508,6 +9508,7 @@ packages:
 
   lucide-vue-next@0.577.0:
     resolution: {integrity: sha512-py05bAfv9SHVJqscbiOnjcnLlEmOffA58a+7XhZuFxrs6txe1E8VoR1ngWGTYO+9aVKABAz8l3ee3PqiQN9QPA==}
+    deprecated: Package deprecated. Please use @lucide/vue instead.
     peerDependencies:
       vue: '>=3.0.1'
 
@@ -10908,8 +10909,8 @@ packages:
     resolution: {integrity: sha512-mAZTtNCeetKMH+pSjrb76NAM8V9a05I9aBZOHztWy/UqcJdQYNsf59vrRKWnojAT9Y+GbIvoTBC++CPHqpDBhQ==}
     engines: {node: '>=0.6'}
 
-  qsu@1.12.0:
-    resolution: {integrity: sha512-kcB2A7XS+ApkxAIc63yOqF2mmvqyA4AezObM1RxAhOB6O0bRA8xCzm6PLwU70CVW9R+0Rozqd0pgOFskNtX2eQ==}
+  qsu@1.12.1:
+    resolution: {integrity: sha512-ZEIuX5ZDovCNrkIen1+Zx6/P31pHtkzX5cFp2yRwM6CRAa1cj726wSwtaqpFomKZGEcsdJoDeJ2LSNNlSj+4Rw==}
     engines: {node: '>=18.0.0'}
 
   quansync@0.2.11:
@@ -12732,8 +12733,8 @@ packages:
       pagefind: ^1.1.0
       vitepress: ^1.0.0-0 || ^2.0.0-0
 
-  vitepress-sidebar@1.33.2:
-    resolution: {integrity: sha512-1fRCaR1UfiTvtQcqN3R+BGLsUVCexxRj64pw3WMhRYBUv0kBSSa7Zr4txLjrt7ReL4Lnt5yszSU8Ea8UWB9GWA==}
+  vitepress-sidebar@1.36.1:
+    resolution: {integrity: sha512-Y2/GX49/4ypHAKXKh2OgYx7d6Qp/kkkIEbahjDPU7llZS5Huq35hbE0+rUL99NzyFHTDpHV52e9rvwgPmAOtUA==}
     engines: {node: '>=20.0.0'}
 
   vitepress@2.0.0-alpha.17:
@@ -18946,7 +18947,7 @@ snapshots:
   '@ts-morph/common@0.27.0':
     dependencies:
       fast-glob: 3.3.3
-      minimatch: 10.2.4
+      minimatch: 10.2.5
       path-browserify: 1.0.1
 
   '@tybys/wasm-util@0.10.1':
@@ -22550,7 +22551,7 @@ snapshots:
 
   glob@13.0.6:
     dependencies:
-      minimatch: 10.2.4
+      minimatch: 10.2.5
       minipass: 7.1.3
       path-scurry: 2.0.2
 
@@ -25691,7 +25692,7 @@ snapshots:
     dependencies:
       side-channel: 1.1.0
 
-  qsu@1.12.0: {}
+  qsu@1.12.1: {}
 
   quansync@0.2.11: {}
 
@@ -27843,11 +27844,11 @@ snapshots:
     transitivePeerDependencies:
       - vue
 
-  vitepress-sidebar@1.33.2:
+  vitepress-sidebar@1.36.1:
     dependencies:
       glob: 13.0.6
       gray-matter: 4.0.3
-      qsu: 1.12.0
+      qsu: 1.12.1
 
   vitepress@2.0.0-alpha.17(@types/node@25.3.5)(axios@1.16.0)(fuse.js@7.1.0)(jiti@2.6.1)(less@4.5.1)(lightningcss@1.32.0)(postcss@8.5.14)(sass-embedded@1.97.3)(sass@1.97.3)(terser@5.46.0)(typescript@5.9.3)(yaml@2.8.3):
     dependencies:
