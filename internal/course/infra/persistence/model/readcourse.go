@@ -68,8 +68,11 @@ func ReadCourseFromDomain(
 	c *domain.Course,
 ) (*ReadCourse, error) {
 	sections := make([]ReadCourseSectionContent, 0, len(c.Sections()))
-	for i, s := range c.Sections() {
-		sections = append(sections, buildSectionContent(i, s))
+	for _, s := range c.Sections() {
+		if s.DeletedAt() != nil {
+			continue
+		}
+		sections = append(sections, buildSectionContent(len(sections), s))
 	}
 
 	content := ReadCourseContent{
@@ -102,6 +105,9 @@ func ReadCourseFromDomain(
 func buildSectionContent(index int, s *domain.Section) ReadCourseSectionContent {
 	lessons := make([]ReadCourseLessonContent, 0, len(s.Lessons()))
 	for _, l := range s.Lessons() {
+		if l.DeletedAt() != nil {
+			continue
+		}
 		lessons = append(lessons, buildLessonContent(l))
 	}
 	return ReadCourseSectionContent{

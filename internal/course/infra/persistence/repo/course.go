@@ -60,6 +60,10 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 	db := r.db.WithContext(ctx)
 
 	m := model.CourseFromDomain(course)
+	if err := replaceTestLessonQuestions(db, m); err != nil {
+		return err
+	}
+
 	if err := db.Session(&gorm.Session{FullSaveAssociations: true}).
 		Clauses(clause.OnConflict{UpdateAll: true}).
 		Create(m).Error; err != nil {
@@ -75,6 +79,32 @@ func (r *CourseRepo) Save(ctx context.Context, course *domain.Course) error {
 		return fmt.Errorf("rebuild read course: %w", err)
 	}
 	return db.Clauses(clause.OnConflict{UpdateAll: true}).Create(readModel).Error
+}
+
+func replaceTestLessonQuestions(db *gorm.DB, course *model.Course) error {
+	testLessonIDs := make([]uuid.UUID, 0)
+	for i := range course.Sections {
+		for j := range course.Sections[i].Lessons {
+			testLesson := course.Sections[i].Lessons[j].TestLesson
+			if testLesson == nil {
+				continue
+			}
+			testLessonIDs = append(testLessonIDs, testLesson.LessonID)
+		}
+	}
+	if len(testLessonIDs) == 0 {
+		return nil
+	}
+
+	questionIDs := db.Model(&model.TestQuestion{}). //nolint:exhaustruct
+							Select("id").
+							Where("test_lesson_id IN ?", testLessonIDs)
+	if err := db.Where("question_id IN (?)", questionIDs).
+		Delete(&model.TestAnswer{}).Error; err != nil { //nolint:exhaustruct
+		return err
+	}
+	return db.Where("test_lesson_id IN ?", testLessonIDs).
+		Delete(&model.TestQuestion{}).Error //nolint:exhaustruct
 }
 
 func (r *CourseRepo) GetFull(ctx context.Context, id uuid.UUID) (*domain.Course, error) {
