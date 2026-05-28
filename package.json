@@ -31,7 +31,7 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "@vitest/ui": "4.0.18",
-    "autoprefixer": "10.4.27",
+    "autoprefixer": "10.5.0",
     "eslint": "catalog:",
     "eslint-config-next": "catalog:",
     "eslint-config-prettier": "catalog:",
