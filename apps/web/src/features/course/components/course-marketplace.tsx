@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import {
   BookOpen,
+  Bookmark,
   CreditCard,
   Filter,
   Loader2,
@@ -37,9 +38,11 @@ import {
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 import { formatVnd } from '#/lib/api/format';
+import { cn } from '#/components/lib/shadcn/utils';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import { useViewer } from '#/lib/auth/use-viewer';
 
-import { CourseCard } from './course-card';
+import { CourseCard, useCourseBookmarked } from './course-card';
 import { CourseHero, CourseStructure } from './course-detail';
 import {
   CourseReviewsPanel,
@@ -446,12 +449,18 @@ function PurchaseCourseActions({
 
 export function PublicCoursePage({ courseId }: { courseId: string }) {
   const { viewer, loading: viewerLoading } = useViewer();
+  const { success: showToast } = useToast();
   const reviews = useCourseReviews(courseId);
   const [state, setState] = useState<ResourceState<CourseCourseDetail | CourseCourse>>({
     status: 'loading',
   });
   const [enrolledCourseIds, setEnrolledCourseIds] =
     useState<Set<string> | null>(null);
+
+  const { isBookmarked, loading: bookmarkLoading, toggleBookmark } = useCourseBookmarked(
+    courseId,
+    Boolean(viewer?.accessToken)
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -539,6 +548,32 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
                   }
                   viewerId={viewer?.accessToken ? viewer.id : undefined}
                 />
+                <Button
+                  type="button"
+                  variant={isBookmarked ? 'secondary' : 'outline'}
+                  disabled={bookmarkLoading}
+                  onClick={async () => {
+                    if (!viewer?.accessToken) {
+                      showToast('Please sign in to bookmark courses.');
+                      return;
+                    }
+                    await toggleBookmark();
+                    showToast(isBookmarked ? 'Removed from bookmarks.' : 'Saved to bookmarks.');
+                  }}
+                  className="w-full shadow-nm-flat active:shadow-nm-inset"
+                >
+                  {bookmarkLoading ? (
+                    <Loader2 className="mr-2 size-4 animate-spin text-slate-400" />
+                  ) : (
+                    <Bookmark
+                      className={cn(
+                        "mr-2 size-4 transition-all duration-200",
+                        isBookmarked ? "fill-indigo-500 text-indigo-500" : "text-slate-500"
+                      )}
+                    />
+                  )}
+                  {isBookmarked ? 'Saved to Bookmarks' : 'Bookmark Course'}
+                </Button>
                 <Button asChild variant="outline" className="w-full">
                   <Link href="/courses">Back to marketplace</Link>
                 </Button>
