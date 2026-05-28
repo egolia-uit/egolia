@@ -71,6 +71,7 @@ type (
 	GetPublishedCoursesQuery     commonhandler.Query[GetCourses, *Paginated[Course]]
 	GetSystemCoursesQuery        commonhandler.Query[GetCourses, *Paginated[Course]]
 	GetUploadVideoLessonURLQuery commonhandler.Query[GetUploadVideoLessonURL, *VideoLessonObject]
+	GetCourseProgressQuery       commonhandler.Query[GetCourseProgress, *CourseProgress]
 )
 
 type Cmds struct {
@@ -190,6 +191,7 @@ type Queries struct {
 	GetPublishedCourses     GetPublishedCoursesQuery
 	GetSystemCourses        GetSystemCoursesQuery
 	GetUploadVideoLessonURL GetUploadVideoLessonURLQuery
+	GetCourseProgress       GetCourseProgressQuery
 }
 
 func NewQueries(
@@ -209,6 +211,7 @@ func NewQueries(
 	getPublishedCoursesHandler *GetPublishedCoursesHandler,
 	getSystemCoursesHandler *GetSystemCoursesHandler,
 	getUploadVideoLessonURLHandler *GetUploadVideoLessonURLHandler,
+	getCourseProgressHandler *GetCourseProgressHandler,
 ) *Queries {
 	hp := (*commonhandler.HandlerProvider)(handlerProvider)
 	return &Queries{
@@ -227,6 +230,7 @@ func NewQueries(
 		GetPublishedCourses:     commonhandler.DecorateQuery(hp, getPublishedCoursesHandler),
 		GetSystemCourses:        commonhandler.DecorateQuery(hp, getSystemCoursesHandler),
 		GetUploadVideoLessonURL: commonhandler.DecorateQuery(hp, getUploadVideoLessonURLHandler),
+		GetCourseProgress:       commonhandler.DecorateQuery(hp, getCourseProgressHandler),
 	}
 }
 

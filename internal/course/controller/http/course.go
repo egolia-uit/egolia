@@ -611,24 +611,24 @@ func (h *StrictHandler) GetCourseLandingPage(ctx context.Context, request course
 }
 
 func (h *StrictHandler) GetCourseProgress(ctx context.Context, request course.GetCourseProgressRequestObject) (course.GetCourseProgressResponseObject, error) {
-	// courseID := request.CourseId
-	// user, ok := commonHTTP.UserFromContext(ctx)
-	// if !ok {
-	// 	return nil, errs.Unauthorized
-	// }
-	// userID := user.ID
+	courseID := request.CourseId
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
 
-	// result, err := h.App.Queries.GetCourseProgress.Handle(ctx, &app.GetCourseProgress{
-	// 	CourseID: courseID,
-	// 	UserID:   userID,
-	// })
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// return &course.GetCourseProgress200JSONResponse{
-	// 	Data: *result,
-	// }, nil
-	return nil, errs.Unimplemented
+	result, err := h.App.Queries.GetCourseProgress.Handle(ctx, &app.GetCourseProgress{
+		CourseID: courseID,
+		UserID:   userID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &course.GetCourseProgress200JSONResponse{
+		Data: *courseProgressToDTO(result, userID),
+	}, nil
 }
 
 func (h *StrictHandler) GetCourseReviews(ctx context.Context, request course.GetCourseReviewsRequestObject) (course.GetCourseReviewsResponseObject, error) {
@@ -857,7 +857,21 @@ func (h *StrictHandler) CreateLesson(ctx context.Context, request course.CreateL
 }
 
 func (h *StrictHandler) DeleteLesson(ctx context.Context, request course.DeleteLessonRequestObject) (course.DeleteLessonResponseObject, error) {
-	return nil, errs.Unimplemented
+	user, ok := commonHTTP.UserFromContext(ctx)
+	if !ok {
+		return nil, errs.Unauthorized
+	}
+	userID := user.ID
+
+	if err := h.App.Cmds.DeleteLesson.Handle(ctx, &app.DeleteLesson{
+		CourseID:  request.CourseId,
+		SectionID: request.SectionId,
+		LessonID:  request.LessonId,
+		UserID:    userID,
+	}); err != nil {
+		return nil, err
+	}
+	return course.DeleteLesson204Response{}, nil
 }
 
 func (h *StrictHandler) GetLessonDetail(ctx context.Context, request course.GetLessonDetailRequestObject) (course.GetLessonDetailResponseObject, error) {

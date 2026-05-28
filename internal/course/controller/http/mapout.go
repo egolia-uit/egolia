@@ -211,3 +211,17 @@ func lessonProgressToDTO(lp app.LessonProgress) *course.LessonProgressDetail {
 
 	return &detail
 }
+
+func courseProgressToDTO(cp *app.CourseProgress, userId string) *course.CourseProgress {
+	if cp == nil {
+		return nil
+	}
+	return &course.CourseProgress{
+		CourseId:         (*types.UUID)(&cp.CourseID),
+		UserId:           &userId,
+		CompletedLessons: cp.CompletedLessons,
+		IsCompleted:      cp.IsCompleted,
+		ProgressPercent:  cp.ProgressPercent,
+		TotalLessons:     cp.TotalLessons,
+	}
+}
