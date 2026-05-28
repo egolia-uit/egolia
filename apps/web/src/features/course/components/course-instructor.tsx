@@ -253,6 +253,7 @@ function InstructorCourseDetailContent({
   const { state, reload } = useCourseDetail(courseId);
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<'curriculum' | 'students'>('curriculum');
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
@@ -537,13 +538,47 @@ function InstructorCourseDetailContent({
 
           {actionError && <ErrorState error={actionError} />}
 
-          <CourseCurriculumEditor
-            courseId={courseId}
-            course={state.data}
-            reload={reload}
-            readOnly={true}
-            setCourse={() => undefined}
-          />
+          {/* Premium Segmented Tabs Toggle */}
+          <div className="flex justify-center border-b border-slate-200 pb-4">
+            <div className="flex rounded-xl bg-slate-100/80 p-1 shadow-inner border border-slate-200/50">
+              <button
+                type="button"
+                onClick={() => setActiveTab('curriculum')}
+                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                  activeTab === 'curriculum'
+                    ? 'bg-white text-indigo-600 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <BookOpen className="size-3.5" />
+                Course Curriculum
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('students')}
+                className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
+                  activeTab === 'students'
+                    ? 'bg-white text-indigo-600 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <Users className="size-3.5" />
+                Enrolled Students & Stats
+              </button>
+            </div>
+          </div>
+
+          {activeTab === 'students' ? (
+            <EnrolledStudentsPanel />
+          ) : (
+            <CourseCurriculumEditor
+              courseId={courseId}
+              course={state.data}
+              reload={reload}
+              readOnly={true}
+              setCourse={() => undefined}
+            />
+          )}
         </div>
       )}
     </AppShell>
@@ -553,32 +588,32 @@ function InstructorCourseDetailContent({
 const MOCK_STUDENTS = [
   {
     id: 's1',
-    name: 'Phan Hoàng Long',
-    email: 'longph@gmail.com',
+    name: 'Emily Chen',
+    email: 'emily.chen@example.com',
     enrolledAt: '2026-05-02T10:15:00Z',
     progress: 100,
     status: 'completed',
   },
   {
     id: 's2',
-    name: 'Nguyễn Minh Thư',
-    email: 'thunm@student.edu.vn',
+    name: 'Michael Smith',
+    email: 'michael.smith@student.edu',
     enrolledAt: '2026-05-10T14:30:00Z',
     progress: 78,
     status: 'active',
   },
   {
     id: 's3',
-    name: 'Trần Đại Nghĩa',
-    email: 'nghiatd@gmail.com',
+    name: 'David Johnson',
+    email: 'david.j@gmail.com',
     enrolledAt: '2026-05-12T08:00:00Z',
     progress: 45,
     status: 'active',
   },
   {
     id: 's4',
-    name: 'Lê Thảo Vy',
-    email: 'vylt@egolia.edu.vn',
+    name: 'Sarah Williams',
+    email: 'sarah.w@egolia.edu.vn',
     enrolledAt: '2026-05-18T16:20:00Z',
     progress: 12,
     status: 'active',
@@ -598,7 +633,7 @@ function EnrolledStudentsPanel() {
     const total = MOCK_STUDENTS.length;
     const completed = MOCK_STUDENTS.filter((s) => s.progress === 100).length;
     const averageProgress = Math.round(
-      MOCK_STUDENTS.reduce((acc, curr) => acc + curr.progress, 0) / total
+      MOCK_STUDENTS.reduce((acc, curr) => acc + curr.progress, 0) / (total || 1)
     );
     return { total, completed, averageProgress };
   }, []);
@@ -622,7 +657,7 @@ function EnrolledStudentsPanel() {
               <div className="
                 text-xs font-semibold tracking-wider text-slate-500 uppercase
               ">
-                Học viên Đăng ký
+                Enrolled Students
               </div>
               <div className="mt-1 text-2xl font-bold text-slate-900">
                 {stats.total}
@@ -643,7 +678,7 @@ function EnrolledStudentsPanel() {
               <div className="
                 text-xs font-semibold tracking-wider text-slate-500 uppercase
               ">
-                Hoàn thành
+                Completed
               </div>
               <div className="mt-1 text-2xl font-bold text-slate-900">
                 {stats.completed}
@@ -664,7 +699,7 @@ function EnrolledStudentsPanel() {
               <div className="
                 text-xs font-semibold tracking-wider text-slate-500 uppercase
               ">
-                Tiến độ Trung bình
+                Avg. Progress
               </div>
               <div className="mt-1 text-2xl font-bold text-slate-900">
                 {stats.averageProgress}%
@@ -681,7 +716,7 @@ function EnrolledStudentsPanel() {
           sm:flex-row sm:items-center sm:justify-between
         ">
           <CardTitle className="text-base font-semibold text-slate-900">
-            Danh sách Học viên ({filteredStudents.length})
+            Student Roster ({filteredStudents.length})
           </CardTitle>
           {/* Search bar */}
           <div className="
@@ -690,7 +725,7 @@ function EnrolledStudentsPanel() {
           ">
             <input
               type="text"
-              placeholder="Tìm theo tên hoặc email..."
+              placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="
@@ -709,10 +744,10 @@ function EnrolledStudentsPanel() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Học viên</TableHead>
-                  <TableHead>Ngày Đăng ký</TableHead>
-                  <TableHead>Tiến độ Học tập</TableHead>
-                  <TableHead>Trạng thái</TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Enrollment Date</TableHead>
+                  <TableHead>Progress</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -737,7 +772,7 @@ function EnrolledStudentsPanel() {
                       </div>
                     </TableCell>
                     <TableCell className="text-sm font-medium text-slate-600">
-                      {new Date(student.enrolledAt).toLocaleDateString('vi-VN')}
+                      {new Date(student.enrolledAt).toLocaleDateString('en-US')}
                     </TableCell>
                     <TableCell className="w-1/3">
                       <div className="space-y-1">
@@ -772,14 +807,14 @@ function EnrolledStudentsPanel() {
                           text-emerald-700
                         ">
                           <CheckCircle className="size-3" />
-                          Đã cấp Chứng chỉ
+                          Certified
                         </Badge>
                       ) : (
                         <Badge className="
                           flex w-fit items-center gap-1 bg-blue-100
                           text-blue-700
                         ">
-                          Đang học
+                          Active
                         </Badge>
                       )}
                     </TableCell>
@@ -789,7 +824,7 @@ function EnrolledStudentsPanel() {
             </Table>
           ) : (
             <div className="py-8 text-center text-sm text-slate-500">
-              Không tìm thấy học viên nào phù hợp.
+              No students found.
             </div>
           )}
         </CardContent>
@@ -811,9 +846,6 @@ export function InstructorCourseBuilderContent({
   const [actionError, setActionError] = useState<ApiProblem | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [isEditingBasic, setIsEditingBasic] = useState(false);
-  const [builderTab, setBuilderTab] = useState<'curriculum' | 'students'>(
-    'curriculum'
-  );
 
   async function runAction(action: () => Promise<unknown>, success: string) {
     setSubmitting(true);
@@ -1211,45 +1243,10 @@ export function InstructorCourseBuilderContent({
 
           {actionError && <ErrorState error={actionError} />}
 
-          {/* Tab Selector */}
-          <div className="mt-4 mb-6 flex gap-2 border-b border-slate-200 pb-px">
-            <button
-              onClick={() => setBuilderTab('curriculum')}
-              className={`
-                border-b-2 px-4 py-2 text-sm font-semibold transition-all
-                duration-200
-                ${
-                  builderTab === 'curriculum'
-                    ? 'border-blue-600 text-blue-600'
-                    : `
-                      border-transparent text-slate-500
-                      hover:text-slate-900
-                    `
-                }
-              `}
-            >
+          <div className="mt-8">
+            <h3 className="mb-4 text-xl font-bold tracking-tight text-slate-900">
               Curriculum Builder
-            </button>
-            <button
-              onClick={() => setBuilderTab('students')}
-              className={`
-                border-b-2 px-4 py-2 text-sm font-semibold transition-all
-                duration-200
-                ${
-                  builderTab === 'students'
-                    ? 'border-blue-600 text-blue-600'
-                    : `
-                      border-transparent text-slate-500
-                      hover:text-slate-900
-                    `
-                }
-              `}
-            >
-              Enrolled Students ({MOCK_STUDENTS.length})
-            </button>
-          </div>
-
-          {builderTab === 'curriculum' ? (
+            </h3>
             <CourseCurriculumEditor
               courseId={courseId}
               course={state.data}
@@ -1266,9 +1263,7 @@ export function InstructorCourseBuilderContent({
                 });
               }}
             />
-          ) : (
-            <EnrolledStudentsPanel />
-          )}
+          </div>
         </div>
       )}
     </AppShell>

@@ -2,6 +2,7 @@
 
 import {
   BookOpen,
+  Bookmark,
   Eye,
   EyeOff,
   Loader2,
@@ -10,7 +11,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState, useEffect } from 'react';
 
 import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
@@ -42,8 +43,11 @@ import {
   deleteCourse,
   hideCourse,
   unhideCourse,
+  bookmarkCourse,
+  getMyBookmarkedCourses,
 } from '#/lib/api/course';
 import { formatVnd } from '#/lib/api/format';
+import { useViewer } from '#/lib/auth/use-viewer';
 
 export type CourseDestination = 'public' | 'learner' | 'instructor';
 type CourseWithInstructor = CourseCourse & {
@@ -109,6 +113,91 @@ function instructorDisplayName(course: CourseCourse) {
   );
 }
 
+let bookmarksCache: Set<string> | null = null;
+let bookmarksPromise: Promise<Set<string>> | null = null;
+const bookmarkListeners = new Set<() => void>();
+
+export function useCourseBookmarked(courseId: string | undefined, enabled: boolean) {
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!courseId || !enabled) return;
+
+    const listener = () => {
+      if (bookmarksCache) {
+        setIsBookmarked(bookmarksCache.has(courseId));
+      }
+    };
+    bookmarkListeners.add(listener);
+
+    if (bookmarksCache) {
+      setIsBookmarked(bookmarksCache.has(courseId));
+    } else {
+      if (!bookmarksPromise) {
+        setLoading(true);
+        bookmarksPromise = getMyBookmarkedCourses({
+          client: apiClient,
+          query: { limit: 100, page: 1 },
+        })
+          .then(({ data }) => {
+            const set = new Set(
+              (data?.data || [])
+                .map((c) => c.id)
+                .filter((id): id is string => Boolean(id))
+            );
+            bookmarksCache = set;
+            bookmarkListeners.forEach((l) => l());
+            setLoading(false);
+            return set;
+          })
+          .catch(() => {
+            bookmarksCache = new Set();
+            setLoading(false);
+            return bookmarksCache;
+          });
+      } else {
+        bookmarksPromise.then((set) => {
+          setIsBookmarked(set.has(courseId));
+        });
+      }
+    }
+
+    return () => {
+      bookmarkListeners.delete(listener);
+    };
+  }, [courseId, enabled]);
+
+  const toggleBookmark = async () => {
+    if (!courseId) return;
+    setLoading(true);
+    try {
+      await bookmarkCourse({
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
+      if (bookmarksCache) {
+        if (bookmarksCache.has(courseId)) {
+          bookmarksCache.delete(courseId);
+        } else {
+          bookmarksCache.add(courseId);
+        }
+        bookmarkListeners.forEach((l) => l());
+      } else {
+        bookmarksCache = new Set([courseId]);
+        bookmarkListeners.forEach((l) => l());
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { isBookmarked, loading, toggleBookmark };
+}
+
 export function CourseCard({
   course,
   destination = 'public',
@@ -135,6 +224,12 @@ export function CourseCard({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const { success: showToast, error: showErrorToast } = useToast();
+
+  const { viewer } = useViewer();
+  const { isBookmarked, loading: bookmarkLoading, toggleBookmark } = useCourseBookmarked(
+    courseId,
+    Boolean(viewer?.accessToken)
+  );
 
   const handleToggleHide = async () => {
     if (!courseId) return;
@@ -250,6 +345,43 @@ export function CourseCard({
                 </Badge>
               )}
             </div>
+          )}
+          {/* Learner/Public Bookmark Action */}
+          {destination !== 'instructor' && (
+            <button
+              type="button"
+              disabled={bookmarkLoading}
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!viewer?.accessToken) {
+                  showToast('Please sign in to bookmark courses.');
+                  return;
+                }
+                await toggleBookmark();
+                showToast(isBookmarked ? 'Removed from bookmarks.' : 'Saved to bookmarks.');
+              }}
+              className="
+                absolute top-2.5 right-2.5 z-20 flex h-8 w-8 items-center
+                justify-center rounded-full border border-slate-200 bg-white/95
+                text-slate-600 shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all
+                duration-300 hover:scale-105 hover:bg-white hover:text-slate-900
+                active:scale-95
+              "
+            >
+              {bookmarkLoading ? (
+                <Loader2 className="size-3.5 animate-spin text-slate-400" />
+              ) : (
+                <Bookmark
+                  className={cn(
+                    "size-4 transition-all duration-200",
+                    isBookmarked
+                      ? "fill-indigo-500 text-indigo-500"
+                      : "text-slate-400 hover:text-slate-600"
+                  )}
+                />
+              )}
+            </button>
           )}
           {/* Instructor Kebab Menu Actions */}
           {destination === 'instructor' && (
@@ -405,35 +537,38 @@ export function CourseCard({
           </div>
         </div>
 
-        {/* Subtle View details CTA for clickable affordance */}
+        {/* Solid CTA for clickable affordance */}
         {!action && (
           <div
             className="
-              mt-2 flex items-center justify-end gap-1 border-t border-slate-50
-              pt-2.5 text-xs font-semibold text-blue-600 transition-colors
-              duration-200
-              group-hover:text-blue-700
+              mt-4 flex items-center justify-center rounded-xl bg-blue-600 px-4
+              py-2.5 text-sm font-bold text-white shadow-nm-flat transition-all
+              duration-300
+              group-hover:bg-blue-500
+              group-active:shadow-nm-inset
             "
           >
             <span>
-              {destination === 'instructor' ? 'Manage' : 'View details'}
+              {destination === 'instructor' ? 'Manage Course' : destination === 'learner' ? 'Continue Learning' : 'Buy Now'}
             </span>
-            <svg
-              className="
-                size-3.5 transition-transform duration-300
-                group-hover:translate-x-0.5
-              "
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+            {destination !== 'public' && (
+              <svg
+                className="
+                  ml-1 size-4 transition-transform duration-300
+                  group-hover:translate-x-1
+                "
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            )}
           </div>
         )}
       </CardContent>
