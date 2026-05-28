@@ -133,7 +133,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	getPublishedCoursesHandler := app.NewGetPublishedCoursesHandler(courseReadRepo)
 	getSystemCoursesHandler := app.NewGetSystemCoursesHandler(courseReadRepo)
 	getUploadVideoLessonURLHandler := app.NewGetUploadVideoLessonURLHandler(objectstorageS3)
-	queries := app.NewQueries(handlerProvider, getCourseHandler, getCourseDetailHandler, getCourseForUpdateHandler, getCourseLandingPageHandler, getCourseReviewsHandler, getLessonCommentsHandler, getLessonDetailHandler, getLessonProgressHandler, getMyBookmarkedCoursesHandler, getMyCertificatesHandler, getMyCoursesHandler, getMyEnrolledCoursesHandler, getPublishedCoursesHandler, getSystemCoursesHandler, getUploadVideoLessonURLHandler)
+	queries := app.NewQueries(handlerProvider, getCourseHandler, getCourseDetailHandler, getCourseForUpdateHandler, getCourseLandingPageHandler, getCourseReviewsHandler, getLessonCommentsHandler, getLessonDetailHandler, getLessonProgressHandler, getMyBookmarkedCoursesHandler, getMyCertificatesHandler, getMyCoursesHandler, getMyEnrolledCoursesHandler, getPublishedCoursesHandler, getSystemCoursesHandler, getUploadVideoLessonURLHandler, getCourseProgressHandler)
 	appApp := &app.App{
 		Cmds:    cmds,
 		Queries: queries,
