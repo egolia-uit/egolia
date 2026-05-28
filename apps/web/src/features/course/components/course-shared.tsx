@@ -120,8 +120,8 @@ export function VideoDropZone({
       />
       <p className="text-center text-sm font-medium">
         {isDraggingOver
-          ? 'Thả file vào đây'
-          : 'Kéo thả hoặc click để chọn file video'}
+          ? 'Drop files here'
+          : 'Drag & drop video files here, or click to browse'}
       </p>
       <p className="text-xs text-slate-400">MP4, MOV, AVI, WebM…</p>
       <input

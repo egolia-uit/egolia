@@ -1,7 +1,7 @@
 'use client';
 
 import { Save } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Button } from '#/components/ui/neumorphism/button';
 import { Input } from '#/components/ui/neumorphism/input';
@@ -58,17 +58,17 @@ function getValidationError(
   canUploadVideo: boolean
 ) {
   if (!values.title.trim()) {
-    return 'Title khong duoc de trong.';
+    return 'Course title cannot be empty.';
   }
   if (parsePrice(values.price) === null) {
-    return 'Price phai la so nguyen khong am.';
+    return 'Price must be a non-negative integer.';
   }
   if (
     forceIntroductionVideoKey &&
     !values.introductionVideoKey.trim() &&
     !canUploadVideo
   ) {
-    return 'Upload video hoac nhap introduction video key truoc khi tao course.';
+    return 'Please upload a video or provide an introduction video key before creating the course.';
   }
   return null;
 }
@@ -124,6 +124,19 @@ export function CourseForm({
   const [uploadedVideo, setUploadedVideo] = useState<UploadedVideo | null>(
     null
   );
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedVideo) {
+      setVideoPreviewUrl(null);
+      return;
+    }
+    const previewUrl = URL.createObjectURL(selectedVideo);
+    setVideoPreviewUrl(previewUrl);
+    return () => {
+      URL.revokeObjectURL(previewUrl);
+    };
+  }, [selectedVideo]);
 
   const canUploadVideo = Boolean(selectedVideo && onUploadIntroductionVideo);
   const validationError = useMemo(() => {
@@ -154,7 +167,7 @@ export function CourseForm({
         ...current,
         introductionVideoKey: result.videoKey,
       }));
-      success(`Video ${selectedVideo.name} upload thanh cong!`);
+      success(`Video ${selectedVideo.name} uploaded successfully!`);
       return result.videoKey;
     } catch (caught) {
       const message =
@@ -214,9 +227,9 @@ export function CourseForm({
                 title: event.target.value,
               }))
             }
-            placeholder="FlowChart - Chuyen de luu do thuat toan"
+            placeholder="FlowChart - Algorithm flowchart specialization"
           />
-          <FieldDescription>Ten hien thi trong marketplace.</FieldDescription>
+          <FieldDescription>Display name in the marketplace.</FieldDescription>
         </Field>
 
         <Field>
@@ -255,7 +268,7 @@ export function CourseForm({
                 overview: event.target.value,
               }))
             }
-            placeholder="Mo ta ngan ve ket qua hoc vien dat duoc."
+            placeholder="A short description of what learners will achieve."
           />
         </Field>
 
@@ -279,7 +292,7 @@ export function CourseForm({
                 }}
                 onInvalidFile={() =>
                   showError?.(
-                    'Vui lòng chọn file video hợp lệ (MP4, MOV, AVI…)'
+                    'Please select a valid video file (MP4, MOV, AVI…)'
                   )
                 }
               />
@@ -301,13 +314,34 @@ export function CourseForm({
                   </div>
                 </div>
               )}
-              {uploadedVideo && (
-                <div className="grid gap-1 text-xs text-slate-600">
-                  <div>
-                    Uploaded:{' '}
-                    <span className="font-medium text-slate-900">
-                      {selectedVideo?.name ?? 'video'}
-                    </span>
+              {selectedVideo && videoPreviewUrl && (
+                <div
+                  className="
+                    grid gap-3 rounded-xl border border-slate-200/60
+                    bg-white p-3 shadow-sm mt-2
+                    md:grid-cols-[180px_minmax(0,1fr)]
+                  "
+                >
+                  <video
+                    className="
+                      w-full rounded-lg bg-slate-950
+                      shadow-nm-flat-sm
+                    "
+                    controls
+                    preload="metadata"
+                    src={videoPreviewUrl}
+                  />
+                  <div
+                    className="
+                      min-w-0 space-y-1 text-xs text-slate-600 flex flex-col justify-center
+                    "
+                  >
+                    <p className="font-medium text-slate-900 truncate">
+                      {selectedVideo.name}
+                    </p>
+                    {uploadedVideo && (
+                      <p className="text-green-600 font-medium">Uploaded successfully</p>
+                    )}
                   </div>
                 </div>
               )}

@@ -1200,7 +1200,7 @@ export function CourseCurriculumEditor({
     const title = createSectionTitle.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Section name cannot be empty.',
       });
       return;
@@ -1224,7 +1224,7 @@ export function CourseCurriculumEditor({
     const title = renamingSectionTitle.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Section name cannot be empty.',
       });
       return;
@@ -1335,7 +1335,7 @@ export function CourseCurriculumEditor({
     const title = newLessonTitle.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Lesson name cannot be empty.',
       });
       return;
@@ -1366,14 +1366,14 @@ export function CourseCurriculumEditor({
         const durationNumber = Number.parseInt(newLessonDuration, 10);
         if (!videoKey) {
           setActionError({
-            title: 'Thiếu dữ liệu',
-            message: 'Video lesson cần video key.',
+            title: 'Missing data',
+            message: 'Video lesson requires a video file.',
           });
           return;
         }
         if (!Number.isInteger(durationNumber) || durationNumber < 0) {
           setActionError({
-            title: 'Sai dữ liệu',
+            title: 'Invalid data',
             message: 'Duration must be a non-negative integer.',
           });
           return;
@@ -1397,7 +1397,7 @@ export function CourseCurriculumEditor({
         );
         if (validationError) {
           setActionError({
-            title: 'Sai dữ liệu',
+            title: 'Invalid data',
             message: validationError,
           });
           return;
@@ -1552,7 +1552,7 @@ export function CourseCurriculumEditor({
     const title = lessonEditor.title.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Lesson name cannot be empty.',
       });
       return;
@@ -1591,7 +1591,7 @@ export function CourseCurriculumEditor({
           const durationNumber = Number.parseInt(lessonEditor.duration, 10);
           if (!Number.isInteger(durationNumber) || durationNumber < 0) {
             setActionError({
-              title: 'Sai dữ liệu',
+              title: 'Invalid data',
               message: 'Duration must be a non-negative integer.',
             });
             return;
@@ -1619,7 +1619,7 @@ export function CourseCurriculumEditor({
           );
           if (validationError) {
             setActionError({
-              title: 'Sai dữ liệu',
+              title: 'Invalid data',
               message: validationError,
             });
             return;
@@ -2447,7 +2447,7 @@ export function CourseCurriculumEditor({
                             }}
                             onInvalidFile={() =>
                               showErrorToast?.(
-                                'Vui lòng chọn file video hợp lệ (MP4, MOV, AVI…)'
+                                'Please select a valid video file (MP4, MOV, AVI…)'
                               )
                             }
                           />
@@ -2741,7 +2741,7 @@ export function CourseCurriculumEditor({
                               }}
                               onInvalidFile={() =>
                                 showErrorToast?.(
-                                  'Vui lòng chọn file video hợp lệ (MP4, MOV, AVI…)'
+                                  'Please select a valid video file (MP4, MOV, AVI…)'
                                 )
                               }
                             />
