@@ -13,7 +13,6 @@ const (
 
 type General struct {
 	AppEnv AppEnv `json:"app_env" mapstructure:"app_env" validate:"omitempty,oneof=development production" yaml:"app_env"`
-	TZ     string `json:"tz"      mapstructure:"tz"      validate:"omitempty"                              yaml:"tz"`
 }
 
 func GeneralViperSetDefault(
@@ -21,5 +20,4 @@ func GeneralViperSetDefault(
 	prefix string,
 ) {
 	viper.SetDefault(prefix+".app_env", "production")
-	viper.SetDefault(prefix+".tz", "Asia/HoChiMinh")
 }
