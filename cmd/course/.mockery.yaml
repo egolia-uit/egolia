@@ -5,7 +5,7 @@ pkgname: '{{ .SrcPackageName }}'
 packages:
   github.com/egolia-uit/egolia/internal/course/app:
     config:
-      include-interface-regex: '^(ObjectStorageSvc|IdentityService)$'
+      include-interface-regex: '^(ObjectStorageSvc|GetCourseReadModel|GetCourseDetailReadModel|GetLessonDetailReadModel|GetCoursesReadModel|GetCourseReviewsReadModel|GetMyCertificatesReadModel|GetLessonCommentsReadModel|GetCourseProgressReadModel|GetLessonProgressReadModel)$'
   github.com/egolia-uit/egolia/internal/course/domain:
     config:
       include-interface-regex: '^(.*Repo|UnitOfWork|RepoRegistry)$'
