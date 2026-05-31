@@ -1,4 +1,4 @@
-package seedcourse
+package seedbilling
 
 import (
 	"context"
@@ -18,11 +18,9 @@ func NewSeed(db *gorm.DB) (*Seed, error) {
 func (s *Seed) Run(ctx context.Context) error {
 	s.PrintSQL(os.Stdout)
 
-	courses := s.createCourses()
-	enrollments := s.createEnrollments()
+	transactions := s.createTransactions()
 	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		tx.Session(&gorm.Session{FullSaveAssociations: true}).Save(courses)
-		tx.Save(enrollments)
+		tx.Save(transactions)
 		return nil
 	})
 }

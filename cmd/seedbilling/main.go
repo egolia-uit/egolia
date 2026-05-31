@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/egolia-uit/egolia/internal/seedcourse"
+	"github.com/egolia-uit/egolia/internal/seedbilling"
 	"github.com/egolia-uit/egolia/pkg/logging"
 )
 
@@ -14,13 +14,13 @@ func main() {
 	printSQL := flag.Bool("print-sql", false, "print SQL to stdout instead of seeding the database")
 	flag.Parse()
 
-	if err := logging.FirstStart("EGOLIA_COURSE_LOG_LEVEL"); err != nil {
+	if err := logging.FirstStart("EGOLIA_BILLING_LOG_LEVEL"); err != nil {
 		slog.Error("failed to set up logger", slog.Any("error", err))
 		return
 	}
 
 	if *printSQL {
-		seedcourse.NewSeedForSQL().PrintSQL(os.Stdout)
+		seedbilling.NewSeedForSQL().PrintSQL(os.Stdout)
 		return
 	}
 
