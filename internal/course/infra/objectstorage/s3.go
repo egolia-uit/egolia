@@ -3,6 +3,8 @@ package objectstorage
 import (
 	"context"
 	"fmt"
+	"mime"
+	"path/filepath"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -70,9 +72,16 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 		ID:            id,
 		VideoFilename: params.VideoFilename,
 	})
+	// Try to infer Content-Type from file extension so upload must use same header.
+	contentType := mime.TypeByExtension(filepath.Ext(params.VideoFilename))
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+
 	presignParams := &s3.PutObjectInput{
-		Bucket: &s.bucket,
-		Key:    aws.String(key),
+		Bucket:      &s.bucket,
+		Key:         aws.String(key),
+		ContentType: aws.String(contentType),
 	}
 	expiration := time.Now().Add(s.presignExpiration)
 	url, err := s.S3PresignClient.PresignPutObject(ctx, presignParams,
