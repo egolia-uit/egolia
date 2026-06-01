@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/egolia-uit/egolia/internal/billing/config"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	slogGorm "github.com/orandin/slog-gorm"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,6 +17,7 @@ func NewDB(
 	ctx context.Context,
 	cfg *config.Config,
 	logger *slog.Logger,
+	_ otel.Global,
 ) (*gorm.DB, func(), error) {
 	gormLogger := slogGorm.New(
 		slogGorm.WithHandler(logger.Handler()),

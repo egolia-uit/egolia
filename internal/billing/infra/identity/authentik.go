@@ -7,6 +7,7 @@ import (
 
 	"github.com/egolia-uit/egolia/internal/billing/core"
 	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	semconv "go.opentelemetry.io/otel/semconv/v1.39.0"
 	"go.opentelemetry.io/otel/trace"
@@ -21,6 +22,7 @@ type Authentik struct {
 
 func NewAuthentik(
 	cfg *commonconfig.Authentik,
+	_ otel.Global,
 ) *Authentik {
 	authentikCfg := api.NewConfiguration()
 	authentikCfg.Host = cfg.Host

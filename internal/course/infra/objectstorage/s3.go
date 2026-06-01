@@ -16,6 +16,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/app"
 	"github.com/egolia-uit/egolia/internal/course/errs"
 	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/aws/aws-sdk-go-v2/otelaws"
 )
@@ -30,6 +31,7 @@ type S3 struct {
 func NewS3(
 	ctx context.Context,
 	cfg *commonconfig.S3,
+	_ otel.Global,
 ) (*S3, error) {
 	c, err := config.LoadDefaultConfig(
 		ctx,
@@ -84,7 +86,8 @@ func (s *S3) GetUploadVideoLessonURL(ctx context.Context, params *app.GetUploadV
 		ContentType: aws.String(contentType),
 	}
 	expiration := time.Now().Add(s.presignExpiration)
-	url, err := s.S3PresignClient.PresignPutObject(ctx, presignParams,
+	url, err := s.S3PresignClient.PresignPutObject(
+		ctx, presignParams,
 		s3.WithPresignExpires(s.presignExpiration),
 	)
 	if err != nil {
@@ -126,7 +129,8 @@ func (s *S3) getPresignedDownloadURL(ctx context.Context, videoKey string) (stri
 		Key:    aws.String(videoKey),
 	}
 
-	url, err := s.S3PresignClient.PresignGetObject(ctx, presignParams,
+	url, err := s.S3PresignClient.PresignGetObject(
+		ctx, presignParams,
 		s3.WithPresignExpires(15*time.Minute),
 	)
 	if err != nil {

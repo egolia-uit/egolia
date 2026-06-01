@@ -49,24 +49,25 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 	}
 	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
 	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
-	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
-	tracerProvider, cleanup2, err := otel.NewTracerProvider(ctx, resource)
+	meterProvider, cleanup2, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	meterProvider, cleanup3, err := otel.NewMeterProvider(ctx, resource)
+	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	textMapPropagator := otel.NewTextMapPropagator()
-	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName, tracerProvider, meterProvider, textMapPropagator)
+	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider, textMapPropagator)
+	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger, global)
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
 	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
 	services := &configConfig.Services
 	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
-	course, cleanup4, err := service.NewCourse(services, loggingLogger, tracerProvider, meterProvider, textMapPropagator)
+	course, cleanup4, err := service.NewCourse(services, loggingLogger, global)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -74,8 +75,8 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 		return nil, nil, err
 	}
 	authentik := &configConfig.Authentik
-	identityAuthentik := identity.NewAuthentik(authentik)
-	db, cleanup5, err := persistence.NewDB(ctx, configConfig, logger)
+	identityAuthentik := identity.NewAuthentik(authentik, global)
+	db, cleanup5, err := persistence.NewDB(ctx, configConfig, logger, global)
 	if err != nil {
 		cleanup4()
 		cleanup3()

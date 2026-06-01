@@ -5,12 +5,10 @@ import (
 
 	commonconfig "github.com/egolia-uit/egolia/pkg/common/config"
 	"github.com/egolia-uit/egolia/pkg/metadata"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/gin-gonic/gin"
 	sloggin "github.com/samber/slog-gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
-	"go.opentelemetry.io/otel/metric"
-	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type GinSlogHandlerFunc gin.HandlerFunc
@@ -18,6 +16,7 @@ type GinSlogHandlerFunc gin.HandlerFunc
 func NewGinSlogHandler(
 	logCfg *commonconfig.Log,
 	logger *slog.Logger,
+	_ otel.Global,
 ) GinSlogHandlerFunc {
 	cfg := sloggin.Config{
 		WithUserAgent:      true,
@@ -38,15 +37,9 @@ type OtelGinHandlerFunc gin.HandlerFunc
 
 func NewOtelGinHandler(
 	serviceName metadata.ServiceName,
-	tracerProvider trace.TracerProvider,
-	meterProvider metric.MeterProvider,
-	propagator propagation.TextMapPropagator,
 ) OtelGinHandlerFunc {
 	return OtelGinHandlerFunc(otelgin.Middleware(
 		serviceName.String(),
-		otelgin.WithTracerProvider(tracerProvider),
-		otelgin.WithMeterProvider(meterProvider),
-		otelgin.WithPropagators(propagator),
 	))
 }
 
@@ -61,6 +54,7 @@ func NewGin(
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.New()
+	r.ContextWithFallback = true
 	r.Use(gin.Recovery())
 	r.Use(gin.HandlerFunc(otelHandler))
 	r.Use(gin.HandlerFunc(slogHandler))

@@ -50,23 +50,24 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
 	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
-	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
-	tracerProvider, cleanup2, err := otel.NewTracerProvider(ctx, resource)
+	meterProvider, cleanup2, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	meterProvider, cleanup3, err := otel.NewMeterProvider(ctx, resource)
+	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	textMapPropagator := otel.NewTextMapPropagator()
-	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName, tracerProvider, meterProvider, textMapPropagator)
+	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider, textMapPropagator)
+	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger, global)
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
 	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
 	handlerProvider := app.NewHandlerProvider(tracerProvider, logger)
-	db, cleanup4, err := persistence.NewDB(ctx, configConfig, logger)
+	db, cleanup4, err := persistence.NewDB(ctx, configConfig, logger, global)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -113,7 +114,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	updateSectionTitleHandler := app.NewUpdateSectionTitleHandler(unitOfWork)
 	cmds := app.NewCmds(handlerProvider, unitOfWork, approveCourseHandler, bookmarkCourseHandler, commentOnLessonHandler, createCourseHandler, createDraftVersionHandler, createLessonCmd, createSectionHandler, declineCourseHandler, deleteCourseHandler, deleteLessonHandler, deleteLessonCommentHandler, deleteReviewHandler, deleteSectionHandler, editTestLessonHandler, editVideoLessonHandler, enrollInCourseHandler, finishCourseHandler, getCourseProgressHandler, hideCourseHandler, markLessonAsCompletedHandler, moveLessonHandler, moveSectionHandler, replyOnLessonCommentHandler, reviewCourseHandler, submitCourseHandler, updateCourseHandler, updateReviewHandler, updateSectionTitleHandler)
 	s3 := &configConfig.S3
-	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
+	objectstorageS3, err := objectstorage.NewS3(ctx, s3, global)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -160,7 +161,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	serviceServer := grpc.NewServiceServer(appApp)
 	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
-	grpcGRPC, cleanup6, err := grpc.New(ctx, serviceServer, server, loggingLogger, tracerProvider, meterProvider, textMapPropagator)
+	grpcGRPC, cleanup6, err := grpc.New(ctx, serviceServer, server, loggingLogger, global)
 	if err != nil {
 		cleanup5()
 		cleanup4()
@@ -171,8 +172,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	healthHealth := health.New(server)
 	pg := persistence.NewPG(db)
-	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider, textMapPropagator)
-	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
+	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, logger, global)
 	return courseServer, func() {
 		cleanup6()
 		cleanup5()

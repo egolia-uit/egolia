@@ -27,8 +27,8 @@ func NewServer(
 	grpc *grpc.GRPC,
 	health *health.Health,
 	pg *persistence.PG,
-	globalOtel otel.Global,
 	logger *slog.Logger,
+	_ otel.Global,
 ) *Server {
 	slog.SetDefault(logger)
 	return &Server{
