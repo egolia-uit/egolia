@@ -40,6 +40,6 @@ export function putFileToSignedUrl(
       reject(new Error(`RustFS upload failed (${request.status})`));
     };
 
-    request.send(file);
+    request.send(file.slice(0, file.size, ''));
   });
 }
