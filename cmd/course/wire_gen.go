@@ -51,16 +51,24 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
 	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
 	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
-	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
-	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
 	tracerProvider, cleanup2, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	handlerProvider := app.NewHandlerProvider(tracerProvider, logger)
-	db, cleanup3, err := persistence.NewDB(ctx, configConfig, logger)
+	meterProvider, cleanup3, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	textMapPropagator := otel.NewTextMapPropagator()
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName, tracerProvider, meterProvider, textMapPropagator)
+	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
+	handlerProvider := app.NewHandlerProvider(tracerProvider, logger)
+	db, cleanup4, err := persistence.NewDB(ctx, configConfig, logger)
+	if err != nil {
+		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
@@ -107,6 +115,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	s3 := &configConfig.S3
 	objectstorageS3, err := objectstorage.NewS3(ctx, s3)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -141,16 +150,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	server := &configConfig.Server
 	strictHandler := http.NewStrictHandler(appApp, server)
 	serverInterface := http.NewHandler(strictHandler)
-	httpHTTP, cleanup4, err := http.New(ctx, engine, serverInterface, server, logger)
-	if err != nil {
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	serviceServer := grpc.NewServiceServer(appApp)
-	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
-	grpcGRPC, cleanup5, err := grpc.New(ctx, serviceServer, server, loggingLogger)
+	httpHTTP, cleanup5, err := http.New(ctx, engine, serverInterface, server, logger)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -158,9 +158,9 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	healthHealth := health.New(server)
-	pg := persistence.NewPG(db)
-	meterProvider, cleanup6, err := otel.NewMeterProvider(ctx, resource)
+	serviceServer := grpc.NewServiceServer(appApp)
+	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
+	grpcGRPC, cleanup6, err := grpc.New(ctx, serviceServer, server, loggingLogger, tracerProvider, meterProvider, textMapPropagator)
 	if err != nil {
 		cleanup5()
 		cleanup4()
@@ -169,7 +169,9 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider)
+	healthHealth := health.New(server)
+	pg := persistence.NewPG(db)
+	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider, textMapPropagator)
 	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
 	return courseServer, func() {
 		cleanup6()

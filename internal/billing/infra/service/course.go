@@ -12,6 +12,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel/metric"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
@@ -25,8 +28,15 @@ type Course struct {
 func NewCourse(
 	servicesCfg *config.Services,
 	logger logging.Logger,
+	tracerProvider trace.TracerProvider,
+	meterProvider metric.MeterProvider,
+	propagator propagation.TextMapPropagator,
 ) (*Course, func(), error) {
-	statsHandler := otelgrpc.NewClientHandler()
+	statsHandler := otelgrpc.NewClientHandler(
+		otelgrpc.WithTracerProvider(tracerProvider),
+		otelgrpc.WithMeterProvider(meterProvider),
+		otelgrpc.WithPropagators(propagator),
+	)
 	conn, err := grpc.NewClient(
 		servicesCfg.Course.URL,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),

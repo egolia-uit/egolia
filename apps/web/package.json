@@ -2,18 +2,20 @@
   "name": "@egolia-uit/web",
   "private": true,
   "dependencies": {
+    "@opentelemetry/exporter-logs-otlp-proto": "catalog:",
+    "@opentelemetry/sdk-logs": "catalog:",
     "@vercel/otel": "catalog:",
     "better-auth": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
+    "framer-motion": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
     "plyr": "catalog:",
     "radix-ui": "^1.4.3",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "sonner": "catalog:",
-    "framer-motion": "catalog:"
+    "sonner": "catalog:"
   },
   "devDependencies": {
     "autoprefixer": "catalog:",

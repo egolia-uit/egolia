@@ -60,6 +60,8 @@ catalog:
   vite: 8.0.10
   vitest: 4.0.18
   zod: 4.3.6
+  '@opentelemetry/exporter-logs-otlp-proto': 0.215.0
+  '@opentelemetry/sdk-logs': 0.215.0
   '@vercel/otel': 2.1.2
   framer-motion: 11.18.2
 onlyBuiltDependencies:
