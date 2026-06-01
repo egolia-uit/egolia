@@ -10,10 +10,6 @@ export function putFileToSignedUrl(
 
     console.log('>>> [PUT] Sending file to:', uploadUrl);
     request.open('PUT', uploadUrl);
-    request.setRequestHeader(
-      'Content-Type',
-      file.type || 'application/octet-stream'
-    );
 
     request.upload.onprogress = (event) => {
       if (!event.lengthComputable) {
