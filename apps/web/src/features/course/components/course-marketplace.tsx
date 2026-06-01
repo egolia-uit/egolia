@@ -233,7 +233,7 @@ export function MarketplacePage({
               </Button>
             </div>
           )}
-          
+
           {courses.length > 0 ? (
             <motion.div
               variants={containerVariants}
@@ -267,8 +267,8 @@ export function MarketplacePage({
           ) : (
             <div className="py-12 text-center">
               <p className="text-sm font-medium text-slate-500">
-                {submittedQuery 
-                  ? "No courses matched your search. Try using other keywords." 
+                {submittedQuery
+                  ? "No courses matched your search. Try using other keywords."
                   : "No active programs available. Check back soon!"}
               </p>
             </div>
@@ -465,18 +465,24 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
   useEffect(() => {
     let mounted = true;
 
-    const fetchAction = viewer?.accessToken
+    if (viewer?.accessToken && enrolledCourseIds === null) {
+      return;
+    }
+
+    const isEnrolled = enrolledCourseIds?.has(courseId);
+
+    const fetchAction = isEnrolled
       ? getCourseDetail({
-          client: apiClient,
-          path: { courseId },
-          throwOnError: true,
-          cache: 'no-store',
-        })
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+        cache: 'no-store',
+      })
       : getCourseLandingPage({
-          client: apiClient,
-          path: { courseId },
-          throwOnError: true,
-        });
+        client: apiClient,
+        path: { courseId },
+        throwOnError: true,
+      });
 
     fetchAction
       .then(({ data }) => {
@@ -493,7 +499,7 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
     return () => {
       mounted = false;
     };
-  }, [courseId, viewer?.accessToken]);
+  }, [courseId, viewer?.accessToken, enrolledCourseIds]);
 
   useEffect(() => {
     let mounted = true;
