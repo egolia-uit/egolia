@@ -23,6 +23,7 @@ type Config struct {
 	Server   Server               `json:"server"   mapstructure:"server"   validate:"required"  yaml:"server"`
 	Database commonconfig.SQL     `json:"database" mapstructure:"database" validate:"required"  yaml:"database"`
 	S3       commonconfig.S3      `json:"s3"       mapstructure:"s3"       validate:"required"  yaml:"s3"`
+	Kafka    commonconfig.Kafka   `json:"kafka"    mapstructure:"kafka"    validate:"required"  yaml:"kafka"`
 }
 
 func New(
@@ -42,6 +43,7 @@ func New(
 	commonconfig.SQLViperSetDefault(viper, "database")
 	commonconfig.GeneralViperSetDefault(viper, "general")
 	commonconfig.AuthentikViperSetDefault(viper, "authentik")
+	commonconfig.KafkaViperSetDefault(viper, "kafka", "course")
 
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err == nil {

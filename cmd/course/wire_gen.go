@@ -16,6 +16,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/controller/health"
 	"github.com/egolia-uit/egolia/internal/course/controller/http"
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/egolia-uit/egolia/internal/course/infra/event"
 	"github.com/egolia-uit/egolia/internal/course/infra/objectstorage"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/readmodel"
@@ -66,7 +67,17 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		return nil, nil, err
 	}
 	unitOfWork := repo.NewUnitOfWork(db)
-	approveCourseHandler := app.NewApproveCourseHandler(unitOfWork)
+	watermillKafkaTracer := otel.NewOTELSaramaTracer(tracerProvider)
+	loggerAdapter := logging.NewWatermill(logger)
+	publisher, err := event.NewKafkaPublisher(configConfig, watermillKafkaTracer, loggerAdapter)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	kafkaEventPublisher := event.NewKafkaEventPublisher(publisher)
+	approveCourseHandler := app.NewApproveCourseHandler(unitOfWork, kafkaEventPublisher)
 	bookmarkCourseHandler := app.NewBookmarkCourseHandler(unitOfWork)
 	commentOnLessonHandler := app.NewCommentOnLessonHandler(unitOfWork)
 	createCourseHandler := app.NewCreateCourseHandler(unitOfWork)
@@ -170,7 +181,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		return nil, nil, err
 	}
 	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider)
-	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, logger)
+	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, global, publisher, logger)
 	return courseServer, func() {
 		cleanup6()
 		cleanup5()

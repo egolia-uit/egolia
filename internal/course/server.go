@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/egolia-uit/egolia/internal/course/controller/grpc"
 	"github.com/egolia-uit/egolia/internal/course/controller/health"
 	"github.com/egolia-uit/egolia/internal/course/controller/http"
@@ -15,11 +16,12 @@ import (
 )
 
 type Server struct {
-	http   *http.HTTP
-	grpc   *grpc.GRPC
-	health *health.Health
-	pg     *persistence.PG
-	logger *slog.Logger
+	http           *http.HTTP
+	grpc           *grpc.GRPC
+	health         *health.Health
+	pg             *persistence.PG
+	eventPublisher message.Publisher
+	logger         *slog.Logger
 }
 
 func NewServer(
@@ -28,15 +30,17 @@ func NewServer(
 	health *health.Health,
 	pg *persistence.PG,
 	globalOtel otel.Global,
+	eventPublisher message.Publisher,
 	logger *slog.Logger,
 ) *Server {
 	slog.SetDefault(logger)
 	return &Server{
-		http:   http,
-		grpc:   grpc,
-		health: health,
-		pg:     pg,
-		logger: logger,
+		http:           http,
+		grpc:           grpc,
+		health:         health,
+		pg:             pg,
+		eventPublisher: eventPublisher,
+		logger:         logger,
 	}
 }
 
@@ -105,5 +109,11 @@ func (s *Server) Run(ctx context.Context) error {
 		return nil
 	})
 
-	return g.Wait()
+	err := g.Wait()
+
+	if closeErr := s.eventPublisher.Close(); closeErr != nil {
+		s.logger.WarnContext(ctx, "failed to close event publisher", slog.Any("error", closeErr))
+	}
+
+	return err
 }
