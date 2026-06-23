@@ -540,15 +540,25 @@ function InstructorCourseDetailContent({
 
           {/* Premium Segmented Tabs Toggle */}
           <div className="flex justify-center border-b border-slate-200 pb-4">
-            <div className="flex rounded-xl bg-slate-100/80 p-1 shadow-inner border border-slate-200/50">
+            <div className="
+              flex rounded-xl border border-slate-200/50 bg-slate-100/80 p-1
+              shadow-inner
+            ">
               <button
                 type="button"
                 onClick={() => setActiveTab('curriculum')}
-                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                className={`
+                  flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold
+                  transition-all duration-200
+                  ${
                   activeTab === 'curriculum'
                     ? 'bg-white text-indigo-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
+                    : `
+                      text-slate-500
+                      hover:text-slate-800
+                    `
+                }
+                `}
               >
                 <BookOpen className="size-3.5" />
                 Course Curriculum
@@ -556,11 +566,18 @@ function InstructorCourseDetailContent({
               <button
                 type="button"
                 onClick={() => setActiveTab('students')}
-                className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
+                className={`
+                  flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs
+                  font-bold transition-all duration-200
+                  ${
                   activeTab === 'students'
                     ? 'bg-white text-indigo-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800'
-                }`}
+                    : `
+                      text-slate-500
+                      hover:text-slate-800
+                    `
+                }
+                `}
               >
                 <Users className="size-3.5" />
                 Enrolled Students & Stats

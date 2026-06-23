@@ -566,7 +566,10 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
                     await toggleBookmark();
                     showToast(isBookmarked ? 'Removed from bookmarks.' : 'Saved to bookmarks.');
                   }}
-                  className="w-full shadow-nm-flat active:shadow-nm-inset"
+                  className="
+                    w-full shadow-nm-flat
+                    active:shadow-nm-inset
+                  "
                 >
                   {bookmarkLoading ? (
                     <Loader2 className="mr-2 size-4 animate-spin text-slate-400" />
@@ -574,7 +577,9 @@ export function PublicCoursePage({ courseId }: { courseId: string }) {
                     <Bookmark
                       className={cn(
                         "mr-2 size-4 transition-all duration-200",
-                        isBookmarked ? "fill-indigo-500 text-indigo-500" : "text-slate-500"
+                        isBookmarked ? "fill-indigo-500 text-indigo-500" : `
+                          text-slate-500
+                        `
                       )}
                     />
                   )}

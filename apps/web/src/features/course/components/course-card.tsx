@@ -364,8 +364,9 @@ export function CourseCard({
               className="
                 absolute top-2.5 right-2.5 z-20 flex h-8 w-8 items-center
                 justify-center rounded-full border border-slate-200 bg-white/95
-                text-slate-600 shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all
-                duration-300 hover:scale-105 hover:bg-white hover:text-slate-900
+                text-slate-600 shadow-[0_4px_12px_rgba(0,0,0,0.08)]
+                transition-all duration-300
+                hover:scale-105 hover:bg-white hover:text-slate-900
                 active:scale-95
               "
             >
@@ -377,7 +378,10 @@ export function CourseCard({
                     "size-4 transition-all duration-200",
                     isBookmarked
                       ? "fill-indigo-500 text-indigo-500"
-                      : "text-slate-400 hover:text-slate-600"
+                      : `
+                        text-slate-400
+                        hover:text-slate-600
+                      `
                   )}
                 />
               )}
@@ -597,9 +601,7 @@ export function CourseCard({
       {destination === 'instructor' && (
         <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
           <DialogContent
-            className="
-              sm:max-w-md
-            "
+            className="sm:max-w-md"
             onClick={(e) => {
               e.stopPropagation();
             }}
