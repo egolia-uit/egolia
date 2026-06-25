@@ -3,6 +3,6 @@ dir: '{{ .InterfaceDir }}'
 filename: mock.go
 pkgname: '{{ .SrcPackageName }}'
 packages:
-  github.com/egolia-uit/egolia/internal/blog/core:
+  github.com/egolia-uit/egolia/internal/blog/domain:
     config:
-      include-interface-regex: '^()$'
+      include-interface-regex: '^(.*Repo|UnitOfWork|RepoRegistry)$'
