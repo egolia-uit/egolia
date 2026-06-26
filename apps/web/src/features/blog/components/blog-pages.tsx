@@ -29,14 +29,6 @@ import {
   CardTitle,
 } from '#/components/ui/neumorphism/card';
 import { Input } from '#/components/ui/neumorphism/input';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '#/components/ui/shadcn/dialog';
 import type { Viewer } from '#/lib/auth/roles';
 import { useViewer } from '#/lib/auth/use-viewer';
 
@@ -47,14 +39,14 @@ const Textarea = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <textarea
     className={`
-        flex min-h-20 w-full rounded-xl border border-slate-200 bg-white px-4
-        py-2 text-sm text-slate-950
-        placeholder:text-slate-400
-        focus-visible:border-blue-400 focus-visible:ring-2
-        focus-visible:ring-blue-500 focus-visible:outline-none
-        disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-50
-        ${className || ''}
-      `}
+      flex min-h-20 w-full rounded-xl border border-slate-200 bg-white px-4 py-2
+      text-sm text-slate-950
+      placeholder:text-slate-400
+      focus-visible:border-blue-400 focus-visible:ring-2
+      focus-visible:ring-blue-500 focus-visible:outline-none
+      disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-50
+      ${className || ''}
+    `}
     ref={ref}
     {...props}
   />
@@ -207,14 +199,14 @@ export function BlogListPage() {
           <Button asChild variant="outline">
             <Link href="/admin/blog">
               <Edit className="mr-2 size-4" />
-              Demo: Quản lý bài viết
+              Demo: Manage Articles
             </Link>
           </Button>
         ) : (
           <Button asChild variant="outline">
             <Link href="/login?redirect=/admin/blog">
               <Edit className="mr-2 size-4" />
-              Demo: Đăng nhập để Quản lý
+              Demo: Sign in to Manage
             </Link>
           </Button>
         )
@@ -350,8 +342,8 @@ function CommentItem({
           ) : (
             <p
               className="
-              mt-1 text-sm leading-relaxed break-words text-slate-700
-            "
+                mt-1 text-sm leading-relaxed break-words text-slate-700
+              "
             >
               {comment.content}
             </p>
@@ -406,7 +398,7 @@ function CommentItem({
               <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Viết phản hồi..."
+                  placeholder="Write a reply..."
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
                   className="
@@ -416,13 +408,11 @@ function CommentItem({
                   "
                 />
                 <CornerDownRight
-                  className="
-                  absolute top-2.5 right-2.5 size-3.5 text-slate-400
-                "
+                  className="absolute top-2.5 right-2.5 size-3.5 text-slate-400"
                 />
               </div>
               <Button type="submit" size="sm" className="h-8 py-0">
-                Gửi
+                Send
               </Button>
               <Button
                 type="button"
@@ -431,7 +421,7 @@ function CommentItem({
                 className="h-8 py-0"
                 onClick={() => setIsReplying(false)}
               >
-                Hủy
+                Cancel
               </Button>
             </form>
           )}
@@ -466,16 +456,16 @@ export function BlogDetailPage({ slug }: { slug: string }) {
   const [comments, setComments] = useState<BlogComment[]>([
     {
       id: 'c1',
-      author: 'Nguyễn Hoàng Long',
+      author: 'Alex Johnson',
       content:
-        'Bài hướng dẫn chi tiết quá admin ơi! Cho em hỏi hệ thống authentication của Egolia sử dụng oauth2 flow thì có tích hợp sẵn cơ chế refresh token chưa ạ?',
+        'The guide is so detailed! May I ask if the Egolia auth system using oauth2 flow has a built-in refresh token mechanism?',
       date: '2026-05-25T08:30:00Z',
       replies: [
         {
           id: 'c2',
           author: 'Admin (Dev Team)',
           content:
-            'Chào Long nhé, Egolia sử dụng BetterAuth kết hợp Authentik nên refresh token đã được cấu hình tự động dưới dạng HttpOnly cookie, đảm bảo bảo mật và tự động gia hạn phiên đăng nhập cực kỳ mượt mà nhé!',
+            'Hi Alex, Egolia uses BetterAuth with Authentik, so refresh tokens are automatically configured as HttpOnly cookies, ensuring security and seamless session renewals!',
           date: '2026-05-25T09:15:00Z',
           replies: [],
         },
@@ -483,9 +473,9 @@ export function BlogDetailPage({ slug }: { slug: string }) {
     },
     {
       id: 'c3',
-      author: 'Lê Minh Anh',
+      author: 'Emily Davis',
       content:
-        'Giao diện bento grid kèm shadow-nm mịn màng ghê. Trải nghiệm duyệt bài viết rất thoải mái.',
+        'The bento grid UI with smooth shadow is beautiful. Reading articles is a great experience.',
       date: '2026-05-26T14:20:00Z',
       replies: [],
     },
@@ -500,7 +490,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
     // Simulate POST /blog/posts/{postId}/comments
     const newComment: BlogComment = {
       id: `c_${Date.now()}`,
-      author: viewer?.name || 'Học viên ẩn danh',
+      author: viewer?.name || 'Anonymous Learner',
       content: newCommentText,
       date: new Date().toISOString(),
       replies: [],
@@ -514,7 +504,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
     // Simulate POST /blog/comments/{commentId}/replies
     const newReply: BlogComment = {
       id: `c_${Date.now()}`,
-      author: viewer?.name || 'Học viên ẩn danh',
+      author: viewer?.name || 'Anonymous Learner',
       content: text,
       date: new Date().toISOString(),
       replies: [],
@@ -589,9 +579,10 @@ export function BlogDetailPage({ slug }: { slug: string }) {
           <CardContent className="max-w-none pt-5">
             <p
               className="
-              mb-6 rounded-r-lg border-l-4 border-l-blue-600 bg-slate-50/50 py-3
-              pl-4 text-base leading-relaxed font-semibold text-slate-900 italic
-            "
+                mb-6 rounded-r-lg border-l-4 border-l-blue-600 bg-slate-50/50
+                py-3 pl-4 text-base leading-relaxed font-semibold text-slate-900
+                italic
+              "
             >
               {post.excerpt}
             </p>
@@ -610,13 +601,13 @@ export function BlogDetailPage({ slug }: { slug: string }) {
               </p>
               <p
                 className="
-                rounded-xl border border-amber-200/50 bg-amber-50/40 p-4
-                font-semibold text-slate-900
-              "
+                  rounded-xl border border-amber-200/50 bg-amber-50/40 p-4
+                  font-semibold text-slate-900
+                "
               >
-                ⚠️ Lưu ý: Nội dung chi tiết đầy đủ của bài viết sẽ chính thức
-                đồng bộ từ máy chủ khi dịch vụ Blog hoàn tất cấu trúc cơ sở dữ
-                liệu và dịch vụ BE đi vào hoạt động.
+                ⚠️ Note: The full detail content of this article will be
+                officially synced from the server once the Blog database and BE
+                services are fully operational.
               </p>
             </div>
           </CardContent>
@@ -627,11 +618,11 @@ export function BlogDetailPage({ slug }: { slug: string }) {
           <CardHeader className="pb-3">
             <CardTitle
               className="
-              flex items-center gap-2 text-base font-semibold text-slate-900
-            "
+                flex items-center gap-2 text-base font-semibold text-slate-900
+              "
             >
               <MessageSquare className="size-4.5 text-blue-600" />
-              Thảo luận (
+              Discussion (
               {comments.length +
                 comments.reduce((a, b) => a + b.replies.length, 0)}
               )
@@ -642,7 +633,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
             <form onSubmit={handleAddComment} className="flex gap-2">
               <input
                 type="text"
-                placeholder="Chia sẻ ý kiến của bạn..."
+                placeholder="Share your thoughts..."
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
                 className="
@@ -653,7 +644,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
               />
               <Button type="submit">
                 <Send className="mr-2 size-3.5" />
-                Gửi
+                Send
               </Button>
             </form>
 
@@ -671,7 +662,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
                 ))
               ) : (
                 <div className="py-6 text-center text-sm text-slate-500">
-                  Chưa có bình luận nào. Hãy là người đầu tiên thảo luận!
+                  No comments yet. Be the first to share your thoughts!
                 </div>
               )}
             </div>
@@ -680,7 +671,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
 
         <div className="mt-2 flex items-center justify-between">
           <Button asChild variant="outline">
-            <Link href="/blog">← Trở về danh sách</Link>
+            <Link href="/blog">← Back to list</Link>
           </Button>
         </div>
       </div>
@@ -764,7 +755,7 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
   };
 
   const handleDeletePost = (slug: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa bài viết này không?')) return;
+    if (!confirm('Are you sure you want to delete this article?')) return;
     const updated = posts.filter((p) => p.slug !== slug);
     updatePosts(updated);
   };
@@ -776,20 +767,20 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
         eyebrow="Blog Editor"
         title={
           view === 'create'
-            ? 'Tạo bài viết mới (Demo)'
-            : 'Chỉnh sửa bài viết (Demo)'
+            ? 'Create New Article (Demo)'
+            : 'Edit Article (Demo)'
         }
         actions={
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => setView('list')}>
-              Hủy
+              Cancel
             </Button>
             <Button
               onClick={() => handleSubmit()}
               disabled={!title.trim() || !content.trim()}
             >
               <Send className="mr-2 size-4" />
-              Lưu bài viết
+              Save Article
             </Button>
           </div>
         }
@@ -797,23 +788,37 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
         <div className="flex flex-col gap-6">
           <button
             onClick={() => setView('list')}
-            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+            className="
+              flex items-center gap-2 text-sm font-medium text-slate-500
+              transition-colors
+              hover:text-slate-900
+            "
           >
             <ChevronLeft className="size-4" />
-            Quay lại danh sách bài viết
+            Back to articles
           </button>
 
-          <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
+          <div
+            className="
+              grid gap-6
+              lg:grid-cols-[1fr_300px]
+            "
+          >
             {/* Main Form Area */}
             <div className="space-y-6">
               <Card className="border border-slate-200 bg-white p-6 shadow-xs">
                 <CardContent className="space-y-4 p-0">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                      Tiêu đề bài viết
+                    <label
+                      className="
+                        text-xs font-semibold tracking-wider text-slate-500
+                        uppercase
+                      "
+                    >
+                      Article Title
                     </label>
                     <Input
-                      placeholder="Nhập tiêu đề bài viết..."
+                      placeholder="Enter article title..."
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       className="text-base font-medium"
@@ -822,11 +827,16 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                      Nội dung bài viết
+                    <label
+                      className="
+                        text-xs font-semibold tracking-wider text-slate-500
+                        uppercase
+                      "
+                    >
+                      Article Content
                     </label>
                     <Textarea
-                      placeholder="Viết nội dung bài viết của bạn tại đây..."
+                      placeholder="Write your article content here..."
                       value={content}
                       onChange={(e) => setContent(e.target.value)}
                       className="min-h-[400px] text-sm leading-relaxed"
@@ -840,18 +850,18 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
             {/* Metadata Sidebar */}
             <div className="space-y-6">
               <Card className="border border-slate-200 bg-white p-6 shadow-xs">
-                <CardHeader className="p-0 pb-3 border-b border-slate-100">
+                <CardHeader className="border-b border-slate-100 p-0 pb-3">
                   <CardTitle className="text-sm font-semibold text-slate-900">
-                    Thiết lập bài viết
+                    Article Settings
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 p-0 pt-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-slate-500">
-                      Phân loại (Category)
+                      Category
                     </label>
                     <Input
-                      placeholder="Ví dụ: Guide, News..."
+                      placeholder="e.g. Guide, News..."
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       required
@@ -860,10 +870,10 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-slate-500">
-                      Thời gian đọc (Read time)
+                      Read time
                     </label>
                     <Input
-                      placeholder="Ví dụ: 5 mins, 10 mins..."
+                      placeholder="e.g. 5 mins, 10 mins..."
                       value={readTime}
                       onChange={(e) => setReadTime(e.target.value)}
                       required
@@ -872,16 +882,16 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
 
                   <div className="pt-2 text-xs text-slate-400">
                     <p>
-                      Tác giả:{' '}
+                      Author:{' '}
                       <span className="font-medium text-slate-600">
                         {viewer?.name || 'Admin'}
                       </span>
                     </p>
                     <p className="mt-1">
-                      Ngày tạo:{' '}
+                      Created Date:{' '}
                       <span className="font-medium text-slate-600">
                         {view === 'create'
-                          ? new Date().toLocaleDateString('vi-VN')
+                          ? new Date().toLocaleDateString('en-US')
                           : editingPost?.date}
                       </span>
                     </p>
@@ -911,7 +921,7 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
         <CardContent className="py-4">
           {posts.length === 0 ? (
             <div className="py-12 text-center text-sm text-slate-500">
-              Chưa có bài viết nào. Hãy bấm "Create Article" để tạo mới!
+              No articles yet. Click "Create Article" to write one!
             </div>
           ) : (
             <div className="grid gap-3">

@@ -96,7 +96,7 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
         {
           href: '/admin/blog',
           icon: Newspaper,
-          label: 'Manage Blog (Demo)',
+          label: 'Manage Blog',
         },
       ],
     });
@@ -320,9 +320,7 @@ export function AppShell({
                               src={viewer.image ?? undefined}
                             />
                             <AvatarFallback
-                              className="
-                              bg-slate-900 text-xs text-white
-                            "
+                              className="bg-slate-900 text-xs text-white"
                             >
                               {initials(viewer.name, viewer.email)}
                             </AvatarFallback>
@@ -336,9 +334,7 @@ export function AppShell({
                               {viewer.name ?? viewer.email ?? 'User'}
                             </div>
                             <div
-                              className="
-                              text-[10px] font-medium text-slate-500
-                            "
+                              className="text-[10px] font-medium text-slate-500"
                             >
                               {roleLabel(viewer)}
                             </div>
