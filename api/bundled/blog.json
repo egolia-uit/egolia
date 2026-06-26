@@ -23,6 +23,10 @@
     {
       "name": "Post",
       "description": "Blog post management"
+    },
+    {
+      "name": "Comment",
+      "description": "Blog comment management"
     }
   ],
   "externalDocs": {

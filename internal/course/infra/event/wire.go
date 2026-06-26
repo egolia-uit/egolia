@@ -6,7 +6,8 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	NewKafkaPublisher,
+	// TODO: revert to NewKafkaPublisher once a Kafka broker is available locally.
+	NewNoopPublisher,
 	NewKafkaEventPublisher,
 	wire.Bind(new(app.EventPublisher), new(*KafkaEventPublisher)),
 )

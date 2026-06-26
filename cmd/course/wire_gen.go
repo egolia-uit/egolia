@@ -76,9 +76,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		return nil, nil, err
 	}
 	unitOfWork := repo.NewUnitOfWork(db)
-	watermillKafkaTracer := otel.NewOTELSaramaTracer(tracerProvider)
-	loggerAdapter := logging.NewWatermill(logger)
-	publisher, err := event.NewKafkaPublisher(configConfig, watermillKafkaTracer, loggerAdapter)
+	publisher, err := event.NewNoopPublisher()
 	if err != nil {
 		cleanup4()
 		cleanup3()
