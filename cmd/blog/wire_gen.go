@@ -47,18 +47,26 @@ func InitializeServer(ctx context.Context) (*blog.Server, func(), error) {
 	}
 	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
 	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
-	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
-	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
-	general := &configConfig.General
-	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
-	tracerProvider, cleanup2, err := otel.NewTracerProvider(ctx, resource)
+	meterProvider, cleanup2, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	handlerProvider := app.NewHandlerProvider(tracerProvider, logger)
-	db, cleanup3, err := persistence.NewDB(ctx, configConfig, logger)
+	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	textMapPropagator := otel.NewTextMapPropagator()
+	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider, textMapPropagator)
+	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger, global)
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
+	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
+	handlerProvider := app.NewHandlerProvider(tracerProvider, logger)
+	db, cleanup4, err := persistence.NewDB(ctx, configConfig, logger)
+	if err != nil {
+		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
@@ -85,8 +93,9 @@ func InitializeServer(ctx context.Context) (*blog.Server, func(), error) {
 	server := &configConfig.Server
 	strictHandler := http.NewStrictHandler(appApp, server)
 	serverInterface := http.NewHandler(strictHandler)
-	httpHTTP, cleanup4, err := http.New(ctx, engine, serverInterface, server, logger)
+	httpHTTP, cleanup5, err := http.New(ctx, engine, serverInterface, server, logger)
 	if err != nil {
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -95,15 +104,6 @@ func InitializeServer(ctx context.Context) (*blog.Server, func(), error) {
 	authentik := &configConfig.Authentik
 	healthHealth := health.New(server, authentik)
 	pg := persistence.NewPG(db)
-	meterProvider, cleanup5, err := otel.NewMeterProvider(ctx, resource)
-	if err != nil {
-		cleanup4()
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider)
 	blogServer := blog.NewServer(httpHTTP, healthHealth, pg, global, logger)
 	return blogServer, func() {
 		cleanup5()
