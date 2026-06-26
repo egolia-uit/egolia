@@ -5,6 +5,8 @@ import { ApiReferenceReact } from '@scalar/api-reference-react';
 import '@scalar/api-reference-react/style.css';
 
 export function App() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  console.log('API URL:', apiUrl);
   return (
     <div>
       <ApiReferenceReact
@@ -16,6 +18,7 @@ export function App() {
               title: 'Egolia API',
             },
           ],
+          servers: apiUrl ? [{ url: apiUrl, name: 'API Server' }] : undefined,
           showOperationId: true,
           persistAuth: true,
           telemetry: false,

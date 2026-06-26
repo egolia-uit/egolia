@@ -8,6 +8,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/billing/config"
 	"github.com/egolia-uit/egolia/internal/billing/core"
 	"github.com/egolia-uit/egolia/internal/billing/errs"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/egolia-uit/egolia/pkg/pb"
 	"github.com/google/uuid"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
@@ -25,6 +26,7 @@ type Course struct {
 func NewCourse(
 	servicesCfg *config.Services,
 	logger logging.Logger,
+	_ otel.Global,
 ) (*Course, func(), error) {
 	statsHandler := otelgrpc.NewClientHandler()
 	conn, err := grpc.NewClient(

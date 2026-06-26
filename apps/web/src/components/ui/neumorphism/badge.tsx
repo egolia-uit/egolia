@@ -1,47 +1,48 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import { type VariantProps, cva } from 'class-variance-authority';
+import * as React from 'react';
 
-import { cn } from "#/components/lib/shadcn/utils"
+import { cn } from '#/components/lib/shadcn/utils';
 
 const badgeVariants = cva(
   `
-    inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold
-    transition-all
+    inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs
+    font-medium transition-colors
     focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none
   `,
   {
     variants: {
       variant: {
-        default:
-          "border-transparent bg-nm-bg text-foreground shadow-nm-flat-sm",
-        secondary:
-          `
-            border-transparent bg-secondary text-secondary-foreground
-            shadow-nm-flat-sm
-          `,
-        destructive:
-          `
-            border-transparent bg-destructive text-destructive-foreground
-            shadow-nm-flat-sm
-          `,
-        outline: "border border-border text-foreground shadow-nm-flat-sm",
-        inset: "border-none bg-nm-bg text-foreground shadow-nm-inset",
+        /* Default — neutral slate */
+        default: 'border border-slate-200 bg-slate-100 text-slate-700',
+        /* Secondary — slightly lighter */
+        secondary: 'border border-slate-200 bg-slate-50 text-slate-600',
+        /* Outlined — transparent */
+        outline: 'border border-slate-200 bg-transparent text-slate-600',
+        /* Active / featured — blue accent */
+        inset: 'border border-blue-100 bg-blue-50 text-blue-700',
+        /* Success / approved — green */
+        success: 'border border-emerald-200 bg-emerald-50 text-emerald-700',
+        /* Destructive — red */
+        destructive: 'border border-red-200 bg-red-50 text-red-700',
+        /* Warning / pending — amber */
+        warning: 'border border-amber-200 bg-amber-50 text-amber-700',
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: 'default',
     },
   }
-)
+);
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {
   return (
     <div className={cn(badgeVariants({ variant }), className)} {...props} />
-  )
+  );
 }
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants };

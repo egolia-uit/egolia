@@ -11,12 +11,11 @@ import {
   Plus,
   Save,
   Trash2,
-  UploadCloud,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { cn } from '#/components/lib/shadcn/utils';
 import { Badge } from '#/components/ui/neumorphism/badge';
+import { cn } from '#/components/lib/shadcn/utils';
 import { Button } from '#/components/ui/neumorphism/button';
 import {
   Card,
@@ -31,6 +30,7 @@ import {
   RadioGroup,
   RadioGroupItem,
 } from '#/components/ui/neumorphism/radio-group';
+import { useToast } from '#/components/ui/neumorphism/toast';
 import { Label } from '#/components/ui/shadcn/label';
 import {
   Select,
@@ -55,8 +55,8 @@ import {
 } from '#/lib/api/course';
 import { type ApiProblem, normalizeApiError } from '#/lib/api/errors';
 
+import { VideoDropZone, uploadCourseVideo } from './course-shared';
 import { ErrorState, InlineNotice } from './course-states';
-import { uploadCourseVideo } from './course-shared';
 
 type QuestionType = 'singleChoice' | 'multipleChoice';
 
@@ -159,9 +159,6 @@ function createUuid() {
   return `00000000-0000-4000-8000-${suffix}`;
 }
 
-function localId(prefix: 'section' | 'lesson') {
-  return `local-${prefix}-${createUuid()}`;
-}
 
 function createAnswerDraft(content = '', isCorrect = false): LessonAnswerDraft {
   return { id: createUuid(), content, isCorrect };
@@ -328,17 +325,6 @@ function getErrorMessage(caught: unknown, fallback: string) {
 
 function toApiInt64(value: number) {
   return value as unknown as bigint;
-}
-
-function formatFileSize(bytes: number) {
-  if (bytes < 1024) {
-    return `${bytes} B`;
-  }
-  const kb = bytes / 1024;
-  if (kb < 1024) {
-    return `${kb.toFixed(1)} KB`;
-  }
-  return `${(kb / 1024).toFixed(1)} MB`;
 }
 
 function readVideoDurationSeconds(video: HTMLVideoElement) {
@@ -542,14 +528,17 @@ function TestQuestionBuilder({
   onAnswerCorrectChange,
 }: TestQuestionBuilderProps) {
   return (
-    <div className="
-      space-y-4 rounded-2xl border border-slate-200/70 bg-nm-bg p-4
-      shadow-nm-inset
-    ">
-      <div className="
-        grid gap-2
-        md:grid-cols-[220px_1fr] md:items-center
-      ">
+    <div
+      className="
+        space-y-4 rounded-2xl border border-slate-200/60 bg-slate-50/50 p-4
+      "
+    >
+      <div
+        className="
+          grid gap-2
+          md:grid-cols-[220px_1fr] md:items-center
+        "
+      >
         <div className="space-y-1">
           <Label>Question type</Label>
           <p className="text-xs text-slate-500">
@@ -563,17 +552,20 @@ function TestQuestionBuilder({
         >
           <SelectTrigger
             className="
-              h-10 w-full rounded-xl border-none bg-nm-bg px-4 shadow-nm-inset
+              h-10 w-full rounded-xl border border-slate-200/80 bg-white px-4
               focus-visible:ring-2 focus-visible:ring-ring
             "
           >
             <SelectValue placeholder="Select question type" />
           </SelectTrigger>
-          <SelectContent className="border-none bg-nm-bg shadow-nm-flat">
+          <SelectContent className="
+            border border-slate-200/80 bg-white shadow-md
+          ">
             <SelectItem
               className="
                 rounded-lg
-                data-[highlighted]:bg-nm-bg data-[highlighted]:shadow-nm-inset
+                data-[highlighted]:bg-slate-100
+                data-[highlighted]:text-slate-900
               "
               value="singleChoice"
             >
@@ -582,7 +574,8 @@ function TestQuestionBuilder({
             <SelectItem
               className="
                 rounded-lg
-                data-[highlighted]:bg-nm-bg data-[highlighted]:shadow-nm-inset
+                data-[highlighted]:bg-slate-100
+                data-[highlighted]:text-slate-900
               "
               value="multipleChoice"
             >
@@ -602,9 +595,7 @@ function TestQuestionBuilder({
           return (
             <Card
               key={question.id}
-              className="
-                border border-slate-200/70 bg-nm-bg py-3 shadow-nm-flat-sm
-              "
+              className="border border-slate-200/60 bg-white/90 shadow-sm"
             >
               <CardHeader className="px-3 pb-2">
                 <div className="flex items-center justify-between gap-2">
@@ -612,16 +603,16 @@ function TestQuestionBuilder({
                     Question {questionIndex + 1}
                   </CardTitle>
                   {!readOnly && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    disabled={disabled || questions.length <= 1}
-                    onClick={() => onRemoveQuestion(question.id)}
-                  >
-                    <Trash2 className="size-4" />
-                    Remove
-                  </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={disabled || questions.length <= 1}
+                      onClick={() => onRemoveQuestion(question.id)}
+                    >
+                      <Trash2 className="size-4" />
+                      Remove
+                    </Button>
                   )}
                 </div>
               </CardHeader>
@@ -676,17 +667,19 @@ function TestQuestionBuilder({
                             }
                           />
                           {!readOnly && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            disabled={disabled || question.answers.length <= 2}
-                            onClick={() =>
-                              onRemoveAnswer(question.id, answer.id)
-                            }
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              disabled={
+                                disabled || question.answers.length <= 2
+                              }
+                              onClick={() =>
+                                onRemoveAnswer(question.id, answer.id)
+                              }
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
                           )}
                         </div>
                       ))}
@@ -724,17 +717,19 @@ function TestQuestionBuilder({
                             }
                           />
                           {!readOnly && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon-sm"
-                            disabled={disabled || question.answers.length <= 2}
-                            onClick={() =>
-                              onRemoveAnswer(question.id, answer.id)
-                            }
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              disabled={
+                                disabled || question.answers.length <= 2
+                              }
+                              onClick={() =>
+                                onRemoveAnswer(question.id, answer.id)
+                              }
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
                           )}
                         </div>
                       ))}
@@ -743,17 +738,17 @@ function TestQuestionBuilder({
                 </div>
 
                 {!readOnly && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={disabled}
-                  className="gap-1.5"
-                  onClick={() => onAddAnswer(question.id)}
-                >
-                  <Plus className="size-4" />
-                  Add answer
-                </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={disabled}
+                    className="gap-1.5"
+                    onClick={() => onAddAnswer(question.id)}
+                  >
+                    <Plus className="size-4" />
+                    Add answer
+                  </Button>
                 )}
               </CardContent>
             </Card>
@@ -762,17 +757,17 @@ function TestQuestionBuilder({
       </div>
 
       {!readOnly && (
-      <Button
-        type="button"
-        variant="secondary"
-        size="sm"
-        disabled={disabled}
-        className="gap-1.5"
-        onClick={onAddQuestion}
-      >
-        <Plus className="size-4" />
-        Add question
-      </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          disabled={disabled}
+          className="gap-1.5"
+          onClick={onAddQuestion}
+        >
+          <Plus className="size-4" />
+          Add question
+        </Button>
       )}
     </div>
   );
@@ -820,8 +815,7 @@ export function CourseCurriculumEditor({
   const [newLessonUploadError, setNewLessonUploadError] = useState<
     string | null
   >(null);
-  const [newLessonUploadedVideo, setNewLessonUploadedVideo] =
-    useState<UploadedVideo | null>(null);
+  const [, setNewLessonUploadedVideo] = useState<UploadedVideo | null>(null);
 
   const [lessonEditor, setLessonEditor] = useState<LessonEditorState | null>(
     null
@@ -854,6 +848,7 @@ export function CourseCurriculumEditor({
     Record<string, LocalLessonMeta>
   >({});
   const savedVideoPreviewUrlsRef = useRef<Set<string>>(new Set());
+  const { error: showErrorToast } = useToast();
 
   function begin(actionKey: string) {
     setBusyAction(actionKey);
@@ -931,7 +926,9 @@ export function CourseCurriculumEditor({
     if (!selectedSectionId) {
       return;
     }
-    const section = course.sections.find((item) => item.id === selectedSectionId);
+    const section = course.sections.find(
+      (item) => item.id === selectedSectionId
+    );
     if (!section) {
       return;
     }
@@ -1203,7 +1200,7 @@ export function CourseCurriculumEditor({
     const title = createSectionTitle.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Section name cannot be empty.',
       });
       return;
@@ -1217,27 +1214,7 @@ export function CourseCurriculumEditor({
       reload();
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        const sectionId = localId('section');
-        setSections((sections) => [
-          ...sections,
-          { id: sectionId, title, lessons: [] },
-        ]);
-        setSelectedSectionId(sectionId);
-        setSelectedLessonKey(null);
-        setExpandedSections((current) => ({
-          ...current,
-          [sectionId]: true,
-        }));
-        setRenamingSectionId(sectionId);
-        setRenamingSectionTitle(title);
-        setActionMessage(
-          'Create section not implemented in backend yet, mocked data on FE.'
-        );
-        setCreateSectionTitle('');
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1247,7 +1224,7 @@ export function CourseCurriculumEditor({
     const title = renamingSectionTitle.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Section name cannot be empty.',
       });
       return;
@@ -1275,20 +1252,7 @@ export function CourseCurriculumEditor({
       setRenamingSectionTitle('');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        setSections((sections) =>
-          sections.map((section) =>
-            section.id === sectionId ? { ...section, title } : section
-          )
-        );
-        setActionMessage(
-          'Update section not implemented in backend yet, mocked data on FE.'
-        );
-        setRenamingSectionId(null);
-        setRenamingSectionTitle('');
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1325,29 +1289,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Section deleted.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        setSections((sections) =>
-          sections.filter((section) => section.id !== sectionId)
-        );
-        if (selectedSectionId === sectionId) {
-          setSelectedSectionId(null);
-          setSelectedLessonKey(null);
-          setLessonEditor(null);
-        }
-        setExpandedSections((current) => {
-          if (!(sectionId in current)) {
-            return current;
-          }
-          const next = { ...current };
-          delete next[sectionId];
-          return next;
-        });
-        setActionMessage(
-          'Delete section not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1383,16 +1325,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Section order updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        setSections((sections) =>
-          moveItem(sections, currentIndex, targetIndex)
-        );
-        setActionMessage(
-          'Move section not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1402,7 +1335,7 @@ export function CourseCurriculumEditor({
     const title = newLessonTitle.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Lesson name cannot be empty.',
       });
       return;
@@ -1416,7 +1349,8 @@ export function CourseCurriculumEditor({
         if (newLessonUploading) {
           setActionError({
             title: 'Uploading',
-            message: 'Please wait for the video upload to complete before saving the lesson.',
+            message:
+              'Please wait for the video upload to complete before saving the lesson.',
           });
           return;
         }
@@ -1432,14 +1366,14 @@ export function CourseCurriculumEditor({
         const durationNumber = Number.parseInt(newLessonDuration, 10);
         if (!videoKey) {
           setActionError({
-            title: 'Thiếu dữ liệu',
-            message: 'Video lesson cần video key.',
+            title: 'Missing data',
+            message: 'Video lesson requires a video file.',
           });
           return;
         }
         if (!Number.isInteger(durationNumber) || durationNumber < 0) {
           setActionError({
-            title: 'Sai dữ liệu',
+            title: 'Invalid data',
             message: 'Duration must be a non-negative integer.',
           });
           return;
@@ -1463,7 +1397,7 @@ export function CourseCurriculumEditor({
         );
         if (validationError) {
           setActionError({
-            title: 'Sai dữ liệu',
+            title: 'Invalid data',
             message: validationError,
           });
           return;
@@ -1483,39 +1417,7 @@ export function CourseCurriculumEditor({
       reload();
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        const id = localId('lesson');
-        setSections((sections) =>
-          sections.map((section) =>
-            section.id === sectionId
-              ? { ...section, lessons: [...section.lessons, { id, title }] }
-              : section
-          )
-        );
-        setLocalLessonMeta((current) => ({
-          ...current,
-          [id]: {
-            lessonType: newLessonType,
-            questionType:
-              newLessonType === 'test' ? newLessonQuestionType : undefined,
-            videoKey:
-              newLessonType === 'video' ? newLessonVideoKey.trim() : undefined,
-            videoUrl: undefined,
-            duration: newLessonType === 'video' ? newLessonDuration : undefined,
-            questions:
-              newLessonType === 'test'
-                ? cloneQuestions(newLessonQuestions)
-                : undefined,
-          },
-        }));
-        setActionMessage(
-          'Create lesson not implemented in backend yet, mocked data on FE.'
-        );
-        setAddingLessonSectionId(null);
-        resetLessonForm();
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1562,6 +1464,8 @@ export function CourseCurriculumEditor({
           client: apiClient,
           path: { courseId, sectionId, lessonId: lesson.id },
           throwOnError: true,
+          responseValidator: async (data: any) => data,
+          cache: 'no-store',
         });
 
         if (data.data.lessonType === 'video') {
@@ -1631,7 +1535,6 @@ export function CourseCurriculumEditor({
           questions: [createQuestionDraft(DEFAULT_QUESTION_TYPE)],
         });
       }
-
     } catch (error) {
       setActionError(normalizeApiError(error));
       setSelectedLessonKey(null);
@@ -1649,7 +1552,7 @@ export function CourseCurriculumEditor({
     const title = lessonEditor.title.trim();
     if (!title) {
       setActionError({
-        title: 'Thiếu dữ liệu',
+        title: 'Missing data',
         message: 'Lesson name cannot be empty.',
       });
       return;
@@ -1670,7 +1573,8 @@ export function CourseCurriculumEditor({
           if (editLessonUploading) {
             setActionError({
               title: 'Uploading',
-              message: 'Please wait for the video upload to complete before saving the lesson.',
+              message:
+                'Please wait for the video upload to complete before saving the lesson.',
             });
             return;
           }
@@ -1687,7 +1591,7 @@ export function CourseCurriculumEditor({
           const durationNumber = Number.parseInt(lessonEditor.duration, 10);
           if (!Number.isInteger(durationNumber) || durationNumber < 0) {
             setActionError({
-              title: 'Sai dữ liệu',
+              title: 'Invalid data',
               message: 'Duration must be a non-negative integer.',
             });
             return;
@@ -1715,7 +1619,7 @@ export function CourseCurriculumEditor({
           );
           if (validationError) {
             setActionError({
-              title: 'Sai dữ liệu',
+              title: 'Invalid data',
               message: validationError,
             });
             return;
@@ -1796,64 +1700,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Lesson updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        updateLessonTitle(lessonEditor.sectionId, lessonEditor.key, title);
-        if (
-          lessonEditor.lessonType === 'video' &&
-          replacementVideoFile &&
-          savedVideoKey
-        ) {
-          savedVideoUrl =
-            createSavedVideoPreviewUrl(replacementVideoFile) ?? savedVideoUrl;
-        }
-        setLessonEditor((current) => {
-          if (!current || current.key !== editorKey) {
-            return current;
-          }
-
-          if (current.lessonType === 'video') {
-            return {
-              ...current,
-              title,
-              videoKey: savedVideoKey,
-              videoUrl: savedVideoUrl,
-              duration: savedDuration,
-            };
-          }
-
-          return {
-            ...current,
-            title,
-            questionType: lessonEditor.questionType,
-            questions: cloneQuestions(lessonEditor.questions),
-          };
-        });
-        upsertLocalLessonMeta(lessonEditor.key, lessonEditor.lessonId, {
-          lessonType: lessonEditor.lessonType,
-          questionType:
-            lessonEditor.lessonType === 'test'
-              ? lessonEditor.questionType
-              : undefined,
-          videoKey:
-            lessonEditor.lessonType === 'video' ? savedVideoKey : undefined,
-          videoUrl:
-            lessonEditor.lessonType === 'video' ? savedVideoUrl : undefined,
-          duration:
-            lessonEditor.lessonType === 'video' ? savedDuration : undefined,
-          questions:
-            lessonEditor.lessonType === 'test'
-              ? cloneQuestions(lessonEditor.questions)
-              : undefined,
-        });
-        if (lessonEditor.lessonType === 'video' && replacementVideoFile) {
-          resetEditLessonVideoUploadState();
-        }
-        setActionMessage(
-          'Update lesson not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1890,14 +1737,7 @@ export function CourseCurriculumEditor({
       setActionMessage('Lesson order updated.');
     } catch (error) {
       const problem = normalizeApiError(error);
-      if (isUnimplemented(problem)) {
-        moveLessonLocally(sectionId, fromIndex, targetIndex);
-        setActionMessage(
-          'Move lesson not implemented in backend yet, mocked data on FE.'
-        );
-      } else {
-        setActionError(problem);
-      }
+      setActionError(problem);
     } finally {
       end();
     }
@@ -1945,8 +1785,8 @@ export function CourseCurriculumEditor({
           if (lessonId) {
             delete next[lessonId];
           }
-            return next;
-          });
+          return next;
+        });
         if (selectedLessonKey === key) {
           setSelectedLessonKey(null);
           setLessonEditor(null);
@@ -1968,23 +1808,22 @@ export function CourseCurriculumEditor({
     0
   );
 
-  const selectedSection =
-    selectedSectionId
-      ? course.sections.find((section) => section.id === selectedSectionId) ??
-        null
-      : null;
+  const selectedSection = selectedSectionId
+    ? (course.sections.find((section) => section.id === selectedSectionId) ??
+      null)
+    : null;
   const selectedSectionIndex = selectedSection
     ? course.sections.findIndex((section) => section.id === selectedSection.id)
     : -1;
   const selectedLesson =
     selectedSection && selectedLessonKey
-      ? selectedSection.lessons
+      ? (selectedSection.lessons
           .map((lesson, index) => ({
             lesson,
             index,
             key: lessonKey(selectedSection.id, lesson, index),
           }))
-          .find((item) => item.key === selectedLessonKey) ?? null
+          .find((item) => item.key === selectedLessonKey) ?? null)
       : null;
 
   return (
@@ -2002,7 +1841,8 @@ export function CourseCurriculumEditor({
       >
         <Card
           className="
-            h-fit border-none bg-nm-bg/95 shadow-nm-flat-sm
+            h-fit border border-slate-200/60 bg-white/95
+            shadow-[0_8px_30px_rgba(15,23,42,0.04)]
             xl:sticky xl:top-24
           "
         >
@@ -2016,35 +1856,39 @@ export function CourseCurriculumEditor({
           </CardHeader>
           <CardContent className="space-y-3 px-3 pb-3">
             {!readOnly && (
-<div className="
-  grid gap-2
-  sm:grid-cols-[1fr_auto]
-">
-              <Input
-                className="h-9"
-                placeholder="New section title..."
-                value={createSectionTitle}
-                onChange={(event) => setCreateSectionTitle(event.target.value)}
-              />
-              <Button
-                type="button"
-                size="sm"
+              <div
                 className="
-                  gap-1.5 bg-primary text-primary-foreground
-                  hover:opacity-95
+                  grid gap-2
+                  sm:grid-cols-[1fr_auto]
                 "
-                disabled={Boolean(busyAction)}
-                onClick={handleCreateSection}
               >
-                {busyAction === 'create-section' ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <Plus className="size-4" />
-                )}
-                Add section
-              </Button>
-            </div>
-)}
+                <Input
+                  className="h-9"
+                  placeholder="New section title..."
+                  value={createSectionTitle}
+                  onChange={(event) =>
+                    setCreateSectionTitle(event.target.value)
+                  }
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  className="
+                    gap-1.5 bg-primary text-primary-foreground
+                    hover:opacity-95
+                  "
+                  disabled={Boolean(busyAction)}
+                  onClick={handleCreateSection}
+                >
+                  {busyAction === 'create-section' ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Plus className="size-4" />
+                  )}
+                  Add section
+                </Button>
+              </div>
+            )}
 
             {!course.sections.length && (
               <p className="px-2 py-1 text-sm text-slate-500">
@@ -2098,14 +1942,18 @@ export function CourseCurriculumEditor({
                         "
                         onClick={() => selectSection(section.id)}
                       >
-                        <span className="
-                          w-5 text-right text-xs font-semibold text-primary
-                        ">
+                        <span
+                          className="
+                            w-5 text-right text-xs font-semibold text-primary
+                          "
+                        >
                           {sectionIndex + 1}.
                         </span>
-                        <span className="
-                          truncate text-sm font-medium text-slate-900
-                        ">
+                        <span
+                          className="
+                            truncate text-sm font-medium text-slate-900
+                          "
+                        >
                           {section.title}
                         </span>
                         <span className="shrink-0 text-[11px] text-slate-500">
@@ -2115,76 +1963,83 @@ export function CourseCurriculumEditor({
                       </button>
 
                       {!readOnly && (
-                      <div
-                        className="
-                          inline-flex items-center gap-0.5 opacity-100
-                          transition-opacity
-                          sm:opacity-0
-                          sm:group-hover/section:opacity-100
-                          sm:focus-within:opacity-100
-                        "
-                      >
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-xs"
+                        <div
                           className="
-                            text-slate-400
-                            hover:bg-white/60 hover:text-slate-700
+                            inline-flex items-center gap-0.5 opacity-100
+                            transition-opacity
+                            sm:opacity-0
+                            sm:group-hover/section:opacity-100
+                            sm:focus-within:opacity-100
                           "
-                          disabled={sectionIndex === 0 || isSectionBusy}
-                          onClick={() =>
-                            handleMoveSection(section.id, sectionIndex - 1)
-                          }
                         >
-                          <ArrowUp className="size-3.5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-xs"
-                          className="
-                            text-slate-400
-                            hover:bg-white/60 hover:text-slate-700
-                          "
-                          disabled={
-                            sectionIndex === course.sections.length - 1 ||
-                            isSectionBusy
-                          }
-                          onClick={() =>
-                            handleMoveSection(section.id, sectionIndex + 1)
-                          }
-                        >
-                          <ArrowDown className="size-3.5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-xs"
-                          className="
-                            text-slate-400
-                            hover:bg-red-50 hover:text-destructive
-                          "
-                          disabled={isSectionBusy}
-                          onClick={() => handleDeleteSection(section.id)}
-                        >
-                          <Trash2 className="size-3.5" />
-                        </Button>
-                      </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-xs"
+                            className="
+                              text-slate-400
+                              hover:bg-white/60 hover:text-slate-700
+                            "
+                            disabled={sectionIndex === 0 || isSectionBusy}
+                            onClick={() =>
+                              handleMoveSection(section.id, sectionIndex - 1)
+                            }
+                          >
+                            <ArrowUp className="size-3.5" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-xs"
+                            className="
+                              text-slate-400
+                              hover:bg-white/60 hover:text-slate-700
+                            "
+                            disabled={
+                              sectionIndex === course.sections.length - 1 ||
+                              isSectionBusy
+                            }
+                            onClick={() =>
+                              handleMoveSection(section.id, sectionIndex + 1)
+                            }
+                          >
+                            <ArrowDown className="size-3.5" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-xs"
+                            className="
+                              text-slate-400
+                              hover:bg-red-50 hover:text-destructive
+                            "
+                            disabled={isSectionBusy}
+                            onClick={() => handleDeleteSection(section.id)}
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </div>
                       )}
                     </div>
 
                     {isExpanded && (
-                      <div className="
-                        mt-1 ml-8 space-y-0.5 border-l border-slate-300/70 pl-2
-                      ">
+                      <div
+                        className="
+                          mt-1 ml-8 space-y-0.5 border-l border-slate-300/70
+                          pl-2
+                        "
+                      >
                         {section.lessons.length === 0 && (
                           <p className="px-2 py-1 text-xs text-slate-500">
                             Empty section. Add lesson in editor panel.
                           </p>
                         )}
                         {section.lessons.map((lesson, lessonIndex) => {
-                          const key = lessonKey(section.id, lesson, lessonIndex);
+                          const key = lessonKey(
+                            section.id,
+                            lesson,
+                            lessonIndex
+                          );
                           const meta = getLessonMeta(
                             section.id,
                             lesson,
@@ -2212,7 +2067,11 @@ export function CourseCurriculumEditor({
                                   : 'hover:bg-white/45'
                               )}
                               onClick={() =>
-                                openLessonEditor(section.id, lesson, lessonIndex)
+                                openLessonEditor(
+                                  section.id,
+                                  lesson,
+                                  lessonIndex
+                                )
                               }
                             >
                               <span className="font-medium text-slate-500">
@@ -2236,17 +2095,25 @@ export function CourseCurriculumEditor({
 
         <div className="space-y-4">
           {!selectedSection && (
-            <Card className="
-              border border-slate-200/70 bg-nm-bg/95 shadow-nm-flat-sm
-            ">
+            <Card
+              className="
+                border border-slate-200/60 bg-white/95
+                shadow-[0_8px_30px_rgba(15,23,42,0.04)]
+              "
+            >
               <CardContent className="py-8 text-sm text-slate-500">
-                {readOnly ? 'Select a section or lesson to view details.' : 'Select a section or lesson to edit.'}
+                {readOnly
+                  ? 'Select a section or lesson to view details.'
+                  : 'Select a section or lesson to edit.'}
               </CardContent>
             </Card>
           )}
 
           {selectedSection && !selectedLessonKey && (
-            <Card className="border-none bg-nm-bg/95 shadow-nm-flat-sm">
+            <Card className="
+              border border-slate-200/60 bg-white/95
+              shadow-[0_8px_30px_rgba(15,23,42,0.04)]
+            ">
               <CardHeader className="px-5 pt-5 pb-3">
                 <CardTitle className="text-lg text-slate-900">
                   {readOnly ? 'Section details' : 'Editing section'}
@@ -2258,90 +2125,99 @@ export function CourseCurriculumEditor({
               </CardHeader>
               <CardContent className="space-y-4 px-5 pt-0 pb-5">
                 {!readOnly && (
-                <div className="
-                  grid gap-3
-                  md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end
-                ">
-                  <Input
-                    className="h-10"
-                    value={renamingSectionTitle}
-                    onChange={(event) =>
-                      setRenamingSectionTitle(event.target.value)
-                    }
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
+                  <div
                     className="
-                      gap-1.5 bg-primary text-primary-foreground
-                      hover:opacity-95
+                      grid gap-3
+                      md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end
                     "
-                    disabled={Boolean(busyAction)}
-                    onClick={() => handleRenameSection(selectedSection.id)}
                   >
-                    <Save className="size-4" />
-                    Save changes
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="
-                      gap-1.5 text-slate-500
-                      hover:bg-red-50 hover:text-destructive
-                    "
-                    disabled={Boolean(busyAction)}
-                    onClick={() => handleDeleteSection(selectedSection.id)}
-                  >
-                    <Trash2 className="size-4" />
-                    Delete section
-                  </Button>
-                </div>
+                    <Input
+                      className="h-10"
+                      value={renamingSectionTitle}
+                      onChange={(event) =>
+                        setRenamingSectionTitle(event.target.value)
+                      }
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="
+                        gap-1.5 bg-primary text-primary-foreground
+                        hover:opacity-95
+                      "
+                      disabled={Boolean(busyAction)}
+                      onClick={() => handleRenameSection(selectedSection.id)}
+                    >
+                      <Save className="size-4" />
+                      Save changes
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="
+                        gap-1.5 text-slate-500
+                        hover:bg-red-50 hover:text-destructive
+                      "
+                      disabled={Boolean(busyAction)}
+                      onClick={() => handleDeleteSection(selectedSection.id)}
+                    >
+                      <Trash2 className="size-4" />
+                      Delete section
+                    </Button>
+                  </div>
                 )}
 
-                <div className="
-                  space-y-2 rounded-2xl bg-white/35 p-2 ring-1 ring-slate-200/70
-                ">
-                  <div className="
-                    flex items-center justify-between gap-2 px-2 py-1
-                  ">
+                <div
+                  className="
+                    space-y-2 rounded-2xl bg-white/35 p-2 ring-1
+                    ring-slate-200/70
+                  "
+                >
+                  <div
+                    className="
+                      flex items-center justify-between gap-2 px-2 py-1
+                    "
+                  >
                     <p className="text-sm font-medium text-slate-800">
                       Lessons in this section
                     </p>
                     {!readOnly && (
-                    <Button
-                      type="button"
-                      variant={
-                        addingLessonSectionId === selectedSection.id
-                          ? 'inset'
-                          : 'ghost'
-                      }
-                      size="sm"
-                      className="
-                        gap-1.5
-                        hover:bg-white/70
-                      "
-                      disabled={newLessonUploading || Boolean(busyAction)}
-                      onClick={() => {
-                        setAddingLessonSectionId(
+                      <Button
+                        type="button"
+                        variant={
                           addingLessonSectionId === selectedSection.id
-                            ? null
-                            : selectedSection.id
-                        );
-                        setSelectedLessonKey(null);
-                        setLessonEditor(null);
-                        resetLessonForm();
-                      }}
-                    >
-                      <Plus className="size-4" />
-                      Add lesson
-                    </Button>
+                            ? 'inset'
+                            : 'ghost'
+                        }
+                        size="sm"
+                        className="
+                          gap-1.5
+                          hover:bg-white/70
+                        "
+                        disabled={newLessonUploading || Boolean(busyAction)}
+                        onClick={() => {
+                          setAddingLessonSectionId(
+                            addingLessonSectionId === selectedSection.id
+                              ? null
+                              : selectedSection.id
+                          );
+                          setSelectedLessonKey(null);
+                          setLessonEditor(null);
+                          resetLessonForm();
+                        }}
+                      >
+                        <Plus className="size-4" />
+                        Add lesson
+                      </Button>
                     )}
                   </div>
 
-                  <div className="
-                    divide-y divide-slate-200/80 overflow-hidden rounded-xl
-                  ">
+                  <div
+                    className="
+                      divide-y divide-slate-200/80 overflow-hidden rounded-xl
+                    "
+                  >
                     {selectedSection.lessons.map((lesson, lessonIndex) => {
                       const key = lessonKey(
                         selectedSection.id,
@@ -2377,13 +2253,17 @@ export function CourseCurriculumEditor({
                               )
                             }
                           >
-                            <div className="
-                              grid min-w-0 grid-cols-[minmax(0,1fr)_auto]
-                              items-center gap-2
-                            ">
-                              <p className="
-                                truncate text-sm font-medium text-slate-900
-                              ">
+                            <div
+                              className="
+                                grid min-w-0 grid-cols-[minmax(0,1fr)_auto]
+                                items-center gap-2
+                              "
+                            >
+                              <p
+                                className="
+                                  truncate text-sm font-medium text-slate-900
+                                "
+                              >
                                 {lesson.title}
                               </p>
                               <Badge
@@ -2404,75 +2284,81 @@ export function CourseCurriculumEditor({
                           </button>
 
                           {!readOnly && (
-                          <div
-                            className="
-                              inline-flex items-center gap-0.5 opacity-100
-                              transition-opacity
-                              sm:opacity-0
-                              sm:group-hover/lesson:opacity-100
-                              sm:focus-within:opacity-100
-                            "
-                          >
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-xs"
+                            <div
                               className="
-                                text-slate-400
-                                hover:bg-white/70 hover:text-slate-700
+                                inline-flex items-center gap-0.5 opacity-100
+                                transition-opacity
+                                sm:opacity-0
+                                sm:group-hover/lesson:opacity-100
+                                sm:focus-within:opacity-100
                               "
-                              disabled={lessonIndex === 0 || isLessonBusy}
-                              onClick={() =>
-                                handleMoveLesson(
-                                  selectedSection.id,
-                                  lesson.id,
-                                  key,
-                                  lessonIndex,
-                                  lessonIndex - 1
-                                )}
                             >
-                              <ArrowUp className="size-3.5" />
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-xs"
-                              className="
-                                text-slate-400
-                                hover:bg-white/70 hover:text-slate-700
-                              "
-                              disabled={
-                                lessonIndex === selectedSection.lessons.length - 1 ||
-                                isLessonBusy
-                              }
-                              onClick={() =>
-                                handleMoveLesson(
-                                  selectedSection.id,
-                                  lesson.id,
-                                  key,
-                                  lessonIndex,
-                                  lessonIndex + 1
-                                )
-                              }
-                            >
-                              <ArrowDown className="size-3.5" />
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon-xs"
-                              className="
-                                text-slate-400
-                                hover:bg-red-50 hover:text-destructive
-                              "
-                              disabled={isLessonBusy}
-                              onClick={() =>
-                                handleDeleteLesson(selectedSection.id, lesson.id, key)
-                              }
-                            >
-                              <Trash2 className="size-3.5" />
-                            </Button>
-                          </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-xs"
+                                className="
+                                  text-slate-400
+                                  hover:bg-white/70 hover:text-slate-700
+                                "
+                                disabled={lessonIndex === 0 || isLessonBusy}
+                                onClick={() =>
+                                  handleMoveLesson(
+                                    selectedSection.id,
+                                    lesson.id,
+                                    key,
+                                    lessonIndex,
+                                    lessonIndex - 1
+                                  )
+                                }
+                              >
+                                <ArrowUp className="size-3.5" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-xs"
+                                className="
+                                  text-slate-400
+                                  hover:bg-white/70 hover:text-slate-700
+                                "
+                                disabled={
+                                  lessonIndex ===
+                                    selectedSection.lessons.length - 1 ||
+                                  isLessonBusy
+                                }
+                                onClick={() =>
+                                  handleMoveLesson(
+                                    selectedSection.id,
+                                    lesson.id,
+                                    key,
+                                    lessonIndex,
+                                    lessonIndex + 1
+                                  )
+                                }
+                              >
+                                <ArrowDown className="size-3.5" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-xs"
+                                className="
+                                  text-slate-400
+                                  hover:bg-red-50 hover:text-destructive
+                                "
+                                disabled={isLessonBusy}
+                                onClick={() =>
+                                  handleDeleteLesson(
+                                    selectedSection.id,
+                                    lesson.id,
+                                    key
+                                  )
+                                }
+                              >
+                                <Trash2 className="size-3.5" />
+                              </Button>
+                            </div>
                           )}
                         </div>
                       );
@@ -2486,14 +2372,18 @@ export function CourseCurriculumEditor({
                 </div>
 
                 {addingLessonSectionId === selectedSection.id && (
-                  <div className="
-                    space-y-4 rounded-2xl bg-white/35 p-4 ring-1
-                    ring-slate-200/70
-                  ">
-                    <div className="
-                      grid gap-3
-                      md:grid-cols-2
-                    ">
+                  <div
+                    className="
+                      space-y-4 rounded-2xl bg-white/35 p-4 ring-1
+                      ring-slate-200/70
+                    "
+                  >
+                    <div
+                      className="
+                        grid gap-3
+                        md:grid-cols-2
+                      "
+                    >
                       <div className="space-y-1">
                         <Label htmlFor="new-lesson-title-builder">
                           Lesson title
@@ -2514,15 +2404,17 @@ export function CourseCurriculumEditor({
                             setNewLessonType(value as 'video' | 'test')
                           }
                         >
-                          <SelectTrigger className="
-                            h-10 w-full rounded-xl border-none bg-nm-bg px-4
-                            shadow-nm-inset
-                            focus-visible:ring-2 focus-visible:ring-ring
-                          ">
+                          <SelectTrigger
+                            className="
+                              h-10 w-full rounded-xl border border-slate-200/80
+                              bg-white px-4
+                              focus-visible:ring-2 focus-visible:ring-ring
+                            "
+                          >
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent className="
-                            border-none bg-nm-bg shadow-nm-flat
+                            border border-slate-200/80 bg-white shadow-md
                           ">
                             <SelectItem value="video">Video lesson</SelectItem>
                             <SelectItem value="test">Test lesson</SelectItem>
@@ -2533,56 +2425,37 @@ export function CourseCurriculumEditor({
 
                     {newLessonType === 'video' ? (
                       <div className="space-y-4">
-                        <div className="
-                          space-y-2 rounded-xl border border-slate-200/70
-                          bg-nm-bg p-3 shadow-nm-inset
-                        ">
+                        <div
+                          className="
+                            space-y-2 rounded-xl border border-slate-100
+                            bg-slate-50/50 p-3
+                          "
+                        >
                           <Label htmlFor="new-video-file-builder">
-                            Upload lesson video
+                            Lesson video
                           </Label>
-                          <div className="
-                            grid gap-2
-                            md:grid-cols-[1fr_auto]
-                          ">
-                            <Input
-                              id="new-video-file-builder"
-                              accept="video/*"
-                              type="file"
-                              onChange={(event) => {
-                                const file = event.target.files?.[0] ?? null;
-                                setNewLessonVideoFile(file);
-                                if (file) {
-                                  setNewLessonVideoKey('');
-                                }
-                                setNewLessonUploadedVideo(null);
-                                setNewLessonUploadProgress(null);
-                                setNewLessonUploadError(null);
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              className="gap-1.5"
-                              disabled={
-                                !newLessonVideoFile ||
-                                newLessonUploading ||
-                                Boolean(busyAction)
+                          <VideoDropZone
+                            id="new-video-file-builder"
+                            onChange={(file) => {
+                              setNewLessonVideoFile(file);
+                              if (file) {
+                                setNewLessonVideoKey('');
                               }
-                              onClick={handleUploadNewLessonVideo}
-                            >
-                              {newLessonUploading ? (
-                                <Loader2 className="size-4 animate-spin" />
-                              ) : (
-                                <UploadCloud className="size-4" />
-                              )}
-                              {newLessonUploading ? 'Uploading...' : 'Upload'}
-                            </Button>
-                          </div>
+                              setNewLessonUploadedVideo(null);
+                              setNewLessonUploadProgress(null);
+                              setNewLessonUploadError(null);
+                            }}
+                            onInvalidFile={() =>
+                              showErrorToast?.(
+                                'Please select a valid video file (MP4, MOV, AVI…)'
+                              )
+                            }
+                          />
                           {newLessonVideoFile && newLessonVideoPreviewUrl && (
                             <div
                               className="
-                                grid gap-3 rounded-xl border border-slate-200/70
-                                bg-nm-bg p-3 shadow-nm-flat-sm
+                                grid gap-3 rounded-xl border border-slate-200/60
+                                bg-white p-3 shadow-sm
                                 md:grid-cols-[180px_minmax(0,1fr)]
                               "
                             >
@@ -2603,32 +2476,32 @@ export function CourseCurriculumEditor({
                                 preload="metadata"
                                 src={newLessonVideoPreviewUrl}
                               />
-                              <div className="
-                                min-w-0 space-y-1 text-xs text-slate-600
-                              ">
+                              <div
+                                className="
+                                  min-w-0 space-y-1 text-xs text-slate-600
+                                "
+                              >
                                 <p className="font-medium text-slate-900">
                                   {newLessonVideoFile.name}
-                                </p>
-                                <p>{formatFileSize(newLessonVideoFile.size)}</p>
-                                <p>
-                                  Metadata will auto-fill duration, upload will auto-fill{' '}
-                                  <strong>video key</strong>.
                                 </p>
                               </div>
                             </div>
                           )}
                           {newLessonUploadProgress !== null && (
                             <div className="mt-1 grid gap-1">
-                              <div className="
-                                h-2 overflow-hidden rounded-full bg-nm-bg
-                                shadow-nm-inset
-                              ">
+                              <div
+                                className="
+                                  h-2 overflow-hidden rounded-full bg-slate-200
+                                "
+                              >
                                 <div
                                   className="
                                     h-full rounded-full bg-primary
                                     transition-all duration-300
                                   "
-                                  style={{ width: `${newLessonUploadProgress}%` }}
+                                  style={{
+                                    width: `${newLessonUploadProgress}%`,
+                                  }}
                                 />
                               </div>
                               <p className="text-right text-xs text-slate-500">
@@ -2636,50 +2509,11 @@ export function CourseCurriculumEditor({
                               </p>
                             </div>
                           )}
-                          {newLessonUploadedVideo && (
-                            <p className="text-xs text-slate-600">
-                              Uploaded key: {newLessonUploadedVideo.videoKey}
-                            </p>
-                          )}
                           {newLessonUploadError && (
                             <p className="text-xs text-destructive">
                               {newLessonUploadError}
                             </p>
                           )}
-                        </div>
-
-                        <div className="
-                          grid gap-3
-                          md:grid-cols-[1fr_180px]
-                        ">
-                          <div className="space-y-1">
-                            <Label htmlFor="new-video-key-builder">
-                              Video key
-                            </Label>
-                            <Input
-                              id="new-video-key-builder"
-                              value={newLessonVideoKey}
-                              onChange={(event) =>
-                                setNewLessonVideoKey(event.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor="new-video-duration-builder">
-                              Duration (seconds)
-                            </Label>
-                            <Input
-                              id="new-video-duration-builder"
-                              inputMode="numeric"
-                              min={0}
-                              step={1}
-                              type="number"
-                              value={newLessonDuration}
-                              onChange={(event) =>
-                                setNewLessonDuration(event.target.value)
-                              }
-                            />
-                          </div>
                         </div>
                       </div>
                     ) : (
@@ -2787,9 +2621,12 @@ export function CourseCurriculumEditor({
           )}
 
           {selectedLessonKey && (
-            <Card className="
-              border border-slate-200/70 bg-nm-bg/95 shadow-nm-flat-sm
-            ">
+            <Card
+              className="
+                border border-slate-200/60 bg-white/95
+                shadow-[0_8px_30px_rgba(15,23,42,0.04)]
+              "
+            >
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg text-slate-900">
                   {readOnly ? 'Lesson details' : 'Editing lesson'}
@@ -2801,10 +2638,12 @@ export function CourseCurriculumEditor({
               <CardContent className="space-y-5 pt-0">
                 {lessonEditor ? (
                   <>
-                    <div className="
-                      grid gap-3
-                      md:grid-cols-2
-                    ">
+                    <div
+                      className="
+                        grid gap-3
+                        md:grid-cols-2
+                      "
+                    >
                       <div className="space-y-1">
                         <Label htmlFor="edit-lesson-title">Lesson title</Label>
                         <Input
@@ -2822,15 +2661,21 @@ export function CourseCurriculumEditor({
                       </div>
                       <div className="space-y-1">
                         <Label>Lesson type</Label>
-                        <Input disabled={readOnly || Boolean(busyAction)} value={lessonEditor.lessonType} />
+                        <Input
+                          disabled={readOnly || Boolean(busyAction)}
+                          value={lessonEditor.lessonType}
+                          readOnly
+                        />
                       </div>
                     </div>
 
                     {lessonEditor.lessonType === 'video' ? (
-                      <div className="
-                        space-y-4 rounded-2xl border border-slate-200/70
-                        bg-nm-bg p-4 shadow-nm-inset
-                      ">
+                      <div
+                        className="
+                          space-y-4 rounded-2xl border border-slate-100
+                          bg-slate-50/50 p-4
+                        "
+                      >
                         {lessonEditor.videoUrl ? (
                           <div className="space-y-2">
                             <Label>Current video</Label>
@@ -2870,67 +2715,18 @@ export function CourseCurriculumEditor({
                         )}
 
                         {!readOnly && (
-                        <div className="
-                          grid gap-3
-                          md:grid-cols-[1fr_180px]
-                        ">
-                          <div className="space-y-1">
-                            <Label htmlFor="edit-video-key">
-                              Video key (optional)
+                          <div
+                            className="
+                              space-y-2 rounded-xl border border-slate-100
+                              bg-slate-50/50 p-3
+                            "
+                          >
+                            <Label htmlFor="edit-video-file">
+                              Replacement video
                             </Label>
-                            <Input
-                              id="edit-video-key"
-                              value={lessonEditor.videoKey}
-                              onChange={(event) =>
-                                setLessonEditor((current) =>
-                                  current
-                                    ? { ...current, videoKey: event.target.value }
-                                    : current
-                                )
-                              }
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <Label htmlFor="edit-video-duration">
-                              Duration (seconds)
-                            </Label>
-                            <Input
-                              id="edit-video-duration"
-                              inputMode="numeric"
-                              min={0}
-                              step={1}
-                              type="number"
-                              value={lessonEditor.duration}
-                              onChange={(event) =>
-                                setLessonEditor((current) =>
-                                  current
-                                    ? { ...current, duration: event.target.value }
-                                    : current
-                                )
-                              }
-                            />
-                          </div>
-                        </div>
-                        )}
-
-                        {!readOnly && (
-                        <div className="
-                          space-y-2 rounded-xl border border-slate-200/70
-                          bg-nm-bg p-3 shadow-nm-inset
-                        ">
-                          <Label htmlFor="edit-video-file">
-                            Upload replacement video
-                          </Label>
-                          <div className="
-                            grid gap-2
-                            md:grid-cols-[1fr_auto]
-                          ">
-                            <Input
+                            <VideoDropZone
                               id="edit-video-file"
-                              accept="video/*"
-                              type="file"
-                              onChange={(event) => {
-                                const file = event.target.files?.[0] ?? null;
+                              onChange={(file) => {
                                 setEditLessonVideoFile(file);
                                 if (file) {
                                   setLessonEditor((current) =>
@@ -2943,99 +2739,84 @@ export function CourseCurriculumEditor({
                                 setEditLessonUploadProgress(null);
                                 setEditLessonUploadError(null);
                               }}
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              className="gap-1.5"
-                              disabled={
-                                !editLessonVideoFile ||
-                                editLessonUploading ||
-                                Boolean(busyAction)
+                              onInvalidFile={() =>
+                                showErrorToast?.(
+                                  'Please select a valid video file (MP4, MOV, AVI…)'
+                                )
                               }
-                              onClick={handleUploadEditLessonVideo}
-                            >
-                              {editLessonUploading ? (
-                                <Loader2 className="size-4 animate-spin" />
-                              ) : (
-                                <UploadCloud className="size-4" />
-                              )}
-                              {editLessonUploading ? 'Uploading...' : 'Upload'}
-                            </Button>
-                          </div>
-                          {editLessonVideoFile && editLessonVideoPreviewUrl && (
-                            <div
-                              className="
-                                grid gap-3 rounded-xl border border-slate-200/70
-                                bg-nm-bg p-3 shadow-nm-flat-sm
-                                md:grid-cols-[180px_minmax(0,1fr)]
-                              "
-                            >
-                              <video
-                                className="
-                                  w-full rounded-lg bg-slate-950
-                                  shadow-nm-flat-sm
-                                "
-                                controls
-                                onLoadedMetadata={(event) => {
-                                  const duration = readVideoDurationSeconds(
-                                    event.currentTarget
-                                  );
-                                  if (duration) {
-                                    setLessonEditor((current) =>
-                                      current && current.lessonType === 'video'
-                                        ? { ...current, duration }
-                                        : current
-                                    );
-                                  }
-                                }}
-                                preload="metadata"
-                                src={editLessonVideoPreviewUrl}
-                              />
-                              <div className="
-                                min-w-0 space-y-1 text-xs text-slate-600
-                              ">
-                                <p className="font-medium text-slate-900">
-                                  {editLessonVideoFile.name}
-                                </p>
-                                <p>{formatFileSize(editLessonVideoFile.size)}</p>
-                                <p>
-                                  Metadata will auto-update duration, upload will change{' '}
-                                  <strong>video key</strong>.
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                          {editLessonUploadProgress !== null && (
-                            <div className="mt-1 grid gap-1">
-                              <div className="
-                                h-2 overflow-hidden rounded-full bg-nm-bg
-                                shadow-nm-inset
-                              ">
+                            />
+                            {editLessonVideoFile &&
+                              editLessonVideoPreviewUrl && (
                                 <div
                                   className="
-                                    h-full rounded-full bg-primary
-                                    transition-all duration-300
+                                    grid gap-3 rounded-xl border
+                                    border-slate-200/70 bg-nm-bg p-3
+                                    shadow-nm-flat-sm
+                                    md:grid-cols-[180px_minmax(0,1fr)]
                                   "
-                                  style={{ width: `${editLessonUploadProgress}%` }}
-                                />
+                                >
+                                  <video
+                                    className="
+                                      w-full rounded-lg bg-slate-950
+                                      shadow-nm-flat-sm
+                                    "
+                                    controls
+                                    onLoadedMetadata={(event) => {
+                                      const duration = readVideoDurationSeconds(
+                                        event.currentTarget
+                                      );
+                                      if (duration) {
+                                        setLessonEditor((current) =>
+                                          current &&
+                                          current.lessonType === 'video'
+                                            ? { ...current, duration }
+                                            : current
+                                        );
+                                      }
+                                    }}
+                                    preload="metadata"
+                                    src={editLessonVideoPreviewUrl}
+                                  />
+                                  <div
+                                    className="
+                                      min-w-0 space-y-1 text-xs text-slate-600
+                                    "
+                                  >
+                                    <p className="font-medium text-slate-900">
+                                      {editLessonVideoFile.name}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                            {editLessonUploadProgress !== null && (
+                              <div className="mt-1 grid gap-1">
+                                <div
+                                  className="
+                                    h-2 overflow-hidden rounded-full
+                                    bg-slate-200
+                                  "
+                                >
+                                  <div
+                                    className="
+                                      h-full rounded-full bg-primary
+                                      transition-all duration-300
+                                    "
+                                    style={{
+                                      width: `${editLessonUploadProgress}%`,
+                                    }}
+                                  />
+                                </div>
+                                <p className="text-right text-xs text-slate-500">
+                                  {editLessonUploadProgress}%
+                                </p>
                               </div>
-                              <p className="text-right text-xs text-slate-500">
-                                {editLessonUploadProgress}%
+                            )}
+                            {editLessonUploadError && (
+                              <p className="text-xs text-destructive">
+                                {editLessonUploadError}
                               </p>
-                            </div>
-                          )}
-                          {editLessonUploadedVideo && (
-                            <p className="text-xs text-slate-600">
-                              Uploaded key: {editLessonUploadedVideo.videoKey}
-                            </p>
-                          )}
-                          {editLessonUploadError && (
-                            <p className="text-xs text-destructive">
-                              {editLessonUploadError}
-                            </p>
-                          )}
-                        </div>
+                            )}
+                          </div>
                         )}
                       </div>
                     ) : (
@@ -3105,7 +2886,11 @@ export function CourseCurriculumEditor({
                             )
                           )
                         }
-                        onAnswerCorrectChange={(questionId, answerId, checked) =>
+                        onAnswerCorrectChange={(
+                          questionId,
+                          answerId,
+                          checked
+                        ) =>
                           updateLessonEditorQuestions((current) =>
                             updateAnswerCorrect(
                               current,
@@ -3120,86 +2905,63 @@ export function CourseCurriculumEditor({
                     )}
 
                     {!readOnly && (
-                    <div className="flex flex-wrap justify-end gap-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        className="
-                          mr-auto text-slate-500
-                          hover:bg-red-50 hover:text-destructive
-                        "
-                        disabled={Boolean(busyAction) || editLessonUploading}
-                        onClick={() =>
-                          handleDeleteLesson(
-                            lessonEditor.sectionId,
-                            lessonEditor.lessonId,
-                            lessonEditor.key
-                          )
-                        }
-                      >
-                        <Trash2 className="size-4" />
-                        Delete lesson
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        disabled={Boolean(busyAction) || editLessonUploading}
-                        onClick={() => {
-                          setSelectedLessonKey(null);
-                          setLessonEditor(null);
-                          resetEditLessonVideoUploadState();
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type="button"
-                        className="
-                          bg-primary text-primary-foreground
-                          hover:opacity-95
-                        "
-                        disabled={Boolean(busyAction) || editLessonUploading}
-                        onClick={handleSaveLessonEdit}
-                      >
-                        <Save className="size-4" />
-                        Save lesson
-                      </Button>
-                    </div>
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="
+                            mr-auto text-slate-500
+                            hover:bg-red-50 hover:text-destructive
+                          "
+                          disabled={Boolean(busyAction) || editLessonUploading}
+                          onClick={() =>
+                            handleDeleteLesson(
+                              lessonEditor.sectionId,
+                              lessonEditor.lessonId,
+                              lessonEditor.key
+                            )
+                          }
+                        >
+                          <Trash2 className="size-4" />
+                          Delete lesson
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={Boolean(busyAction) || editLessonUploading}
+                          onClick={() => {
+                            setSelectedLessonKey(null);
+                            setLessonEditor(null);
+                            resetEditLessonVideoUploadState();
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="button"
+                          className="
+                            bg-primary text-primary-foreground
+                            hover:opacity-95
+                          "
+                          disabled={Boolean(busyAction) || editLessonUploading}
+                          onClick={handleSaveLessonEdit}
+                        >
+                          <Save className="size-4" />
+                          Save lesson
+                        </Button>
+                      </div>
                     )}
                   </>
                 ) : (
-                  <div className="
-                    flex items-center gap-2 text-sm text-slate-500
-                  ">
+                  <div
+                    className="flex items-center gap-2 text-sm text-slate-500"
+                  >
                     <Loader2 className="size-4 animate-spin" />
                     Loading lesson editor...
                   </div>
                 )}
               </CardContent>
             </Card>
-          )}
-
-          {!readOnly && (
-          <details className="
-            rounded-2xl bg-nm-bg/90 px-4 py-3 text-xs text-slate-600
-            shadow-nm-flat-sm
-          ">
-            <summary className="
-              cursor-pointer text-sm font-medium text-slate-800
-            ">
-              Notes & Storage
-            </summary>
-            <div className="mt-2 space-y-1.5">
-              <p>
-                Upload video to get <strong>video key</strong>, duration will be
-                auto-extracted from metadata when browser reads the file.
-              </p>
-              <p>
-                The right editor only focuses on the selected item to avoid long scrolling
-                when the course has many lessons.
-              </p>
-            </div>
-          </details>
           )}
         </div>
       </div>

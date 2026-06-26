@@ -1,10 +1,10 @@
 'use client';
 
-import { Save, UploadCloud } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Save } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { cn } from '#/components/lib/shadcn/utils';
 import { Button } from '#/components/ui/neumorphism/button';
+import { Input } from '#/components/ui/neumorphism/input';
 import { useToast } from '#/components/ui/neumorphism/toast';
 import {
   Field,
@@ -13,9 +13,9 @@ import {
   FieldGroup,
   FieldLabel,
 } from '#/components/ui/shadcn/field';
-import { Input } from '#/components/ui/neumorphism/input';
 import type { CourseCourse, CourseCourseWritable } from '#/lib/api/course';
-import { formatDateTime } from '#/lib/api/format';
+
+import { VideoDropZone } from './course-shared';
 
 type CourseFormValues = {
   title: string;
@@ -58,17 +58,17 @@ function getValidationError(
   canUploadVideo: boolean
 ) {
   if (!values.title.trim()) {
-    return 'Title khong duoc de trong.';
+    return 'Course title cannot be empty.';
   }
   if (parsePrice(values.price) === null) {
-    return 'Price phai la so nguyen khong am.';
+    return 'Price must be a non-negative integer.';
   }
   if (
     forceIntroductionVideoKey &&
     !values.introductionVideoKey.trim() &&
     !canUploadVideo
   ) {
-    return 'Upload video hoac nhap introduction video key truoc khi tao course.';
+    return 'Please upload a video or provide an introduction video key before creating the course.';
   }
   return null;
 }
@@ -124,6 +124,19 @@ export function CourseForm({
   const [uploadedVideo, setUploadedVideo] = useState<UploadedVideo | null>(
     null
   );
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedVideo) {
+      setVideoPreviewUrl(null);
+      return;
+    }
+    const previewUrl = URL.createObjectURL(selectedVideo);
+    setVideoPreviewUrl(previewUrl);
+    return () => {
+      URL.revokeObjectURL(previewUrl);
+    };
+  }, [selectedVideo]);
 
   const canUploadVideo = Boolean(selectedVideo && onUploadIntroductionVideo);
   const validationError = useMemo(() => {
@@ -134,7 +147,7 @@ export function CourseForm({
     );
   }, [canUploadVideo, forceIntroductionVideoKey, values]);
 
-  const { success } = useToast();
+  const { success, error: showError } = useToast();
 
   async function uploadSelectedVideo() {
     if (!selectedVideo || !onUploadIntroductionVideo) {
@@ -154,7 +167,7 @@ export function CourseForm({
         ...current,
         introductionVideoKey: result.videoKey,
       }));
-      success(`Video ${selectedVideo.name} upload thanh cong!`);
+      success(`Video ${selectedVideo.name} uploaded successfully!`);
       return result.videoKey;
     } catch (caught) {
       const message =
@@ -179,11 +192,7 @@ export function CourseForm({
         }
 
         let nextValues = values;
-        if (
-          forceIntroductionVideoKey &&
-          !nextValues.introductionVideoKey.trim() &&
-          canUploadVideo
-        ) {
+        if (!nextValues.introductionVideoKey.trim() && canUploadVideo) {
           const videoKey = await uploadSelectedVideo();
           if (!videoKey) {
             return;
@@ -218,9 +227,9 @@ export function CourseForm({
                 title: event.target.value,
               }))
             }
-            placeholder="FlowChart - Chuyen de luu do thuat toan"
+            placeholder="FlowChart - Algorithm flowchart specialization"
           />
-          <FieldDescription>Ten hien thi trong marketplace.</FieldDescription>
+          <FieldDescription>Display name in the marketplace.</FieldDescription>
         </Field>
 
         <Field>
@@ -246,11 +255,11 @@ export function CourseForm({
           <textarea
             id="course-overview"
             className="
-              min-h-24 w-full rounded-xl border-none bg-nm-bg px-4 py-2 text-sm
-              shadow-nm-inset transition-colors outline-none
-              placeholder:text-muted-foreground
-              focus-visible:ring-2 focus-visible:ring-ring
-              focus-visible:ring-offset-2
+              min-h-24 w-full rounded-xl border border-slate-200 bg-white px-4
+              py-2 text-sm text-foreground transition-colors outline-none
+              placeholder:text-slate-400
+              focus-visible:border-blue-400 focus-visible:ring-2
+              focus-visible:ring-blue-500 focus-visible:ring-offset-2
             "
             value={values.overview}
             onChange={(event) =>
@@ -259,50 +268,43 @@ export function CourseForm({
                 overview: event.target.value,
               }))
             }
-            placeholder="Mo ta ngan ve ket qua hoc vien dat duoc."
+            placeholder="A short description of what learners will achieve."
           />
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="course-video-key">
-            Introduction video key
-          </FieldLabel>
-
           {onUploadIntroductionVideo && (
             <div
-              className={cn(
-                'grid gap-2 rounded-xl bg-nm-bg p-4 shadow-nm-inset'
-              )}
+              className="
+                grid gap-2 rounded-xl border border-slate-200/60 bg-slate-50 p-4
+              "
             >
-              <Input
+              <FieldLabel htmlFor="course-video-file">
+                Introduction video
+              </FieldLabel>
+              <VideoDropZone
                 id="course-video-file"
-                accept="video/*"
-                type="file"
-                onChange={(event) => {
-                  setSelectedVideo(event.target.files?.[0] ?? null);
+                onChange={(file) => {
+                  setSelectedVideo(file);
                   setUploadedVideo(null);
                   setUploadProgress(null);
                   setUploadError(null);
                 }}
+                onInvalidFile={() =>
+                  showError?.(
+                    'Please select a valid video file (MP4, MOV, AVI…)'
+                  )
+                }
               />
-              <Button
-                type="button"
-                variant="outline"
-                disabled={!selectedVideo || uploading || submitting}
-                onClick={uploadSelectedVideo}
-              >
-                <UploadCloud className="size-4" />
-                {uploading ? 'Uploading...' : 'Upload intro video'}
-              </Button>
               {uploadProgress !== null && (
                 <div className="mt-2 grid gap-2">
-                  <div className="
-                    h-2.5 overflow-hidden rounded-full bg-nm-bg shadow-nm-inset
-                  ">
+                  <div
+                    className="h-2.5 overflow-hidden rounded-full bg-slate-200"
+                  >
                     <div
                       className="
-                        h-full rounded-full bg-primary shadow-nm-flat-sm
-                        transition-all duration-300
+                        h-full rounded-full bg-blue-600 transition-all
+                        duration-700 ease-out
                       "
                       style={{ width: `${uploadProgress}%` }}
                     />
@@ -312,39 +314,38 @@ export function CourseForm({
                   </div>
                 </div>
               )}
-              {uploadedVideo && (
-                <div className="grid gap-1 text-xs text-slate-600">
-                  <div>
-                    Uploaded:{' '}
-                    <span className="font-medium text-slate-900">
-                      {selectedVideo?.name ?? 'video'}
-                    </span>
+              {selectedVideo && videoPreviewUrl && (
+                <div
+                  className="
+                    mt-2 grid gap-3 rounded-xl border border-slate-200/60
+                    bg-white p-3 shadow-sm
+                    md:grid-cols-[180px_minmax(0,1fr)]
+                  "
+                >
+                  <video
+                    className="w-full rounded-lg bg-slate-950 shadow-nm-flat-sm"
+                    controls
+                    preload="metadata"
+                    src={videoPreviewUrl}
+                  />
+                  <div
+                    className="
+                      flex min-w-0 flex-col justify-center space-y-1 text-xs
+                      text-slate-600
+                    "
+                  >
+                    <p className="truncate font-medium text-slate-900">
+                      {selectedVideo.name}
+                    </p>
+                    {uploadedVideo && (
+                      <p className="font-medium text-green-600">Uploaded successfully</p>
+                    )}
                   </div>
-                  {uploadedVideo.expiresAt && (
-                    <div>
-                      URL expires: {formatDateTime(uploadedVideo.expiresAt)}
-                    </div>
-                  )}
                 </div>
               )}
               {uploadError && <FieldError>{uploadError}</FieldError>}
             </div>
           )}
-
-          <Input
-            id="course-video-key"
-            value={values.introductionVideoKey}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                introductionVideoKey: event.target.value,
-              }))
-            }
-            placeholder="videos/course-intro.mp4"
-          />
-          <FieldDescription>
-            Intro video is optional. Upload to get a video key, or add it later.
-          </FieldDescription>
         </Field>
 
         {touched && validationError && (

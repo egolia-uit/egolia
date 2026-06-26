@@ -36,7 +36,7 @@ export function AuthGate({ allowedRoles, children }: AuthGateProps) {
       return;
     }
 
-    if (!viewer?.id && !viewer?.accessToken) {
+    if (!viewer?.id || !viewer?.accessToken) {
       router.replace('/login');
       return;
     }
@@ -51,10 +51,12 @@ export function AuthGate({ allowedRoles, children }: AuthGateProps) {
       <div className="min-h-dvh bg-background p-6">
         <div className="mx-auto flex max-w-6xl flex-col gap-4">
           <Skeleton className="h-12 w-full" />
-          <div className="
-            grid gap-4
-            md:grid-cols-[220px_1fr]
-          ">
+          <div
+            className="
+              grid gap-4
+              md:grid-cols-[220px_1fr]
+            "
+          >
             <Skeleton className="h-80" />
             <Skeleton className="h-80" />
           </div>

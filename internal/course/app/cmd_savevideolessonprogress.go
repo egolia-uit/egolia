@@ -13,7 +13,7 @@ type SaveVideoLessonProgress struct {
 	UserID         string
 	CourseID       uuid.UUID
 	LessonID       uuid.UUID
-	WatchedSeconds *float64
+	WatchedSeconds *float32
 	LastViewedAt   time.Time
 	IsCompleted    bool
 }
@@ -47,7 +47,7 @@ func (h *SaveVideoLessonProgressHandler) Handle(ctx context.Context, cmd *SaveVi
 		}
 		watchSeconds := float64(10)
 		if cmd.WatchedSeconds != nil {
-			watchSeconds = *cmd.WatchedSeconds + 10
+			watchSeconds = (float64(*cmd.WatchedSeconds) + 10)
 		}
 
 		progress := domain.NewLessonProgressVideo(

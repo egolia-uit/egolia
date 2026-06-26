@@ -9,6 +9,7 @@ import (
 
 	"buf.build/go/protovalidate"
 	"github.com/egolia-uit/egolia/internal/course/config"
+	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/egolia-uit/egolia/pkg/pb"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	protovalidate_middleware "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate"
@@ -25,6 +26,7 @@ func New(
 	serviceServer *ServiceServer,
 	cfg *config.Server,
 	logger logging.Logger,
+	_ otel.Global,
 ) (*GRPC, func(), error) {
 	validator, err := protovalidate.New()
 	if err != nil {

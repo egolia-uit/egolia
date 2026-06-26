@@ -33,7 +33,8 @@ func InitializeServer(ctx context.Context) (*blog.Server, func(), error) {
 		return nil, nil, err
 	}
 	log := &configConfig.Log
-	stdoutHandler := logging.NewStdoutHandler(log)
+	general := &configConfig.General
+	stdoutHandler := logging.NewStdoutHandler(log, general)
 	serviceName := _wireServiceNameValue
 	serviceVersion := _wireServiceVersionValue
 	resource, err := otel.NewResource(ctx, serviceName, serviceVersion)

@@ -10,10 +10,6 @@ export function putFileToSignedUrl(
 
     console.log('>>> [PUT] Sending file to:', uploadUrl);
     request.open('PUT', uploadUrl);
-    request.setRequestHeader(
-      'Content-Type',
-      file.type || 'application/octet-stream'
-    );
 
     request.upload.onprogress = (event) => {
       if (!event.lengthComputable) {
@@ -44,6 +40,6 @@ export function putFileToSignedUrl(
       reject(new Error(`RustFS upload failed (${request.status})`));
     };
 
-    request.send(file);
+    request.send(file.slice(0, file.size, ''));
   });
 }

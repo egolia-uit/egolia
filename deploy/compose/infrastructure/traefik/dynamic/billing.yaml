@@ -19,6 +19,15 @@ http:
         - cors
         - authenticated
 
+    billing-http-public:
+      entryPoints:
+        - web
+      rule: Host(`api.egolia.localhost`) && Path(`/billing/transactions/vnpay_ipn`)
+      service: billing-http
+      priority: 80
+      middlewares:
+        - cors
+
     billing-health:
       entryPoints:
         - web

@@ -35,7 +35,8 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 		return nil, nil, err
 	}
 	log := &configConfig.Log
-	stdoutHandler := logging.NewStdoutHandler(log)
+	general := &configConfig.General
+	stdoutHandler := logging.NewStdoutHandler(log, general)
 	serviceName := _wireServiceNameValue
 	serviceVersion := _wireServiceVersionValue
 	resource, err := otel.NewResource(ctx, serviceName, serviceVersion)
@@ -48,21 +49,37 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 	}
 	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
 	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
-	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger)
-	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
-	general := &configConfig.General
-	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
-	services := &configConfig.Services
-	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
-	course, cleanup2, err := service.NewCourse(services, loggingLogger)
+	meterProvider, cleanup2, err := otel.NewMeterProvider(ctx, resource)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	authentik := &configConfig.Authentik
-	identityAuthentik := identity.NewAuthentik(authentik)
-	db, cleanup3, err := persistence.NewDB(ctx, configConfig, logger)
+	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
 	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	textMapPropagator := otel.NewTextMapPropagator()
+	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider, textMapPropagator)
+	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger, global)
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
+	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
+	services := &configConfig.Services
+	loggingLogger := otel.MapSlogToGRPCMiddlewareLogger(logger)
+	course, cleanup4, err := service.NewCourse(services, loggingLogger, global)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	authentik := &configConfig.Authentik
+	identityAuthentik := identity.NewAuthentik(authentik, global)
+	db, cleanup5, err := persistence.NewDB(ctx, configConfig, logger, global)
+	if err != nil {
+		cleanup4()
+		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
@@ -73,8 +90,10 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 	server := &configConfig.Server
 	strictHandler := http.NewStrictHandler(transactionSvc, server)
 	serverInterface := http.NewHandler(strictHandler)
-	httpHTTP, cleanup4, err := http.New(ctx, engine, serverInterface, server, logger)
+	httpHTTP, cleanup6, err := http.New(ctx, engine, serverInterface, server, logger)
 	if err != nil {
+		cleanup5()
+		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
@@ -84,6 +103,8 @@ func InitializeServer(ctx context.Context) (*billing.Server, func(), error) {
 	pg := persistence.NewPG(db)
 	billingServer := billing.NewServer(httpHTTP, healthHealth, pg, logger)
 	return billingServer, func() {
+		cleanup6()
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
