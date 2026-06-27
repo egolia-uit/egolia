@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1829" height="1660" viewBox="0 0 1829 1660" version="1.1">
+<rect fill="#fff5f7" width="1829" height="1660"/>
+<text id="text" xml:space="preserve" font-weight="bold" fill="#cd0930" font-family="BlinkMacSystemFont, -apple-system, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Helvetica', Arial, sans-serif" font-size="16px" x="0" y="5" dy="0">
+<tspan x="10" dy="16">Error 400: &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; data-d2-version=&quot;v0.7.1&quot; pre…</tspan>
+<tspan x="10" dy="16">.d2-4164926833 .text {</tspan>
+<tspan x="10" dy="16">	font-family: &quot;d2-4164926833-font-regular&quot;;</tspan>
+<tspan x="10" dy="16">}</tspan>
+<tspan x="10" dy="16">@font-face {</tspan>
+<tspan x="10" dy="16">	font-family: d2-4164926833-font-regular;</tspan>
+<tspan x="10" dy="16">	src: url(&quot;data:application/font-woff;base64,d09GRgABAAAAAA+oAAoAAAAAF+AAAguFAAAAAAAAAAAAAAAAAAAAAAAAAABPUy8yAAAA9AAAAGAAAABgXd/Vo2NtYXAAAAFUAAAArAAAAOgEnAWTZ2x…</tspan>
+<tspan x="10" dy="16">}</tspan>
+<tspan x="10" dy="16">.d2-4164926833 .text-bold {</tspan>
+<tspan x="10" dy="16">	font-family: &quot;d2-4164926833-font-bold&quot;;</tspan>
+<tspan x="10" dy="16">}</tspan>
+<tspan x="10" dy="16">@font-face {</tspan>
+<tspan x="10" dy="16">	font-family: d2-4164926833-font-bold;</tspan>
+<tspan x="10" dy="16">	src: url(&quot;data:application/font-woff;base64,d09GRgABAAAAAA+oAAoAAAAAF7wAAguFAAAAAAAAAAAAAAAAAAAAAAAAAABPUy8yAAAA9AAAAGAAAABgXxHXrmNtYXAAAAFUAAAArAAAAOgEnAWTZ2x…</tspan>
+<tspan x="10" dy="16">}]]&gt;&lt;/style&gt;&lt;style type=&quot;text/css&quot;&gt;&lt;![CDATA[.shape {</tspan>
+<tspan x="10" dy="16">  shape-rendering: geometricPrecision;</tspan>
+<tspan x="10" dy="16">  stroke-linejoin: round;</tspan>
+<tspan x="10" dy="16">}</tspan>
+<tspan x="10" dy="16">.connection {</tspan>
+<tspan x="10" dy="16">  stroke-linecap: round;</tspan>
+<tspan x="10" dy="16">  stroke-linejoin: round;</tspan>
+<tspan x="10" dy="16">}</tspan>
+<tspan x="10" dy="16">.blend {</tspan>
+<tspan x="10" dy="16">  mix-blend-mode: multiply;</tspan>
+<tspan x="10" dy="16">  opacity: 0.5;</tspan>
+<tspan x="10" dy="16">}</tspan>
+<tspan x="10" dy="16"></tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-N1{fill:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-N2{fill:#5c5f77;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-N3{fill:#9499AB;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-N4{fill:#acb0be;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-N5{fill:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-N6{fill:#EEF1F8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-N7{fill:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-B1{fill:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-B2{fill:#6c6f85;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-B3{fill:#bcc0cc;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-B4{fill:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-B5{fill:#dce0e8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-B6{fill:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-AA2{fill:#4A6FF3;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-AA4{fill:#1e66f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-AA5{fill:#7287fd;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-AB4{fill:#8839ef;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .fill-AB5{fill:#dc8a78;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-N1{stroke:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-N2{stroke:#5c5f77;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-N3{stroke:#9499AB;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-N4{stroke:#acb0be;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-N5{stroke:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-N6{stroke:#EEF1F8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-N7{stroke:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-B1{stroke:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-B2{stroke:#6c6f85;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-B3{stroke:#bcc0cc;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-B4{stroke:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-B5{stroke:#dce0e8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-B6{stroke:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-AA2{stroke:#4A6FF3;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-AA4{stroke:#1e66f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-AA5{stroke:#7287fd;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-AB4{stroke:#8839ef;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .stroke-AB5{stroke:#dc8a78;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-N1{background-color:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-N2{background-color:#5c5f77;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-N3{background-color:#9499AB;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-N4{background-color:#acb0be;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-N5{background-color:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-N6{background-color:#EEF1F8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-N7{background-color:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-B1{background-color:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-B2{background-color:#6c6f85;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-B3{background-color:#bcc0cc;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-B4{background-color:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-B5{background-color:#dce0e8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-B6{background-color:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-AA2{background-color:#4A6FF3;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-AA4{background-color:#1e66f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-AA5{background-color:#7287fd;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-AB4{background-color:#8839ef;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .background-color-AB5{background-color:#dc8a78;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-N1{color:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-N2{color:#5c5f77;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-N3{color:#9499AB;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-N4{color:#acb0be;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-N5{color:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-N6{color:#EEF1F8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-N7{color:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-B1{color:#4c4f69;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-B2{color:#6c6f85;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-B3{color:#bcc0cc;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-B4{color:#ccd0da;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-B5{color:#dce0e8;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-B6{color:#eff1f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-AA2{color:#4A6FF3;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-AA4{color:#1e66f5;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-AA5{color:#7287fd;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-AB4{color:#8839ef;}</tspan>
+<tspan x="10" dy="16">		.d2-4164926833 .color-AB5{color:#dc8a78;}.appendix text.text{fill:#4c4f69}.md{--color-fg-default:#4c4f69;--color-fg-muted:#5c5f77;--color-fg-subtle:#9499AB;--…</tspan>
+<tspan x="10" dy="16">&lt;rect x=&quot;-89&quot; y=&quot;-89&quot; width=&quot;2109&quot; height=&quot;1770&quot; fill=&quot;white&quot;&gt;&lt;/rect&gt;</tspan>
+<tspan x="10" dy="16"></tspan>
+<tspan x="10" dy="16">&lt;/mask&gt;&lt;/svg&gt;&lt;/svg&gt;</tspan>
+<tspan x="10" dy="16">err: failed to bundle https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/app/plugins/datasource/tempo/img/tempo_logo.svg: expected status …</tspan>
+<tspan x="10" dy="16">err: failed to compile -: failed to bundle remote images: [https://raw.githubusercontent.com/grafana/grafana/refs/heads/main/public/app/plugins/datasource/tempo…</tspan>
+<tspan x="10" dy="16"> (exit code 1)</tspan>
+</text>
+<rect fill="#ff3860" width="3" height="1660"/>
+</svg>
