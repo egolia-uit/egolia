@@ -13,12 +13,14 @@ type ApproveCourse struct {
 }
 
 type ApproveCourseHandler struct {
-	uow domain.UnitOfWork
+	uow            domain.UnitOfWork
+	eventPublisher EventPublisher
 }
 
-func NewApproveCourseHandler(uow domain.UnitOfWork) *ApproveCourseHandler {
+func NewApproveCourseHandler(uow domain.UnitOfWork, eventPublisher EventPublisher) *ApproveCourseHandler {
 	return &ApproveCourseHandler{
-		uow: uow,
+		uow:            uow,
+		eventPublisher: eventPublisher,
 	}
 }
 
@@ -26,7 +28,6 @@ var _ commonhandler.Cmd[ApproveCourse] = (*ApproveCourseHandler)(nil)
 
 func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) error {
 	var events []domain.DomainEvent
-	var publishedCourseID uuid.UUID
 
 	err := h.uow.Execute(ctx, func(repoRegistry domain.RepoRegistry) error {
 		course, err := repoRegistry.Course().GetFull(ctx, cmd.CourseID)
@@ -40,7 +41,7 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 				return err
 			}
 		} else {
-			publishedCourseID = *course.OriginalCourseID()
+			publishedCourseID := *course.OriginalCourseID()
 			originalCourse, err := repoRegistry.Course().GetFull(ctx, publishedCourseID)
 			if err != nil {
 				return err
@@ -69,12 +70,7 @@ func (h *ApproveCourseHandler) Handle(ctx context.Context, cmd *ApproveCourse) e
 	}
 
 	if len(events) > 0 {
-		// for _, event := range events {
-		// 	// if err := h.eventPublisher.Publish(ctx, event); err != nil {
-		// 	// 	return err
-		// 	// }
-		// }
-		return nil
+		return h.eventPublisher.Publish(ctx, events...)
 	}
 
 	return nil

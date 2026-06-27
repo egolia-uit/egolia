@@ -22,13 +22,13 @@ func TestApproveCourseHandler_Handle(t *testing.T) {
 	tests := []struct {
 		name       string
 		cmd        *app.ApproveCourse
-		setupMocks func(*testing.T, *mockUow, *tSafeRepoRegistry)
+		setupMocks func(*testing.T, *mockUow, *tSafeRepoRegistry, *app.MockEventPublisher)
 		wantErr    bool
 	}{
 		{
 			name: "no draft approves and saves course",
 			cmd:  validCmd,
-			setupMocks: func(t *testing.T, uow *mockUow, reg *tSafeRepoRegistry) {
+			setupMocks: func(t *testing.T, uow *mockUow, reg *tSafeRepoRegistry, publisher *app.MockEventPublisher) {
 				course := domain.UnmarshalCourse(
 					courseID, nil, "Test Course", "inst-1",
 					domain.CourseStatusPending, 1000, "overview", false, "video-key", nil, nil,
@@ -43,7 +43,7 @@ func TestApproveCourseHandler_Handle(t *testing.T) {
 		{
 			name: "has draft merges and saves both courses",
 			cmd:  validCmd,
-			setupMocks: func(t *testing.T, uow *mockUow, reg *tSafeRepoRegistry) {
+			setupMocks: func(t *testing.T, uow *mockUow, reg *tSafeRepoRegistry, publisher *app.MockEventPublisher) {
 				originalCourseID := uuid.New()
 				draft := domain.UnmarshalCourse(
 					courseID, &originalCourseID, "Draft Title", "inst-1",
@@ -58,13 +58,14 @@ func TestApproveCourseHandler_Handle(t *testing.T) {
 				courseRepo.On("GetFull", mock.Anything, courseID).Return(draft, nil)
 				courseRepo.On("GetFull", mock.Anything, originalCourseID).Return(originalCourse, nil)
 				courseRepo.On("Save", mock.Anything, mock.Anything).Return(nil).Times(2)
+				publisher.On("Publish", mock.Anything, mock.Anything).Return(nil).Maybe()
 			},
 			wantErr: false,
 		},
 		{
 			name: "merge error propagates",
 			cmd:  validCmd,
-			setupMocks: func(t *testing.T, uow *mockUow, reg *tSafeRepoRegistry) {
+			setupMocks: func(t *testing.T, uow *mockUow, reg *tSafeRepoRegistry, publisher *app.MockEventPublisher) {
 				mismatchedID := uuid.New()
 				originalCourseID := uuid.New()
 				draft := domain.UnmarshalCourse(
@@ -89,10 +90,11 @@ func TestApproveCourseHandler_Handle(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			uow, reg := withUow(t)
+			publisher := app.NewMockEventPublisher(t)
 			if tt.setupMocks != nil {
-				tt.setupMocks(t, uow, reg)
+				tt.setupMocks(t, uow, reg, publisher)
 			}
-			handler := app.NewApproveCourseHandler(uow)
+			handler := app.NewApproveCourseHandler(uow, publisher)
 			err := handler.Handle(ctx, tt.cmd)
 			if tt.wantErr {
 				require.Error(t, err)

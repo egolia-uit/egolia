@@ -3,6 +3,7 @@
 import {
   Calendar,
   Check,
+  ChevronLeft,
   CornerDownRight,
   Edit,
   Eye,
@@ -14,7 +15,8 @@ import {
   X,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 import { AppShell } from '#/components/layout/app-shell';
 import { AuthGate } from '#/components/layout/auth-gate';
@@ -26,8 +28,30 @@ import {
   CardHeader,
   CardTitle,
 } from '#/components/ui/neumorphism/card';
+import { Input } from '#/components/ui/neumorphism/input';
 import type { Viewer } from '#/lib/auth/roles';
 import { useViewer } from '#/lib/auth/use-viewer';
+
+// Helper: Textarea component styled with neumorphism style
+const Textarea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>
+>(({ className, ...props }, ref) => (
+  <textarea
+    className={`
+      flex min-h-20 w-full rounded-xl border border-slate-200 bg-white px-4 py-2
+      text-sm text-slate-950
+      placeholder:text-slate-400
+      focus-visible:border-blue-400 focus-visible:ring-2
+      focus-visible:ring-blue-500 focus-visible:outline-none
+      disabled:cursor-not-allowed disabled:bg-slate-50 disabled:opacity-50
+      ${className || ''}
+    `}
+    ref={ref}
+    {...props}
+  />
+));
+Textarea.displayName = 'Textarea';
 
 const MOCK_POSTS = [
   {
@@ -163,9 +187,31 @@ function BlogCard({ post }: { post: (typeof MOCK_POSTS)[0] }) {
 
 export function BlogListPage() {
   const { viewer } = useViewer();
+  const isLoggedIn = Boolean(viewer?.id && viewer?.accessToken);
 
   return (
-    <AppShell viewer={viewer} eyebrow="Blog" title="News & Guide">
+    <AppShell
+      viewer={viewer}
+      eyebrow="Blog"
+      title="News & Guide"
+      actions={
+        isLoggedIn ? (
+          <Button asChild variant="outline">
+            <Link href="/admin/blog">
+              <Edit className="mr-2 size-4" />
+              Demo: Manage Articles
+            </Link>
+          </Button>
+        ) : (
+          <Button asChild variant="outline">
+            <Link href="/login?redirect=/admin/blog">
+              <Edit className="mr-2 size-4" />
+              Demo: Sign in to Manage
+            </Link>
+          </Button>
+        )
+      }
+    >
       <div
         className="
           grid gap-4
@@ -294,9 +340,11 @@ function CommentItem({
               </Button>
             </form>
           ) : (
-            <p className="
-              mt-1 text-sm leading-relaxed break-words text-slate-700
-            ">
+            <p
+              className="
+                mt-1 text-sm leading-relaxed break-words text-slate-700
+              "
+            >
               {comment.content}
             </p>
           )}
@@ -350,7 +398,7 @@ function CommentItem({
               <div className="relative flex-1">
                 <input
                   type="text"
-                  placeholder="Viết phản hồi..."
+                  placeholder="Write a reply..."
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
                   className="
@@ -359,12 +407,12 @@ function CommentItem({
                     focus:border-blue-500 focus:outline-hidden
                   "
                 />
-                <CornerDownRight className="
-                  absolute top-2.5 right-2.5 size-3.5 text-slate-400
-                " />
+                <CornerDownRight
+                  className="absolute top-2.5 right-2.5 size-3.5 text-slate-400"
+                />
               </div>
               <Button type="submit" size="sm" className="h-8 py-0">
-                Gửi
+                Send
               </Button>
               <Button
                 type="button"
@@ -373,7 +421,7 @@ function CommentItem({
                 className="h-8 py-0"
                 onClick={() => setIsReplying(false)}
               >
-                Hủy
+                Cancel
               </Button>
             </form>
           )}
@@ -408,16 +456,16 @@ export function BlogDetailPage({ slug }: { slug: string }) {
   const [comments, setComments] = useState<BlogComment[]>([
     {
       id: 'c1',
-      author: 'Nguyễn Hoàng Long',
+      author: 'Alex Johnson',
       content:
-        'Bài hướng dẫn chi tiết quá admin ơi! Cho em hỏi hệ thống authentication của Egolia sử dụng oauth2 flow thì có tích hợp sẵn cơ chế refresh token chưa ạ?',
+        'The guide is so detailed! May I ask if the Egolia auth system using oauth2 flow has a built-in refresh token mechanism?',
       date: '2026-05-25T08:30:00Z',
       replies: [
         {
           id: 'c2',
           author: 'Admin (Dev Team)',
           content:
-            'Chào Long nhé, Egolia sử dụng BetterAuth kết hợp Authentik nên refresh token đã được cấu hình tự động dưới dạng HttpOnly cookie, đảm bảo bảo mật và tự động gia hạn phiên đăng nhập cực kỳ mượt mà nhé!',
+            'Hi Alex, Egolia uses BetterAuth with Authentik, so refresh tokens are automatically configured as HttpOnly cookies, ensuring security and seamless session renewals!',
           date: '2026-05-25T09:15:00Z',
           replies: [],
         },
@@ -425,9 +473,9 @@ export function BlogDetailPage({ slug }: { slug: string }) {
     },
     {
       id: 'c3',
-      author: 'Lê Minh Anh',
+      author: 'Emily Davis',
       content:
-        'Giao diện bento grid kèm shadow-nm mịn màng ghê. Trải nghiệm duyệt bài viết rất thoải mái.',
+        'The bento grid UI with smooth shadow is beautiful. Reading articles is a great experience.',
       date: '2026-05-26T14:20:00Z',
       replies: [],
     },
@@ -442,7 +490,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
     // Simulate POST /blog/posts/{postId}/comments
     const newComment: BlogComment = {
       id: `c_${Date.now()}`,
-      author: viewer?.name || 'Học viên ẩn danh',
+      author: viewer?.name || 'Anonymous Learner',
       content: newCommentText,
       date: new Date().toISOString(),
       replies: [],
@@ -456,7 +504,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
     // Simulate POST /blog/comments/{commentId}/replies
     const newReply: BlogComment = {
       id: `c_${Date.now()}`,
-      author: viewer?.name || 'Học viên ẩn danh',
+      author: viewer?.name || 'Anonymous Learner',
       content: text,
       date: new Date().toISOString(),
       replies: [],
@@ -529,10 +577,13 @@ export function BlogDetailPage({ slug }: { slug: string }) {
             </div>
           </CardHeader>
           <CardContent className="max-w-none pt-5">
-            <p className="
-              mb-6 rounded-r-lg border-l-4 border-l-blue-600 bg-slate-50/50 py-3
-              pl-4 text-base leading-relaxed font-semibold text-slate-900 italic
-            ">
+            <p
+              className="
+                mb-6 rounded-r-lg border-l-4 border-l-blue-600 bg-slate-50/50
+                py-3 pl-4 text-base leading-relaxed font-semibold text-slate-900
+                italic
+              "
+            >
               {post.excerpt}
             </p>
             <div className="space-y-4 text-sm/7 leading-relaxed text-slate-700">
@@ -548,13 +599,15 @@ export function BlogDetailPage({ slug }: { slug: string }) {
                 cupidatat non proident, sunt in culpa qui officia deserunt
                 mollit anim id est laborum.
               </p>
-              <p className="
-                rounded-xl border border-amber-200/50 bg-amber-50/40 p-4
-                font-semibold text-slate-900
-              ">
-                ⚠️ Lưu ý: Nội dung chi tiết đầy đủ của bài viết sẽ chính thức
-                đồng bộ từ máy chủ khi dịch vụ Blog hoàn tất cấu trúc cơ sở dữ
-                liệu và dịch vụ BE đi vào hoạt động.
+              <p
+                className="
+                  rounded-xl border border-amber-200/50 bg-amber-50/40 p-4
+                  font-semibold text-slate-900
+                "
+              >
+                ⚠️ Note: The full detail content of this article will be
+                officially synced from the server once the Blog database and BE
+                services are fully operational.
               </p>
             </div>
           </CardContent>
@@ -563,11 +616,13 @@ export function BlogDetailPage({ slug }: { slug: string }) {
         {/* Comments Section */}
         <Card className="border border-slate-200 bg-slate-50/40 shadow-xs">
           <CardHeader className="pb-3">
-            <CardTitle className="
-              flex items-center gap-2 text-base font-semibold text-slate-900
-            ">
+            <CardTitle
+              className="
+                flex items-center gap-2 text-base font-semibold text-slate-900
+              "
+            >
               <MessageSquare className="size-4.5 text-blue-600" />
-              Thảo luận (
+              Discussion (
               {comments.length +
                 comments.reduce((a, b) => a + b.replies.length, 0)}
               )
@@ -578,7 +633,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
             <form onSubmit={handleAddComment} className="flex gap-2">
               <input
                 type="text"
-                placeholder="Chia sẻ ý kiến của bạn..."
+                placeholder="Share your thoughts..."
                 value={newCommentText}
                 onChange={(e) => setNewCommentText(e.target.value)}
                 className="
@@ -589,7 +644,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
               />
               <Button type="submit">
                 <Send className="mr-2 size-3.5" />
-                Gửi
+                Send
               </Button>
             </form>
 
@@ -607,7 +662,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
                 ))
               ) : (
                 <div className="py-6 text-center text-sm text-slate-500">
-                  Chưa có bình luận nào. Hãy là người đầu tiên thảo luận!
+                  No comments yet. Be the first to share your thoughts!
                 </div>
               )}
             </div>
@@ -616,7 +671,7 @@ export function BlogDetailPage({ slug }: { slug: string }) {
 
         <div className="mt-2 flex items-center justify-between">
           <Button asChild variant="outline">
-            <Link href="/blog">← Trở về danh sách</Link>
+            <Link href="/blog">← Back to list</Link>
           </Button>
         </div>
       </div>
@@ -625,74 +680,305 @@ export function BlogDetailPage({ slug }: { slug: string }) {
 }
 
 function AdminBlogContent({ viewer }: { viewer: Viewer }) {
+  const [posts, setPosts] = useState(MOCK_POSTS);
+  const [view, setView] = useState<'list' | 'create' | 'edit'>('list');
+  const [editingPost, setEditingPost] = useState<(typeof MOCK_POSTS)[0] | null>(
+    null
+  );
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [category, setCategory] = useState('');
+  const [readTime, setReadTime] = useState('5 mins');
+
+  useEffect(() => {
+    const stored = localStorage.getItem('egolia_demo_posts');
+    if (stored) {
+      Promise.resolve().then(() => {
+        try {
+          setPosts(JSON.parse(stored));
+        } catch {
+          // Ignore invalid JSON format in localStorage
+        }
+      });
+    }
+  }, []);
+
+  const updatePosts = (newPosts: typeof MOCK_POSTS) => {
+    setPosts(newPosts);
+    localStorage.setItem('egolia_demo_posts', JSON.stringify(newPosts));
+  };
+
+  const openCreatePage = () => {
+    setEditingPost(null);
+    setTitle('');
+    setContent('');
+    setCategory('Guide');
+    setReadTime('5 mins');
+    setView('create');
+  };
+
+  const openEditPage = (post: (typeof MOCK_POSTS)[0]) => {
+    setEditingPost(post);
+    setTitle(post.title);
+    setContent(post.excerpt || '');
+    setCategory(post.category);
+    setReadTime(post.readTime);
+    setView('edit');
+  };
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!title.trim() || !content.trim()) return;
+
+    if (editingPost) {
+      // Edit local post
+      const updated = posts.map((p) =>
+        p.slug === editingPost.slug
+          ? { ...p, title, excerpt: content, category, readTime }
+          : p
+      );
+      updatePosts(updated);
+    } else {
+      // Create local post
+      const newPost = {
+        slug: `slug-${Date.now()}`,
+        title,
+        excerpt: content,
+        author: viewer?.name || 'Admin',
+        date: new Date().toISOString().split('T')[0],
+        category,
+        readTime,
+      };
+      updatePosts([newPost, ...posts]);
+    }
+    setView('list');
+  };
+
+  const handleDeletePost = (slug: string) => {
+    if (!confirm('Are you sure you want to delete this article?')) return;
+    const updated = posts.filter((p) => p.slug !== slug);
+    updatePosts(updated);
+  };
+
+  if (view === 'create' || view === 'edit') {
+    return (
+      <AppShell
+        viewer={viewer}
+        eyebrow="Blog Editor"
+        title={
+          view === 'create'
+            ? 'Create New Article (Demo)'
+            : 'Edit Article (Demo)'
+        }
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setView('list')}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleSubmit()}
+              disabled={!title.trim() || !content.trim()}
+            >
+              <Send className="mr-2 size-4" />
+              Save Article
+            </Button>
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-6">
+          <button
+            onClick={() => setView('list')}
+            className="
+              flex items-center gap-2 text-sm font-medium text-slate-500
+              transition-colors
+              hover:text-slate-900
+            "
+          >
+            <ChevronLeft className="size-4" />
+            Back to articles
+          </button>
+
+          <div
+            className="
+              grid gap-6
+              lg:grid-cols-[1fr_300px]
+            "
+          >
+            {/* Main Form Area */}
+            <div className="space-y-6">
+              <Card className="border border-slate-200 bg-white p-6 shadow-xs">
+                <CardContent className="space-y-4 p-0">
+                  <div className="space-y-1.5">
+                    <label
+                      className="
+                        text-xs font-semibold tracking-wider text-slate-500
+                        uppercase
+                      "
+                    >
+                      Article Title
+                    </label>
+                    <Input
+                      placeholder="Enter article title..."
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="text-base font-medium"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label
+                      className="
+                        text-xs font-semibold tracking-wider text-slate-500
+                        uppercase
+                      "
+                    >
+                      Article Content
+                    </label>
+                    <Textarea
+                      placeholder="Write your article content here..."
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      className="min-h-[400px] text-sm leading-relaxed"
+                      required
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Metadata Sidebar */}
+            <div className="space-y-6">
+              <Card className="border border-slate-200 bg-white p-6 shadow-xs">
+                <CardHeader className="border-b border-slate-100 p-0 pb-3">
+                  <CardTitle className="text-sm font-semibold text-slate-900">
+                    Article Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 p-0 pt-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-slate-500">
+                      Category
+                    </label>
+                    <Input
+                      placeholder="e.g. Guide, News..."
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-slate-500">
+                      Read time
+                    </label>
+                    <Input
+                      placeholder="e.g. 5 mins, 10 mins..."
+                      value={readTime}
+                      onChange={(e) => setReadTime(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="pt-2 text-xs text-slate-400">
+                    <p>
+                      Author:{' '}
+                      <span className="font-medium text-slate-600">
+                        {viewer?.name || 'Admin'}
+                      </span>
+                    </p>
+                    <p className="mt-1">
+                      Created Date:{' '}
+                      <span className="font-medium text-slate-600">
+                        {view === 'create'
+                          ? new Date().toLocaleDateString('en-US')
+                          : editingPost?.date}
+                      </span>
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
+
   return (
     <AppShell
       viewer={viewer}
       eyebrow="Administration"
       title="Manage Articles"
       actions={
-        <Button
-          onClick={() =>
-            alert('Article creation feature is under development.')
-          }
-        >
-          <Plus className="size-4" />
+        <Button onClick={openCreatePage}>
+          <Plus className="mr-2 size-4" />
           Create Article
         </Button>
       }
     >
-      <Card>
+      <Card className="border border-slate-200 bg-white shadow-xs">
         <CardContent className="py-4">
-          <div className="grid gap-3">
-            {MOCK_POSTS.map((post) => (
-              <div
-                key={post.slug}
-                className="
-                  flex items-center justify-between gap-3 rounded-lg border
-                  border-slate-200 p-4
-                "
-              >
-                <div className="min-w-0">
-                  <div className="font-medium">{post.title}</div>
-                  <div
-                    className="
-                      mt-1 flex items-center gap-3 text-xs text-slate-500
-                    "
-                  >
-                    <span>{post.author}</span>
-                    <span>{post.date}</span>
-                    <Badge variant="secondary" className="text-xs">
-                      {post.category}
-                    </Badge>
+          {posts.length === 0 ? (
+            <div className="py-12 text-center text-sm text-slate-500">
+              No articles yet. Click "Create Article" to write one!
+            </div>
+          ) : (
+            <div className="grid gap-3">
+              {posts.map((post) => (
+                <div
+                  key={post.slug}
+                  className="
+                    flex flex-col justify-between gap-3 rounded-xl border
+                    border-slate-200 p-4 transition-all
+                    hover:bg-slate-50/50
+                    sm:flex-row sm:items-center
+                  "
+                >
+                  <div className="min-w-0">
+                    <div className="line-clamp-1 font-semibold text-slate-900">
+                      {post.title}
+                    </div>
+                    <div
+                      className="
+                        mt-1 flex items-center gap-3 text-xs text-slate-500
+                      "
+                    >
+                      <span>{post.author}</span>
+                      <span>{post.date}</span>
+                      <Badge variant="secondary" className="text-xs">
+                        {post.category}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link href={`/blog/${post.slug}`}>
+                        <Eye className="size-4" />
+                        View
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openEditPage(post)}
+                    >
+                      <Edit className="size-4" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDeletePost(post.slug)}
+                    >
+                      <Trash2 className="size-4" />
+                      Delete
+                    </Button>
                   </div>
                 </div>
-                <div className="flex shrink-0 gap-2">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={`/blog/${post.slug}`}>
-                      <Eye className="size-4" />
-                      View
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => alert('Action successful!')}
-                  >
-                    <Edit className="size-4" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => alert('Action successful!')}
-                  >
-                    <Trash2 className="size-4" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </AppShell>
@@ -701,7 +987,7 @@ function AdminBlogContent({ viewer }: { viewer: Viewer }) {
 
 export function AdminBlogPage() {
   return (
-    <AuthGate allowedRoles={['admin']}>
+    <AuthGate allowedRoles={['admin', 'instructor', 'learner']}>
       {(viewer) => <AdminBlogContent viewer={viewer} />}
     </AuthGate>
   );

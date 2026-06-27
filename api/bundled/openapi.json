@@ -52,6 +52,7 @@
     },
     {
       "name": "Comment",
+      "description": "Blog comment management",
       "x-displayName": "Comment"
     }
   ],

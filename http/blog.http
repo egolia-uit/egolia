@@ -1,0 +1,107 @@
+### Get Access Token (Admin)
+# @prompt clientId
+# @prompt username admin
+# @secret password
+POST /application/o/token/ HTTP/1.1
+Host: authentik.egolia.localhost
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&
+client_id={{clientId}}&
+username={{username}}&
+password={{password}}&
+scope=openid email profile
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+%}
+
+### Create a Post
+POST /blog/posts HTTP/1.1
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Getting Started with Golang",
+  "content": "This is a comprehensive guide to building services in Go using Clean Architecture.",
+  "tags": ["golang", "clean-architecture", "backend"]
+}
+
+> {%
+    client.global.set("post_id", response.body.id);
+%}
+
+### Search Posts
+GET /blog/posts?pageIndex=1&pageSize=10
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Get Post by ID
+GET /blog/posts/{{post_id}}
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Update Post
+PUT /blog/posts/{{post_id}}
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Getting Started with Golang (Updated)",
+  "content": "This is a comprehensive guide to building services in Go using Clean Architecture. We have updated the content.",
+  "tags": ["golang", "backend"]
+}
+
+### Add Comment to Post
+POST /blog/posts/{{post_id}}/comments
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "content": "Great article! Very helpful for beginners."
+}
+
+> {%
+    client.global.set("comment_id", response.body.id);
+%}
+
+### Get Post Comments
+GET /blog/posts/{{post_id}}/comments
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+
+### Reply to Comment
+POST /blog/comments/{{comment_id}}/replies
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "content": "Thank you for the feedback!"
+}
+
+### Update Comment
+PUT /blog/comments/{{comment_id}}
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "content": "Great article! Very helpful for beginners. Keep it up!"
+}
+
+### Delete Comment
+DELETE /blog/comments/{{comment_id}}
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}
+
+### Delete Post
+DELETE /blog/posts/{{post_id}}
+Host: api.egolia.localhost
+Authorization: Bearer {{auth_token}}

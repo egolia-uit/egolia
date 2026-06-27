@@ -9,9 +9,15 @@ package main
 import (
 	"context"
 	"github.com/egolia-uit/egolia/internal/blog"
+	"github.com/egolia-uit/egolia/internal/blog/app"
 	"github.com/egolia-uit/egolia/internal/blog/component"
 	"github.com/egolia-uit/egolia/internal/blog/config"
 	"github.com/egolia-uit/egolia/internal/blog/controller/health"
+	"github.com/egolia-uit/egolia/internal/blog/controller/http"
+	"github.com/egolia-uit/egolia/internal/blog/infra/persistence"
+	"github.com/egolia-uit/egolia/internal/blog/infra/persistence/readmodel"
+	"github.com/egolia-uit/egolia/internal/blog/infra/persistence/repo"
+	"github.com/egolia-uit/egolia/pkg/common/http"
 	"github.com/egolia-uit/egolia/pkg/logging"
 	"github.com/egolia-uit/egolia/pkg/otel"
 	"github.com/goforj/wire"
@@ -26,9 +32,6 @@ func InitializeServer(ctx context.Context) (*blog.Server, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	server := &configConfig.Server
-	authentik := &configConfig.Authentik
-	healthHealth := health.New(server, authentik)
 	log := &configConfig.Log
 	general := &configConfig.General
 	stdoutHandler := logging.NewStdoutHandler(log, general)
@@ -44,8 +47,69 @@ func InitializeServer(ctx context.Context) (*blog.Server, func(), error) {
 	}
 	slogHandler := otel.NewSlogHandler(serviceName, loggerProvider)
 	logger := logging.NewSlog(stdoutHandler, slogHandler, log)
-	blogServer := blog.NewServer(healthHealth, logger)
+	meterProvider, cleanup2, err := otel.NewMeterProvider(ctx, resource)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	tracerProvider, cleanup3, err := otel.NewTracerProvider(ctx, resource)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	textMapPropagator := otel.NewTextMapPropagator()
+	global := otel.ProvideGlobal(loggerProvider, meterProvider, tracerProvider, textMapPropagator)
+	ginSlogHandlerFunc := commonhttp.NewGinSlogHandler(log, logger, global)
+	otelGinHandlerFunc := commonhttp.NewOtelGinHandler(serviceName)
+	engine := commonhttp.NewGin(ginSlogHandlerFunc, otelGinHandlerFunc, general)
+	handlerProvider := app.NewHandlerProvider(tracerProvider, logger)
+	db, cleanup4, err := persistence.NewDB(ctx, configConfig, logger)
+	if err != nil {
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	unitOfWork := repo.NewUnitOfWork(db)
+	createPostHandler := app.NewCreatePostHandler(unitOfWork)
+	updatePostHandler := app.NewUpdatePostHandler(unitOfWork)
+	deletePostHandler := app.NewDeletePostHandler(unitOfWork)
+	commentOnPostHandler := app.NewCommentOnPostHandler(unitOfWork)
+	updateCommentHandler := app.NewUpdateCommentHandler(unitOfWork)
+	deleteCommentHandler := app.NewDeleteCommentHandler(unitOfWork)
+	replyCommentHandler := app.NewReplyCommentHandler(unitOfWork)
+	cmds := app.NewCmds(handlerProvider, createPostHandler, updatePostHandler, deletePostHandler, commentOnPostHandler, updateCommentHandler, deleteCommentHandler, replyCommentHandler)
+	postReadRepo := readmodel.NewPostReadRepo(db)
+	searchPostsHandler := app.NewSearchPostsHandler(postReadRepo)
+	getPostByIdHandler := app.NewGetPostByIdHandler(postReadRepo)
+	commentReadRepo := readmodel.NewCommentReadRepo(db)
+	getPostCommentsHandler := app.NewGetPostCommentsHandler(commentReadRepo)
+	queries := app.NewQueries(handlerProvider, searchPostsHandler, getPostByIdHandler, getPostCommentsHandler)
+	appApp := &app.App{
+		Cmds:    cmds,
+		Queries: queries,
+	}
+	server := &configConfig.Server
+	strictHandler := http.NewStrictHandler(appApp, server)
+	serverInterface := http.NewHandler(strictHandler)
+	httpHTTP, cleanup5, err := http.New(ctx, engine, serverInterface, server, logger)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	authentik := &configConfig.Authentik
+	healthHealth := health.New(server, authentik)
+	pg := persistence.NewPG(db)
+	blogServer := blog.NewServer(httpHTTP, healthHealth, pg, global, logger)
 	return blogServer, func() {
+		cleanup5()
+		cleanup4()
+		cleanup3()
+		cleanup2()
 		cleanup()
 	}, nil
 }

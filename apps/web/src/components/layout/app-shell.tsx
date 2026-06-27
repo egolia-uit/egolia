@@ -93,6 +93,11 @@ function navForViewer(viewer?: Viewer | null): NavGroup[] {
           icon: GraduationCap,
           label: 'My Courses',
         },
+        {
+          href: '/admin/blog',
+          icon: Newspaper,
+          label: 'Manage Blog',
+        },
       ],
     });
   }
@@ -314,9 +319,9 @@ export function AppShell({
                               alt={viewer.name ?? viewer.email ?? 'User'}
                               src={viewer.image ?? undefined}
                             />
-                            <AvatarFallback className="
-                              bg-slate-900 text-xs text-white
-                            ">
+                            <AvatarFallback
+                              className="bg-slate-900 text-xs text-white"
+                            >
                               {initials(viewer.name, viewer.email)}
                             </AvatarFallback>
                           </Avatar>
@@ -328,9 +333,9 @@ export function AppShell({
                             >
                               {viewer.name ?? viewer.email ?? 'User'}
                             </div>
-                            <div className="
-                              text-[10px] font-medium text-slate-500
-                            ">
+                            <div
+                              className="text-[10px] font-medium text-slate-500"
+                            >
                               {roleLabel(viewer)}
                             </div>
                           </div>

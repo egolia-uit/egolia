@@ -1,0 +1,133 @@
+package http
+
+import (
+	"context"
+	"fmt"
+	"log/slog"
+	"net/http"
+	"net/url"
+	"time"
+
+	"github.com/egolia-uit/egolia/api"
+	"github.com/egolia-uit/egolia/internal/blog/app"
+	"github.com/egolia-uit/egolia/internal/blog/config"
+	"github.com/egolia-uit/egolia/pkg/api/blog"
+	commonhttp "github.com/egolia-uit/egolia/pkg/common/http"
+	"github.com/getkin/kin-openapi/openapi3filter"
+	"github.com/gin-gonic/gin"
+	ginmiddleware "github.com/oapi-codegen/gin-middleware"
+)
+
+type (
+	IHandler       = blog.ServerInterface
+	IStrictHandler = blog.StrictServerInterface
+)
+
+type StrictHandler struct {
+	App     *app.App
+	BaseURL *url.URL
+}
+
+var _ IStrictHandler = (*StrictHandler)(nil)
+
+func NewStrictHandler(
+	app *app.App,
+	cfg *config.Server,
+) *StrictHandler {
+	return &StrictHandler{
+		App: app,
+		BaseURL: &url.URL{
+			Scheme: "http",
+			Host:   cfg.HTTP.Address(),
+		},
+	}
+}
+
+var ProvideStrictHandler = NewStrictHandler
+
+func NewHandler(
+	strictServer IStrictHandler,
+) IHandler {
+	options := blog.StrictGinServerOptions{
+		RequestErrorHandlerFunc:  strictHandlerRequestErrorHandler,
+		HandlerErrorFunc:         strictHandlerError,
+		ResponseErrorHandlerFunc: strictHandlerResponseErrorHandler,
+	}
+	return blog.NewStrictHandlerWithOptions(strictServer, nil, options)
+}
+
+var ProvideHandler = NewHandler
+
+func ValidateHandler() (gin.HandlerFunc, error) {
+	spec, err := api.GetSpec(nil, api.BlogSpec)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load OpenAPI spec: %w", err)
+	}
+	spec.Servers = nil
+	spec.Security = nil
+	opts := &ginmiddleware.Options{
+		ErrorHandler: ginMiddlewareErrorHandler,
+		Options: openapi3filter.Options{
+			MultiError:         true,
+			AuthenticationFunc: openapi3filter.NoopAuthenticationFunc,
+		},
+	}
+	return ginmiddleware.OapiRequestValidatorWithOptions(spec, opts), nil
+}
+
+func RegisterRoutes(
+	e *gin.Engine,
+	handler IHandler,
+) error {
+	validateHandler, err := ValidateHandler()
+	if err != nil {
+		return fmt.Errorf("failed to create request validator: %w", err)
+	}
+	api := e.Group("/")
+	{
+		api.Use(commonhttp.GatewayUserAuth())
+		api.Use(validateHandler)
+		blog.RegisterHandlers(api, handler)
+	}
+	e.GET("/blog/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
+	return nil
+}
+
+type HTTP struct {
+	*http.Server
+}
+
+func New(
+	ctx context.Context,
+	ginEngine *gin.Engine,
+	handler IHandler,
+	cfg *config.Server,
+	logger *slog.Logger,
+) (*HTTP, func(), error) {
+	if err := RegisterRoutes(ginEngine, handler); err != nil {
+		return nil, nil, err
+	}
+
+	server := &HTTP{
+		Server: &http.Server{
+			Addr:    cfg.HTTP.Address(),
+			Handler: ginEngine,
+		},
+	}
+	cleanup := func() {
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			logger.ErrorContext(ctx, "failed to shutdown http server", slog.Any("error", err))
+		}
+	}
+	return server, cleanup, nil
+}
+
+func (h *HTTP) Run() error {
+	return h.ListenAndServe()
+}
+
+var Provide = New

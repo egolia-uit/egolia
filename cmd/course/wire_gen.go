@@ -16,6 +16,7 @@ import (
 	"github.com/egolia-uit/egolia/internal/course/controller/health"
 	"github.com/egolia-uit/egolia/internal/course/controller/http"
 	"github.com/egolia-uit/egolia/internal/course/domain"
+	"github.com/egolia-uit/egolia/internal/course/infra/event"
 	"github.com/egolia-uit/egolia/internal/course/infra/objectstorage"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence"
 	"github.com/egolia-uit/egolia/internal/course/infra/persistence/readmodel"
@@ -75,7 +76,16 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 		return nil, nil, err
 	}
 	unitOfWork := repo.NewUnitOfWork(db)
-	approveCourseHandler := app.NewApproveCourseHandler(unitOfWork)
+	publisher, err := event.NewNoopPublisher()
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	kafkaEventPublisher := event.NewKafkaEventPublisher(publisher)
+	approveCourseHandler := app.NewApproveCourseHandler(unitOfWork, kafkaEventPublisher)
 	bookmarkCourseHandler := app.NewBookmarkCourseHandler(unitOfWork)
 	commentOnLessonHandler := app.NewCommentOnLessonHandler(unitOfWork)
 	createCourseHandler := app.NewCreateCourseHandler(unitOfWork)
@@ -172,7 +182,7 @@ func InitializeServer(ctx context.Context) (*course.Server, func(), error) {
 	}
 	healthHealth := health.New(server)
 	pg := persistence.NewPG(db)
-	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, logger, global)
+	courseServer := course.NewServer(httpHTTP, grpcGRPC, healthHealth, pg, publisher, logger, global)
 	return courseServer, func() {
 		cleanup6()
 		cleanup5()

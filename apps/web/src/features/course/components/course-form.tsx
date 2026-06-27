@@ -317,30 +317,28 @@ export function CourseForm({
               {selectedVideo && videoPreviewUrl && (
                 <div
                   className="
-                    grid gap-3 rounded-xl border border-slate-200/60
-                    bg-white p-3 shadow-sm mt-2
+                    mt-2 grid gap-3 rounded-xl border border-slate-200/60
+                    bg-white p-3 shadow-sm
                     md:grid-cols-[180px_minmax(0,1fr)]
                   "
                 >
                   <video
-                    className="
-                      w-full rounded-lg bg-slate-950
-                      shadow-nm-flat-sm
-                    "
+                    className="w-full rounded-lg bg-slate-950 shadow-nm-flat-sm"
                     controls
                     preload="metadata"
                     src={videoPreviewUrl}
                   />
                   <div
                     className="
-                      min-w-0 space-y-1 text-xs text-slate-600 flex flex-col justify-center
+                      flex min-w-0 flex-col justify-center space-y-1 text-xs
+                      text-slate-600
                     "
                   >
-                    <p className="font-medium text-slate-900 truncate">
+                    <p className="truncate font-medium text-slate-900">
                       {selectedVideo.name}
                     </p>
                     {uploadedVideo && (
-                      <p className="text-green-600 font-medium">Uploaded successfully</p>
+                      <p className="font-medium text-green-600">Uploaded successfully</p>
                     )}
                   </div>
                 </div>

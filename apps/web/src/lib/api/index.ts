@@ -128,6 +128,16 @@ client.interceptors.response.use(async (response) => {
   });
 });
 
+client.interceptors.request.use((options) => {
+  if (
+    options.url &&
+    (options.url.startsWith('/blog') || options.url.includes('/blog/'))
+  ) {
+    delete (options as any).requestValidator;
+    delete (options as any).responseValidator;
+  }
+});
+
 client.interceptors.error.use((error, response) => {
   if (!response) {
     return error;
