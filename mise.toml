@@ -19,7 +19,7 @@ yt-dlp = { version = "2026.03.17", rename_exe = "yt-dlp" }
 gotestsum = "1.13.0"
 "go:github.com/ctrf-io/go-ctrf-json-reporter/cmd/go-ctrf-json-reporter" = "0.1.0"
 protoc-gen-go = "1.36.11"
-protoc-gen-go-grpc = "1.6.2"
+protoc-gen-go-grpc = "1.81.1"
 
 [tools.ffmpeg]
 version = "latest"
