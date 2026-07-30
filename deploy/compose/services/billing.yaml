@@ -3,7 +3,7 @@
 services:
   billing_postgresql:
     container_name: egolia-billing_postgresql
-    image: postgres:18.3-alpine3.23
+    image: postgres:18.4-alpine3.23
     environment:
       POSTGRES_DB: ${billing_POSTGRESQL_DB:-billing}
       POSTGRES_USER: ${billing_POSTGRESQL_USER:-egoliauit}

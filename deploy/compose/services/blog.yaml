@@ -3,7 +3,7 @@
 services:
   blog_postgresql:
     container_name: egolia-blog_postgresql
-    image: postgres:18.3-alpine3.23
+    image: postgres:18.4-alpine3.23
     environment:
       POSTGRES_DB: ${blog_POSTGRESQL_DB:-blog}
       POSTGRES_USER: ${blog_POSTGRESQL_USER:-egoliauit}
